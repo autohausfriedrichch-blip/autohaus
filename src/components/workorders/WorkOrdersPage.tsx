@@ -7,7 +7,9 @@ import { Modal } from '@/components/ui/modal'
 import { Input, FormGroup, FormLabel, Select, Textarea } from '@/components/ui/form'
 import { StatusBadge } from '@/components/ui/badge'
 import { useToast } from '@/components/ui/toast'
-import { Plus, Search, Eye, Edit2, ChevronDown } from 'lucide-react'
+import { DocumentActions } from '@/components/documents/DocumentActions'
+import { TimeTracker } from '@/components/timetracker/TimeTracker'
+import { Plus, Search, ChevronDown, ChevronUp, Clock } from 'lucide-react'
 import type { WorkOrder } from '@/lib/types'
 import { formatCurrency, formatDate, STATUS_LABELS } from '@/lib/utils'
 
@@ -26,18 +28,19 @@ export function WorkOrdersPage({ refreshKey }: { refreshKey: number; onRefresh: 
   const [statusFilter, setStatusFilter] = useState('')
   const [loading, setLoading] = useState(true)
   const [modalOpen, setModalOpen] = useState(false)
-  const [detailOrder, setDetailOrder] = useState<WorkOrder | null>(null)
+  const [expandedId, setExpandedId] = useState<string | null>(null)
   const [form, setForm] = useState<Partial<WorkOrder>>({})
   const [saving, setSaving] = useState(false)
+  const [laborCost, setLaborCost] = useState(0)
   const { toast } = useToast()
   const supabase = createClient()
 
   const load = useCallback(async () => {
     setLoading(true)
     const [{ data: wo }, { data: c }, { data: v }, { data: m }] = await Promise.all([
-      supabase.from('work_orders').select('*, customer:customers(full_name,phone), vehicle:vehicles(make,model,license_plate,year), mechanic:profiles(full_name)').order('created_at', { ascending: false }),
+      supabase.from('work_orders').select('*, customer:customers(full_name,phone,email,whatsapp), vehicle:vehicles(make,model,license_plate,year), mechanic:profiles(full_name)').order('created_at', { ascending: false }),
       supabase.from('customers').select('id, full_name').order('full_name'),
-      supabase.from('vehicles').select('id, make, model, license_plate, customer_id').order('license_plate'),
+      supabase.from('vehicles').select('id, make, model, license_plate, customer_id'),
       supabase.from('profiles').select('id, full_name').in('role', ['mechanic', 'admin', 'super_admin']),
     ])
     setOrders((wo as any) || [])
@@ -60,7 +63,6 @@ export function WorkOrdersPage({ refreshKey }: { refreshKey: number; onRefresh: 
 
   const openNew = () => {
     setForm({ status: 'new_booking', is_mobile: false, payment_status: 'pending', parts_cost: 0, labor_cost: 0, total_amount: 0 })
-    setDetailOrder(null)
     setModalOpen(true)
   }
 
@@ -78,15 +80,20 @@ export function WorkOrdersPage({ refreshKey }: { refreshKey: number; onRefresh: 
       payment_status: form.payment_status || 'pending',
     }
     const { error } = await supabase.from('work_orders').insert(payload)
-    if (error) { toast('Fehler beim Erstellen: ' + error.message, 'error') }
-    else { toast('Auftrag erstellt'); setModalOpen(false); load() }
+    if (error) { toast('Hiba: ' + error.message, 'error') }
+    else { toast('Munkalap létrehozva'); setModalOpen(false); load() }
     setSaving(false)
   }
 
   const updateStatus = async (id: string, status: string) => {
     await supabase.from('work_orders').update({ status }).eq('id', id)
-    toast('Status aktualisiert')
+    toast('Státusz frissítve')
     load()
+  }
+
+  const updateLaborCost = async (id: string, labor: number, parts: number) => {
+    const total = labor + parts
+    await supabase.from('work_orders').update({ labor_cost: labor, total_amount: total }).eq('id', id)
   }
 
   const filteredVehicles = form.customer_id ? vehicles.filter(v => v.customer_id === form.customer_id) : vehicles
@@ -104,70 +111,132 @@ export function WorkOrdersPage({ refreshKey }: { refreshKey: number; onRefresh: 
           <option value="">Alle Status</option>
           {STATUSES.map(s => <option key={s} value={s}>{STATUS_LABELS[s]}</option>)}
         </select>
-        <Button variant="primary" onClick={openNew}><Plus size={14} /> Neuer Auftrag</Button>
+        <Button variant="primary" onClick={openNew}><Plus size={14} /> Új munkalap</Button>
       </div>
 
       {loading ? (
-        <div className="text-center py-12 text-[#5a6a80] text-sm">Aufträge werden geladen...</div>
+        <div className="text-center py-12 text-[#5a6a80] text-sm">Betöltés...</div>
       ) : (
         <div>
-          {filtered.map(o => (
-            <div key={o.id} className="bg-white border border-[rgba(11,30,61,0.10)] rounded-[14px] overflow-hidden mb-3">
-              <div className="flex items-center gap-3 px-4 py-3 border-b border-[rgba(11,30,61,0.08)]">
-                <span className="text-[11px] font-bold text-[#185FA5] bg-[#E6F1FB] px-2 py-0.5 rounded">{o.order_number}</span>
-                <span className="font-semibold text-[13px] flex-1">{(o as any).customer?.full_name}</span>
-                {(o as any).vehicle && (
-                  <span className="bg-[#0B1E3D] text-white text-[11px] font-bold px-2 py-1 rounded hidden sm:inline">
-                    {(o as any).vehicle.license_plate}
-                  </span>
+          {filtered.map(o => {
+            const isExpanded = expandedId === o.id
+            return (
+              <div key={o.id} className="bg-white border border-[rgba(11,30,61,0.10)] rounded-[14px] overflow-hidden mb-3">
+                {/* Header row */}
+                <div className="flex items-center gap-3 px-4 py-3 border-b border-[rgba(11,30,61,0.08)]">
+                  <span className="text-[11px] font-bold text-[#185FA5] bg-[#E6F1FB] px-2 py-0.5 rounded">{o.order_number}</span>
+                  <span className="font-semibold text-[13px] flex-1">{(o as any).customer?.full_name}</span>
+                  {(o as any).vehicle && (
+                    <span className="bg-[#0B1E3D] text-white text-[11px] font-bold px-2 py-1 rounded hidden sm:inline">
+                      {(o as any).vehicle.license_plate}
+                    </span>
+                  )}
+                  <StatusBadge status={o.status} />
+                  {o.is_mobile && <span className="text-[10px] bg-purple-100 text-purple-700 px-2 py-0.5 rounded-full font-semibold hidden sm:inline">MOBIL</span>}
+                  <button onClick={() => setExpandedId(isExpanded ? null : o.id)} className="text-[#5a6a80] hover:text-[#0B1E3D] ml-1">
+                    {isExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+                  </button>
+                </div>
+
+                {/* Summary row */}
+                <div className="px-4 py-2 flex flex-wrap gap-3 text-[12px] text-[#5a6a80] items-center">
+                  {(o as any).vehicle && <span>{(o as any).vehicle.make} {(o as any).vehicle.model}</span>}
+                  {o.service_type && <span>· {o.service_type}</span>}
+                  {o.scheduled_date && <span>· {formatDate(o.scheduled_date)}</span>}
+                  {o.total_amount > 0 && <span className="font-semibold text-[#0B1E3D]">{formatCurrency(o.total_amount)}</span>}
+                  <div className="ml-auto flex items-center gap-2">
+                    <select value={o.status} onChange={e => updateStatus(o.id, e.target.value)}
+                      className="text-[11px] border border-[rgba(11,30,61,0.18)] rounded px-2 py-1 bg-white outline-none cursor-pointer">
+                      {STATUSES.map(s => <option key={s} value={s}>{STATUS_LABELS[s]}</option>)}
+                    </select>
+                  </div>
+                </div>
+
+                {/* Expanded detail */}
+                {isExpanded && (
+                  <div className="px-4 pb-4 border-t border-[rgba(11,30,61,0.06)] pt-4 space-y-4">
+                    {/* Document actions */}
+                    <div>
+                      <div className="text-[11px] font-semibold text-[#5a6a80] uppercase tracking-wider mb-2">Dokumentumok</div>
+                      <DocumentActions
+                        type="workorder"
+                        data={o}
+                        customerId={(o as any).customer_id}
+                        workOrderId={o.id}
+                      />
+                    </div>
+
+                    {/* Details grid */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        {o.fault_description && (
+                          <div className="mb-3">
+                            <div className="text-[10px] font-semibold text-[#5a6a80] uppercase mb-1">Hibaleírás</div>
+                            <p className="text-[12px] text-[#0B1E3D] bg-[#F4F5F7] rounded p-2">{o.fault_description}</p>
+                          </div>
+                        )}
+                        {o.work_to_do && (
+                          <div className="mb-3">
+                            <div className="text-[10px] font-semibold text-[#5a6a80] uppercase mb-1">Elvégzendő munka</div>
+                            <p className="text-[12px] text-[#0B1E3D] bg-[#F4F5F7] rounded p-2">{o.work_to_do}</p>
+                          </div>
+                        )}
+                        {o.work_done && (
+                          <div className="mb-3">
+                            <div className="text-[10px] font-semibold text-[#5a6a80] uppercase mb-1">Elvégzett munka</div>
+                            <p className="text-[12px] text-[#0B1E3D] bg-[#F4F5F7] rounded p-2">{o.work_done}</p>
+                          </div>
+                        )}
+                        {/* Costs */}
+                        <div className="bg-[#F4F5F7] rounded-lg p-3 text-[12px]">
+                          <div className="flex justify-between mb-1"><span className="text-[#5a6a80]">Alkatrészek:</span><span className="font-medium">{formatCurrency(o.parts_cost || 0)}</span></div>
+                          <div className="flex justify-between mb-1"><span className="text-[#5a6a80]">Munkadíj:</span><span className="font-medium">{formatCurrency(o.labor_cost || 0)}</span></div>
+                          <div className="flex justify-between font-bold border-t border-[rgba(11,30,61,0.08)] pt-2 mt-1">
+                            <span>Végösszeg:</span><span className="text-[#0B1E3D]">{formatCurrency(o.total_amount || 0)}</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Time tracker */}
+                      <TimeTracker
+                        workOrderId={o.id}
+                        hourlyRate={125}
+                        onTotalChange={async (cost) => {
+                          await updateLaborCost(o.id, cost, o.parts_cost || 0)
+                        }}
+                      />
+                    </div>
+                  </div>
                 )}
-                <StatusBadge status={o.status} />
-                {o.is_mobile && <span className="text-[10px] bg-purple-100 text-purple-700 px-2 py-0.5 rounded-full font-semibold">MOBIL</span>}
               </div>
-              <div className="px-4 py-2.5 flex flex-wrap gap-4 text-[12px] text-[#5a6a80]">
-                {(o as any).vehicle && <span>{(o as any).vehicle.make} {(o as any).vehicle.model}</span>}
-                {o.service_type && <span>· {o.service_type}</span>}
-                {o.scheduled_date && <span>· {formatDate(o.scheduled_date)}</span>}
-                {o.total_amount > 0 && <span className="ml-auto font-semibold text-[#0B1E3D]">{formatCurrency(o.total_amount)}</span>}
-                <div className="flex items-center gap-2 ml-auto">
-                  <select value={o.status} onChange={e => updateStatus(o.id, e.target.value)}
-                    className="text-[11px] border border-[rgba(11,30,61,0.18)] rounded px-2 py-1 bg-white outline-none cursor-pointer">
-                    {STATUSES.map(s => <option key={s} value={s}>{STATUS_LABELS[s]}</option>)}
-                  </select>
-                </div>
-              </div>
-              {o.fault_description && (
-                <div className="px-4 pb-3 text-[12px] text-[#5a6a80] border-t border-[rgba(11,30,61,0.05)] pt-2">
-                  {o.fault_description}
-                </div>
-              )}
-            </div>
-          ))}
-          {filtered.length === 0 && <div className="text-center py-10 text-[#8fa0b5] text-sm">Keine Aufträge gefunden</div>}
+            )
+          })}
+          {filtered.length === 0 && <div className="text-center py-10 text-[#8fa0b5] text-sm">Nincs munkalap</div>}
         </div>
       )}
 
-      <Modal open={modalOpen} onClose={() => setModalOpen(false)} title="Neuer Arbeitsauftrag" className="max-w-2xl"
-        footer={<><Button variant="secondary" onClick={() => setModalOpen(false)}>Abbrechen</Button><Button variant="primary" onClick={handleSave} disabled={saving}>{saving ? 'Erstellen...' : 'Erstellen'}</Button></>}>
+      {/* New work order modal */}
+      <Modal open={modalOpen} onClose={() => setModalOpen(false)} title="Új Munkalap" className="max-w-2xl"
+        footer={<><Button variant="secondary" onClick={() => setModalOpen(false)}>Mégse</Button><Button variant="primary" onClick={handleSave} disabled={saving}>{saving ? 'Mentés...' : 'Létrehozás'}</Button></>}>
         <div className="grid grid-cols-2 gap-3">
           <FormGroup>
-            <FormLabel>Kunde *</FormLabel>
+            <FormLabel>Ügyfél *</FormLabel>
             <Select value={form.customer_id || ''} onChange={e => setForm(f => ({ ...f, customer_id: e.target.value, vehicle_id: '' }))}>
-              <option value="">Bitte wählen...</option>
+              <option value="">Válassz...</option>
               {customers.map(c => <option key={c.id} value={c.id}>{c.full_name}</option>)}
             </Select>
           </FormGroup>
           <FormGroup>
-            <FormLabel>Fahrzeug *</FormLabel>
+            <FormLabel>Jármű *</FormLabel>
             <Select value={form.vehicle_id || ''} onChange={e => setForm(f => ({ ...f, vehicle_id: e.target.value }))}>
-              <option value="">Bitte wählen...</option>
+              <option value="">Válassz...</option>
               {filteredVehicles.map(v => <option key={v.id} value={v.id}>{v.make} {v.model} – {v.license_plate}</option>)}
             </Select>
           </FormGroup>
           <FormGroup>
-            <FormLabel>Serviceart</FormLabel>
+            <FormLabel>Szolgáltatás</FormLabel>
             <Select value={form.service_type || ''} onChange={e => setForm(f => ({ ...f, service_type: e.target.value }))}>
-              <option value="">Bitte wählen...</option>
+              <option value="">Válassz...</option>
               <option value="Inspektion">Inspektion</option>
               <option value="Ölwechsel">Ölwechsel</option>
               <option value="Diagnose">Diagnose</option>
@@ -179,53 +248,53 @@ export function WorkOrdersPage({ refreshKey }: { refreshKey: number; onRefresh: 
             </Select>
           </FormGroup>
           <FormGroup>
-            <FormLabel>Status</FormLabel>
+            <FormLabel>Státusz</FormLabel>
             <Select value={form.status || 'new_booking'} onChange={e => setForm(f => ({ ...f, status: e.target.value as any }))}>
               {STATUSES.map(s => <option key={s} value={s}>{STATUS_LABELS[s]}</option>)}
             </Select>
           </FormGroup>
           <FormGroup>
-            <FormLabel>Datum</FormLabel>
+            <FormLabel>Dátum</FormLabel>
             <Input type="date" value={form.scheduled_date || ''} onChange={e => setForm(f => ({ ...f, scheduled_date: e.target.value }))} />
           </FormGroup>
           <FormGroup>
-            <FormLabel>Uhrzeit</FormLabel>
+            <FormLabel>Időpont</FormLabel>
             <Input type="time" value={form.scheduled_time || ''} onChange={e => setForm(f => ({ ...f, scheduled_time: e.target.value }))} />
           </FormGroup>
           <FormGroup>
-            <FormLabel>Mechanikar</FormLabel>
+            <FormLabel>Szerelő</FormLabel>
             <Select value={form.mechanic_id || ''} onChange={e => setForm(f => ({ ...f, mechanic_id: e.target.value }))}>
-              <option value="">Nicht zugewiesen</option>
+              <option value="">Nincs hozzárendelve</option>
               {mechanics.map(m => <option key={m.id} value={m.id}>{m.full_name}</option>)}
             </Select>
           </FormGroup>
           <FormGroup>
-            <FormLabel>Mobil Service</FormLabel>
+            <FormLabel>Mobil szolgáltatás</FormLabel>
             <Select value={form.is_mobile ? 'yes' : 'no'} onChange={e => setForm(f => ({ ...f, is_mobile: e.target.value === 'yes' }))}>
-              <option value="no">Nein</option>
-              <option value="yes">Ja</option>
+              <option value="no">Nem</option>
+              <option value="yes">Igen</option>
             </Select>
           </FormGroup>
           {form.is_mobile && (
             <FormGroup className="col-span-2">
-              <FormLabel>Mobil-Adresse</FormLabel>
-              <Input value={form.mobile_address || ''} onChange={e => setForm(f => ({ ...f, mobile_address: e.target.value }))} placeholder="Kundenadresse..." />
+              <FormLabel>Mobil cím</FormLabel>
+              <Input value={form.mobile_address || ''} onChange={e => setForm(f => ({ ...f, mobile_address: e.target.value }))} placeholder="Ügyfél címe..." />
             </FormGroup>
           )}
           <FormGroup className="col-span-2">
-            <FormLabel>Fehlerbeschreibung</FormLabel>
-            <Textarea value={form.fault_description || ''} onChange={e => setForm(f => ({ ...f, fault_description: e.target.value }))} placeholder="Was hat der Kunde beschrieben?" />
+            <FormLabel>Hibaleírás</FormLabel>
+            <Textarea value={form.fault_description || ''} onChange={e => setForm(f => ({ ...f, fault_description: e.target.value }))} placeholder="Mit jelzett az ügyfél?" />
           </FormGroup>
           <FormGroup>
-            <FormLabel>Teilekosten (CHF)</FormLabel>
+            <FormLabel>Alkatrész (CHF)</FormLabel>
             <Input type="number" step="0.01" value={form.parts_cost || ''} onChange={e => setForm(f => ({ ...f, parts_cost: parseFloat(e.target.value) || 0 }))} placeholder="0.00" />
           </FormGroup>
           <FormGroup>
-            <FormLabel>Arbeitskosten (CHF)</FormLabel>
+            <FormLabel>Munkadíj (CHF)</FormLabel>
             <Input type="number" step="0.01" value={form.labor_cost || ''} onChange={e => setForm(f => ({ ...f, labor_cost: parseFloat(e.target.value) || 0 }))} placeholder="0.00" />
           </FormGroup>
           <FormGroup className="col-span-2">
-            <FormLabel>Interne Notizen</FormLabel>
+            <FormLabel>Belső megjegyzés</FormLabel>
             <Textarea value={form.internal_notes || ''} onChange={e => setForm(f => ({ ...f, internal_notes: e.target.value }))} />
           </FormGroup>
         </div>
