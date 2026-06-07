@@ -1,0 +1,44 @@
+@import "tailwindcss";
+
+:root {
+  --navy: #0B1E3D;
+  --navy-mid: #142a50;
+  --gold: #C9A84C;
+  --gold-light: #e8c96b;
+  --red-accent: #C9384C;
+  --bg: #F4F5F7;
+  --bg2: #ECEEF2;
+  --surface: #ffffff;
+  --border: rgba(11,30,61,0.10);
+  --border2: rgba(11,30,61,0.18);
+  --text: #0B1E3D;
+  --text2: #5a6a80;
+  --text3: #8fa0b5;
+  --shadow: 0 2px 12px rgba(11,30,61,0.08);
+  --shadow-lg: 0 4px 24px rgba(11,30,61,0.13);
+  --radius: 10px;
+  --radius-lg: 14px;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-thumb { background: rgba(11,30,61,0.15); border-radius: 10px; }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes pulse-dot { 0%,100% { opacity:1; } 50% { opacity:0.4; } }
+
+.animate-fade-in { animation: fadeIn 0.2s ease; }
+.pulse-dot { animation: pulse-dot 2s infinite; }
