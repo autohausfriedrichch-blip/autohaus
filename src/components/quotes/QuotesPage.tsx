@@ -270,20 +270,20 @@ export function QuotesPage({ refreshKey }: { refreshKey: number; onRefresh: () =
           <div className="mt-4 bg-[#0B1E3D] rounded-lg p-3">
             <div className="text-[11px] font-semibold text-[#C9A84C] uppercase mb-2 flex items-center gap-1"><Clock size={11} /> Időalapú munkadíj</div>
             <div className="grid grid-cols-3 gap-2">
-              <FormGroup className="mb-0">
-                <FormLabel className="text-white/70">Leírás</FormLabel>
+              <FormGroup>
+                <FormLabel>Leírás</FormLabel>
                 <input value={form.time_label || ''} onChange={e => setForm((f: any) => ({ ...f, time_label: e.target.value }))}
                   placeholder="pl. Diagnosztika"
                   className="w-full px-2.5 py-1.5 rounded-lg text-[12px] bg-white/10 text-white placeholder:text-white/30 outline-none border border-white/10 focus:border-[#C9A84C]" />
               </FormGroup>
-              <FormGroup className="mb-0">
-                <FormLabel className="text-white/70">Perc</FormLabel>
+              <FormGroup>
+                <FormLabel>Perc</FormLabel>
                 <input type="number" value={form.time_minutes || ''} onChange={e => setForm((f: any) => ({ ...f, time_minutes: parseInt(e.target.value) || 0 }))}
                   placeholder="90"
                   className="w-full px-2.5 py-1.5 rounded-lg text-[12px] bg-white/10 text-white placeholder:text-white/30 outline-none border border-white/10 focus:border-[#C9A84C] text-center" />
               </FormGroup>
-              <FormGroup className="mb-0">
-                <FormLabel className="text-white/70">Óradíj (CHF)</FormLabel>
+              <FormGroup>
+                <FormLabel>Óradíj (CHF)</FormLabel>
                 <input type="number" value={form.hourly_rate || 125} onChange={e => setForm((f: any) => ({ ...f, hourly_rate: parseFloat(e.target.value) || 125 }))}
                   className="w-full px-2.5 py-1.5 rounded-lg text-[12px] bg-white/10 text-white outline-none border border-white/10 focus:border-[#C9A84C] text-center" />
               </FormGroup>

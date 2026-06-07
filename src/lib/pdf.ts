@@ -149,7 +149,8 @@ export function generateQuotePDF(quote: any): jsPDF {
   const addTotalRow = (label: string, value: string, bold = false) => {
     doc.setFontSize(bold ? 10 : 8)
     doc.setFont('helvetica', bold ? 'bold' : 'normal')
-    doc.setTextColor(bold ? ...NAVY : ...GRAY)
+    const color = bold ? NAVY : GRAY
+    doc.setTextColor(...color)
     doc.text(label, totalsX, y)
     doc.text(value, pageW - 15, y, { align: 'right' })
     y += bold ? 8 : 6
