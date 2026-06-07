@@ -1,0 +1,1740 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Autohaus Friedrich – Operations</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+/* ===== CONFIG HINT ===== */
+/* IDEcsere: https://qebqyfxlrlnfzrvnlpnm.supabase.co és sb_publishable_L9CUNTNM5DjEZKXWAqyuYw_4J7M-6X5 */
+
+:root {
+  --navy:#0B1E3D;--navy-mid:#142a50;--navy-light:#1e3a6a;
+  --gold:#C9A84C;--gold-light:#e8c96b;--red:#C9384C;
+  --bg:#F4F5F7;--bg2:#ECEEF2;--surface:#ffffff;
+  --border:rgba(11,30,61,0.10);--border2:rgba(11,30,61,0.18);
+  --text:#0B1E3D;--text2:#5a6a80;--text3:#8fa0b5;
+  --sidebar-w:230px;--topbar-h:56px;
+  --radius:10px;--radius-lg:14px;
+  --shadow:0 2px 12px rgba(11,30,61,0.08);--shadow-lg:0 4px 24px rgba(11,30,61,0.13);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.5;overflow:hidden;height:100vh;}
+
+/* ===== LOGIN ===== */
+#login-screen{display:none!important;}
+#login-screen.hidden{display:none;}
+.login-box{background:#fff;border-radius:20px;padding:40px;width:380px;box-shadow:var(--shadow-lg);}
+.login-logo{display:flex;align-items:center;gap:12px;margin-bottom:28px;}
+.login-logo-icon{width:44px;height:44px;background:var(--gold);border-radius:10px;display:flex;align-items:center;justify-content:center;}
+.login-logo-icon i{color:var(--navy);font-size:24px;}
+.login-title{font-family:'DM Serif Display',serif;font-size:20px;color:var(--navy);}
+.login-sub{font-size:11px;color:var(--text2);letter-spacing:1px;text-transform:uppercase;}
+.login-error{background:#fdeaec;color:var(--red);font-size:12px;padding:10px 14px;border-radius:8px;margin-bottom:14px;display:none;}
+.login-btn{width:100%;padding:12px;background:var(--navy);color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;margin-top:8px;transition:background 0.15s;}
+.login-btn:hover{background:var(--navy-mid);}
+.login-btn:disabled{opacity:0.6;cursor:not-allowed;}
+.login-spinner{display:none;text-align:center;padding:8px;font-size:12px;color:var(--text2);}
+
+/* ===== LAYOUT ===== */
+.layout{display:flex;height:100vh;overflow:hidden;}
+#app-layout{display:none;}
+#app-layout.visible{display:flex;width:100%;}
+.sidebar{width:var(--sidebar-w);min-width:var(--sidebar-w);background:var(--navy);display:flex;flex-direction:column;overflow-y:auto;position:relative;z-index:10;}
+.sidebar::after{content:'';position:absolute;top:0;right:0;width:1px;height:100%;background:linear-gradient(180deg,rgba(201,168,76,0.4) 0%,rgba(201,168,76,0.05) 100%);}
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0;}
+
+/* ===== SIDEBAR ===== */
+.logo-area{padding:22px 18px 18px;border-bottom:1px solid rgba(255,255,255,0.06);}
+.logo-icon{width:36px;height:36px;background:var(--gold);border-radius:8px;display:flex;align-items:center;justify-content:center;margin-bottom:10px;}
+.logo-icon i{color:var(--navy);font-size:20px;}
+.logo-name{font-family:'DM Serif Display',serif;font-size:16px;color:#fff;line-height:1.2;}
+.logo-sub{font-size:10px;color:rgba(255,255,255,0.35);letter-spacing:2px;text-transform:uppercase;margin-top:2px;}
+.nav-section{padding:14px 0 6px;}
+.nav-label{font-size:9px;color:rgba(255,255,255,0.25);letter-spacing:2px;text-transform:uppercase;padding:0 18px 8px;}
+.nav-item{display:flex;align-items:center;gap:10px;padding:9px 18px;cursor:pointer;font-size:13px;color:rgba(255,255,255,0.55);transition:all 0.2s;border-left:2px solid transparent;}
+.nav-item:hover{color:rgba(255,255,255,0.9);background:rgba(255,255,255,0.05);}
+.nav-item.active{color:#fff;background:rgba(201,168,76,0.12);border-left:2px solid var(--gold);}
+.nav-item i{font-size:17px;min-width:17px;}
+.nav-badge{margin-left:auto;font-size:10px;font-weight:600;padding:2px 7px;border-radius:12px;}
+.nb-red{background:var(--red);color:#fff;} .nb-gold{background:var(--gold);color:var(--navy);}
+.sidebar-footer{margin-top:auto;padding:14px 18px;border-top:1px solid rgba(255,255,255,0.06);}
+.user-row{display:flex;align-items:center;gap:10px;}
+.user-avatar{width:32px;height:32px;border-radius:50%;background:rgba(201,168,76,0.2);border:1.5px solid rgba(201,168,76,0.4);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:var(--gold);min-width:32px;}
+.user-name{font-size:12px;color:#fff;font-weight:500;}
+.user-role{font-size:10px;color:rgba(255,255,255,0.35);}
+
+/* ===== TOPBAR ===== */
+.topbar{height:var(--topbar-h);background:var(--surface);border-bottom:1px solid var(--border2);display:flex;align-items:center;padding:0 22px;gap:12px;flex-shrink:0;}
+.topbar-title{font-family:'DM Serif Display',serif;font-size:18px;color:var(--navy);flex:1;}
+.topbar-date{font-size:12px;color:var(--text2);}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:8px;border:1px solid var(--border2);background:transparent;font-size:12px;font-family:'DM Sans',sans-serif;cursor:pointer;color:var(--text);transition:all 0.15s;font-weight:500;}
+.btn:hover{background:var(--bg);}
+.btn-primary{background:var(--navy);color:#fff;border-color:var(--navy);}
+.btn-primary:hover{background:var(--navy-mid);}
+.btn-gold{background:var(--gold);color:var(--navy);border-color:var(--gold);}
+.btn-danger{background:var(--red);color:#fff;border-color:var(--red);}
+.btn-sm{padding:5px 11px;font-size:11px;}
+.btn:disabled{opacity:0.5;cursor:not-allowed;}
+
+/* ===== CONTENT ===== */
+.content{flex:1;overflow-y:auto;padding:22px;}
+.page{display:none;animation:fadeIn 0.2s ease;}
+.page.active{display:block;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+
+/* ===== LOADING ===== */
+.loading{text-align:center;padding:40px;color:var(--text2);}
+.loading i{font-size:28px;color:var(--gold);animation:spin 1s linear infinite;display:block;margin-bottom:10px;}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ===== CARDS ===== */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:18px;margin-bottom:14px;}
+.card-title{font-size:12px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:0.8px;display:flex;align-items:center;gap:7px;margin-bottom:14px;}
+.card-title i{font-size:16px;color:var(--gold);}
+
+/* ===== KPI ===== */
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:18px;}
+.kpi{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:16px;position:relative;overflow:hidden;}
+.kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:transparent;}
+.kpi.accent::before{background:linear-gradient(90deg,var(--gold),var(--gold-light));}
+.kpi.urgent::before{background:var(--red);}
+.kpi.info::before{background:var(--navy);}
+.kpi-val{font-family:'DM Serif Display',serif;font-size:28px;color:var(--navy);line-height:1;}
+.kpi-label{font-size:11px;color:var(--text2);margin-top:5px;}
+.kpi-sub{font-size:11px;margin-top:6px;font-weight:500;}
+
+/* ===== GRIDS ===== */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;}
+
+/* ===== PILLS ===== */
+.pill{display:inline-flex;align-items:center;font-size:10px;font-weight:600;padding:3px 9px;border-radius:20px;white-space:nowrap;}
+.p-new{background:#E6F1FB;color:#1056A5;} .p-go{background:#EAF5E3;color:#2E6B12;}
+.p-wait{background:#FFF3DC;color:#855200;} .p-done{background:#E1F5EE;color:#0A6045;}
+.p-urgent{background:#FDEAEC;color:#A02030;} .p-gold{background:rgba(201,168,76,0.15);color:#7a5a10;}
+.p-fleet{background:#EAE6FB;color:#3a2d8f;}
+
+/* ===== LIST ITEMS ===== */
+.list-item{display:flex;align-items:center;gap:11px;padding:10px 0;border-bottom:1px solid var(--border);}
+.list-item:last-child{border-bottom:none;}
+.li-time{font-size:11px;font-weight:600;color:var(--navy);min-width:40px;}
+.li-info{flex:1;min-width:0;}
+.li-name{font-weight:600;font-size:13px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.li-detail{font-size:11px;color:var(--text2);margin-top:1px;}
+.plate{background:var(--navy);color:#fff;font-size:11px;font-weight:700;padding:4px 9px;border-radius:5px;min-width:78px;text-align:center;}
+
+/* ===== TABS ===== */
+.tabs{display:flex;gap:2px;margin-bottom:16px;border-bottom:1px solid var(--border2);}
+.tab{padding:8px 16px;font-size:12px;font-family:'DM Sans',sans-serif;cursor:pointer;border:none;background:transparent;color:var(--text2);border-bottom:2px solid transparent;margin-bottom:-1px;transition:all 0.15s;font-weight:500;}
+.tab:hover{color:var(--text);}
+.tab.active{color:var(--navy);border-bottom-color:var(--gold);font-weight:600;}
+
+/* ===== FORM ===== */
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.form-group{margin-bottom:12px;}
+.form-label{font-size:11px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:0.5px;display:block;margin-bottom:5px;}
+input,select,textarea{width:100%;padding:9px 12px;border:1px solid var(--border2);border-radius:8px;font-size:13px;font-family:'DM Sans',sans-serif;background:#fff;color:var(--text);outline:none;transition:border 0.15s;}
+input:focus,select:focus,textarea:focus{border-color:var(--navy);}
+textarea{height:80px;resize:vertical;}
+
+/* ===== CHECKLIST ===== */
+.cl-item{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:var(--radius);border:1px solid var(--border);margin-bottom:8px;background:var(--surface);transition:all 0.15s;}
+.cl-item.state-ok{border-color:rgba(50,140,80,0.3);background:#f6fff9;}
+.cl-item.state-warn{border-color:rgba(201,168,76,0.4);background:#fffbf2;}
+.cl-item.state-bad{border-color:rgba(201,56,76,0.3);background:#fff5f6;}
+.cl-icon{font-size:18px;color:var(--gold);min-width:20px;}
+.cl-label{flex:1;font-size:13px;font-weight:500;}
+.cl-btns{display:flex;gap:5px;}
+.cl-btn{width:30px;height:30px;border-radius:7px;border:1px solid var(--border2);background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;transition:all 0.15s;}
+.cl-btn.btn-ok.sel,.cl-btn.btn-ok:hover{background:#EAF5E3;border-color:#2a7040;color:#2a7040;}
+.cl-btn.btn-warn.sel,.cl-btn.btn-warn:hover{background:#FFF3DC;border-color:#855200;color:#855200;}
+.cl-btn.btn-bad.sel,.cl-btn.btn-bad:hover{background:#FDEAEC;border-color:#a02030;color:#a02030;}
+.progress-wrap{background:var(--bg2);border-radius:4px;height:6px;overflow:hidden;margin-top:4px;}
+.progress-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--gold),var(--gold-light));transition:width 0.4s ease;}
+
+/* ===== CALENDAR ===== */
+.cal-grid{display:grid;grid-template-columns:52px repeat(5,1fr);gap:1px;background:var(--border2);border-radius:var(--radius);overflow:hidden;}
+.cal-head{background:var(--bg2);padding:8px 6px;text-align:center;font-size:11px;font-weight:600;color:var(--text2);}
+.cal-head.today{color:var(--navy);font-weight:700;}
+.cal-time-cell{background:var(--surface);padding:6px 5px;text-align:right;font-size:10px;color:var(--text3);min-height:52px;display:flex;align-items:flex-start;justify-content:flex-end;padding-top:5px;}
+.cal-cell{background:var(--surface);min-height:52px;padding:3px;}
+.cal-cell.today-col{background:#fafcff;}
+.cal-event{border-radius:5px;padding:3px 7px;font-size:10px;font-weight:600;margin-bottom:2px;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.ev-b{background:#DCECF9;color:#0d4a8a;} .ev-g{background:#D7F0CD;color:#1d5e0a;}
+.ev-a{background:#FFF1CC;color:#6b4200;} .ev-r{background:#FDDDE2;color:#8a0d20;}
+
+/* ===== WORK ORDER ===== */
+.wo{border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;margin-bottom:11px;background:var(--surface);}
+.wo-head{display:flex;align-items:center;gap:11px;padding:12px 16px;border-bottom:1px solid var(--border);}
+.wo-num{font-size:11px;font-weight:700;color:#185FA5;background:#E6F1FB;padding:3px 9px;border-radius:5px;}
+.wo-name{font-weight:600;font-size:13px;color:var(--text);flex:1;}
+.wo-body{padding:11px 16px;display:flex;flex-wrap:wrap;gap:16px;font-size:12px;color:var(--text2);}
+.wo-stat{display:flex;align-items:center;gap:5px;}
+
+/* ===== AI CARD ===== */
+.ai-card{background:var(--navy);border-radius:var(--radius-lg);padding:18px;margin-bottom:16px;}
+.ai-title{font-size:12px;font-weight:600;color:var(--gold);text-transform:uppercase;letter-spacing:1px;display:flex;align-items:center;gap:7px;margin-bottom:8px;}
+.ai-msg{font-size:13px;color:rgba(255,255,255,0.75);line-height:1.6;}
+.ai-actions{display:flex;gap:7px;margin-top:12px;flex-wrap:wrap;}
+.ai-btn{font-size:11px;padding:5px 13px;border-radius:20px;border:1px solid rgba(255,255,255,0.2);background:rgba(255,255,255,0.07);color:rgba(255,255,255,0.75);cursor:pointer;font-family:'DM Sans',sans-serif;}
+.ai-btn:hover{background:rgba(255,255,255,0.14);color:#fff;}
+
+/* ===== RENTAL ===== */
+.rental-row{display:flex;align-items:center;gap:14px;padding:14px;border:1px solid var(--border);border-radius:var(--radius-lg);margin-bottom:10px;background:var(--surface);}
+
+/* ===== TASK ===== */
+.task-item{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--border);font-size:13px;}
+.task-item:last-child{border-bottom:none;}
+.dot{width:8px;height:8px;border-radius:50%;min-width:8px;}
+.dot-r{background:var(--red);} .dot-a{background:var(--gold);} .dot-g{background:#3a8a3a;}
+
+/* ===== MSG TEMPLATE ===== */
+.msg-tpl{border:1px solid var(--border);border-radius:var(--radius);padding:13px;margin-bottom:8px;cursor:pointer;transition:all 0.15s;}
+.msg-tpl:hover{border-color:var(--gold);background:#fffdf5;}
+.msg-tpl-name{font-size:12px;font-weight:600;color:var(--text);margin-bottom:4px;display:flex;align-items:center;gap:6px;}
+.msg-tpl-preview{font-size:12px;color:var(--text2);}
+
+/* ===== STAT ===== */
+.stat-row{display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--border);font-size:13px;}
+.stat-row:last-child{border-bottom:none;}
+.stat-val{font-weight:600;color:var(--navy);}
+
+/* ===== MODAL ===== */
+.modal-overlay{position:fixed;inset:0;background:rgba(11,30,61,0.4);backdrop-filter:blur(4px);z-index:100;display:none;align-items:center;justify-content:center;}
+.modal-overlay.open{display:flex;}
+.modal{background:var(--surface);border-radius:16px;width:500px;max-width:95vw;max-height:90vh;overflow-y:auto;box-shadow:var(--shadow-lg);}
+.modal-head{display:flex;align-items:center;justify-content:space-between;padding:18px 22px;border-bottom:1px solid var(--border);}
+.modal-title{font-family:'DM Serif Display',serif;font-size:18px;color:var(--navy);}
+.modal-body{padding:22px;}
+.modal-foot{padding:14px 22px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:10px;}
+
+/* ===== TOAST ===== */
+.toast{position:fixed;bottom:24px;right:24px;background:var(--navy);color:#fff;padding:12px 18px;border-radius:10px;font-size:13px;display:flex;align-items:center;gap:10px;z-index:9999;transform:translateY(80px);opacity:0;transition:all 0.3s;box-shadow:var(--shadow-lg);max-width:320px;}
+.toast.show{transform:translateY(0);opacity:1;}
+.toast i{color:var(--gold);font-size:17px;}
+
+/* ===== REALTIME DOT ===== */
+.rt-dot{width:8px;height:8px;border-radius:50%;background:#3a8a3a;display:inline-block;margin-right:5px;animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.4;}}
+
+/* ===== SCROLLBAR ===== */
+::-webkit-scrollbar{width:5px;} ::-webkit-scrollbar-thumb{background:rgba(11,30,61,0.15);border-radius:10px;}
+/* ===== MOBILE BOTTOM NAV ===== */
+.mobile-nav{display:none;position:fixed;bottom:0;left:0;right:0;background:var(--navy);border-top:1px solid rgba(255,255,255,0.08);z-index:50;padding:0 4px;padding-bottom:env(safe-area-inset-bottom);}
+.mobile-nav-items{display:flex;justify-content:space-around;align-items:center;}
+.mobile-nav-item{display:flex;flex-direction:column;align-items:center;gap:3px;padding:8px 4px;cursor:pointer;flex:1;border:none;background:transparent;color:rgba(255,255,255,0.45);font-size:9px;font-family:'DM Sans',sans-serif;transition:color 0.15s;min-width:0;}
+.mobile-nav-item i{font-size:21px;}
+.mobile-nav-item.active{color:var(--gold);}
+.mobile-nav-item span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:54px;}
+.hamburger{display:none;background:transparent;border:none;cursor:pointer;padding:8px;color:var(--text);}
+.hamburger i{font-size:22px;}
+.sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:39;}
+.sidebar-overlay.open{display:block;}
+
+@media (max-width:1024px){
+  :root{--sidebar-w:200px;}
+  .g2{grid-template-columns:1fr;}
+  .form-row{grid-template-columns:1fr;}
+  .kpi-grid{grid-template-columns:repeat(2,1fr);}
+}
+
+@media (max-width:768px){
+  body{overflow:auto;}
+  .login-box{width:92vw;padding:28px 22px;}
+  .sidebar{position:fixed;top:0;left:0;height:100%;z-index:40;transform:translateX(-100%);transition:transform 0.28s ease;width:270px !important;min-width:270px !important;}
+  .sidebar.open{transform:translateX(0);}
+  #app-layout.visible{display:flex;flex-direction:column;}
+  .main{width:100%;overflow:auto;}
+  .topbar{padding:0 14px;gap:8px;}
+  .topbar-title{font-size:15px;}
+  .topbar-date{display:none;}
+  .hamburger{display:flex;align-items:center;}
+  .content{padding:14px;padding-bottom:82px;}
+  .g2{grid-template-columns:1fr;}
+  .form-row{grid-template-columns:1fr;}
+  .kpi-grid{grid-template-columns:repeat(2,1fr);gap:8px;}
+  .kpi{padding:12px;}
+  .kpi-val{font-size:22px;}
+  .card{padding:14px;}
+  .wo-body{gap:10px;flex-wrap:wrap;}
+  .wo-name{font-size:12px;}
+  .rental-row{flex-wrap:wrap;gap:10px;}
+  .modal{width:96vw;max-width:96vw;margin:0 auto;border-radius:16px 16px 0 0;position:fixed;bottom:0;left:0;right:0;max-height:92vh;}
+  .modal-overlay.open{align-items:flex-end;}
+  .modal-body{padding:16px;}
+  .modal-foot{padding:12px 16px;flex-wrap:wrap;}
+  .mobile-nav{display:block;}
+  .toast{bottom:82px;right:12px;left:12px;max-width:none;}
+  .cl-btn{width:36px;height:36px;font-size:16px;}
+  .cl-item{padding:12px 10px;}
+  .plate{min-width:60px;font-size:10px;}
+  .btn-topbar-text{display:none;}
+  .cal-grid{min-width:540px;}
+  #p-calendar .card{overflow-x:auto;}
+}
+
+@media (max-width:480px){
+  .kpi-grid{grid-template-columns:repeat(2,1fr);}
+  .tabs{overflow-x:auto;flex-wrap:nowrap;-webkit-overflow-scrolling:touch;}
+  .tab{white-space:nowrap;font-size:11px;padding:8px 10px;}
+  .wo-head{flex-wrap:wrap;gap:6px;}
+  .li-name{font-size:12px;}
+  .kpi-val{font-size:20px;}
+}
+
+</style>
+</head>
+<body>
+
+<!-- ===== LOGIN SCREEN ===== -->
+<div id="login-screen" style="display:none;visibility:hidden;">
+  <div class="login-box">
+    <div class="login-logo">
+      <div class="login-logo-icon"><i class="ti ti-steering-wheel"></i></div>
+      <div>
+        <div class="login-title">Autohaus Friedrich</div>
+        <div class="login-sub">Operations System</div>
+      </div>
+    </div>
+    <div class="login-error" id="login-error"></div>
+    <div class="form-group">
+      <label class="form-label">E-Mail</label>
+      <input type="email" id="login-email" placeholder="name@autohaus-friedrich.ch" autocomplete="email">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Passwort</label>
+      <input type="password" id="login-password" placeholder="••••••••" autocomplete="current-password">
+    </div>
+    <button class="login-btn" id="login-btn" onclick="doLogin()">
+      <span id="login-btn-text">Anmelden</span>
+    </button>
+    <div class="login-spinner" id="login-spinner"><i class="ti ti-loader-2"></i> Anmeldung läuft...</div>
+    <div style="margin-top:16px;text-align:center;font-size:11px;color:var(--text2);">
+      <span class="rt-dot"></span> Supabase – gesichert & verschlüsselt
+    </div>
+  </div>
+</div>
+
+<!-- ===== APP ===== -->
+<div id="app-layout" class="layout visible" style="display:flex;width:100%;">
+<div class="sidebar-overlay" id="sidebar-overlay" onclick="closeSidebar()"></div>
+  <div class="sidebar">
+    <div class="logo-area">
+      <div class="logo-icon"><i class="ti ti-steering-wheel"></i></div>
+      <div class="logo-name">Autohaus Friedrich</div>
+      <div class="logo-sub">Operations</div>
+    </div>
+    <div class="nav-section">
+      <div class="nav-label">Hauptmenü</div>
+      <div class="nav-item active" onclick="nav('dashboard',this)"><i class="ti ti-layout-dashboard"></i> Dashboard</div>
+      <div class="nav-item" onclick="nav('calendar',this)"><i class="ti ti-calendar"></i> Kalender <span class="nav-badge nb-red" id="badge-appt">…</span></div>
+      <div class="nav-item" onclick="nav('customers',this)"><i class="ti ti-users"></i> Kunden</div>
+      <div class="nav-item" onclick="nav('vehicles',this)"><i class="ti ti-car"></i> Fahrzeuge</div>
+      <div class="nav-item" onclick="nav('workorders',this)"><i class="ti ti-clipboard-list"></i> Munkalapok <span class="nav-badge nb-red" id="badge-wo">…</span></div>
+    </div>
+    <div class="nav-section">
+      <div class="nav-label">Dienste</div>
+      <div class="nav-item" onclick="nav('checklist',this)"><i class="ti ti-checklist"></i> Checklisták</div>
+      <div class="nav-item" onclick="nav('mobile',this)"><i class="ti ti-truck"></i> Mobil Reifen</div>
+      <div class="nav-item" onclick="nav('garage',this)"><i class="ti ti-tool"></i> Garázs Szerviz</div>
+      <div class="nav-item" onclick="nav('pickup',this)"><i class="ti ti-route"></i> Hozom-Viszem</div>
+    </div>
+    <div class="nav-section">
+      <div class="nav-label">Extras</div>
+      <div class="nav-item" onclick="nav('rental',this)"><i class="ti ti-key"></i> Autókölcsönző <span class="nav-badge nb-gold" id="badge-rental">…</span></div>
+      <div class="nav-item" onclick="nav('messages',this)"><i class="ti ti-message-circle"></i> Kommunikáció</div>
+      <div class="nav-item" onclick="nav('reports',this)"><i class="ti ti-chart-bar"></i> Berichte</div>
+      <div class="nav-item" onclick="nav('ai',this)"><i class="ti ti-robot"></i> AI Assistent</div>
+    </div>
+    <div class="sidebar-footer">
+      <div class="user-row">
+        <div class="user-avatar" id="user-initials">?</div>
+        <div>
+          <div class="user-name" id="user-name">Laden...</div>
+          <div class="user-role" id="user-role"></div>
+        </div>
+        <button class="btn btn-sm" onclick="doLogout()" style="margin-left:auto;color:rgba(255,255,255,0.4);border-color:rgba(255,255,255,0.1);" title="Abmelden"><i class="ti ti-logout"></i></button>
+      </div>
+    </div>
+  </div>
+
+  <div class="main">
+    <div class="topbar">
+      <button class="hamburger" onclick="toggleSidebar()" aria-label="Menü"><i class="ti ti-menu-2"></i></button>
+      <span class="topbar-title" id="page-title">Dashboard</span>
+      <span class="topbar-date"><span class="rt-dot" title="Realtime aktiv"></span><span id="current-date"></span></span>
+      <button class="btn" onclick="loadAllData()"><i class="ti ti-refresh"></i></button>
+      <button class="btn btn-primary" onclick="openModal('new-appointment')"><i class="ti ti-plus"></i><span class="btn-topbar-text"> Neuer Termin</span></button>
+    </div>
+
+    <div class="content">
+
+      <!-- DASHBOARD -->
+      <div class="page active" id="p-dashboard">
+        <div class="loading" id="dash-loading"><i class="ti ti-loader-2"></i>Dashboard wird geladen...</div>
+        <div id="dash-content" style="display:none">
+          <div class="kpi-grid" id="dash-kpis"></div>
+          <div class="g2">
+            <div class="card">
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+                <div class="card-title" style="margin-bottom:0"><i class="ti ti-calendar-event"></i> Heutige Termine</div>
+                <button class="btn btn-sm" onclick="nav('calendar',document.querySelector('[onclick*=calendar]'))">Alle</button>
+              </div>
+              <div id="today-appointments"><div class="loading"><i class="ti ti-loader-2"></i></div></div>
+            </div>
+            <div class="card">
+              <div class="card-title"><i class="ti ti-alert-triangle"></i> Dringende Aufgaben</div>
+              <div id="urgent-tasks"></div>
+            </div>
+          </div>
+          <div class="g2">
+            <div class="card">
+              <div class="card-title"><i class="ti ti-clipboard-list"></i> Aktive Aufträge</div>
+              <div id="active-workorders"></div>
+            </div>
+            <div class="card">
+              <div class="card-title"><i class="ti ti-key"></i> <span class="rt-dot"></span>Leihwagen Status</div>
+              <div id="rental-status"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CALENDAR -->
+      <div class="page" id="p-calendar">
+        <div class="tabs">
+          <button class="tab active">Wochensicht</button>
+          <button class="tab">Tagessicht</button>
+          <button class="tab">Monat</button>
+        </div>
+        <div class="loading" id="cal-loading"><i class="ti ti-loader-2"></i>Kalender wird geladen...</div>
+        <div id="cal-content" style="display:none">
+          <div class="cal-grid" id="cal-grid"></div>
+          <div style="display:flex;gap:14px;margin-top:12px;flex-wrap:wrap;">
+            <span style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text2)"><span style="width:12px;height:12px;background:#DCECF9;border-radius:3px;display:inline-block;"></span>Garázs</span>
+            <span style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text2)"><span style="width:12px;height:12px;background:#D7F0CD;border-radius:3px;display:inline-block;"></span>Mobil Reifen</span>
+            <span style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text2)"><span style="width:12px;height:12px;background:#FFF1CC;border-radius:3px;display:inline-block;"></span>Pickup / Leihwagen</span>
+            <span style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text2)"><span style="width:12px;height:12px;background:#FDDDE2;border-radius:3px;display:inline-block;"></span>MFK / Dringend</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- CUSTOMERS -->
+      <div class="page" id="p-customers">
+        <div style="display:flex;gap:10px;margin-bottom:14px;">
+          <input type="text" id="customer-search" placeholder="Suchen nach Name, Telefon..." oninput="filterCustomers()">
+          <button class="btn btn-primary" onclick="openModal('new-customer')"><i class="ti ti-plus"></i> Neuer Kunde</button>
+        </div>
+        <div class="loading" id="cust-loading"><i class="ti ti-loader-2"></i>Kunden werden geladen...</div>
+        <div class="card" id="cust-list" style="display:none"></div>
+      </div>
+
+      <!-- VEHICLES -->
+      <div class="page" id="p-vehicles">
+        <div style="display:flex;gap:10px;margin-bottom:14px;">
+          <input type="text" id="vehicle-search" placeholder="Kennzeichen oder Marke..." oninput="filterVehicles()">
+          <button class="btn btn-primary" onclick="openModal('new-vehicle')"><i class="ti ti-plus"></i> Fahrzeug</button>
+        </div>
+        <div class="loading" id="veh-loading"><i class="ti ti-loader-2"></i>Fahrzeuge werden geladen...</div>
+        <div id="veh-list" style="display:none"></div>
+      </div>
+
+      <!-- WORK ORDERS -->
+      <div class="page" id="p-workorders">
+        <div style="display:flex;gap:10px;margin-bottom:14px;">
+          <input type="text" placeholder="Auftragsnummer oder Kunde...">
+          <button class="btn btn-primary" onclick="openModal('new-wo')"><i class="ti ti-plus"></i> Neuer Auftrag</button>
+        </div>
+        <div class="loading" id="wo-loading"><i class="ti ti-loader-2"></i>Aufträge werden geladen...</div>
+        <div id="wo-list" style="display:none"></div>
+      </div>
+
+      <!-- CHECKLIST -->
+      <div class="page" id="p-checklist">
+        <div class="tabs">
+          <button class="tab active" onclick="switchCL(this,'cl-checkin')">Check-In</button>
+          <button class="tab" onclick="switchCL(this,'cl-service')">Service</button>
+          <button class="tab" onclick="switchCL(this,'cl-tire')">Reifen</button>
+          <button class="tab" onclick="switchCL(this,'cl-quality')">Qualität</button>
+        </div>
+        <div id="cl-checkin">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
+            <div style="font-weight:700;font-size:15px;color:var(--navy)">Fahrzeug Check-In</div>
+            <div id="cl-counter" style="font-size:12px;color:var(--text2)">0 / 6 abgeschlossen</div>
+          </div>
+          <div class="progress-wrap" style="margin-bottom:16px;"><div class="progress-fill" id="cl-bar" style="width:0%"></div></div>
+          <div id="cl-items">
+            <div class="cl-item"><i class="ti ti-gauge cl-icon"></i><span class="cl-label">KM-Stand notieren</span><div class="cl-btns"><button class="cl-btn btn-ok" onclick="setCL(this,'ok')"><i class="ti ti-check"></i></button><button class="cl-btn btn-warn" onclick="setCL(this,'warn')"><i class="ti ti-alert-triangle"></i></button><button class="cl-btn btn-bad" onclick="setCL(this,'bad')"><i class="ti ti-x"></i></button></div></div>
+            <div class="cl-item"><i class="ti ti-flame cl-icon"></i><span class="cl-label">Treibstoffstand prüfen</span><div class="cl-btns"><button class="cl-btn btn-ok" onclick="setCL(this,'ok')"><i class="ti ti-check"></i></button><button class="cl-btn btn-warn" onclick="setCL(this,'warn')"><i class="ti ti-alert-triangle"></i></button><button class="cl-btn btn-bad" onclick="setCL(this,'bad')"><i class="ti ti-x"></i></button></div></div>
+            <div class="cl-item"><i class="ti ti-car-crash cl-icon"></i><span class="cl-label">Außenschäden dokumentieren</span><div class="cl-btns"><button class="cl-btn btn-ok" onclick="setCL(this,'ok')"><i class="ti ti-check"></i></button><button class="cl-btn btn-warn" onclick="setCL(this,'warn')"><i class="ti ti-alert-triangle"></i></button><button class="cl-btn btn-bad" onclick="setCL(this,'bad')"><i class="ti ti-x"></i></button></div></div>
+            <div class="cl-item"><i class="ti ti-armchair cl-icon"></i><span class="cl-label">Innenraum Zustand</span><div class="cl-btns"><button class="cl-btn btn-ok" onclick="setCL(this,'ok')"><i class="ti ti-check"></i></button><button class="cl-btn btn-warn" onclick="setCL(this,'warn')"><i class="ti ti-alert-triangle"></i></button><button class="cl-btn btn-bad" onclick="setCL(this,'bad')"><i class="ti ti-x"></i></button></div></div>
+            <div class="cl-item"><i class="ti ti-camera cl-icon"></i><span class="cl-label">Fotos vorne / hinten / links / rechts</span><div class="cl-btns"><button class="cl-btn btn-ok" onclick="setCL(this,'ok')"><i class="ti ti-check"></i></button><button class="cl-btn btn-warn" onclick="setCL(this,'warn')"><i class="ti ti-alert-triangle"></i></button><button class="cl-btn btn-bad" onclick="setCL(this,'bad')"><i class="ti ti-x"></i></button></div></div>
+            <div class="cl-item"><i class="ti ti-windmill cl-icon"></i><span class="cl-label">Windschutzscheibe Zustand</span><div class="cl-btns"><button class="cl-btn btn-ok" onclick="setCL(this,'ok')"><i class="ti ti-check"></i></button><button class="cl-btn btn-warn" onclick="setCL(this,'warn')"><i class="ti ti-alert-triangle"></i></button><button class="cl-btn btn-bad" onclick="setCL(this,'bad')"><i class="ti ti-x"></i></button></div></div>
+          </div>
+          <div style="display:flex;gap:10px;margin-top:16px;">
+            <button class="btn"><i class="ti ti-signature"></i> Unterschrift</button>
+            <button class="btn btn-primary" onclick="saveChecklist()"><i class="ti ti-check"></i> Speichern</button>
+          </div>
+        </div>
+        <div id="cl-service" style="display:none">
+          <div style="font-weight:700;font-size:15px;color:var(--navy);margin-bottom:16px">Service Inspektion</div>
+          <div class="cl-item"><i class="ti ti-droplet cl-icon"></i><span class="cl-label">Motoröl prüfen</span><div class="cl-btns"><button class="cl-btn btn-ok" onclick="setCLs(this,'ok')"><i class="ti ti-check"></i></button><button class="cl-btn btn-warn" onclick="setCLs(this,'warn')"><i class="ti ti-alert-triangle"></i></button><button class="cl-btn btn-bad" onclick="setCLs(this,'bad')"><i class="ti ti-x"></i></button></div></div>
+          <div class="cl-item"><i class="ti ti-thermometer cl-icon"></i><span class="cl-label">Kühlflüssigkeit</span><div class="cl-btns"><button class="cl-btn btn-ok" onclick="setCLs(this,'ok')"><i class="ti ti-check"></i></button><button class="cl-btn btn-warn" onclick="setCLs(this,'warn')"><i class="ti ti-alert-triangle"></i></button><button class="cl-btn btn-bad" onclick="setCLs(this,'bad')"><i class="ti ti-x"></i></button></div></div>
+          <div class="cl-item"><i class="ti ti-disc cl-icon"></i><span class="cl-label">Bremsbeläge vorne + hinten</span><div class="cl-btns"><button class="cl-btn btn-ok" onclick="setCLs(this,'ok')"><i class="ti ti-check"></i></button><button class="cl-btn btn-warn" onclick="setCLs(this,'warn')"><i class="ti ti-alert-triangle"></i></button><button class="cl-btn btn-bad" onclick="setCLs(this,'bad')"><i class="ti ti-x"></i></button></div></div>
+          <div class="cl-item"><i class="ti ti-battery cl-icon"></i><span class="cl-label">Batterie testen</span><div class="cl-btns"><button class="cl-btn btn-ok" onclick="setCLs(this,'ok')"><i class="ti ti-check"></i></button><button class="cl-btn btn-warn" onclick="setCLs(this,'warn')"><i class="ti ti-alert-triangle"></i></button><button class="cl-btn btn-bad" onclick="setCLs(this,'bad')"><i class="ti ti-x"></i></button></div></div>
+          <div class="cl-item"><i class="ti ti-cpu cl-icon"></i><span class="cl-label">Fehlercodes OBD</span><div class="cl-btns"><button class="cl-btn btn-ok" onclick="setCLs(this,'ok')"><i class="ti ti-check"></i></button><button class="cl-btn btn-warn" onclick="setCLs(this,'warn')"><i class="ti ti-alert-triangle"></i></button><button class="cl-btn btn-bad" onclick="setCLs(this,'bad')"><i class="ti ti-x"></i></button></div></div>
+          <button class="btn btn-primary" style="margin-top:14px" onclick="showToast('Inspektion','Service-Inspektion gespeichert!')"><i class="ti ti-check"></i> Speichern</button>
+        </div>
+        <div id="cl-tire" style="display:none">
+          <div style="font-weight:700;font-size:15px;color:var(--navy);margin-bottom:16px">Reifen-Checklist</div>
+          <div class="cl-item"><i class="ti ti-circle cl-icon"></i><span class="cl-label">Reifentyp + Größe notieren</span><div class="cl-btns"><button class="cl-btn btn-ok" onclick="setCLt(this,'ok')"><i class="ti ti-check"></i></button><button class="cl-btn btn-warn" onclick="setCLt(this,'warn')"><i class="ti ti-alert-triangle"></i></button><button class="cl-btn btn-bad" onclick="setCLt(this,'bad')"><i class="ti ti-x"></i></button></div></div>
+          <div class="cl-item"><i class="ti ti-ruler cl-icon"></i><span class="cl-label">Profiltiefe messen</span><div class="cl-btns"><button class="cl-btn btn-ok" onclick="setCLt(this,'ok')"><i class="ti ti-check"></i></button><button class="cl-btn btn-warn" onclick="setCLt(this,'warn')"><i class="ti ti-alert-triangle"></i></button><button class="cl-btn btn-bad" onclick="setCLt(this,'bad')"><i class="ti ti-x"></i></button></div></div>
+          <div class="cl-item"><i class="ti ti-arrow-up cl-icon"></i><span class="cl-label">Reifendruck einstellen</span><div class="cl-btns"><button class="cl-btn btn-ok" onclick="setCLt(this,'ok')"><i class="ti ti-check"></i></button><button class="cl-btn btn-warn" onclick="setCLt(this,'warn')"><i class="ti ti-alert-triangle"></i></button><button class="cl-btn btn-bad" onclick="setCLt(this,'bad')"><i class="ti ti-x"></i></button></div></div>
+          <div class="cl-item"><i class="ti ti-screw cl-icon"></i><span class="cl-label">Radschrauben Drehmoment</span><div class="cl-btns"><button class="cl-btn btn-ok" onclick="setCLt(this,'ok')"><i class="ti ti-check"></i></button><button class="cl-btn btn-warn" onclick="setCLt(this,'warn')"><i class="ti ti-alert-triangle"></i></button><button class="cl-btn btn-bad" onclick="setCLt(this,'bad')"><i class="ti ti-x"></i></button></div></div>
+          <button class="btn btn-primary" style="margin-top:14px" onclick="showToast('Reifen','Reifen-Checklist gespeichert!')"><i class="ti ti-check"></i> Speichern</button>
+        </div>
+        <div id="cl-quality" style="display:none">
+          <div style="font-weight:700;font-size:15px;color:var(--navy);margin-bottom:16px">Qualitätskontrolle</div>
+          <div class="cl-item"><i class="ti ti-circle-check cl-icon"></i><span class="cl-label">Alle Arbeiten abgeschlossen</span><div class="cl-btns"><button class="cl-btn btn-ok" onclick="setCLq(this,'ok')"><i class="ti ti-check"></i></button><button class="cl-btn btn-warn" onclick="setCLq(this,'warn')"><i class="ti ti-alert-triangle"></i></button><button class="cl-btn btn-bad" onclick="setCLq(this,'bad')"><i class="ti ti-x"></i></button></div></div>
+          <div class="cl-item"><i class="ti ti-eye cl-icon"></i><span class="cl-label">Keine Leckagen sichtbar</span><div class="cl-btns"><button class="cl-btn btn-ok" onclick="setCLq(this,'ok')"><i class="ti ti-check"></i></button><button class="cl-btn btn-warn" onclick="setCLq(this,'warn')"><i class="ti ti-alert-triangle"></i></button><button class="cl-btn btn-bad" onclick="setCLq(this,'bad')"><i class="ti ti-x"></i></button></div></div>
+          <div class="cl-item"><i class="ti ti-road cl-icon"></i><span class="cl-label">Probefahrt durchgeführt</span><div class="cl-btns"><button class="cl-btn btn-ok" onclick="setCLq(this,'ok')"><i class="ti ti-check"></i></button><button class="cl-btn btn-warn" onclick="setCLq(this,'warn')"><i class="ti ti-alert-triangle"></i></button><button class="cl-btn btn-bad" onclick="setCLq(this,'bad')"><i class="ti ti-x"></i></button></div></div>
+          <div class="cl-item"><i class="ti ti-sparkles cl-icon"></i><span class="cl-label">Fahrzeug sauber übergabebereit</span><div class="cl-btns"><button class="cl-btn btn-ok" onclick="setCLq(this,'ok')"><i class="ti ti-check"></i></button><button class="cl-btn btn-warn" onclick="setCLq(this,'warn')"><i class="ti ti-alert-triangle"></i></button><button class="cl-btn btn-bad" onclick="setCLq(this,'bad')"><i class="ti ti-x"></i></button></div></div>
+          <button class="btn btn-primary" style="margin-top:14px" onclick="showToast('QS','Qualitätskontrolle bestanden!')"><i class="ti ti-check"></i> QS bestanden</button>
+        </div>
+      </div>
+
+      <!-- MOBILE -->
+      <div class="page" id="p-mobile">
+        <div class="ai-card"><div class="ai-title"><i class="ti ti-truck"></i> Mobil Reifenservice</div><div class="ai-msg">Mobil-Einsätze planen und verwalten. Techniker-Zuweisung und Statusverfolgung in Echtzeit.</div></div>
+        <div class="g2">
+          <div class="card">
+            <div class="card-title"><i class="ti ti-map-pin"></i> Einsätze heute</div>
+            <div id="mobile-list"><div class="loading"><i class="ti ti-loader-2"></i></div></div>
+          </div>
+          <div class="card">
+            <div class="card-title"><i class="ti ti-plus"></i> Neuer Einsatz</div>
+            <div class="form-row"><div class="form-group"><label class="form-label">Kunde</label><input type="text" id="mob-customer" placeholder="Name"></div><div class="form-group"><label class="form-label">Kennzeichen</label><input type="text" id="mob-plate" placeholder="ZH 000 XX"></div></div>
+            <div class="form-group"><label class="form-label">Adresse</label><input type="text" id="mob-address" placeholder="Strasse, PLZ Ort"></div>
+            <div class="form-row"><div class="form-group"><label class="form-label">Datum</label><input type="date" id="mob-date"></div><div class="form-group"><label class="form-label">Uhrzeit</label><input type="time" id="mob-time" value="09:00"></div></div>
+            <button class="btn btn-primary" style="width:100%;justify-content:center;" onclick="saveMobileAppointment()"><i class="ti ti-check"></i> Einsatz erstellen</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- GARAGE -->
+      <div class="page" id="p-garage">
+        <div class="kpi-grid" id="garage-kpis"></div>
+        <div class="card">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+            <div class="card-title" style="margin-bottom:0"><i class="ti ti-car-garage"></i> Werkstattbelegung</div>
+            <button class="btn btn-sm btn-primary" onclick="openModal('new-appointment')"><i class="ti ti-plus"></i> Einfahrt</button>
+          </div>
+          <div id="garage-list"><div class="loading"><i class="ti ti-loader-2"></i></div></div>
+        </div>
+      </div>
+
+      <!-- PICKUP -->
+      <div class="page" id="p-pickup">
+        <div class="g2">
+          <div class="card">
+            <div class="card-title"><i class="ti ti-route"></i> Fahrten heute</div>
+            <div id="pickup-list"><div class="loading"><i class="ti ti-loader-2"></i></div></div>
+          </div>
+          <div class="card">
+            <div class="card-title"><i class="ti ti-plus"></i> Neue Fahrt</div>
+            <div class="form-group"><label class="form-label">Abholadresse</label><input type="text" id="pickup-from" placeholder="Strasse, PLZ Ort"></div>
+            <div class="form-group"><label class="form-label">Lieferadresse</label><input type="text" id="pickup-to" placeholder="Strasse, PLZ Ort"></div>
+            <div class="form-row"><div class="form-group"><label class="form-label">Datum</label><input type="date" id="pickup-date"></div><div class="form-group"><label class="form-label">Uhrzeit</label><input type="time" id="pickup-time" value="08:00"></div></div>
+            <button class="btn btn-primary" style="width:100%;justify-content:center;" onclick="savePickup()"><i class="ti ti-check"></i> Fahrt planen</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- RENTAL -->
+      <div class="page" id="p-rental">
+        <div class="kpi-grid" id="rental-kpis"></div>
+        <div class="loading" id="rental-loading"><i class="ti ti-loader-2"></i>Leihwagen werden geladen...</div>
+        <div id="rental-list" style="display:none"></div>
+      </div>
+
+      <!-- MESSAGES -->
+      <div class="page" id="p-messages">
+        <div class="tabs"><button class="tab active">WhatsApp</button><button class="tab">SMS</button><button class="tab">E-Mail</button></div>
+        <div class="loading" id="msg-loading"><i class="ti ti-loader-2"></i>Vorlagen werden geladen...</div>
+        <div class="g2" id="msg-list" style="display:none"></div>
+      </div>
+
+      <!-- REPORTS -->
+      <div class="page" id="p-reports">
+        <div class="kpi-grid">
+          <div class="kpi accent"><div class="kpi-val" style="font-size:20px;padding-top:5px;" id="rep-today">–</div><div class="kpi-label">Heute</div></div>
+          <div class="kpi"><div class="kpi-val" style="font-size:20px;padding-top:5px;" id="rep-week">–</div><div class="kpi-label">Diese Woche</div></div>
+          <div class="kpi"><div class="kpi-val" style="font-size:20px;padding-top:5px;" id="rep-month">–</div><div class="kpi-label">Dieser Monat</div></div>
+          <div class="kpi info"><div class="kpi-val" id="rep-wo">–</div><div class="kpi-label">Aufträge gesamt</div></div>
+        </div>
+        <div class="g2">
+          <div class="card">
+            <div class="card-title"><i class="ti ti-chart-pie"></i> Aufträge nach Status</div>
+            <div id="rep-by-status"></div>
+          </div>
+          <div class="card">
+            <div class="card-title"><i class="ti ti-users"></i> Letzte Kunden</div>
+            <div id="rep-recent-customers"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- AI -->
+      <div class="page" id="p-ai">
+        <div class="ai-card">
+          <div class="ai-title"><i class="ti ti-robot"></i> AI Assistent – Autohaus Friedrich</div>
+          <div class="ai-msg">Ich helfe mit Kundennachrichten, Angeboten, Vehicle Health Reports und Serviceempfehlungen basierend auf echten Daten.</div>
+          <div class="ai-actions">
+            <button class="ai-btn" onclick="aiAction('msg')">Nachricht schreiben</button>
+            <button class="ai-btn" onclick="aiAction('offer')">Angebot generieren</button>
+            <button class="ai-btn" onclick="aiAction('health')">Health Report</button>
+            <button class="ai-btn" onclick="aiAction('reminder')">Erinnerungen</button>
+            <button class="ai-btn" onclick="aiAction('upsell')">Upsell Vorschläge</button>
+          </div>
+        </div>
+        <div id="ai-result" style="display:none" class="card"></div>
+        <div class="card">
+          <div class="card-title"><i class="ti ti-bulb"></i> Automatische Upsell-Vorschläge</div>
+          <div class="task-item"><div class="dot dot-r"></div><div style="flex:1">Bremsbeläge kritisch erkannt → Sofort Angebot erstellen</div><button class="btn btn-sm btn-gold" onclick="aiAction('offer')"><i class="ti ti-file"></i> Angebot</button></div>
+          <div class="task-item"><div class="dot dot-a"></div><div style="flex:1">Klimaservice überfällig → Kunde informieren</div><button class="btn btn-sm" onclick="aiAction('msg')"><i class="ti ti-send"></i> Senden</button></div>
+          <div class="task-item"><div class="dot dot-a"></div><div style="flex:1">MFK in 45 Tagen → Vorbereitungsservice anbieten</div><button class="btn btn-sm" onclick="showToast('Erinnerung','Gesendet!')"><i class="ti ti-bell"></i> Erinnern</button></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- MODALS -->
+<div class="modal-overlay" id="modal-new-appointment" onclick="closeModal(event,this)">
+  <div class="modal">
+    <div class="modal-head"><div class="modal-title">Neuer Termin</div><button class="btn btn-sm" onclick="closeModalById('new-appointment')"><i class="ti ti-x"></i></button></div>
+    <div class="modal-body">
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Kunde</label><select id="appt-customer-sel"></select></div>
+        <div class="form-group"><label class="form-label">Fahrzeug</label><select id="appt-vehicle-sel"><option value="">– wählen –</option></select></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Datum</label><input type="date" id="appt-date"></div>
+        <div class="form-group"><label class="form-label">Uhrzeit</label><input type="time" id="appt-time" value="09:00"></div>
+      </div>
+      <div class="form-group"><label class="form-label">Dienstleistung</label><select id="appt-type"><option value="garage_service">Garázs Szerviz</option><option value="mobile_tire">Mobil Reifenservice</option><option value="mobile_service">Mobil Szerviz</option><option value="mobile_cleaning">Detailing</option><option value="pickup_delivery">Pickup & Delivery</option><option value="rental">Leihwagen</option></select></div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Adresse (bei Mobil)</label><input type="text" id="appt-address" placeholder="Nur bei Mobil-Diensten"></div>
+        <div class="form-group"><label class="form-label">Geschätzte Zeit</label><input type="text" id="appt-duration" placeholder="z.B. 90 (Minuten)"></div>
+      </div>
+      <div class="form-group"><label class="form-label">Bemerkung</label><textarea id="appt-notes" placeholder="Interne Notiz..."></textarea></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn" onclick="closeModalById('new-appointment')">Abbrechen</button>
+      <button class="btn btn-primary" onclick="saveAppointment()"><i class="ti ti-check"></i> Termin speichern</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-new-customer" onclick="closeModal(event,this)">
+  <div class="modal">
+    <div class="modal-head"><div class="modal-title">Neuer Kunde</div><button class="btn btn-sm" onclick="closeModalById('new-customer')"><i class="ti ti-x"></i></button></div>
+    <div class="modal-body">
+      <div class="form-row"><div class="form-group"><label class="form-label">Vorname</label><input type="text" id="cust-fn" placeholder="Max"></div><div class="form-group"><label class="form-label">Nachname</label><input type="text" id="cust-ln" placeholder="Mustermann"></div></div>
+      <div class="form-row"><div class="form-group"><label class="form-label">Telefon</label><input type="tel" id="cust-phone" placeholder="+41 79 000 00 00"></div><div class="form-group"><label class="form-label">E-Mail</label><input type="email" id="cust-email" placeholder="max@beispiel.ch"></div></div>
+      <div class="form-group"><label class="form-label">Adresse</label><input type="text" id="cust-address" placeholder="Strasse Nr., PLZ Ort"></div>
+      <div class="form-row"><div class="form-group"><label class="form-label">Kundentyp</label><select id="cust-type"><option value="private">Privatkunde</option><option value="business">Firmenkunde</option></select></div><div class="form-group"><label class="form-label">Status</label><select id="cust-status"><option value="new">Neu</option><option value="active">Aktiv</option><option value="vip">VIP</option><option value="fleet">Flotte</option></select></div></div>
+    </div>
+    <div class="modal-foot"><button class="btn" onclick="closeModalById('new-customer')">Abbrechen</button><button class="btn btn-primary" onclick="saveCustomer()"><i class="ti ti-check"></i> Speichern</button></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-new-vehicle" onclick="closeModal(event,this)">
+  <div class="modal">
+    <div class="modal-head"><div class="modal-title">Neues Fahrzeug</div><button class="btn btn-sm" onclick="closeModalById('new-vehicle')"><i class="ti ti-x"></i></button></div>
+    <div class="modal-body">
+      <div class="form-row"><div class="form-group"><label class="form-label">Kennzeichen</label><input type="text" id="veh-plate" placeholder="ZH 000 XX"></div><div class="form-group"><label class="form-label">Kunde</label><select id="veh-customer-sel"></select></div></div>
+      <div class="form-row"><div class="form-group"><label class="form-label">Marke</label><input type="text" id="veh-brand" placeholder="BMW"></div><div class="form-group"><label class="form-label">Modell</label><input type="text" id="veh-model" placeholder="320i xDrive"></div></div>
+      <div class="form-row"><div class="form-group"><label class="form-label">Baujahr</label><input type="number" id="veh-year" placeholder="2021"></div><div class="form-group"><label class="form-label">KM-Stand</label><input type="number" id="veh-km" placeholder="47320"></div></div>
+      <div class="form-row"><div class="form-group"><label class="form-label">Nächste MFK</label><input type="date" id="veh-mfk"></div><div class="form-group"><label class="form-label">VIN</label><input type="text" id="veh-vin" placeholder="WBA3A5C54CF000000"></div></div>
+    </div>
+    <div class="modal-foot"><button class="btn" onclick="closeModalById('new-vehicle')">Abbrechen</button><button class="btn btn-primary" onclick="saveVehicle()"><i class="ti ti-check"></i> Speichern</button></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-new-wo" onclick="closeModal(event,this)">
+  <div class="modal">
+    <div class="modal-head"><div class="modal-title">Neuer Arbeitsauftrag</div><button class="btn btn-sm" onclick="closeModalById('new-wo')"><i class="ti ti-x"></i></button></div>
+    <div class="modal-body">
+      <div class="form-row"><div class="form-group"><label class="form-label">Kunde</label><select id="wo-customer-sel"></select></div><div class="form-group"><label class="form-label">Fahrzeug</label><select id="wo-vehicle-sel"><option value="">– wählen –</option></select></div></div>
+      <div class="form-group"><label class="form-label">Arbeitsbeschreibung</label><input type="text" id="wo-desc" placeholder="z.B. Ölwechsel + Filter"></div>
+      <div class="form-row"><div class="form-group"><label class="form-label">Dienstart</label><select id="wo-service"><option value="garage">Garázs</option><option value="mobile_tire">Mobil Reifen</option><option value="detailing">Detailing</option><option value="pickup_delivery">Pickup</option></select></div><div class="form-group"><label class="form-label">Preis (CHF)</label><input type="number" id="wo-price" placeholder="185.00"></div></div>
+      <div class="form-group"><label class="form-label">Interne Notiz</label><textarea id="wo-notes" placeholder="Notiz für den Techniker..."></textarea></div>
+    </div>
+    <div class="modal-foot"><button class="btn" onclick="closeModalById('new-wo')">Abbrechen</button><button class="btn btn-primary" onclick="saveWorkOrder()"><i class="ti ti-check"></i> Auftrag erstellen</button></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-msg-send" onclick="closeModal(event,this)">
+  <div class="modal">
+    <div class="modal-head"><div class="modal-title" id="msg-modal-title">Nachricht senden</div><button class="btn btn-sm" onclick="closeModalById('msg-send')"><i class="ti ti-x"></i></button></div>
+    <div class="modal-body">
+      <div class="form-row"><div class="form-group"><label class="form-label">Empfänger</label><select id="msg-customer-sel"></select></div><div class="form-group"><label class="form-label">Kanal</label><select id="msg-channel"><option value="whatsapp">WhatsApp</option><option value="sms">SMS</option><option value="email">E-Mail</option></select></div></div>
+      <div class="form-group"><label class="form-label">Nachricht</label><textarea id="msg-body" style="height:120px;"></textarea></div>
+    </div>
+    <div class="modal-foot"><button class="btn" onclick="closeModalById('msg-send')">Abbrechen</button><button class="btn btn-primary" onclick="sendMessage()"><i class="ti ti-send"></i> Senden</button></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"><i class="ti ti-check-circle"></i><span id="toast-msg">Gespeichert!</span></div>
+
+<script>
+// ============================================================
+// !! KONFIGURATION – hier deine Supabase Daten eintragen !!
+// ============================================================
+const SUPABASE_URL = 'https://qebqyfxlrlnfzrvnlpnm.supabase.co';      // z.B. https://xyzxyz.supabase.co
+const SUPABASE_ANON_KEY = 'sb_publishable_L9CUNTNM5DjEZKXWAqyuYw_4J7M-6X5'; // aus Project Settings > API
+
+const { createClient } = supabase;
+const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+// ============================================================
+// STATE
+// ============================================================
+let currentUser = null;
+let currentProfile = null;
+let allCustomers = [];
+let allVehicles = [];
+let allTemplates = [];
+let realtimeChannel = null;
+
+// ============================================================
+// AUTH
+// ============================================================
+async function initAuth() {
+  // Check localStorage token first
+  const tok = localStorage.getItem('af_tok');
+  const exp = parseInt(localStorage.getItem('af_exp') || '0');
+  const email = localStorage.getItem('af_email');
+  if (tok && exp > Date.now() && email) {
+    currentUser = { email, id: null };
+    currentProfile = { role: 'admin', full_name: email };
+    try { await sb.auth.setSession({ access_token: tok, refresh_token: '' }); } catch(e) {}
+    showAppDirect(email, tok);
+    return;
+  }
+}
+
+async function doLogin() {
+  const email = document.getElementById('login-email').value.trim();
+  const password = document.getElementById('login-password').value;
+  const btn = document.getElementById('login-btn');
+  const errEl = document.getElementById('login-error');
+  if (!email || !password) { showLoginError('E-Mail und Passwort erforderlich.'); return; }
+  btn.disabled = true; btn.textContent = 'Anmelden...'; errEl.style.display = 'none';
+  try {
+    const r = await fetch('https://qebqyfxlrlnfzrvnlpnm.supabase.co/auth/v1/token?grant_type=password', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFlYnF5ZnhscmxuZnpydm5scG5tIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA2MDg3MzUsImV4cCI6MjA5NjE4NDczNX0.XiiqdtDmYHpfn8xGvgxUdYSXG1SeeOLy2xviCsLkdjo' },
+      body: JSON.stringify({ email, password })
+    });
+    const d = await r.json();
+    if (!r.ok) { showLoginError(d.error_description || d.msg || d.message || 'Ungültige Anmeldedaten'); btn.disabled=false; btn.textContent='Anmelden'; return; }
+    // Save token
+    localStorage.setItem('af_tok', d.access_token);
+    localStorage.setItem('af_exp', String(Date.now() + d.expires_in * 1000));
+    localStorage.setItem('af_email', email);
+    currentUser = d.user;
+    // Update supabase client token
+    await sb.auth.setSession({ access_token: d.access_token, refresh_token: d.refresh_token });
+    showAppDirect(email, d.access_token);
+  } catch(e) { showLoginError('Verbindungsfehler: ' + e.message); btn.disabled=false; btn.textContent='Anmelden'; }
+}
+
+function showAppDirect(email, token) {
+  document.getElementById('login-screen').classList.add('hidden');
+  document.getElementById('app-layout').classList.add('visible');
+  document.getElementById('app').classList.add('visible');
+  document.getElementById('current-date').textContent = new Date().toLocaleDateString('de-CH',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+  document.getElementById('user-initials').textContent = email.substring(0,2).toUpperCase();
+  document.getElementById('user-name').textContent = email;
+  document.getElementById('user-role').textContent = 'Administrator';
+  document.getElementById('bo-nav').style.display = 'block';
+  const boBtn = document.getElementById('bo-mobile-btn');
+  if(boBtn) boBtn.style.display = 'flex';
+  currentProfile = { role: 'admin', full_name: email };
+  loadAllData();
+  setupRealtime();
+}
+
+function showLoginError(msg) {
+  const el = document.getElementById('login-error');
+  el.textContent = msg; el.style.display = 'block';
+}
+
+async function doLogout() {
+  if (realtimeChannel) sb.removeChannel(realtimeChannel);
+  await sb.auth.signOut();
+}
+
+async function loadProfile() {
+  const { data } = await sb.from('profiles').select('*').eq('id', currentUser.id).single();
+  currentProfile = data;
+  if (data) {
+    const initials = data.full_name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0,2);
+    document.getElementById('user-initials').textContent = initials;
+    document.getElementById('user-name').textContent = data.full_name;
+    const roleLabels = {admin:'Administrator',service_manager:'Service Manager',technician:'Techniker',driver:'Fahrer',detailing:'Detailing',rental_manager:'Rental Manager',customer:'Kunde'};
+    document.getElementById('user-role').textContent = roleLabels[data.role] || data.role;
+  }
+}
+
+function showApp() {
+  document.getElementById('login-screen').classList.add('hidden');
+  document.getElementById('app-layout').classList.add('visible');
+  loadAllData();
+  setupRealtime();
+}
+
+function showLogin() {
+  document.getElementById('login-screen').classList.remove('hidden');
+  document.getElementById('app-layout').classList.remove('visible');
+}
+
+// ============================================================
+// REALTIME
+// ============================================================
+function setupRealtime() {
+  realtimeChannel = sb.channel('autohaus-realtime')
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'appointments' }, () => {
+      loadTodayAppointments();
+      showToast('Realtime', 'Termin aktualisiert!');
+    })
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'work_orders' }, () => {
+      loadWorkOrders();
+    })
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'rental_cars' }, () => {
+      loadRentalCars();
+      loadRentalStatus();
+    })
+    .subscribe();
+}
+
+// ============================================================
+// NAVIGATION
+// ============================================================
+const pageTitles = {dashboard:'Dashboard',calendar:'Kalender',customers:'Kunden',vehicles:'Fahrzeuge',workorders:'Munkalapok',checklist:'Checklisták',mobile:'Mobil Reifenservice',garage:'Garázs Szerviz',pickup:'Hozom-Viszem',rental:'Autókölcsönző',messages:'Kommunikáció',reports:'Berichte',ai:'AI Assistent'};
+
+function nav(id, el) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  const pg = document.getElementById('p-' + id);
+  if (pg) pg.classList.add('active');
+  if (el) el.classList.add('active');
+  document.getElementById('page-title').textContent = pageTitles[id] || id;
+  if (id === 'customers') loadCustomers();
+  if (id === 'vehicles') loadVehicles();
+  if (id === 'workorders') loadWorkOrders();
+  if (id === 'rental') loadRentalCars();
+  if (id === 'messages') loadMessageTemplates();
+  if (id === 'garage') loadGarage();
+  if (id === 'mobile') loadMobileAppointments();
+  if (id === 'pickup') loadPickups();
+  if (id === 'reports') loadReports();
+  if (id === 'calendar') loadCalendar();
+  closeSidebar();
+}
+
+// ===== MOBILE SIDEBAR =====
+function toggleSidebar() {
+  const sb = document.querySelector('.sidebar');
+  const ov = document.getElementById('sidebar-overlay');
+  sb.classList.toggle('open');
+  ov.classList.toggle('open');
+  document.body.style.overflow = sb.classList.contains('open') ? 'hidden' : '';
+}
+function closeSidebar() {
+  const sb = document.querySelector('.sidebar');
+  const ov = document.getElementById('sidebar-overlay');
+  if (sb) sb.classList.remove('open');
+  if (ov) ov.classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+// ===== MOBILE BOTTOM NAV =====
+function mobileNav(id, el) {
+  if (id === 'more') {
+    const mm = document.getElementById('more-menu');
+    mm.style.display = mm.style.display === 'none' ? 'block' : 'none';
+    return;
+  }
+  closeMoreMenu();
+  document.querySelectorAll('.mobile-nav-item').forEach(n => n.classList.remove('active'));
+  if (el) el.classList.add('active');
+  const sidebarEl = document.querySelector('.nav-item[onclick*="' + id + '"]');
+  nav(id, sidebarEl);
+  window.scrollTo(0, 0);
+}
+function closeMoreMenu() {
+  const mm = document.getElementById('more-menu');
+  if (mm) mm.style.display = 'none';
+}
+document.addEventListener('click', function(e) {
+  const mm = document.getElementById('more-menu');
+  if (mm && mm.style.display === 'block') {
+    if (!mm.contains(e.target) && !e.target.closest('.mobile-nav-item')) {
+      closeMoreMenu();
+    }
+  }
+});
+
+// ============================================================
+// LOAD ALL (dashboard)
+// ============================================================
+async function loadAllData() {
+  document.getElementById('dash-loading').style.display = 'block';
+  document.getElementById('dash-content').style.display = 'none';
+  await Promise.all([
+    loadDashboardKPIs(),
+    loadTodayAppointments(),
+    loadUrgentTasks(),
+    loadActiveSummaryWO(),
+    loadRentalStatus(),
+    preloadSelects()
+  ]);
+  document.getElementById('dash-loading').style.display = 'none';
+  document.getElementById('dash-content').style.display = 'block';
+}
+
+// ============================================================
+// KPIs
+// ============================================================
+async function loadDashboardKPIs() {
+  const today = new Date().toISOString().split('T')[0];
+  const [appt, wo, rental, overdue] = await Promise.all([
+    sb.from('appointments').select('id', {count:'exact'}).gte('scheduled_at', today + 'T00:00:00').lte('scheduled_at', today + 'T23:59:59'),
+    sb.from('work_orders').select('id', {count:'exact'}).in('status', ['created','checked_in','in_progress','diagnosing']),
+    sb.from('rental_cars').select('id', {count:'exact'}).eq('status', 'available'),
+    sb.from('work_orders').select('id', {count:'exact'}).eq('status', 'done'),
+  ]);
+  document.getElementById('dash-kpis').innerHTML = `
+    <div class="kpi accent"><div class="kpi-val">${appt.count||0}</div><div class="kpi-label">Heutige Termine</div></div>
+    <div class="kpi"><div class="kpi-val">${wo.count||0}</div><div class="kpi-label">Aktive Aufträge</div></div>
+    <div class="kpi info"><div class="kpi-val">${overdue.count||0}</div><div class="kpi-label">Fertige Autos</div><div class="kpi-sub" style="color:var(--text2)">Abholung bereit</div></div>
+    <div class="kpi accent"><div class="kpi-val">${rental.count||0}</div><div class="kpi-label">Leihwagen frei</div></div>
+  `;
+  document.getElementById('badge-appt').textContent = appt.count || 0;
+  document.getElementById('badge-wo').textContent = wo.count || 0;
+  document.getElementById('badge-rental').textContent = rental.count || 0;
+}
+
+// ============================================================
+// TODAY'S APPOINTMENTS
+// ============================================================
+async function loadTodayAppointments() {
+  const today = new Date().toISOString().split('T')[0];
+  const { data } = await sb.from('appointments')
+    .select('*, customers(first_name,last_name), vehicles(license_plate,brand,model)')
+    .gte('scheduled_at', today + 'T00:00:00')
+    .lte('scheduled_at', today + 'T23:59:59')
+    .order('scheduled_at');
+  const el = document.getElementById('today-appointments');
+  if (!data || data.length === 0) { el.innerHTML = '<div style="text-align:center;padding:20px;color:var(--text2);font-size:13px;">Keine Termine heute</div>'; return; }
+  el.innerHTML = data.map(a => {
+    const t = new Date(a.scheduled_at).toLocaleTimeString('de-CH', {hour:'2-digit',minute:'2-digit'});
+    const name = a.customers ? `${a.customers.first_name} ${a.customers.last_name}` : '–';
+    const veh = a.vehicles ? `${a.vehicles.brand} ${a.vehicles.model} · ${a.vehicles.license_plate}` : '–';
+    const pill = statusPill(a.status);
+    return `<div class="list-item"><div class="li-time">${t}</div><div class="li-info"><div class="li-name">${name}</div><div class="li-detail">${veh} · ${apptTypeLabel(a.appointment_type)}</div></div>${pill}</div>`;
+  }).join('');
+}
+
+// ============================================================
+// URGENT TASKS
+// ============================================================
+async function loadUrgentTasks() {
+  const { data: pending } = await sb.from('work_orders').select('order_number, customers(first_name,last_name)').eq('status', 'waiting_approval').limit(5);
+  const el = document.getElementById('urgent-tasks');
+  const items = [];
+  if (pending) pending.forEach(w => {
+    const name = w.customers ? `${w.customers.first_name} ${w.customers.last_name}` : '?';
+    items.push(`<div class="task-item"><div class="dot dot-r"></div><div style="flex:1">${name} – Auftrag ${w.order_number} wartet</div><span class="pill p-urgent">Dringend</span></div>`);
+  });
+  if (items.length === 0) items.push('<div style="color:var(--text2);font-size:13px;padding:10px 0">Keine dringenden Aufgaben ✓</div>');
+  el.innerHTML = items.join('');
+}
+
+// ============================================================
+// ACTIVE WO SUMMARY
+// ============================================================
+async function loadActiveSummaryWO() {
+  const { data } = await sb.from('work_orders')
+    .select('order_number, status, total, customers(first_name,last_name), vehicles(license_plate,brand,model)')
+    .in('status', ['created','checked_in','in_progress','diagnosing'])
+    .order('created_at', {ascending:false}).limit(4);
+  const el = document.getElementById('active-workorders');
+  if (!data || data.length === 0) { el.innerHTML = '<div style="color:var(--text2);font-size:13px;padding:10px 0">Keine aktiven Aufträge</div>'; return; }
+  el.innerHTML = data.map(w => {
+    const name = w.customers ? `${w.customers.first_name} ${w.customers.last_name}` : '–';
+    const plate = w.vehicles ? w.vehicles.license_plate : '–';
+    return `<div class="list-item"><div class="li-info"><div class="li-name">${w.order_number} – ${name}</div><div class="li-detail">${plate}</div></div>${statusPill(w.status)}</div>`;
+  }).join('');
+}
+
+// ============================================================
+// RENTAL STATUS (dashboard)
+// ============================================================
+async function loadRentalStatus() {
+  const { data } = await sb.from('rental_cars').select('*').order('license_plate');
+  const el = document.getElementById('rental-status');
+  if (!data) return;
+  el.innerHTML = data.map(r => {
+    const pill = rentalStatusPill(r.status);
+    return `<div class="list-item"><div class="plate">${r.license_plate}</div><div class="li-info"><div class="li-name">${r.brand} ${r.model}</div><div class="li-detail">CHF ${r.daily_rate}/Tag</div></div>${pill}</div>`;
+  }).join('');
+}
+
+// ============================================================
+// CUSTOMERS
+// ============================================================
+async function loadCustomers() {
+  document.getElementById('cust-loading').style.display = 'block';
+  document.getElementById('cust-list').style.display = 'none';
+  const { data } = await sb.from('customers').select('*').order('last_name');
+  allCustomers = data || [];
+  renderCustomers(allCustomers);
+  document.getElementById('cust-loading').style.display = 'none';
+  document.getElementById('cust-list').style.display = 'block';
+}
+
+function renderCustomers(list) {
+  const el = document.getElementById('cust-list');
+  if (!list.length) { el.innerHTML = '<div style="text-align:center;padding:20px;color:var(--text2)">Keine Kunden gefunden</div>'; return; }
+  el.innerHTML = list.map(c => {
+    const init = (c.first_name[0] + c.last_name[0]).toUpperCase();
+    const statusMap = {new:'p-new',active:'p-new',vip:'p-gold',fleet:'p-fleet',inactive:'p-wait'};
+    const labelMap = {new:'Neu',active:'Aktiv',vip:'VIP',fleet:'Flotte',inactive:'Inaktiv'};
+    return `<div class="list-item" style="cursor:pointer"><div class="user-avatar" style="width:36px;height:36px;font-size:12px;min-width:36px;">${init}</div><div class="li-info"><div class="li-name">${c.last_name}, ${c.first_name}</div><div class="li-detail">${c.phone||''} · ${c.email||''}</div></div><span class="pill ${statusMap[c.status]||'p-new'}">${labelMap[c.status]||c.status}</span></div>`;
+  }).join('');
+}
+
+function filterCustomers() {
+  const q = document.getElementById('customer-search').value.toLowerCase();
+  renderCustomers(allCustomers.filter(c => `${c.first_name} ${c.last_name} ${c.phone||''} ${c.email||''}`.toLowerCase().includes(q)));
+}
+
+async function saveCustomer() {
+  const payload = {
+    first_name: document.getElementById('cust-fn').value.trim(),
+    last_name: document.getElementById('cust-ln').value.trim(),
+    phone: document.getElementById('cust-phone').value.trim(),
+    email: document.getElementById('cust-email').value.trim(),
+    address: document.getElementById('cust-address').value.trim(),
+    customer_type: document.getElementById('cust-type').value,
+    status: document.getElementById('cust-status').value,
+  };
+  if (!payload.first_name || !payload.last_name) { showToast('Fehler','Vor- und Nachname erforderlich!'); return; }
+  const { error } = await sb.from('customers').insert(payload);
+  if (error) { showToast('Fehler', error.message); return; }
+  closeModalById('new-customer');
+  showToast('Kunden','Neuer Kunde gespeichert!');
+  loadCustomers();
+  preloadSelects();
+}
+
+// ============================================================
+// VEHICLES
+// ============================================================
+async function loadVehicles() {
+  document.getElementById('veh-loading').style.display = 'block';
+  document.getElementById('veh-list').style.display = 'none';
+  const { data } = await sb.from('vehicles').select('*, customers(first_name,last_name)').order('license_plate');
+  allVehicles = data || [];
+  renderVehicles(allVehicles);
+  document.getElementById('veh-loading').style.display = 'none';
+  document.getElementById('veh-list').style.display = 'block';
+}
+
+function renderVehicles(list) {
+  const el = document.getElementById('veh-list');
+  if (!list.length) { el.innerHTML = '<div class="card" style="text-align:center;padding:20px;color:var(--text2)">Keine Fahrzeuge gefunden</div>'; return; }
+  el.innerHTML = list.map(v => {
+    const owner = v.customers ? `${v.customers.first_name} ${v.customers.last_name}` : '–';
+    const mfk = v.next_mfk_date ? new Date(v.next_mfk_date).toLocaleDateString('de-CH') : '–';
+    return `<div style="border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;margin-bottom:12px;background:var(--surface);">
+      <div style="display:flex;align-items:center;gap:13px;padding:13px 16px;border-bottom:1px solid var(--border);">
+        <div class="plate">${v.license_plate}</div>
+        <div style="flex:1"><div style="font-weight:700;font-size:14px;color:var(--navy)">${v.brand} ${v.model}</div><div style="font-size:12px;color:var(--text2)">${owner} · ${v.year||'–'}</div></div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--border);">
+        <div style="padding:10px 16px;border-right:1px solid var(--border)"><div style="font-size:10px;color:var(--text3);text-transform:uppercase">KM-Stand</div><div style="font-size:13px;font-weight:600">${v.mileage ? v.mileage.toLocaleString('de-CH') + ' km' : '–'}</div></div>
+        <div style="padding:10px 16px;border-right:1px solid var(--border)"><div style="font-size:10px;color:var(--text3);text-transform:uppercase">Nächste MFK</div><div style="font-size:13px;font-weight:600;color:var(--gold)">${mfk}</div></div>
+        <div style="padding:10px 16px"><div style="font-size:10px;color:var(--text3);text-transform:uppercase">Reifengröße</div><div style="font-size:13px;font-weight:600">${v.tire_size||'–'}</div></div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function filterVehicles() {
+  const q = document.getElementById('vehicle-search').value.toLowerCase();
+  renderVehicles(allVehicles.filter(v => `${v.license_plate} ${v.brand} ${v.model}`.toLowerCase().includes(q)));
+}
+
+async function saveVehicle() {
+  const payload = {
+    license_plate: document.getElementById('veh-plate').value.trim().toUpperCase(),
+    customer_id: document.getElementById('veh-customer-sel').value || null,
+    brand: document.getElementById('veh-brand').value.trim(),
+    model: document.getElementById('veh-model').value.trim(),
+    year: parseInt(document.getElementById('veh-year').value) || null,
+    mileage: parseInt(document.getElementById('veh-km').value) || null,
+    next_mfk_date: document.getElementById('veh-mfk').value || null,
+    vin: document.getElementById('veh-vin').value.trim() || null,
+  };
+  if (!payload.license_plate || !payload.brand) { showToast('Fehler','Kennzeichen und Marke erforderlich!'); return; }
+  const { error } = await sb.from('vehicles').insert(payload);
+  if (error) { showToast('Fehler', error.message); return; }
+  closeModalById('new-vehicle');
+  showToast('Fahrzeug','Fahrzeug gespeichert!');
+  loadVehicles();
+}
+
+// ============================================================
+// WORK ORDERS
+// ============================================================
+async function loadWorkOrders() {
+  const el = document.getElementById('wo-list');
+  const loading = document.getElementById('wo-loading');
+  loading.style.display = 'block'; el.style.display = 'none';
+  const { data } = await sb.from('work_orders')
+    .select('*, customers(first_name,last_name), vehicles(license_plate,brand,model)')
+    .order('created_at', {ascending:false}).limit(20);
+  loading.style.display = 'none'; el.style.display = 'block';
+  if (!data || !data.length) { el.innerHTML = '<div class="card" style="text-align:center;padding:20px;color:var(--text2)">Keine Aufträge gefunden</div>'; return; }
+  el.innerHTML = data.map(w => {
+    const name = w.customers ? `${w.customers.first_name} ${w.customers.last_name}` : '–';
+    const veh = w.vehicles ? `${w.vehicles.brand} ${w.vehicles.model} · ${w.vehicles.license_plate}` : '–';
+    return `<div class="wo">
+      <div class="wo-head"><div class="wo-num">${w.order_number||'–'}</div><div class="wo-name">${name} · ${veh}</div>${statusPill(w.status)}</div>
+      <div class="wo-body">
+        <div class="wo-stat"><i class="ti ti-tool" style="font-size:14px;color:var(--gold)"></i> ${w.description||'–'}</div>
+        <div class="wo-stat"><i class="ti ti-currency-dollar" style="font-size:14px;color:var(--text3)"></i> CHF ${w.total||'–'}</div>
+        <button class="btn btn-sm" style="margin-left:auto" onclick="updateWOStatus('${w.id}','${w.status}')"><i class="ti ti-edit"></i> Status</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+async function saveWorkOrder() {
+  const custId = document.getElementById('wo-customer-sel').value;
+  const vehId = document.getElementById('wo-vehicle-sel').value;
+  const price = parseFloat(document.getElementById('wo-price').value) || 0;
+  const { error } = await sb.from('work_orders').insert({
+    customer_id: custId || null,
+    vehicle_id: vehId || null,
+    description: document.getElementById('wo-desc').value.trim(),
+    service_type: document.getElementById('wo-service').value,
+    total: price, subtotal: price,
+    internal_notes: document.getElementById('wo-notes').value.trim(),
+    order_number: 'WO-' + new Date().getFullYear() + '-' + Date.now().toString().slice(-4),
+  });
+  if (error) { showToast('Fehler', error.message); return; }
+  closeModalById('new-wo');
+  showToast('Auftrag','Neuer Auftrag erstellt!');
+  loadWorkOrders();
+}
+
+async function updateWOStatus(id, current) {
+  const statusFlow = {created:'checked_in',checked_in:'diagnosing',diagnosing:'offer_sent',offer_sent:'approved',approved:'in_progress',in_progress:'quality_check',quality_check:'done',done:'handed_over',handed_over:'invoiced',invoiced:'paid'};
+  const next = statusFlow[current];
+  if (!next) { showToast('Info', 'Auftrag bereits abgeschlossen'); return; }
+  const { error } = await sb.from('work_orders').update({status: next}).eq('id', id);
+  if (error) { showToast('Fehler', error.message); return; }
+  showToast('Status', 'Status aktualisiert → ' + woStatusLabel(next));
+  loadWorkOrders();
+  loadDashboardKPIs();
+}
+
+// ============================================================
+// APPOINTMENTS
+// ============================================================
+async function saveAppointment() {
+  const date = document.getElementById('appt-date').value;
+  const time = document.getElementById('appt-time').value;
+  if (!date || !time) { showToast('Fehler','Datum und Uhrzeit erforderlich!'); return; }
+  const { error } = await sb.from('appointments').insert({
+    customer_id: document.getElementById('appt-customer-sel').value || null,
+    vehicle_id: document.getElementById('appt-vehicle-sel').value || null,
+    appointment_type: document.getElementById('appt-type').value,
+    scheduled_at: date + 'T' + time + ':00',
+    address: document.getElementById('appt-address').value.trim() || null,
+    estimated_duration_minutes: parseInt(document.getElementById('appt-duration').value) || null,
+    notes: document.getElementById('appt-notes').value.trim() || null,
+  });
+  if (error) { showToast('Fehler', error.message); return; }
+  closeModalById('new-appointment');
+  showToast('Kalender','Termin gespeichert!');
+  loadTodayAppointments();
+  loadDashboardKPIs();
+}
+
+// ============================================================
+// RENTAL CARS
+// ============================================================
+async function loadRentalCars() {
+  const loading = document.getElementById('rental-loading');
+  const list = document.getElementById('rental-list');
+  loading.style.display = 'block'; list.style.display = 'none';
+  const { data } = await sb.from('rental_cars').select('*').order('license_plate');
+  loading.style.display = 'none'; list.style.display = 'block';
+  const counts = {available:0, rented:0, service:0};
+  if (data) data.forEach(r => { if (counts[r.status] !== undefined) counts[r.status]++; });
+  document.getElementById('rental-kpis').innerHTML = `
+    <div class="kpi accent"><div class="kpi-val">${counts.available}</div><div class="kpi-label">Verfügbar</div></div>
+    <div class="kpi"><div class="kpi-val">${counts.rented}</div><div class="kpi-label">Verliehen</div></div>
+    <div class="kpi urgent"><div class="kpi-val">${counts.service}</div><div class="kpi-label">In Service</div></div>
+  `;
+  if (!data || !data.length) { list.innerHTML = '<div class="card" style="text-align:center;padding:20px;color:var(--text2)">Keine Leihwagen</div>'; return; }
+  list.innerHTML = data.map(r => `
+    <div class="rental-row">
+      <div style="text-align:center;min-width:90px"><div class="plate">${r.license_plate}</div><div style="font-size:11px;color:var(--text2);margin-top:5px;">${r.brand} ${r.model}</div></div>
+      <div style="flex:1"><div style="font-weight:700;font-size:13px;color:var(--navy)">${r.brand} ${r.model} · ${r.year||'–'}</div><div style="font-size:12px;color:var(--text2);margin-top:2px">CHF ${r.daily_rate}/Tag · max. ${r.km_limit_per_day} km/Tag</div></div>
+      <div style="display:flex;flex-direction:column;gap:7px;align-items:flex-end">${rentalStatusPill(r.status)}<button class="btn btn-sm" onclick="changeRentalStatus('${r.id}','${r.status}')"><i class="ti ti-edit"></i> Status</button></div>
+    </div>`).join('');
+}
+
+async function changeRentalStatus(id, current) {
+  const flow = {available:'rented',rented:'returned',returned:'cleaning',cleaning:'service',service:'available'};
+  const next = flow[current] || 'available';
+  const statusMap = {rented:'rented',returned:'available',cleaning:'cleaning',service:'service',available:'available'};
+  const dbStatus = statusMap[next] || next;
+  const { error } = await sb.from('rental_cars').update({status: dbStatus}).eq('id', id);
+  if (error) { showToast('Fehler', error.message); return; }
+  showToast('Leihwagen', 'Status aktualisiert!');
+  loadRentalCars();
+}
+
+// ============================================================
+// MESSAGE TEMPLATES
+// ============================================================
+async function loadMessageTemplates() {
+  document.getElementById('msg-loading').style.display = 'block';
+  document.getElementById('msg-list').style.display = 'none';
+  const { data } = await sb.from('message_templates').select('*').order('name');
+  allTemplates = data || [];
+  document.getElementById('msg-loading').style.display = 'none';
+  document.getElementById('msg-list').style.display = 'grid';
+  if (!data || !data.length) { document.getElementById('msg-list').innerHTML = '<div>Keine Vorlagen</div>'; return; }
+  const half = Math.ceil(data.length / 2);
+  const col1 = data.slice(0, half);
+  const col2 = data.slice(half);
+  const renderCol = arr => arr.map(t => `<div class="msg-tpl" onclick="openMsgModal('${t.id}')"><div class="msg-tpl-name"><i class="ti ti-message" style="color:var(--gold);font-size:14px"></i> ${t.name} <span style="font-size:10px;color:var(--text3)">[${t.channel}]</span></div><div class="msg-tpl-preview">${t.body.slice(0,80)}...</div></div>`).join('');
+  document.getElementById('msg-list').innerHTML = `<div>${renderCol(col1)}</div><div>${renderCol(col2)}</div>`;
+}
+
+function openMsgModal(tplId) {
+  const tpl = allTemplates.find(t => t.id === tplId);
+  if (tpl) {
+    document.getElementById('msg-modal-title').textContent = tpl.name;
+    document.getElementById('msg-body').value = tpl.body;
+    document.getElementById('msg-channel').value = tpl.channel;
+  }
+  populateSelect('msg-customer-sel', allCustomers, c => `${c.first_name} ${c.last_name}`, c => c.id);
+  openModal('msg-send');
+}
+
+async function sendMessage() {
+  const custId = document.getElementById('msg-customer-sel').value;
+  const channel = document.getElementById('msg-channel').value;
+  const body = document.getElementById('msg-body').value;
+  const cust = allCustomers.find(c => c.id === custId);
+  const recipient = cust ? (channel === 'email' ? cust.email : cust.phone) : '–';
+  const { error } = await sb.from('messages_log').insert({
+    customer_id: custId || null, channel, recipient: recipient||'–', body,
+    sent_by: currentUser?.id || null,
+  });
+  if (error) { showToast('Fehler', error.message); return; }
+  closeModalById('msg-send');
+  showToast('Nachricht', 'Nachricht gesendet!');
+}
+
+// ============================================================
+// GARAGE
+// ============================================================
+async function loadGarage() {
+  const { data } = await sb.from('work_orders')
+    .select('order_number, status, description, customers(first_name,last_name), vehicles(license_plate,brand,model)')
+    .in('status', ['checked_in','diagnosing','in_progress','quality_check','done'])
+    .order('created_at', {ascending:false}).limit(10);
+  const el = document.getElementById('garage-list');
+  const counts = {active:0, ready:0};
+  if (data) { data.forEach(w => { if (w.status === 'done') counts.ready++; else counts.active++; }); }
+  document.getElementById('garage-kpis').innerHTML = `
+    <div class="kpi"><div class="kpi-val">${data?.length||0}</div><div class="kpi-label">Im Garázs</div></div>
+    <div class="kpi accent"><div class="kpi-val">${counts.ready}</div><div class="kpi-label">Abholbereit</div></div>
+    <div class="kpi"><div class="kpi-val">${counts.active}</div><div class="kpi-label">In Arbeit</div></div>
+  `;
+  if (!data || !data.length) { el.innerHTML = '<div style="text-align:center;padding:20px;color:var(--text2)">Werkstatt leer</div>'; return; }
+  el.innerHTML = data.map(w => {
+    const name = w.customers ? `${w.customers.first_name} ${w.customers.last_name}` : '–';
+    const plate = w.vehicles ? w.vehicles.license_plate : '–';
+    const brand = w.vehicles ? `${w.vehicles.brand} ${w.vehicles.model}` : '–';
+    return `<div class="list-item"><div class="plate">${plate}</div><div class="li-info"><div class="li-name">${brand} · ${w.description||'–'}</div><div class="li-detail">${name}</div></div>${statusPill(w.status)}</div>`;
+  }).join('');
+}
+
+// ============================================================
+// MOBILE APPOINTMENTS
+// ============================================================
+async function loadMobileAppointments() {
+  const today = new Date().toISOString().split('T')[0];
+  const { data } = await sb.from('appointments')
+    .select('*, customers(first_name,last_name), vehicles(license_plate)')
+    .eq('appointment_type', 'mobile_tire')
+    .gte('scheduled_at', today + 'T00:00:00')
+    .order('scheduled_at');
+  const el = document.getElementById('mobile-list');
+  if (!data || !data.length) { el.innerHTML = '<div style="color:var(--text2);font-size:13px;padding:10px 0">Keine Mobil-Einsätze heute</div>'; return; }
+  el.innerHTML = data.map(a => {
+    const t = new Date(a.scheduled_at).toLocaleTimeString('de-CH', {hour:'2-digit',minute:'2-digit'});
+    const name = a.customers ? `${a.customers.first_name} ${a.customers.last_name}` : '–';
+    return `<div class="list-item"><div class="li-time">${t}</div><div class="li-info"><div class="li-name">${name}</div><div class="li-detail">${a.address||'–'}</div></div>${statusPill(a.status)}</div>`;
+  }).join('');
+}
+
+async function saveMobileAppointment() {
+  const date = document.getElementById('mob-date').value;
+  const time = document.getElementById('mob-time').value;
+  const address = document.getElementById('mob-address').value.trim();
+  if (!date || !time || !address) { showToast('Fehler','Datum, Uhrzeit und Adresse erforderlich!'); return; }
+  const { error } = await sb.from('appointments').insert({
+    appointment_type: 'mobile_tire',
+    scheduled_at: date + 'T' + time + ':00',
+    address,
+    notes: `Mobil-Einsatz: ${document.getElementById('mob-customer').value} / ${document.getElementById('mob-plate').value}`,
+  });
+  if (error) { showToast('Fehler', error.message); return; }
+  showToast('Mobil','Einsatz erstellt!');
+  loadMobileAppointments();
+  document.getElementById('mob-date').value = '';
+  document.getElementById('mob-address').value = '';
+}
+
+// ============================================================
+// PICKUPS
+// ============================================================
+async function loadPickups() {
+  const today = new Date().toISOString().split('T')[0];
+  const { data } = await sb.from('pickup_deliveries')
+    .select('*, customers(first_name,last_name), vehicles(license_plate)')
+    .gte('scheduled_at', today + 'T00:00:00')
+    .order('scheduled_at');
+  const el = document.getElementById('pickup-list');
+  if (!data || !data.length) { el.innerHTML = '<div style="color:var(--text2);font-size:13px;padding:10px 0">Keine Fahrten heute</div>'; return; }
+  el.innerHTML = data.map(p => {
+    const t = p.scheduled_at ? new Date(p.scheduled_at).toLocaleTimeString('de-CH', {hour:'2-digit',minute:'2-digit'}) : '–';
+    const name = p.customers ? `${p.customers.first_name} ${p.customers.last_name}` : '–';
+    return `<div class="list-item"><div class="li-time">${t}</div><div class="li-info"><div class="li-name">${name}</div><div class="li-detail">${p.pickup_address||'–'} → ${p.delivery_address||'–'}</div></div>${pickupStatusPill(p.status)}</div>`;
+  }).join('');
+}
+
+async function savePickup() {
+  const date = document.getElementById('pickup-date').value;
+  const time = document.getElementById('pickup-time').value;
+  const from = document.getElementById('pickup-from').value.trim();
+  const to = document.getElementById('pickup-to').value.trim();
+  if (!date || !from || !to) { showToast('Fehler','Datum und Adressen erforderlich!'); return; }
+  const { error } = await sb.from('pickup_deliveries').insert({
+    scheduled_at: date + 'T' + time + ':00',
+    pickup_address: from, delivery_address: to,
+  });
+  if (error) { showToast('Fehler', error.message); return; }
+  showToast('Pickup','Fahrt geplant!');
+  loadPickups();
+}
+
+// ============================================================
+// CALENDAR
+// ============================================================
+async function loadCalendar() {
+  document.getElementById('cal-loading').style.display = 'block';
+  document.getElementById('cal-content').style.display = 'none';
+  const now = new Date();
+  const mon = new Date(now); mon.setDate(now.getDate() - now.getDay() + 1);
+  const fri = new Date(mon); fri.setDate(mon.getDate() + 4);
+  const { data } = await sb.from('appointments')
+    .select('*, customers(first_name,last_name)')
+    .gte('scheduled_at', mon.toISOString())
+    .lte('scheduled_at', fri.toISOString() + 'T23:59:59')
+    .order('scheduled_at');
+  document.getElementById('cal-loading').style.display = 'none';
+  document.getElementById('cal-content').style.display = 'block';
+  const days = [];
+  for (let i = 0; i < 5; i++) { const d = new Date(mon); d.setDate(mon.getDate() + i); days.push(d); }
+  const times = ['08:00','09:30','11:00','14:00','16:30'];
+  let grid = '<div class="cal-head"></div>';
+  days.forEach((d,i) => {
+    const isToday = d.toDateString() === now.toDateString();
+    grid += `<div class="cal-head ${isToday?'today':''}">${['Mo','Di','Mi','Do','Fr'][i]} ${d.getDate()}.${String(d.getMonth()+1).padStart(2,'0')}</div>`;
+  });
+  times.forEach(t => {
+    grid += `<div class="cal-time-cell">${t}</div>`;
+    days.forEach(d => {
+      const isToday = d.toDateString() === now.toDateString();
+      const [h,m] = t.split(':').map(Number);
+      const cellStart = new Date(d); cellStart.setHours(h,m,0);
+      const cellEnd = new Date(cellStart); cellEnd.setMinutes(cellEnd.getMinutes()+89);
+      const appts = (data||[]).filter(a => { const at = new Date(a.scheduled_at); return at >= cellStart && at <= cellEnd; });
+      const events = appts.map(a => {
+        const name = a.customers ? a.customers.first_name + ' ' + a.customers.last_name.charAt(0) + '.' : '–';
+        const cls = {garage_service:'ev-b',mobile_tire:'ev-g',pickup_delivery:'ev-a',rental:'ev-a'}[a.appointment_type] || 'ev-r';
+        return `<div class="cal-event ${cls}">${name}</div>`;
+      }).join('');
+      grid += `<div class="cal-cell ${isToday?'today-col':''}">${events}</div>`;
+    });
+  });
+  document.getElementById('cal-grid').innerHTML = grid;
+}
+
+// ============================================================
+// REPORTS
+// ============================================================
+async function loadReports() {
+  const today = new Date().toISOString().split('T')[0];
+  const weekAgo = new Date(); weekAgo.setDate(weekAgo.getDate()-7);
+  const monthAgo = new Date(); monthAgo.setDate(1);
+  const [todayWO, weekWO, monthWO, allWO, statusGroup, recentCustomers] = await Promise.all([
+    sb.from('work_orders').select('total').gte('created_at', today),
+    sb.from('work_orders').select('total').gte('created_at', weekAgo.toISOString()),
+    sb.from('work_orders').select('total').gte('created_at', monthAgo.toISOString()),
+    sb.from('work_orders').select('id', {count:'exact'}),
+    sb.from('work_orders').select('status'),
+    sb.from('customers').select('first_name,last_name,status,created_at').order('created_at',{ascending:false}).limit(5),
+  ]);
+  const sum = arr => arr.reduce((s,w) => s + (parseFloat(w.total)||0), 0);
+  document.getElementById('rep-today').textContent = 'CHF ' + sum(todayWO.data||[]).toFixed(0);
+  document.getElementById('rep-week').textContent = 'CHF ' + sum(weekWO.data||[]).toFixed(0);
+  document.getElementById('rep-month').textContent = 'CHF ' + sum(monthWO.data||[]).toFixed(0);
+  document.getElementById('rep-wo').textContent = allWO.count || 0;
+  const byStatus = {};
+  (statusGroup.data||[]).forEach(w => { byStatus[w.status] = (byStatus[w.status]||0)+1; });
+  document.getElementById('rep-by-status').innerHTML = Object.entries(byStatus).map(([s,n]) =>
+    `<div class="stat-row"><span>${woStatusLabel(s)}</span><span class="stat-val">${n}</span></div>`).join('') || '<div style="color:var(--text2)">Keine Daten</div>';
+  document.getElementById('rep-recent-customers').innerHTML = (recentCustomers.data||[]).map(c =>
+    `<div class="list-item"><div class="li-info"><div class="li-name">${c.first_name} ${c.last_name}</div></div><span class="pill ${c.status==='vip'?'p-gold':'p-new'}">${c.status}</span></div>`).join('') || '<div style="color:var(--text2)">Keine Kunden</div>';
+}
+
+// ============================================================
+// PRELOAD SELECTS
+// ============================================================
+async function preloadSelects() {
+  const { data: customers } = await sb.from('customers').select('id, first_name, last_name').order('last_name');
+  allCustomers = customers || [];
+  const { data: vehicles } = await sb.from('vehicles').select('id, license_plate, brand, model').order('license_plate');
+  allVehicles = vehicles || [];
+  ['appt-customer-sel','cust', 'wo-customer-sel','veh-customer-sel','msg-customer-sel'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el && el.tagName === 'SELECT') populateSelect(id, allCustomers, c => `${c.last_name}, ${c.first_name}`, c => c.id);
+  });
+  ['appt-vehicle-sel','wo-vehicle-sel'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) populateSelect(id, allVehicles, v => `${v.license_plate} – ${v.brand} ${v.model}`, v => v.id, '– kein Fahrzeug –');
+  });
+}
+
+function populateSelect(id, items, label, value, placeholder) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.innerHTML = (placeholder ? `<option value="">${placeholder}</option>` : '') + (items||[]).map(i => `<option value="${value(i)}">${label(i)}</option>`).join('');
+}
+
+// ============================================================
+// CHECKLIST
+// ============================================================
+function setCL(btn, type) { setClItem(btn, type); updateClProgress(); }
+function setCLs(btn, type) { setClItem(btn, type); }
+function setCLt(btn, type) { setClItem(btn, type); }
+function setCLq(btn, type) { setClItem(btn, type); }
+
+function setClItem(btn, type) {
+  const row = btn.closest('.cl-btns');
+  row.querySelectorAll('.cl-btn').forEach(b => b.classList.remove('sel'));
+  btn.classList.add('sel');
+  const item = btn.closest('.cl-item');
+  item.classList.remove('state-ok','state-warn','state-bad');
+  item.classList.add(type==='ok'?'state-ok':type==='warn'?'state-warn':'state-bad');
+}
+
+function updateClProgress() {
+  const items = document.querySelectorAll('#cl-items .cl-item');
+  let done = 0; items.forEach(i => { if (i.querySelector('.cl-btn.sel')) done++; });
+  const pct = Math.round((done/items.length)*100);
+  document.getElementById('cl-bar').style.width = pct+'%';
+  document.getElementById('cl-counter').textContent = done+' / '+items.length+' abgeschlossen';
+}
+
+function saveChecklist() {
+  showToast('Check-In', 'Checklist gespeichert!');
+}
+
+function switchCL(tab, id) {
+  document.querySelectorAll('#p-checklist .tab').forEach(t => t.classList.remove('active'));
+  tab.classList.add('active');
+  ['cl-checkin','cl-service','cl-tire','cl-quality'].forEach(s => {
+    const el = document.getElementById(s); if (el) el.style.display = s===id?'block':'none';
+  });
+}
+
+// ============================================================
+// AI ACTIONS
+// ============================================================
+const ANTHROPIC_API_KEY = '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';
+
+const aiPrompts = {
+  msg: {
+    title: 'Nachricht generiert',
+    system: 'Du bist ein freundlicher Kundenservice-Assistent für Autohaus Friedrich, eine Schweizer Premium-Autowerkstatt. Schreibe professionelle, kurze Nachrichten auf Deutsch. Sei freundlich, klar und präzise. Unterschreibe immer mit "Mit freundlichen Grüssen, Autohaus Friedrich".',
+    user: () => {
+      const cust = allCustomers.length > 0 ? allCustomers[0] : null;
+      const name = cust ? `${cust.first_name} ${cust.last_name}` : 'Kunde';
+      return `Schreibe eine WhatsApp-Nachricht an ${name}, dass sein Fahrzeug fertig ist und abgeholt werden kann. Öffnungszeiten: Mo–Fr 07:00–18:00, Sa 08:00–13:00. Preis: CHF 220.–`;
+    }
+  },
+  offer: {
+    title: 'Angebot erstellt',
+    system: 'Du bist ein Serviceberater bei Autohaus Friedrich, einer Schweizer Premium-Autowerkstatt. Erstelle professionelle Angebote auf Deutsch mit klarer Auflistung von Teilen, Arbeitszeit und Gesamtpreis in CHF. Heutiges Datum: ' + new Date().toLocaleDateString('de-CH'),
+    user: () => {
+      const cust = allCustomers.length > 0 ? allCustomers[0] : null;
+      const veh = allVehicles.length > 0 ? allVehicles[0] : null;
+      const name = cust ? `${cust.first_name} ${cust.last_name}` : 'Kunde';
+      const car = veh ? `${veh.brand} ${veh.model} (${veh.license_plate})` : 'Fahrzeug';
+      return `Erstelle ein Angebot für ${name}, Fahrzeug: ${car}. Arbeiten: Bremsbeläge vorne + hinten wechseln, Bremsscheiben vorne. Schweizer Marktpreise verwenden. Gültig 14 Tage.`;
+    }
+  },
+  health: {
+    title: 'Vehicle Health Report',
+    system: 'Du bist ein Fahrzeugtechniker bei Autohaus Friedrich. Erstelle einen übersichtlichen Vehicle Health Report auf Deutsch. Verwende Emojis: 🔴 KRITISCH, 🟡 ACHTUNG, ✅ OK. Gib konkrete Empfehlungen und ungefähre Kosten in CHF an.',
+    user: () => {
+      const veh = allVehicles.length > 0 ? allVehicles[0] : null;
+      const car = veh ? `${veh.brand} ${veh.model}, Kennzeichen: ${veh.license_plate}, KM: ${veh.mileage || 'unbekannt'}` : 'Fahrzeug';
+      return `Erstelle einen Vehicle Health Report für: ${car}. Befunde: Bremsbeläge vorne 1.5mm (Minimum 3mm), Reifenprofil 2.8mm, Akkumulator 68% Kapazität, Motoröl frisch gewechselt, Kühlmittel OK, Beleuchtung OK, keine Fehlercodes.`;
+    }
+  },
+  reminder: {
+    title: 'Erinnerungen generiert',
+    system: 'Du bist ein Kundenservice-Assistent bei Autohaus Friedrich. Schreibe kurze, freundliche Erinnerungsnachrichten auf Deutsch für verschiedene Anlässe. Jede Nachricht soll individuell und professionell klingen.',
+    user: () => {
+      const names = allCustomers.slice(0,3).map(c => `${c.first_name} ${c.last_name}`).join(', ') || 'Müller Andreas, Kovács Éva, Weber Klaus';
+      return `Schreibe 3 verschiedene Erinnerungsnachrichten für: Reifenwechsel Saison (an: ${names}), MFK fällig in 30 Tagen, Service überfällig. Kurz und freundlich, je max. 2 Sätze.`;
+    }
+  },
+  upsell: {
+    title: 'Upsell Vorschläge',
+    system: 'Du bist ein Serviceberater bei Autohaus Friedrich. Analysiere Fahrzeugdaten und schlage sinnvolle Zusatzleistungen vor. Sei konkret mit Preisen in CHF und erkläre den Nutzen für den Kunden kurz.',
+    user: () => {
+      const woCount = document.getElementById('badge-wo')?.textContent || '0';
+      return `Analysiere folgende Situation bei Autohaus Friedrich und schlage 4 konkrete Upsell-Möglichkeiten vor: ${woCount} aktive Aufträge, Reifenwechsel-Saison läuft, mehrere Fahrzeuge mit über 50.000 km. Nenne Preis, Nutzen und beste Ansprache für den Kunden. Auf Deutsch.`;
+    }
+  }
+};
+
+async function aiAction(type) {
+  const el = document.getElementById('ai-result');
+  const prompt = aiPrompts[type];
+  if (!prompt) return;
+
+  el.style.display = 'block';
+  el.innerHTML = `<div class="card-title" style="margin-bottom:10px;"><i class="ti ti-robot" style="color:var(--gold);"></i> ${prompt.title}</div><div style="display:flex;align-items:center;gap:10px;padding:16px 0;color:var(--text2);font-size:13px;"><i class="ti ti-loader-2" style="font-size:20px;color:var(--gold);animation:spin 1s linear infinite;"></i> AI denkt nach...</div>`;
+  el.scrollIntoView({behavior:'smooth'});
+
+  try {
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': ANTHROPIC_API_KEY,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-allow-browser': 'true'
+      },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        system: prompt.system,
+        messages: [{ role: 'user', content: prompt.user() }]
+      })
+    });
+
+    if (!response.ok) {
+      const err = await response.json();
+      throw new Error(err.error?.message || 'API Fehler');
+    }
+
+    const data = await response.json();
+    const text = data.content[0]?.text || 'Keine Antwort erhalten.';
+
+    el.innerHTML = `
+      <div class="card-title" style="margin-bottom:10px;"><i class="ti ti-robot" style="color:var(--gold);"></i> ${prompt.title} <span style="font-size:10px;font-weight:400;color:var(--text2);margin-left:6px;">✦ Claude AI</span></div>
+      <pre style="white-space:pre-wrap;font-family:inherit;font-size:13px;color:var(--text);line-height:1.7;background:var(--bg2);padding:14px;border-radius:8px;">${text}</pre>
+      <div style="display:flex;gap:8px;margin-top:12px;">
+        <button class="btn btn-sm btn-primary" onclick="navigator.clipboard.writeText(document.querySelector('#ai-result pre').textContent);showToast('Kopiert','Text in Zwischenablage!')"><i class="ti ti-copy"></i> Kopieren</button>
+        <button class="btn btn-sm btn-gold" onclick="openMsgModalWithText(document.querySelector('#ai-result pre').textContent)"><i class="ti ti-send"></i> Als Nachricht senden</button>
+        <button class="btn btn-sm" onclick="el.style.display='none'"><i class="ti ti-x"></i></button>
+      </div>`;
+  } catch(err) {
+    el.innerHTML = `<div class="card-title" style="color:var(--red);"><i class="ti ti-alert-circle"></i> Fehler</div><div style="font-size:13px;color:var(--text2);padding:10px 0;">${err.message}</div><button class="btn btn-sm" onclick="aiAction('${type}')"><i class="ti ti-refresh"></i> Nochmal versuchen</button>`;
+    console.error('AI error:', err);
+  }
+}
+
+function openMsgModalWithText(text) {
+  document.getElementById('msg-body').value = text;
+  populateSelect('msg-customer-sel', allCustomers, c => `${c.last_name}, ${c.first_name}`, c => c.id);
+  openModal('msg-send');
+}
+
+// ============================================================
+// HELPERS
+// ============================================================
+function statusPill(s) {
+  const map = {
+    new:'p-new',confirmed:'p-new',new:'p-new',
+    in_progress:'p-go',checked_in:'p-go',diagnosing:'p-go',
+    waiting_approval:'p-wait',offer_sent:'p-wait',approved:'p-wait',quality_check:'p-wait',
+    done:'p-done',handed_over:'p-done',paid:'p-done',invoiced:'p-done',
+    cancelled:'p-urgent',created:'p-new'
+  };
+  const label = woStatusLabel(s);
+  return `<span class="pill ${map[s]||'p-new'}">${label}</span>`;
+}
+
+function woStatusLabel(s) {
+  const m = {created:'Erstellt',checked_in:'Check-In',diagnosing:'Diagnose',offer_sent:'Angebot',approved:'Genehmigt',in_progress:'Im Gang',quality_check:'QS',done:'Fertig',handed_over:'Übergeben',invoiced:'Verrechnet',paid:'Bezahlt',new:'Neu',confirmed:'Bestätigt',on_the_way:'Unterwegs',car_received:'Abgeholt',waiting_approval:'Freigabe',cancelled:'Abgesagt',waiting_approval:'Warten'};
+  return m[s] || s;
+}
+
+function apptTypeLabel(t) {
+  const m = {garage_service:'Garázs',mobile_tire:'Mobil Reifen',mobile_service:'Mobil Service',mobile_cleaning:'Detailing',pickup_delivery:'Pickup',car_handover:'Übergabe',car_return:'Rückgabe',rental:'Leihwagen',fleet:'Flotte'};
+  return m[t] || t;
+}
+
+function rentalStatusPill(s) {
+  const m = {available:'p-done',reserved:'p-new',rented:'p-new',returned:'p-done',cleaning:'p-wait',service:'p-wait',unavailable:'p-urgent'};
+  const l = {available:'Verfügbar',reserved:'Reserviert',rented:'Verliehen',returned:'Zurück',cleaning:'Reinigung',service:'Service',unavailable:'N/A'};
+  return `<span class="pill ${m[s]||'p-new'}">${l[s]||s}</span>`;
+}
+
+function pickupStatusPill(s) {
+  const m = {booked:'p-new',driver_on_way:'p-go',car_picked_up:'p-go',arrived_garage:'p-wait',work_done:'p-done',returning:'p-go',delivered:'p-done'};
+  const l = {booked:'Geplant',driver_on_way:'Unterwegs',car_picked_up:'Abgeholt',arrived_garage:'Im Garázs',work_done:'Fertig',returning:'Rückfahrt',delivered:'Übergeben'};
+  return `<span class="pill ${m[s]||'p-new'}">${l[s]||s}</span>`;
+}
+
+// ============================================================
+// MODALS
+// ============================================================
+function openModal(id) { document.getElementById('modal-'+id).classList.add('open'); }
+function closeModalById(id) { document.getElementById('modal-'+id).classList.remove('open'); }
+function closeModal(e, overlay) { if (e.target === overlay) overlay.classList.remove('open'); }
+
+// ============================================================
+// TOAST
+// ============================================================
+let toastTimer;
+function showToast(title, msg) {
+  const t = document.getElementById('toast');
+  document.getElementById('toast-msg').textContent = title + ': ' + msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 3500);
+}
+
+// ============================================================
+// DATE
+// ============================================================
+document.getElementById('current-date').textContent = new Date().toLocaleDateString('de-CH', {weekday:'long',day:'numeric',month:'long',year:'numeric'});
+
+// Enter key on login
+document.getElementById('login-password').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+document.getElementById('login-email').addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById('login-password').focus(); });
+
+// Tab switching
+document.querySelectorAll('.tabs').forEach(tabGroup => {
+  tabGroup.querySelectorAll('.tab').forEach(tab => {
+    tab.addEventListener('click', function() {
+      tabGroup.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      this.classList.add('active');
+    });
+  });
+});
+
+// ============================================================
+// INIT
+// ============================================================
+// Open app directly without login
+(function() {
+  const dn = document.getElementById('login-screen');
+  if(dn) dn.style.display = 'none';
+  const al = document.getElementById('app-layout');
+  if(al) { al.classList.add('visible'); al.style.display = 'flex'; al.style.width = '100%'; }
+  const cd = document.getElementById('current-date');
+  if(cd) cd.textContent = new Date().toLocaleDateString('de-CH',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+  const ui = document.getElementById('user-initials');
+  if(ui) ui.textContent = 'BF';
+  const un = document.getElementById('user-name');
+  if(un) un.textContent = 'Barbara Friedrich';
+  const ur = document.getElementById('user-role');
+  if(ur) ur.textContent = 'Administrator';
+  const bn = document.getElementById('bo-nav');
+  if(bn) bn.style.display = 'block';
+  const bm = document.getElementById('bo-mobile-btn');
+  if(bm) bm.style.display = 'flex';
+  currentProfile = { role: 'admin', full_name: 'Barbara Friedrich' };
+  if(typeof loadAllData !== 'undefined') loadAllData();
+  else if(typeof loadDash !== 'undefined') loadDash();
+  if(typeof preloadSelects !== 'undefined') preloadSelects();
+  else if(typeof preloadSels !== 'undefined') preloadSels();
+})();
+</script>
+
+<!-- MOBILE BOTTOM NAV -->
+<nav class="mobile-nav" aria-label="Mobile Navigation">
+  <div class="mobile-nav-items">
+    <button class="mobile-nav-item active" onclick="mobileNav('dashboard',this)" aria-label="Dashboard">
+      <i class="ti ti-layout-dashboard" aria-hidden="true"></i><span>Dashboard</span>
+    </button>
+    <button class="mobile-nav-item" onclick="mobileNav('calendar',this)" aria-label="Kalender">
+      <i class="ti ti-calendar" aria-hidden="true"></i><span>Kalender</span>
+    </button>
+    <button class="mobile-nav-item" onclick="mobileNav('customers',this)" aria-label="Kunden">
+      <i class="ti ti-users" aria-hidden="true"></i><span>Kunden</span>
+    </button>
+    <button class="mobile-nav-item" onclick="mobileNav('workorders',this)" aria-label="Aufträge">
+      <i class="ti ti-clipboard-list" aria-hidden="true"></i><span>Aufträge</span>
+    </button>
+    <button class="mobile-nav-item" onclick="mobileNav('more',this)" aria-label="Mehr">
+      <i class="ti ti-dots" aria-hidden="true"></i><span>Mehr</span>
+    </button>
+  </div>
+</nav>
+
+<!-- MORE MENU (mobile) -->
+<div id="more-menu" style="display:none;position:fixed;bottom:65px;left:0;right:0;background:var(--navy);z-index:49;padding:12px;border-top:1px solid rgba(255,255,255,0.1);">
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;">
+    <button onclick="mobileNav('checklist',null);closeMoreMenu()" style="background:rgba(255,255,255,0.07);border:none;border-radius:10px;padding:12px 6px;color:rgba(255,255,255,0.8);font-family:'DM Sans',sans-serif;font-size:10px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:5px;"><i class="ti ti-checklist" style="font-size:20px;"></i>Checklisták</button>
+    <button onclick="mobileNav('mobile',null);closeMoreMenu()" style="background:rgba(255,255,255,0.07);border:none;border-radius:10px;padding:12px 6px;color:rgba(255,255,255,0.8);font-family:'DM Sans',sans-serif;font-size:10px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:5px;"><i class="ti ti-truck" style="font-size:20px;"></i>Mobil</button>
+    <button onclick="mobileNav('rental',null);closeMoreMenu()" style="background:rgba(255,255,255,0.07);border:none;border-radius:10px;padding:12px 6px;color:rgba(255,255,255,0.8);font-family:'DM Sans',sans-serif;font-size:10px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:5px;"><i class="ti ti-key" style="font-size:20px;"></i>Leihwagen</button>
+    <button onclick="mobileNav('garage',null);closeMoreMenu()" style="background:rgba(255,255,255,0.07);border:none;border-radius:10px;padding:12px 6px;color:rgba(255,255,255,0.8);font-family:'DM Sans',sans-serif;font-size:10px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:5px;"><i class="ti ti-tool" style="font-size:20px;"></i>Garázs</button>
+    <button onclick="mobileNav('pickup',null);closeMoreMenu()" style="background:rgba(255,255,255,0.07);border:none;border-radius:10px;padding:12px 6px;color:rgba(255,255,255,0.8);font-family:'DM Sans',sans-serif;font-size:10px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:5px;"><i class="ti ti-route" style="font-size:20px;"></i>Hozom-Viszem</button>
+    <button onclick="mobileNav('messages',null);closeMoreMenu()" style="background:rgba(255,255,255,0.07);border:none;border-radius:10px;padding:12px 6px;color:rgba(255,255,255,0.8);font-family:'DM Sans',sans-serif;font-size:10px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:5px;"><i class="ti ti-message-circle" style="font-size:20px;"></i>Nachrichten</button>
+    <button onclick="mobileNav('reports',null);closeMoreMenu()" style="background:rgba(255,255,255,0.07);border:none;border-radius:10px;padding:12px 6px;color:rgba(255,255,255,0.8);font-family:'DM Sans',sans-serif;font-size:10px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:5px;"><i class="ti ti-chart-bar" style="font-size:20px;"></i>Berichte</button>
+    <button onclick="mobileNav('ai',null);closeMoreMenu()" style="background:rgba(255,255,255,0.07);border:none;border-radius:10px;padding:12px 6px;color:rgba(255,255,255,0.8);font-family:'DM Sans',sans-serif;font-size:10px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:5px;"><i class="ti ti-robot" style="font-size:20px;color:#C9A84C;"></i>AI</button>
+  </div>
+</div>
+
+</body>
+</html>
