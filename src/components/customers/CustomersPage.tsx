@@ -62,10 +62,10 @@ export function CustomersPage({ refreshKey }: { refreshKey: number; onRefresh: (
     }
     if (editCustomer) {
       const { error } = await supabase.from('customers').update(payload).eq('id', editCustomer.id)
-      if (error) { toast('Fehler beim Speichern', 'error') } else { toast('Kunde aktualisiert'); setModalOpen(false); load() }
+      if (error) { toast('Hiba: ' + error.message, 'error'); console.error(error) } else { toast('Ügyfél frissítve'); setModalOpen(false); load() }
     } else {
       const { error } = await supabase.from('customers').insert(payload)
-      if (error) { toast('Fehler beim Erstellen', 'error') } else { toast('Kunde erstellt'); setModalOpen(false); load() }
+      if (error) { toast('Hiba: ' + error.message, 'error'); console.error(error) } else { toast('Ügyfél rögzítve'); setModalOpen(false); load() }
     }
     setSaving(false)
   }
