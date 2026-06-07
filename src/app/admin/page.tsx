@@ -3,7 +3,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { Sidebar } from '@/components/layout/Sidebar'
 import { Topbar } from '@/components/layout/Topbar'
-import { ToastProvider, useToast } from '@/components/ui/toast'
+import { ToastProvider } from '@/components/ui/toast'
 import { DashboardPage } from '@/components/dashboard/DashboardPage'
 import { CustomersPage } from '@/components/customers/CustomersPage'
 import { VehiclesPage } from '@/components/vehicles/VehiclesPage'
@@ -17,28 +17,36 @@ import { CheckInPage } from '@/components/checkin/CheckInPage'
 import { PhotosPage } from '@/components/photos/PhotosPage'
 import { MobilePage } from '@/components/mobile/MobilePage'
 import { FleetPage } from '@/components/fleet/FleetPage'
+import GaragePage from '@/components/garage/GaragePage'
+import PickupDeliveryPage from '@/components/pickup/PickupDeliveryPage'
+import TechnicianPage from '@/components/technician/TechnicianPage'
+import { TasksPage } from '@/components/tasks/TasksPage'
+import { PartsPage } from '@/components/parts/PartsPage'
 import type { Profile } from '@/lib/types'
 import { useRouter } from 'next/navigation'
 
 const PAGE_TITLES: Record<string, string> = {
   dashboard: 'Dashboard',
-  calendar: 'Kalender',
-  customers: 'Kunden',
-  vehicles: 'Fahrzeuge',
+  customers: 'Ügyfelek',
+  vehicles: 'Járművek',
   workorders: 'Munkalapok',
   bookings: 'Foglalások',
   checkin: 'Check-In / Check-Out',
-  mobile: 'Mobil Reifen',
-  detailing: 'Detailing',
-  garage: 'Garázs Szerviz',
+  mobile: 'Mobil Szerviz',
+  garage: 'Garázs / Műhely',
   pickup: 'Hozom-Viszem',
   quotes: 'Árajánlatok',
   photos: 'Fotódokumentáció',
-  communication: 'WhatsApp Napló',
+  communication: 'Kommunikáció',
   fleet: 'Flotta / Cégek',
   services: 'Szolgáltatások & Árak',
-  reports: 'Berichte & KPIs',
+  reports: 'KPI / Riportok',
+  technician: 'Az én munkáim',
+  tasks: 'Feladatok',
+  parts: 'Alkatrész igénylés',
+  parts_admin: 'Alkatrészek',
   settings: 'Beállítások',
+  reviews: 'Review kérések',
 }
 
 function AdminApp() {
@@ -53,26 +61,32 @@ function AdminApp() {
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => {
       if (!data.user) { router.replace('/login'); return }
-      supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', data.user.id)
-        .single()
-        .then(({ data: p }) => { if (p) setProfile(p) })
+      supabase.from('profiles').select('*').eq('id', data.user.id).single()
+        .then(({ data: p }) => {
+          if (p) {
+            setProfile(p)
+            // Mechanics default to their own dashboard
+            if (p.role === 'mechanic') setActivePage('technician')
+          }
+        })
     })
   }, [])
 
   const loadBadges = useCallback(async () => {
     const today = new Date().toISOString().split('T')[0]
-    const [bookings, workorders, quotes] = await Promise.all([
+    const [bookings, workorders, quotes, tasks, parts] = await Promise.all([
       supabase.from('bookings').select('id', { count: 'exact', head: true }).eq('scheduled_date', today).eq('status', 'confirmed'),
       supabase.from('work_orders').select('id', { count: 'exact', head: true }).not('status', 'in', '(delivered,closed)'),
       supabase.from('quotes').select('id', { count: 'exact', head: true }).eq('status', 'sent'),
+      supabase.from('tasks').select('id', { count: 'exact', head: true }).eq('status', 'open'),
+      supabase.from('parts_requests').select('id', { count: 'exact', head: true }).eq('status', 'searching'),
     ])
     setBadges({
       today: bookings.count || 0,
       open: workorders.count || 0,
       quotes: quotes.count || 0,
+      tasks: tasks.count || 0,
+      parts: parts.count || 0,
     })
   }, [])
 
@@ -84,13 +98,13 @@ function AdminApp() {
   }
 
   const initials = profile?.full_name
-    ? profile.full_name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2)
+    ? profile.full_name.split(' ').map((n: string) => n[0]).join('').toUpperCase().slice(0, 2)
     : '?'
 
   const roleLabels: Record<string, string> = {
     super_admin: 'Super Admin',
-    admin: 'Admin',
-    mechanic: 'Szerelő',
+    admin: 'Admin – Barbara',
+    mechanic: 'Szerelő – Karl',
     customer: 'Ügyfél',
   }
 
@@ -99,19 +113,25 @@ function AdminApp() {
   const renderPage = () => {
     const props = { refreshKey, onRefresh: () => setRefreshKey(k => k + 1) }
     switch (activePage) {
-      case 'dashboard': return <DashboardPage {...props} onNavigate={setActivePage} />
-      case 'customers': return <CustomersPage {...props} />
-      case 'vehicles': return <VehiclesPage {...props} />
-      case 'workorders': return <WorkOrdersPage {...props} />
-      case 'bookings': return <BookingsPage {...props} />
-      case 'quotes': return <QuotesPage {...props} />
+      case 'dashboard':   return <DashboardPage {...props} onNavigate={setActivePage} />
+      case 'customers':   return <CustomersPage {...props} />
+      case 'vehicles':    return <VehiclesPage {...props} />
+      case 'workorders':  return <WorkOrdersPage {...props} />
+      case 'bookings':    return <BookingsPage {...props} />
+      case 'quotes':      return <QuotesPage {...props} />
       case 'communication': return <CommunicationPage {...props} />
-      case 'services': return <ServicesPage {...props} />
-      case 'reports': return <ReportsPage {...props} />
-      case 'checkin': return <CheckInPage {...props} />
-      case 'photos': return <PhotosPage {...props} />
-      case 'mobile': return <MobilePage {...props} />
-      case 'fleet': return <FleetPage {...props} />
+      case 'services':    return <ServicesPage {...props} />
+      case 'reports':     return <ReportsPage {...props} />
+      case 'checkin':     return <CheckInPage {...props} />
+      case 'photos':      return <PhotosPage {...props} />
+      case 'mobile':      return <MobilePage {...props} />
+      case 'fleet':       return <FleetPage {...props} />
+      case 'garage':      return <GaragePage {...props} />
+      case 'pickup':      return <PickupDeliveryPage {...props} />
+      case 'technician':  return <TechnicianPage {...props} profile={profile} />
+      case 'tasks':       return <TasksPage {...props} />
+      case 'parts':
+      case 'parts_admin': return <PartsPage {...props} />
       default: return (
         <div className="flex flex-col items-center justify-center h-64 text-[#5a6a80]">
           <p className="text-lg font-medium">{pageTitle}</p>
@@ -128,7 +148,8 @@ function AdminApp() {
         onNavigate={setActivePage}
         onLogout={handleLogout}
         userName={profile?.full_name}
-        userRole={profile ? roleLabels[profile.role] : ''}
+        userRole={profile ? roleLabels[profile.role] || profile.role : ''}
+        userRoleKey={profile?.role}
         userInitials={initials}
         badges={badges}
         isOpen={sidebarOpen}
