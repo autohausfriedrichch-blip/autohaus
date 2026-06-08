@@ -10,7 +10,7 @@ import type { WorkOrder, Booking } from '@/lib/types'
 
 interface DashboardPageProps {
   refreshKey: number
-  onNavigate: (page: string) => void
+  onNavigate: (page: string, id?: string) => void
 }
 
 export function DashboardPage({ refreshKey, onNavigate }: DashboardPageProps) {
@@ -161,7 +161,7 @@ export function DashboardPage({ refreshKey, onNavigate }: DashboardPageProps) {
             </thead>
             <tbody>
               {activeWorkOrders.map((wo: any) => (
-                <tr key={wo.id} className="border-b border-[rgba(11,30,61,0.05)] hover:bg-[#F4F5F7] cursor-pointer">
+                <tr key={wo.id} onClick={() => onNavigate('workorders', wo.id)} className="border-b border-[rgba(11,30,61,0.05)] hover:bg-[#F4F5F7] cursor-pointer active:bg-[#eef2f7]">
                   <td className="py-2.5">
                     <span className="text-[11px] font-bold text-[#185FA5] bg-[#E6F1FB] px-2 py-0.5 rounded">{wo.order_number}</span>
                   </td>

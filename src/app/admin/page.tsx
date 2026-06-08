@@ -73,6 +73,7 @@ function AdminApp() {
   const [profile, setProfile] = useState<Profile | null>(null)
   const [badges, setBadges] = useState<Record<string, number>>({})
   const [refreshKey, setRefreshKey] = useState(0)
+  const [openWorkOrderId, setOpenWorkOrderId] = useState<string | null>(null)
   const router = useRouter()
   const supabase = createClient()
 
@@ -131,10 +132,10 @@ function AdminApp() {
   const renderPage = () => {
     const props = { refreshKey, onRefresh: () => setRefreshKey(k => k + 1) }
     switch (activePage) {
-      case 'dashboard':   return <DashboardPage {...props} onNavigate={setActivePage} />
+      case 'dashboard':   return <DashboardPage {...props} onNavigate={(page, id) => { if (id) setOpenWorkOrderId(id); setActivePage(page) }} />
       case 'customers':   return <CustomersPage {...props} />
       case 'vehicles':    return <VehiclesPage {...props} />
-      case 'workorders':  return <WorkOrdersPage {...props} profile={profile} />
+      case 'workorders':  return <WorkOrdersPage {...props} profile={profile} openOrderId={openWorkOrderId} onClearOpenOrder={() => setOpenWorkOrderId(null)} />
       case 'bookings':    return <BookingsPage {...props} />
       case 'quotes':      return <QuotesPage {...props} />
       case 'communication': return <CommunicationPage {...props} />
