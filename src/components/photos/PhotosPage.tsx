@@ -98,8 +98,6 @@ export function PhotosPage({ refreshKey, profile }: { refreshKey: number; onRefr
       const { error: dbError } = await supabase.from('work_order_photos').insert({
         work_order_id: workOrderId,
         url: publicUrl,
-        category,
-        is_visible_to_customer: visibleToCustomer,
       })
 
       if (dbError) {
