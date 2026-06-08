@@ -24,7 +24,7 @@ function HealthDot({ health }: { health?: string }) {
   return <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 inline-block flex-shrink-0" title="Zöld" />
 }
 
-export function WorkOrdersPage({ refreshKey, profile, openOrderId, onClearOpenOrder }: { refreshKey: number; onRefresh: () => void; profile?: any; openOrderId?: string | null; onClearOpenOrder?: () => void }) {
+export function WorkOrdersPage({ refreshKey, profile }: { refreshKey: number; onRefresh: () => void; profile?: any }) {
   const [orders, setOrders] = useState<WorkOrder[]>([])
   const [customers, setCustomers] = useState<any[]>([])
   const [vehicles, setVehicles] = useState<any[]>([])
@@ -33,7 +33,7 @@ export function WorkOrdersPage({ refreshKey, profile, openOrderId, onClearOpenOr
   const [statusFilter, setStatusFilter] = useState('')
   const [loading, setLoading] = useState(true)
   const [modalOpen, setModalOpen] = useState(false)
-  const [detailOrderId, setDetailOrderId] = useState<string | null>(openOrderId ?? null)
+  const [detailOrderId, setDetailOrderId] = useState<string | null>(null)
   const [form, setForm] = useState<Partial<WorkOrder>>({})
   const [saving, setSaving] = useState(false)
   const { toast } = useToast()
@@ -58,13 +58,6 @@ export function WorkOrdersPage({ refreshKey, profile, openOrderId, onClearOpenOr
   }, [refreshKey])
 
   useEffect(() => { load() }, [load])
-
-  useEffect(() => {
-    if (openOrderId) {
-      setDetailOrderId(openOrderId)
-      onClearOpenOrder?.()
-    }
-  }, [openOrderId])
 
   const filtered = orders.filter(o => {
     const s = search.toLowerCase()

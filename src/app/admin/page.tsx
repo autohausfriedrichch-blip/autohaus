@@ -32,6 +32,7 @@ import { CustomerValuePage } from '@/components/customers/CustomerValuePage'
 import { CEODashboardPage } from '@/components/dashboard/CEODashboardPage'
 import { RegistrationScanPage } from '@/components/registration/RegistrationScanPage'
 import { MobileBottomNav } from '@/components/layout/MobileBottomNav'
+import { WorkOrderDetail } from '@/components/workorders/WorkOrderDetail'
 import type { Profile } from '@/lib/types'
 import { useRouter } from 'next/navigation'
 
@@ -135,7 +136,7 @@ function AdminApp() {
       case 'dashboard':   return <DashboardPage {...props} onNavigate={(page, id) => { if (id) setOpenWorkOrderId(id); setActivePage(page) }} />
       case 'customers':   return <CustomersPage {...props} />
       case 'vehicles':    return <VehiclesPage {...props} />
-      case 'workorders':  return <WorkOrdersPage {...props} profile={profile} openOrderId={openWorkOrderId} onClearOpenOrder={() => setOpenWorkOrderId(null)} />
+      case 'workorders':  return <WorkOrdersPage {...props} profile={profile} />
       case 'bookings':    return <BookingsPage {...props} />
       case 'quotes':      return <QuotesPage {...props} />
       case 'communication': return <CommunicationPage {...props} />
@@ -199,6 +200,13 @@ function AdminApp() {
           badges={badges}
         />
       </div>
+      {openWorkOrderId && profile && (
+        <WorkOrderDetail
+          workOrderId={openWorkOrderId}
+          profile={{ id: profile.id || '', full_name: profile.full_name || 'Ismeretlen', role: profile.role || 'mechanic' }}
+          onClose={() => { setOpenWorkOrderId(null); setRefreshKey(k => k + 1) }}
+        />
+      )}
     </div>
   )
 }
