@@ -4,5 +4,10 @@
 node_modules/
 tsconfig.tsbuildinfo
 
+# Environment variables (never commit secrets)
+.env
+.env.local
+.env*.local
+
 # Claude internal files
 .claude/
