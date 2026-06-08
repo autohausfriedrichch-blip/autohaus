@@ -1,0 +1,15 @@
+-- ============================================
+-- RLS FIX – Disable RLS on all tables
+-- Run in Supabase SQL Editor
+-- ============================================
+
+ALTER TABLE profiles DISABLE ROW LEVEL SECURITY;
+ALTER TABLE fleet_accounts DISABLE ROW LEVEL SECURITY;
+ALTER TABLE customers DISABLE ROW LEVEL SECURITY;
+ALTER TABLE vehicles DISABLE ROW LEVEL SECURITY;
+ALTER TABLE services DISABLE ROW LEVEL SECURITY;
+ALTER TABLE bookings DISABLE ROW LEVEL SECURITY;
+ALTER TABLE work_orders DISABLE ROW LEVEL SECURITY;
+ALTER TABLE work_order_photos DISABLE ROW LEVEL SECURITY;
+ALTER TABLE quotes DISABLE ROW LEVEL SECURITY;
+ALTER TABLE communication_logs DISABLE ROW LEVEL SECURITY;
