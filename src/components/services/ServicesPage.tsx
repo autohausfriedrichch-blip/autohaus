@@ -23,7 +23,7 @@ export interface ServiceV2 {
   name: string
   category: string
   pricing_type: PricingType
-  price?: number | null
+  base_price?: number | null
   unit_price?: number | null
   unit_label?: string | null
   unit_time_minutes?: number | null
@@ -85,7 +85,7 @@ function RiskBadge({ level }: { level: RiskLevel }) {
 }
 
 function PriceDisplay({ s }: { s: ServiceV2 }) {
-  if (s.pricing_type === 'fixed' && s.price) return <span className="font-semibold">{formatCurrency(s.price)}</span>
+  if (s.pricing_type === 'fixed' && s.base_price) return <span className="font-semibold">{formatCurrency(s.base_price)}</span>
   if (s.pricing_type === 'per_unit' && s.unit_price) return (
     <span className="font-semibold">{formatCurrency(s.unit_price)} / {s.unit_label || 'db'}</span>
   )
@@ -137,7 +137,7 @@ export function ServicesPage({ refreshKey }: { refreshKey: number; onRefresh: ()
     setSaving(true)
     const payload = { ...form }
     // Clean up irrelevant price fields based on pricing_type
-    if (payload.pricing_type !== 'fixed')    { payload.price = null }
+    if (payload.pricing_type !== 'fixed')    { payload.base_price = null }
     if (payload.pricing_type !== 'per_unit') { payload.unit_price = null; payload.unit_time_minutes = null }
     if (payload.pricing_type !== 'hourly')   { payload.hourly_rate = null }
 
@@ -375,7 +375,7 @@ export function ServicesPage({ refreshKey }: { refreshKey: number; onRefresh: ()
               <div className="grid grid-cols-2 gap-3">
                 <FormGroup className="mb-0">
                   <FormLabel>Fix ár (CHF)</FormLabel>
-                  <Input type="number" step="0.01" value={form.price || ''} onChange={e => setForm(f => ({ ...f, price: parseFloat(e.target.value) || null }))} placeholder="0.00" />
+                  <Input type="number" step="0.01" value={form.base_price || ''} onChange={e => setForm(f => ({ ...f, price: parseFloat(e.target.value) || null }))} placeholder="0.00" />
                 </FormGroup>
                 <FormGroup className="mb-0">
                   <FormLabel>Becsült idő (perc)</FormLabel>
