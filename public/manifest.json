@@ -1,0 +1,20 @@
+{
+  "name": "Autohaus Friedrich – Operations",
+  "short_name": "Autohaus",
+  "description": "Swiss Garage Operations Platform",
+  "start_url": "/admin",
+  "display": "standalone",
+  "background_color": "#0B1E3D",
+  "theme_color": "#0B1E3D",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "/icons/icon-192.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["business", "productivity"],
+  "lang": "de"
+}

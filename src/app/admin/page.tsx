@@ -31,6 +31,7 @@ import { RoutePlannerPage } from '@/components/route/RoutePlannerPage'
 import { CustomerValuePage } from '@/components/customers/CustomerValuePage'
 import { CEODashboardPage } from '@/components/dashboard/CEODashboardPage'
 import { RegistrationScanPage } from '@/components/registration/RegistrationScanPage'
+import { MobileBottomNav } from '@/components/layout/MobileBottomNav'
 import type { Profile } from '@/lib/types'
 import { useRouter } from 'next/navigation'
 
@@ -187,9 +188,15 @@ function AdminApp() {
           onMenuClick={() => setSidebarOpen(true)}
           onRefresh={() => setRefreshKey(k => k + 1)}
         />
-        <main className="flex-1 overflow-y-auto p-5 pb-20 md:pb-5 animate-fade-in">
+        <main className="flex-1 overflow-y-auto p-5 pb-24 md:pb-5 animate-fade-in touch-scroll">
           {renderPage()}
         </main>
+        <MobileBottomNav
+          activePage={activePage}
+          onNavigate={setActivePage}
+          role={profile?.role}
+          badges={badges}
+        />
       </div>
     </div>
   )

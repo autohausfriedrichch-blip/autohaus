@@ -17,7 +17,8 @@ export function Input({ className, ...props }: InputHTMLAttributes<HTMLInputElem
   return (
     <input
       className={cn(
-        'w-full px-3 py-2 border border-[rgba(11,30,61,0.18)] rounded-lg text-[13px] font-[DM_Sans] bg-white text-[#0B1E3D] outline-none transition-colors focus:border-[#0B1E3D] placeholder:text-[#8fa0b5]',
+        // min-h-[44px] for iOS touch target compliance
+        'w-full px-3 py-2.5 min-h-[44px] border border-[rgba(11,30,61,0.18)] rounded-lg bg-white text-[#0B1E3D] outline-none transition-colors focus:border-[#0B1E3D] placeholder:text-[#8fa0b5]',
         className
       )}
       {...props}
@@ -29,7 +30,7 @@ export function Select({ className, children, ...props }: SelectHTMLAttributes<H
   return (
     <select
       className={cn(
-        'w-full px-3 py-2 border border-[rgba(11,30,61,0.18)] rounded-lg text-[13px] font-[DM_Sans] bg-white text-[#0B1E3D] outline-none transition-colors focus:border-[#0B1E3D]',
+        'w-full px-3 py-2.5 min-h-[44px] border border-[rgba(11,30,61,0.18)] rounded-lg bg-white text-[#0B1E3D] outline-none transition-colors focus:border-[#0B1E3D] appearance-none',
         className
       )}
       {...props}
@@ -43,7 +44,7 @@ export function Textarea({ className, ...props }: TextareaHTMLAttributes<HTMLTex
   return (
     <textarea
       className={cn(
-        'w-full px-3 py-2 border border-[rgba(11,30,61,0.18)] rounded-lg text-[13px] font-[DM_Sans] bg-white text-[#0B1E3D] outline-none transition-colors focus:border-[#0B1E3D] resize-vertical min-h-[80px]',
+        'w-full px-3 py-2.5 border border-[rgba(11,30,61,0.18)] rounded-lg bg-white text-[#0B1E3D] outline-none transition-colors focus:border-[#0B1E3D] resize-vertical min-h-[80px]',
         className
       )}
       {...props}
@@ -52,5 +53,5 @@ export function Textarea({ className, ...props }: TextareaHTMLAttributes<HTMLTex
 }
 
 export function FormRow({ children, className }: { children: React.ReactNode; className?: string }) {
-  return <div className={cn('grid grid-cols-2 gap-3 md:grid-cols-1', className)}>{children}</div>
+  return <div className={cn('grid grid-cols-2 gap-3', className)}>{children}</div>
 }

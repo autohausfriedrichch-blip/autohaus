@@ -202,32 +202,36 @@ function TimeTrackerWidget({
 
   return (
     <div className="mt-3 pt-3 border-t border-[rgba(11,30,61,0.08)]">
-      <div className="flex items-center gap-3 flex-wrap">
-        <div className="flex items-center gap-1.5 bg-[#F4F5F7] rounded-lg px-3 py-1.5">
-          <Clock size={13} className={timer.running ? 'text-[#C9A84C] animate-pulse' : 'text-[#5a6a80]'} />
-          <span className="font-mono text-[13px] font-semibold text-[#0B1E3D] min-w-[70px]">
+      {/* Timer display */}
+      <div className="flex items-center gap-3 mb-3">
+        <div className="flex items-center gap-2 bg-[#0B1E3D] rounded-xl px-4 py-2.5 flex-1">
+          <Clock size={16} className={timer.running ? 'text-[#C9A84C] animate-pulse' : 'text-white/40'} />
+          <span className="font-mono text-[18px] font-bold text-white min-w-[80px]">
             {formatElapsed(timer.elapsed)}
           </span>
-        </div>
-        <div className="flex items-center gap-1.5">
-          {!timer.running ? (
-            <Button variant="primary" size="sm" onClick={start}>
-              <Play size={12} />
-              Start
-            </Button>
-          ) : (
-            <>
-              <Button variant="secondary" size="sm" onClick={pause}>
-                <Pause size={12} />
-                Szünet
-              </Button>
-              <Button variant="danger" size="sm" onClick={stop}>
-                <Square size={12} />
-                Stop
-              </Button>
-            </>
+          {timer.running && (
+            <span className="text-[10px] text-[#C9A84C] font-semibold ml-auto">AKTÍV</span>
           )}
         </div>
+      </div>
+      <div className="flex gap-2">
+        {!timer.running ? (
+          <button className="btn-mobile-action bg-[#0B1E3D] text-white flex-1 text-[13px]" onClick={start}>
+            <Play size={16} />
+            Időzítő indítása
+          </button>
+        ) : (
+          <>
+            <button className="btn-mobile-action bg-[#F4F5F7] text-[#0B1E3D] border border-[rgba(11,30,61,0.12)] flex-1 text-[13px]" onClick={pause}>
+              <Pause size={16} />
+              Szünet
+            </button>
+            <button className="btn-mobile-action bg-[#C9384C] text-white flex-1 text-[13px]" onClick={stop}>
+              <Square size={16} />
+              Stop & Rögzít
+            </button>
+          </>
+        )}
       </div>
 
       {showLogInput && (
@@ -675,15 +679,13 @@ export default function TechnicianPage({
                         </div>
                         {nextStatus && nextStatus !== d.status && (
                           <div className="mt-3 pt-3 border-t border-[rgba(11,30,61,0.08)]">
-                            <Button
-                              variant="primary"
-                              size="sm"
+                            <button
+                              className="btn-mobile-action bg-[#0B1E3D] text-white w-full text-[13px]"
                               disabled={deliveryChanging === d.id}
                               onClick={() => advanceDeliveryStatus(d.id, d.status)}
                             >
-                              Állapot frissítése →{' '}
-                              {DELIVERY_STATUS_LABEL[nextStatus]?.label ?? nextStatus}
-                            </Button>
+                              → {DELIVERY_STATUS_LABEL[nextStatus]?.label ?? nextStatus}
+                            </button>
                           </div>
                         )}
                       </Card>
@@ -895,9 +897,10 @@ function ActiveWorkOrderCard({
 }) {
   const [expanded, setExpanded] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
+  const galleryInputRef = useRef<HTMLInputElement>(null)
 
   return (
-    <Card>
+    <Card className="card-touchable">
       {/* Card header */}
       <div
         className="flex items-start gap-3 cursor-pointer"
@@ -932,61 +935,80 @@ function ActiveWorkOrderCard({
           {/* Time tracker */}
           <TimeTrackerWidget orderId={order.id} onWorkLogged={onWorkLogged} />
 
-          {/* Status actions */}
-          <div className="flex gap-2 flex-wrap pt-2">
-            {order.status !== 'waiting_parts' && (
-              <Button
-                variant="secondary"
-                size="sm"
+          {/* Status actions – large touch-friendly buttons */}
+          <div className="grid grid-cols-2 gap-2 pt-2">
+            {order.status !== 'waiting_parts' ? (
+              <button
+                className="btn-mobile-action bg-[#F4F5F7] text-[#0B1E3D] border border-[rgba(11,30,61,0.12)] text-[13px] col-span-1"
                 disabled={statusChanging === order.id}
                 onClick={() => onStatusChange(order.id, 'waiting_parts')}
               >
-                <Package size={12} />
+                <Package size={16} />
                 Alkatrész kell
-              </Button>
-            )}
-            {order.status === 'waiting_parts' && (
-              <Button
-                variant="secondary"
-                size="sm"
+              </button>
+            ) : (
+              <button
+                className="btn-mobile-action bg-blue-50 text-blue-700 border border-blue-200 text-[13px] col-span-1"
                 disabled={statusChanging === order.id}
                 onClick={() => onStatusChange(order.id, 'in_progress')}
               >
-                <Play size={12} />
+                <Play size={16} />
                 Folytatás
-              </Button>
+              </button>
             )}
-            <Button
-              variant="gold"
-              size="sm"
+            <button
+              className="btn-mobile-action bg-[#C9A84C] text-[#0B1E3D] text-[13px] font-bold col-span-1"
               disabled={statusChanging === order.id}
               onClick={() => onStatusChange(order.id, 'completed')}
             >
-              <CheckCircle size={12} />
-              Kész
-            </Button>
+              <CheckCircle size={16} />
+              Munka kész!
+            </button>
+          </div>
 
-            {/* Photo upload */}
-            <Button
-              variant="ghost"
-              size="sm"
+          {/* Photo upload – full width, camera-first on mobile */}
+          <div className="grid grid-cols-2 gap-2">
+            <button
+              className="btn-mobile-action bg-[#0B1E3D] text-white text-[13px]"
               onClick={() => fileInputRef.current?.click()}
             >
-              <Camera size={12} />
-              Fotó
-            </Button>
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept="image/*"
-              className="hidden"
-              onChange={e => {
-                const file = e.target.files?.[0]
-                if (file) onPhotoUpload(order.id, file)
-                e.target.value = ''
-              }}
-            />
+              <Camera size={16} />
+              Kamera
+            </button>
+            <button
+              className="btn-mobile-action bg-[#F4F5F7] text-[#0B1E3D] border border-[rgba(11,30,61,0.12)] text-[13px]"
+              onClick={() => galleryInputRef.current?.click()}
+            >
+              <Camera size={16} />
+              Galéria
+            </button>
           </div>
+          {/* Camera capture – opens camera directly */}
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/*"
+            capture="environment"
+            className="hidden"
+            onChange={e => {
+              const file = e.target.files?.[0]
+              if (file) onPhotoUpload(order.id, file)
+              e.target.value = ''
+            }}
+          />
+          {/* Gallery picker */}
+          <input
+            ref={galleryInputRef}
+            type="file"
+            accept="image/*"
+            multiple
+            className="hidden"
+            onChange={e => {
+              const files = Array.from(e.target.files || [])
+              files.forEach(f => onPhotoUpload(order.id, f))
+              e.target.value = ''
+            }}
+          />
         </div>
       )}
     </Card>

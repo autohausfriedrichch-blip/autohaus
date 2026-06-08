@@ -66,7 +66,7 @@ export function CheckInPage({ refreshKey }: { refreshKey: number; onRefresh: () 
           className="w-full pl-9 pr-3 py-2 border border-[rgba(11,30,61,0.18)] rounded-lg text-[13px] bg-white outline-none focus:border-[#0B1E3D]" />
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {/* Check-In pending */}
         <Card>
           <CardTitle icon={<LogIn size={16} />}>Check-In ausstehend</CardTitle>
@@ -96,10 +96,14 @@ export function CheckInPage({ refreshKey }: { refreshKey: number; onRefresh: () 
                         </Select>
                       </FormGroup>
                     </div>
-                    <div className="flex gap-2">
-                      <Button variant="primary" size="sm" onClick={handleCheckIn} disabled={saving} className="flex-1">
-                        <LogIn size={13} /> Check-In bestätigen
-                      </Button>
+                    <div className="flex gap-2 flex-col sm:flex-row">
+                      <button
+                        className="btn-mobile-action bg-[#0B1E3D] text-white flex-1"
+                        onClick={handleCheckIn}
+                        disabled={saving}
+                      >
+                        <LogIn size={16} /> Check-In bestätigen
+                      </button>
                       <Button variant="secondary" size="sm" onClick={() => setSelectedOrder(null)}>Abbrechen</Button>
                     </div>
                   </div>
