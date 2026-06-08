@@ -4,7 +4,8 @@ import {
   LayoutDashboard, Calendar, Users, Car, ClipboardList, CheckSquare,
   Truck, Wrench, Route, MessageCircle, BarChart2, Settings,
   Camera, FileText, Package, LogOut, Building2, ListTodo,
-  Cog, Hammer, Star, CreditCard, Archive
+  Cog, Hammer, Star, CreditCard, Archive, Crown, Bell,
+  TrendingUp, MapPin, History
 } from 'lucide-react'
 
 interface NavItem {
@@ -26,9 +27,12 @@ const navItems: NavSection[] = [
     section: 'Főmenü',
     items: [
       { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
+      { id: 'ceo_dashboard', label: 'CEO Dashboard', icon: TrendingUp, roles: ['super_admin','admin'] },
       { id: 'bookings', label: 'Foglalások', icon: Calendar, badge: 'today', roles: ['super_admin','admin'] },
       { id: 'customers', label: 'Ügyfelek', icon: Users, roles: ['super_admin','admin'] },
+      { id: 'customer_value', label: 'Ügyfélerték', icon: Crown, roles: ['super_admin','admin'] },
       { id: 'vehicles', label: 'Járművek', icon: Car, roles: ['super_admin','admin'] },
+      { id: 'vehicle_lifecycle', label: 'Jármű élettörténet', icon: History, roles: ['super_admin','admin'] },
       { id: 'workorders', label: 'Munkalapok', icon: ClipboardList, badge: 'open' },
     ]
   },
@@ -37,6 +41,7 @@ const navItems: NavSection[] = [
     roles: ['mechanic'],
     items: [
       { id: 'technician', label: 'Az én munkáim', icon: Hammer, roles: ['mechanic'] },
+      { id: 'route_planner', label: 'Útvonaltervező', icon: MapPin, roles: ['mechanic'] },
       { id: 'parts', label: 'Alkatrész igénylés', icon: Cog, roles: ['mechanic'] },
     ]
   },
@@ -47,6 +52,7 @@ const navItems: NavSection[] = [
       { id: 'garage', label: 'Garázs / Műhely', icon: Wrench },
       { id: 'pickup', label: 'Hozom-Viszem', icon: Route },
       { id: 'mobile', label: 'Mobil Szerviz', icon: Truck },
+      { id: 'route_planner', label: 'Útvonaltervező', icon: MapPin, roles: ['super_admin','admin'] },
     ]
   },
   {
@@ -54,8 +60,11 @@ const navItems: NavSection[] = [
     roles: ['super_admin','admin'],
     items: [
       { id: 'quotes', label: 'Árajánlatok', icon: FileText, badge: 'quotes' },
+      { id: 'profit', label: 'Profit & Költség', icon: TrendingUp },
+      { id: 'reminders', label: 'Emlékeztetők', icon: Bell },
       { id: 'tasks', label: 'Feladatok', icon: ListTodo, badge: 'tasks' },
       { id: 'parts_admin', label: 'Alkatrészek', icon: Cog, badge: 'parts' },
+      { id: 'parts_inventory', label: 'Alkatrész raktár', icon: Package },
       { id: 'photos', label: 'Fotók', icon: Camera },
       { id: 'communication', label: 'Kommunikáció', icon: MessageCircle },
       { id: 'fleet', label: 'Flotta', icon: Building2 },
