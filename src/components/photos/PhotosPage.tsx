@@ -1,11 +1,11 @@
 'use client'
-import { useEffect, useState, useCallback, useRef } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/button'
 import { Modal } from '@/components/ui/modal'
 import { FormGroup, FormLabel, Select, Input } from '@/components/ui/form'
 import { useToast } from '@/components/ui/toast'
-import { Upload, Camera, Eye, EyeOff, X, CheckCircle, ImageIcon, Loader2 } from 'lucide-react'
+import { Upload, Camera, Eye, EyeOff, X, CheckCircle, Loader2 } from 'lucide-react'
 import { formatDateTime } from '@/lib/utils'
 
 const PHOTO_CATEGORIES = [
@@ -28,9 +28,7 @@ export function PhotosPage({ refreshKey, profile }: { refreshKey: number; onRefr
   const [uploading, setUploading] = useState(false)
   const [form, setForm] = useState<any>({ category: 'check-in', is_visible_to_customer: true })
   const [files, setFiles] = useState<UploadItem[]>([])
-  const [dragOver, setDragOver] = useState(false)
   const [filterWO, setFilterWO] = useState('')
-  const fileInputRef = useRef<HTMLInputElement>(null)
   const { toast } = useToast()
   const supabase = createClient()
   const isMechanic = profile?.role === 'mechanic'
@@ -62,12 +60,6 @@ export function PhotosPage({ refreshKey, profile }: { refreshKey: number; onRefr
       status: 'pending',
     }))
     setFiles(prev => [...prev, ...items])
-  }
-
-  const handleDrop = (e: React.DragEvent) => {
-    e.preventDefault()
-    setDragOver(false)
-    addFiles(e.dataTransfer.files)
   }
 
   const removeFile = (idx: number) => {
@@ -258,27 +250,25 @@ export function PhotosPage({ refreshKey, profile }: { refreshKey: number; onRefr
             </FormGroup>
           </div>
 
-          {/* Drop zone */}
-          <div
-            onDrop={handleDrop}
-            onDragOver={e => { e.preventDefault(); setDragOver(true) }}
-            onDragLeave={() => setDragOver(false)}
-            onClick={() => fileInputRef.current?.click()}
-            className={`border-2 border-dashed rounded-xl p-6 text-center cursor-pointer transition-all ${
-              dragOver ? 'border-[#C9A84C] bg-amber-50' : 'border-gray-200 hover:border-[#0B1E3D] hover:bg-gray-50'
-            }`}
-          >
-            <ImageIcon size={28} className="mx-auto mb-2 text-gray-300" />
-            <p className="text-sm font-medium text-[#0B1E3D]">Húzd ide a képeket vagy kattints</p>
-            <p className="text-xs text-[#5a6a80] mt-1">Több kép egyszerre is feltölthető</p>
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept="image/*"
-              multiple
-              className="hidden"
-              onChange={e => e.target.files && addFiles(e.target.files)}
-            />
+          {/* File picker – mobile friendly */}
+          <div className="space-y-2">
+            <label className="block w-full">
+              <div className="flex items-center justify-center gap-2 w-full py-4 bg-[#0B1E3D] text-white rounded-xl font-semibold text-sm cursor-pointer active:bg-[#142a50] transition-colors">
+                <Camera size={18} />
+                Képek kiválasztása / Kamera
+              </div>
+              <input
+                type="file"
+                accept="image/*"
+                multiple
+                capture={undefined}
+                className="hidden"
+                onChange={e => e.target.files && addFiles(e.target.files)}
+              />
+            </label>
+            {files.length === 0 && (
+              <p className="text-xs text-center text-[#5a6a80]">Több kép egyszerre is kiválasztható</p>
+            )}
           </div>
 
           {/* File preview grid */}
