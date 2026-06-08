@@ -98,10 +98,7 @@ export function PhotosPage({ refreshKey, profile }: { refreshKey: number; onRefr
         work_order_id: workOrderId,
         url: publicUrl,
         category,
-        caption: caption || null,
         is_visible_to_customer: visibleToCustomer,
-        uploaded_by: profile?.id || null,
-        uploaded_by_name: profile?.full_name || null,
       })
 
       if (dbError) {
