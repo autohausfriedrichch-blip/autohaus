@@ -23,10 +23,24 @@ import TechnicianPage from '@/components/technician/TechnicianPage'
 import { TasksPage } from '@/components/tasks/TasksPage'
 import { PartsPage } from '@/components/parts/PartsPage'
 import { SettingsPage } from '@/components/settings/SettingsPage'
+import { VehicleLifecyclePage } from '@/components/vehicles/VehicleLifecyclePage'
+import { RemindersPage } from '@/components/reminders/RemindersPage'
+import { ProfitPage } from '@/components/profit/ProfitPage'
+import { PartsInventoryPage } from '@/components/parts/PartsInventoryPage'
+import { RoutePlannerPage } from '@/components/route/RoutePlannerPage'
+import { CustomerValuePage } from '@/components/customers/CustomerValuePage'
+import { CEODashboardPage } from '@/components/dashboard/CEODashboardPage'
 import type { Profile } from '@/lib/types'
 import { useRouter } from 'next/navigation'
 
 const PAGE_TITLES: Record<string, string> = {
+  ceo_dashboard: 'CEO Operations Dashboard',
+  vehicle_lifecycle: 'Jármű élettörténet',
+  reminders: 'Szerviz emlékeztetők',
+  profit: 'Profit & Költségkezelés',
+  parts_inventory: 'Alkatrész raktár',
+  route_planner: 'Útvonaltervező',
+  customer_value: 'Ügyfélerték Dashboard',
   dashboard: 'Dashboard',
   customers: 'Ügyfelek',
   vehicles: 'Járművek',
@@ -132,8 +146,15 @@ function AdminApp() {
       case 'technician':  return <TechnicianPage {...props} profile={profile} />
       case 'tasks':       return <TasksPage {...props} />
       case 'parts':
-      case 'parts_admin': return <PartsPage {...props} />
-      case 'settings':    return <SettingsPage {...props} />
+      case 'parts_admin':      return <PartsPage {...props} />
+      case 'settings':         return <SettingsPage {...props} />
+      case 'vehicle_lifecycle': return <VehicleLifecyclePage {...props} />
+      case 'reminders':        return <RemindersPage {...props} />
+      case 'profit':           return <ProfitPage {...props} />
+      case 'parts_inventory':  return <PartsInventoryPage {...props} />
+      case 'route_planner':    return <RoutePlannerPage {...props} />
+      case 'customer_value':   return <CustomerValuePage {...props} />
+      case 'ceo_dashboard':    return <CEODashboardPage {...props} />
       default: return (
         <div className="flex flex-col items-center justify-center h-64 text-[#5a6a80]">
           <p className="text-lg font-medium">{pageTitle}</p>
