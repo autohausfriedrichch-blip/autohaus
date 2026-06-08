@@ -18,7 +18,27 @@ export function CustomersPage({ refreshKey }: { refreshKey: number; onRefresh: (
   const [editCustomer, setEditCustomer] = useState<Customer | null>(null)
   const [form, setForm] = useState<Partial<Customer>>({})
   const [saving, setSaving] = useState(false)
+  const [whatsappSame, setWhatsappSame] = useState(true)
   const { toast } = useToast()
+
+  const formatPhone = (value: string): string => {
+    const digits = value.replace(/\D/g, '')
+    if (digits.startsWith('41') && digits.length >= 11) {
+      return `+41 ${digits.slice(2, 4)} ${digits.slice(4, 7)} ${digits.slice(7, 9)} ${digits.slice(9, 11)}`
+    }
+    if (digits.startsWith('0') && digits.length >= 10) {
+      return `+41 ${digits.slice(1, 3)} ${digits.slice(3, 6)} ${digits.slice(6, 8)} ${digits.slice(8, 10)}`
+    }
+    if (digits.length === 10 && !digits.startsWith('0')) {
+      return `+41 ${digits.slice(0, 2)} ${digits.slice(2, 5)} ${digits.slice(5, 7)} ${digits.slice(7, 9)}`
+    }
+    return value
+  }
+
+  const handlePhoneChange = (raw: string) => {
+    const formatted = formatPhone(raw)
+    setForm(f => ({ ...f, phone: formatted, ...(whatsappSame ? { whatsapp: formatted } : {}) }))
+  }
   const supabase = createClient()
 
   const load = useCallback(async () => {
@@ -42,12 +62,14 @@ export function CustomersPage({ refreshKey }: { refreshKey: number; onRefresh: (
   const openNew = () => {
     setEditCustomer(null)
     setForm({ preferred_contact: 'phone', marketing_consent: false })
+    setWhatsappSame(true)
     setModalOpen(true)
   }
 
   const openEdit = (c: Customer) => {
     setEditCustomer(c)
     setForm(c)
+    setWhatsappSame(!!(c.whatsapp && c.whatsapp === c.phone))
     setModalOpen(true)
   }
 
@@ -164,13 +186,40 @@ export function CustomersPage({ refreshKey }: { refreshKey: number; onRefresh: (
             <FormLabel>Vollständiger Name *</FormLabel>
             <Input value={form.full_name || ''} onChange={e => setForm(f => ({ ...f, full_name: e.target.value }))} placeholder="Max Mustermann" />
           </FormGroup>
-          <FormGroup>
-            <FormLabel>Telefon *</FormLabel>
-            <Input type="tel" value={form.phone || ''} onChange={e => setForm(f => ({ ...f, phone: e.target.value }))} placeholder="+41 79 123 45 67" />
+          <FormGroup className="col-span-2">
+            <FormLabel>Telefonszám *</FormLabel>
+            <Input
+              type="tel"
+              value={form.phone || ''}
+              onChange={e => handlePhoneChange(e.target.value)}
+              onBlur={e => handlePhoneChange(e.target.value)}
+              placeholder="+41 79 123 45 67"
+            />
           </FormGroup>
-          <FormGroup>
-            <FormLabel>WhatsApp</FormLabel>
-            <Input type="tel" value={form.whatsapp || ''} onChange={e => setForm(f => ({ ...f, whatsapp: e.target.value }))} placeholder="+41 79 123 45 67" />
+          <FormGroup className="col-span-2">
+            <div className="flex items-center justify-between mb-1">
+              <FormLabel>WhatsApp</FormLabel>
+              <label className="flex items-center gap-1.5 cursor-pointer select-none">
+                <input
+                  type="checkbox"
+                  checked={whatsappSame}
+                  onChange={e => {
+                    setWhatsappSame(e.target.checked)
+                    if (e.target.checked) setForm(f => ({ ...f, whatsapp: f.phone }))
+                  }}
+                  className="w-3.5 h-3.5 accent-[#C9A84C]"
+                />
+                <span className="text-[11px] text-[#5a6a80]">Ugyanaz mint a telefon</span>
+              </label>
+            </div>
+            <Input
+              type="tel"
+              value={form.whatsapp || ''}
+              onChange={e => { setWhatsappSame(false); setForm(f => ({ ...f, whatsapp: e.target.value })) }}
+              placeholder="+41 79 123 45 67"
+              disabled={whatsappSame}
+              className={whatsappSame ? 'opacity-50' : ''}
+            />
           </FormGroup>
           <FormGroup className="col-span-2">
             <FormLabel>E-Mail</FormLabel>
