@@ -73,13 +73,20 @@ export function WorkOrdersPage({ refreshKey, profile }: { refreshKey: number; on
     if (!form.customer_id || !form.vehicle_id) { toast('Kunde und Fahrzeug sind Pflichtfelder', 'error'); return }
     setSaving(true)
     const payload = {
-      customer_id: form.customer_id, vehicle_id: form.vehicle_id, service_type: form.service_type,
-      status: form.status, mechanic_id: form.mechanic_id || null, scheduled_date: form.scheduled_date,
-      scheduled_time: form.scheduled_time, is_mobile: form.is_mobile, mobile_address: form.mobile_address,
-      fault_description: form.fault_description, work_to_do: form.work_to_do,
+      customer_id: form.customer_id, vehicle_id: form.vehicle_id,
+      service_type: form.service_type || null,
+      status: form.status || 'new_booking',
+      mechanic_id: form.mechanic_id || null,
+      scheduled_date: form.scheduled_date || null,
+      scheduled_time: form.scheduled_time || null,
+      is_mobile: form.is_mobile || false,
+      mobile_address: form.mobile_address || null,
+      fault_description: form.fault_description || null,
+      work_to_do: form.work_to_do || null,
       parts_cost: form.parts_cost || 0, labor_cost: form.labor_cost || 0,
       total_amount: (form.parts_cost || 0) + (form.labor_cost || 0),
-      internal_notes: form.internal_notes, customer_notes: form.customer_notes,
+      internal_notes: form.internal_notes || null,
+      customer_notes: form.customer_notes || null,
       payment_status: form.payment_status || 'pending',
     }
     const { error } = await supabase.from('work_orders').insert(payload)
