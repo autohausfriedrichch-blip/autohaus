@@ -1,25 +1,30 @@
 'use client'
 import { useEffect, useState, useCallback } from 'react'
 import { createClient } from '@/lib/supabase/client'
-import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Modal } from '@/components/ui/modal'
 import { Input, FormGroup, FormLabel, Select, Textarea } from '@/components/ui/form'
 import { StatusBadge } from '@/components/ui/badge'
 import { useToast } from '@/components/ui/toast'
 import { DocumentActions } from '@/components/documents/DocumentActions'
-import { TimeTracker } from '@/components/timetracker/TimeTracker'
 import { ServiceCalculator } from '@/components/services/ServiceCalculator'
 import type { ServiceLineItem } from '@/components/services/ServiceCalculator'
-import { Plus, Search, ChevronDown, ChevronUp, Clock } from 'lucide-react'
+import { Plus, Search, ExternalLink } from 'lucide-react'
 import type { WorkOrder } from '@/lib/types'
 import { formatCurrency, formatDate, STATUS_LABELS } from '@/lib/utils'
+import { WorkOrderDetail } from '@/components/workorders/WorkOrderDetail'
 
 const STATUSES = [
   'new_booking','confirmed','checked_in','diagnostics','waiting_quote',
   'waiting_approval','waiting_parts','in_repair','quality_check',
   'ready','checkout_ready','delivered','closed'
 ]
+
+function HealthDot({ health }: { health?: string }) {
+  if (health === 'red') return <span className="w-2.5 h-2.5 rounded-full bg-[#C9384C] inline-block flex-shrink-0" title="Piros" />
+  if (health === 'yellow') return <span className="w-2.5 h-2.5 rounded-full bg-yellow-400 inline-block flex-shrink-0" title="Sárga" />
+  return <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 inline-block flex-shrink-0" title="Zöld" />
+}
 
 export function WorkOrdersPage({ refreshKey, profile }: { refreshKey: number; onRefresh: () => void; profile?: any }) {
   const [orders, setOrders] = useState<WorkOrder[]>([])
@@ -30,10 +35,9 @@ export function WorkOrdersPage({ refreshKey, profile }: { refreshKey: number; on
   const [statusFilter, setStatusFilter] = useState('')
   const [loading, setLoading] = useState(true)
   const [modalOpen, setModalOpen] = useState(false)
-  const [expandedId, setExpandedId] = useState<string | null>(null)
+  const [detailOrderId, setDetailOrderId] = useState<string | null>(null)
   const [form, setForm] = useState<Partial<WorkOrder>>({})
   const [saving, setSaving] = useState(false)
-  const [laborCost, setLaborCost] = useState(0)
   const [serviceItemsMap, setServiceItemsMap] = useState<Record<string, ServiceLineItem[]>>({})
   const { toast } = useToast()
   const supabase = createClient()
@@ -125,6 +129,8 @@ export function WorkOrdersPage({ refreshKey, profile }: { refreshKey: number; on
 
   const filteredVehicles = form.customer_id ? vehicles.filter(v => v.customer_id === form.customer_id) : vehicles
 
+  const detailProfile = profile ? { id: profile.id || '', full_name: profile.full_name || 'Ismeretlen', role: profile.role || 'mechanic' } : { id: '', full_name: 'Ismeretlen', role: 'mechanic' }
+
   return (
     <div className="animate-fade-in">
       <div className="flex flex-wrap gap-2.5 mb-4">
@@ -145,132 +151,71 @@ export function WorkOrdersPage({ refreshKey, profile }: { refreshKey: number; on
         <div className="text-center py-12 text-[#5a6a80] text-sm">Betöltés...</div>
       ) : (
         <div>
-          {filtered.map(o => {
-            const isExpanded = expandedId === o.id
-            return (
-              <div key={o.id} className="bg-white border border-[rgba(11,30,61,0.10)] rounded-[14px] overflow-hidden mb-3">
-                {/* Header row */}
-                <div className="flex items-center gap-3 px-4 py-3 border-b border-[rgba(11,30,61,0.08)]">
-                  <span className="text-[11px] font-bold text-[#185FA5] bg-[#E6F1FB] px-2 py-0.5 rounded">{o.order_number}</span>
-                  <span className="font-semibold text-[13px] flex-1">{(o as any).customer?.full_name}</span>
-                  {(o as any).vehicle && (
-                    <span className="bg-[#0B1E3D] text-white text-[11px] font-bold px-2 py-1 rounded hidden sm:inline">
-                      {(o as any).vehicle.license_plate}
-                    </span>
-                  )}
-                  <StatusBadge status={o.status} />
-                  {o.is_mobile && <span className="text-[10px] bg-purple-100 text-purple-700 px-2 py-0.5 rounded-full font-semibold hidden sm:inline">MOBIL</span>}
-                  <button onClick={() => setExpandedId(isExpanded ? null : o.id)} className="text-[#5a6a80] hover:text-[#0B1E3D] ml-1">
-                    {isExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
-                  </button>
-                </div>
-
-                {/* Summary row */}
-                <div className="px-4 py-2 flex flex-wrap gap-3 text-[12px] text-[#5a6a80] items-center">
-                  {(o as any).vehicle && <span>{(o as any).vehicle.make} {(o as any).vehicle.model}</span>}
-                  {o.service_type && <span>· {o.service_type}</span>}
-                  {o.scheduled_date && <span>· {formatDate(o.scheduled_date)}</span>}
-                  {o.total_amount > 0 && <span className="font-semibold text-[#0B1E3D]">{formatCurrency(o.total_amount)}</span>}
-                  <div className="ml-auto flex items-center gap-2 flex-wrap">
-                    {o.payment_status === 'paid' && (
-                      <span className="text-[10px] bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full font-semibold">✓ Fizetve</span>
-                    )}
-                    {['ready','checkout_ready','delivered'].includes(o.status) && o.payment_status !== 'paid' && !isMechanic && (
-                      <div className="flex gap-1">
-                        <button onClick={() => recordPayment(o.id, 'cash')} className="text-[10px] bg-emerald-600 text-white px-2 py-1 rounded font-semibold hover:bg-emerald-700">Készpénz</button>
-                        <button onClick={() => recordPayment(o.id, 'card')} className="text-[10px] bg-[#2563eb] text-white px-2 py-1 rounded font-semibold hover:bg-blue-700">Kártya</button>
-                        <button onClick={() => recordPayment(o.id, 'invoice')} className="text-[10px] bg-[#0B1E3D] text-white px-2 py-1 rounded font-semibold">Számla</button>
-                      </div>
-                    )}
-                    <select value={o.status} onChange={e => updateStatus(o.id, e.target.value)}
-                      className="text-[11px] border border-[rgba(11,30,61,0.18)] rounded px-2 py-1 bg-white outline-none cursor-pointer">
-                      {STATUSES.map(s => <option key={s} value={s}>{STATUS_LABELS[s]}</option>)}
-                    </select>
-                  </div>
-                </div>
-
-                {/* Expanded detail */}
-                {isExpanded && (
-                  <div className="px-4 pb-4 border-t border-[rgba(11,30,61,0.06)] pt-4 space-y-4">
-                    {/* Document actions */}
-                    <div>
-                      <div className="text-[11px] font-semibold text-[#5a6a80] uppercase tracking-wider mb-2">Dokumentumok</div>
-                      <div className="flex flex-wrap gap-2">
-                        <DocumentActions type="workorder" data={o} customerId={(o as any).customer_id} workOrderId={o.id} />
-                        <DocumentActions type="checkin" data={o} small />
-                        {['ready','checkout_ready','delivered','closed'].includes(o.status) && (
-                          <>
-                            <DocumentActions type="checkout" data={o} small />
-                            <DocumentActions type="invoice" data={o} small />
-                          </>
-                        )}
-                      </div>
-                    </div>
-
-                    {/* Service Calculator */}
-                    <div>
-                      <div className="text-[11px] font-semibold text-[#5a6a80] uppercase tracking-wider mb-2">Szolgáltatások & Árak</div>
-                      <ServiceCalculator
-                        items={serviceItemsMap[o.id] || []}
-                        onChange={items => {
-                          setServiceItemsMap(prev => ({ ...prev, [o.id]: items }))
-                          const labor = items.reduce((s, i) => s + i.final_price, 0)
-                          updateLaborCost(o.id, labor, o.parts_cost || 0)
-                        }}
-                        hourlyRateDefault={125}
-                      />
-                    </div>
-
-                    {/* Details grid */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div>
-                        {o.fault_description && (
-                          <div className="mb-3">
-                            <div className="text-[10px] font-semibold text-[#5a6a80] uppercase mb-1">Hibaleírás</div>
-                            <p className="text-[12px] text-[#0B1E3D] bg-[#F4F5F7] rounded p-2">{o.fault_description}</p>
-                          </div>
-                        )}
-                        {o.work_to_do && (
-                          <div className="mb-3">
-                            <div className="text-[10px] font-semibold text-[#5a6a80] uppercase mb-1">Elvégzendő munka</div>
-                            <p className="text-[12px] text-[#0B1E3D] bg-[#F4F5F7] rounded p-2">{o.work_to_do}</p>
-                          </div>
-                        )}
-                        {o.work_done && (
-                          <div className="mb-3">
-                            <div className="text-[10px] font-semibold text-[#5a6a80] uppercase mb-1">Elvégzett munka</div>
-                            <p className="text-[12px] text-[#0B1E3D] bg-[#F4F5F7] rounded p-2">{o.work_done}</p>
-                          </div>
-                        )}
-                        {/* Costs */}
-                        <div className="bg-[#F4F5F7] rounded-lg p-3 text-[12px]">
-                          <div className="flex justify-between mb-1"><span className="text-[#5a6a80]">Alkatrészek:</span><span className="font-medium">{formatCurrency(o.parts_cost || 0)}</span></div>
-                          <div className="flex justify-between mb-1"><span className="text-[#5a6a80]">Munkadíj:</span><span className="font-medium">{formatCurrency(o.labor_cost || 0)}</span></div>
-                          <div className="flex justify-between font-bold border-t border-[rgba(11,30,61,0.08)] pt-2 mt-1">
-                            <span>Végösszeg:</span><span className="text-[#0B1E3D]">{formatCurrency(o.total_amount || 0)}</span>
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Time tracker */}
-                      <TimeTracker
-                        workOrderId={o.id}
-                        hourlyRate={125}
-                        onTotalChange={async (cost) => {
-                          await updateLaborCost(o.id, cost, o.parts_cost || 0)
-                        }}
-                      />
-                    </div>
-                  </div>
+          {filtered.map(o => (
+            <div key={o.id} className="bg-white border border-[rgba(11,30,61,0.10)] rounded-[14px] overflow-hidden mb-3">
+              <div className="flex items-center gap-3 px-4 py-3 border-b border-[rgba(11,30,61,0.08)]">
+                <HealthDot health={(o as any).health} />
+                <span className="text-[11px] font-bold text-[#185FA5] bg-[#E6F1FB] px-2 py-0.5 rounded">{o.order_number}</span>
+                <span className="font-semibold text-[13px] flex-1">{(o as any).customer?.full_name}</span>
+                {(o as any).vehicle && (
+                  <span className="bg-[#0B1E3D] text-white text-[11px] font-bold px-2 py-1 rounded hidden sm:inline">
+                    {(o as any).vehicle.license_plate}
+                  </span>
                 )}
+                <StatusBadge status={o.status} />
+                {o.is_mobile && <span className="text-[10px] bg-purple-100 text-purple-700 px-2 py-0.5 rounded-full font-semibold hidden sm:inline">MOBIL</span>}
+                <button onClick={() => setDetailOrderId(o.id)}
+                  className="flex items-center gap-1 text-[11px] font-semibold text-[#C9A84C] hover:text-[#0B1E3D] ml-1 px-2 py-1 border border-[#C9A84C] rounded hover:border-[#0B1E3D] transition-colors">
+                  <ExternalLink size={12} /> Megnyitás
+                </button>
               </div>
-            )
-          })}
+
+              <div className="px-4 py-2 flex flex-wrap gap-3 text-[12px] text-[#5a6a80] items-center">
+                {(o as any).vehicle && <span>{(o as any).vehicle.make} {(o as any).vehicle.model}</span>}
+                {o.service_type && <span>· {o.service_type}</span>}
+                {o.scheduled_date && <span>· {formatDate(o.scheduled_date)}</span>}
+                {o.total_amount > 0 && <span className="font-semibold text-[#0B1E3D]">{formatCurrency(o.total_amount)}</span>}
+                <div className="ml-auto flex items-center gap-2 flex-wrap">
+                  {o.payment_status === 'paid' && (
+                    <span className="text-[10px] bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full font-semibold">✓ Fizetve</span>
+                  )}
+                  {['ready','checkout_ready','delivered'].includes(o.status) && o.payment_status !== 'paid' && !isMechanic && (
+                    <div className="flex gap-1">
+                      <button onClick={() => recordPayment(o.id, 'cash')} className="text-[10px] bg-emerald-600 text-white px-2 py-1 rounded font-semibold hover:bg-emerald-700">Készpénz</button>
+                      <button onClick={() => recordPayment(o.id, 'card')} className="text-[10px] bg-[#2563eb] text-white px-2 py-1 rounded font-semibold hover:bg-blue-700">Kártya</button>
+                      <button onClick={() => recordPayment(o.id, 'invoice')} className="text-[10px] bg-[#0B1E3D] text-white px-2 py-1 rounded font-semibold">Számla</button>
+                    </div>
+                  )}
+                  <select value={o.status} onChange={e => updateStatus(o.id, e.target.value)}
+                    className="text-[11px] border border-[rgba(11,30,61,0.18)] rounded px-2 py-1 bg-white outline-none cursor-pointer">
+                    {STATUSES.map(s => <option key={s} value={s}>{STATUS_LABELS[s]}</option>)}
+                  </select>
+                  <div className="flex gap-1">
+                    <DocumentActions type="workorder" data={o} customerId={(o as any).customer_id} workOrderId={o.id} />
+                    <DocumentActions type="checkin" data={o} small />
+                    {['ready','checkout_ready','delivered','closed'].includes(o.status) && (
+                      <>
+                        <DocumentActions type="checkout" data={o} small />
+                        <DocumentActions type="invoice" data={o} small />
+                      </>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
           {filtered.length === 0 && <div className="text-center py-10 text-[#8fa0b5] text-sm">Nincs munkalap</div>}
         </div>
       )}
 
-      {/* New work order modal */}
+      {detailOrderId && (
+        <WorkOrderDetail
+          workOrderId={detailOrderId}
+          profile={detailProfile}
+          onClose={() => { setDetailOrderId(null); load() }}
+        />
+      )}
+
       <Modal open={modalOpen} onClose={() => setModalOpen(false)} title="Új Munkalap" className="max-w-2xl"
         footer={<><Button variant="secondary" onClick={() => setModalOpen(false)}>Mégse</Button><Button variant="primary" onClick={handleSave} disabled={saving}>{saving ? 'Mentés...' : 'Létrehozás'}</Button></>}>
         <div className="grid grid-cols-2 gap-3">
