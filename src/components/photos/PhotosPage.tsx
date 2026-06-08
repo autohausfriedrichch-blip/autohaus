@@ -183,12 +183,12 @@ export function PhotosPage({ refreshKey, profile }: { refreshKey: number; onRefr
             <p>3. <strong>service_role</strong> → Reveal gomb</p>
             <p>4. Az <code className="bg-blue-100 px-1 rounded">eyJhbGci...</code> kezdetű kulcsot másold be</p>
           </div>
-          <textarea
+          <input
+            type="password"
             value={serviceKey}
             onChange={e => setServiceKey(e.target.value)}
-            placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
-            rows={4}
-            className="w-full border border-gray-200 rounded-lg p-3 text-xs font-mono outline-none focus:border-[#0B1E3D] resize-none"
+            placeholder="service_role kulcs beillesztése..."
+            className="w-full border border-gray-200 rounded-lg p-3 text-sm outline-none focus:border-[#0B1E3D]"
           />
           <button
             onClick={saveKey}
