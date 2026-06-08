@@ -18,9 +18,20 @@
   --shadow-lg: 0 4px 24px rgba(11,30,61,0.13);
   --radius: 10px;
   --radius-lg: 14px;
+  /* Safe area insets for notch/home bar */
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-left: env(safe-area-inset-left, 0px);
+  --safe-right: env(safe-area-inset-right, 0px);
 }
 
 * { box-sizing: border-box; }
+
+html {
+  /* Prevent text size adjustment on orientation change */
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
 
 body {
   background: var(--bg);
@@ -28,17 +39,114 @@ body {
   font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
   font-size: 14px;
   line-height: 1.5;
+  /* Prevent elastic bounce on iOS for main body */
+  overscroll-behavior: none;
 }
 
 ::-webkit-scrollbar { width: 5px; height: 5px; }
 ::-webkit-scrollbar-thumb { background: rgba(11,30,61,0.15); border-radius: 10px; }
 
+/* ── Touch optimization ─────────────────────────────────────── */
+
+/* Minimum 44×44 touch targets */
+button, a, [role="button"] {
+  touch-action: manipulation;
+}
+
+/* Prevent double-tap zoom on buttons */
+button {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Remove iOS input zoom (prevent zoom on focus if font-size < 16px) */
+input, select, textarea {
+  font-size: 16px !important;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* But keep visual size for desktop */
+@media (min-width: 768px) {
+  input, select, textarea {
+    font-size: 13px !important;
+  }
+}
+
+/* Scrollable containers on touch */
+.touch-scroll {
+  -webkit-overflow-scrolling: touch;
+  overflow-y: auto;
+}
+
+/* ── Animations ─────────────────────────────────────────────── */
+
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
   to { opacity: 1; transform: translateY(0); }
 }
 @keyframes spin { to { transform: rotate(360deg); } }
 @keyframes pulse-dot { 0%,100% { opacity:1; } 50% { opacity:0.4; } }
 
 .animate-fade-in { animation: fadeIn 0.2s ease; }
+.animate-slide-up { animation: slideUp 0.25s ease; }
 .pulse-dot { animation: pulse-dot 2s infinite; }
+
+/* ── Mobile safe areas ──────────────────────────────────────── */
+
+.pb-safe { padding-bottom: max(1.25rem, var(--safe-bottom)); }
+.pt-safe { padding-top: max(0px, var(--safe-top)); }
+
+/* ── Mobile nav bottom bar ──────────────────────────────────── */
+
+.mobile-nav {
+  padding-bottom: max(12px, var(--safe-bottom));
+}
+
+/* ── Card swipe feedback ────────────────────────────────────── */
+.card-touchable {
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
+}
+.card-touchable:active {
+  transform: scale(0.98);
+  box-shadow: 0 1px 4px rgba(11,30,61,0.08);
+}
+
+/* ── Big action button (Karl's mobile) ──────────────────────── */
+.btn-mobile-action {
+  min-height: 56px;
+  min-width: 56px;
+  border-radius: 16px;
+  font-size: 15px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 0 24px;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  transition: opacity 0.15s, transform 0.1s;
+}
+.btn-mobile-action:active {
+  opacity: 0.85;
+  transform: scale(0.97);
+}
+
+/* ── iPad split view ────────────────────────────────────────── */
+@media (min-width: 1024px) {
+  .ipad-split-left {
+    width: 340px;
+    min-width: 340px;
+    max-height: calc(100vh - 56px);
+    overflow-y: auto;
+  }
+  .ipad-split-right {
+    flex: 1;
+    max-height: calc(100vh - 56px);
+    overflow-y: auto;
+  }
+}

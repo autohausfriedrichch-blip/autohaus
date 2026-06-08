@@ -25,17 +25,42 @@ export function Modal({ open, onClose, title, children, footer, className }: Mod
   if (!open) return null
 
   return (
-    <div className="fixed inset-0 bg-[rgba(11,30,61,0.4)] backdrop-blur-sm z-50 flex items-center justify-center p-4 md:p-0" onClick={(e) => e.target === e.currentTarget && onClose()}>
-      <div className={cn('bg-white rounded-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto shadow-[0_4px_24px_rgba(11,30,61,0.13)]', className)}>
-        <div className="flex items-center justify-between px-6 py-4 border-b border-[rgba(11,30,61,0.10)]">
-          <h2 className="font-['DM_Serif_Display'] text-[18px] text-[#0B1E3D]">{title}</h2>
-          <button onClick={onClose} className="text-[#5a6a80] hover:text-[#0B1E3D] transition-colors p-1">
+    <div
+      className="fixed inset-0 bg-[rgba(11,30,61,0.4)] backdrop-blur-sm z-50 flex items-end sm:items-center justify-center sm:p-4"
+      onClick={(e) => e.target === e.currentTarget && onClose()}
+    >
+      <div className={cn(
+        'bg-white w-full shadow-[0_4px_24px_rgba(11,30,61,0.13)] overflow-y-auto',
+        // Mobile: slide-up sheet from bottom, full width, rounded top corners
+        'rounded-t-2xl sm:rounded-2xl',
+        // Desktop: centered, max width
+        'sm:max-w-lg',
+        // Max height: on mobile use most of the screen, on desktop cap at 90vh
+        'max-h-[92vh] sm:max-h-[90vh]',
+        'animate-slide-up',
+        className
+      )}>
+        {/* Handle bar on mobile */}
+        <div className="flex justify-center pt-3 pb-1 sm:hidden">
+          <div className="w-10 h-1 bg-[rgba(11,30,61,0.15)] rounded-full" />
+        </div>
+
+        <div className="flex items-center justify-between px-5 py-3.5 sm:px-6 sm:py-4 border-b border-[rgba(11,30,61,0.10)]">
+          <h2 className="font-['DM_Serif_Display'] text-[17px] sm:text-[18px] text-[#0B1E3D]">{title}</h2>
+          <button
+            onClick={onClose}
+            className="text-[#5a6a80] hover:text-[#0B1E3D] transition-colors rounded-lg"
+            style={{ minWidth: 44, minHeight: 44, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+          >
             <X size={18} />
           </button>
         </div>
-        <div className="px-6 py-5">{children}</div>
+        <div className="px-5 py-4 sm:px-6 sm:py-5">{children}</div>
         {footer && (
-          <div className="px-6 py-4 border-t border-[rgba(11,30,61,0.10)] flex justify-end gap-2">
+          <div
+            className="px-5 py-4 sm:px-6 border-t border-[rgba(11,30,61,0.10)] flex justify-end gap-2"
+            style={{ paddingBottom: 'max(16px, env(safe-area-inset-bottom, 16px))' }}
+          >
             {footer}
           </div>
         )}

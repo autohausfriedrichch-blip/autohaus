@@ -485,6 +485,21 @@ export function RoutePlannerPage({
                       )}
                     </div>
                   </div>
+                  {/* Navigate button – mobile primary action */}
+                  {(stop.address || stop.city) && (
+                    <div className="mt-3 pt-2 border-t border-[rgba(11,30,61,0.06)]">
+                      <a
+                        href={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent([stop.address, stop.city].filter(Boolean).join(', '))}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="btn-mobile-action bg-[#0B1E3D] text-white w-full text-[13px] no-underline"
+                        style={{ display: 'flex' }}
+                      >
+                        <Navigation size={16} />
+                        Navigáció indítása
+                      </a>
+                    </div>
+                  )}
                 </div>
               )
             })}
