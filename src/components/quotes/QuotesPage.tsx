@@ -7,7 +7,8 @@ import { Modal } from '@/components/ui/modal'
 import { Input, FormGroup, FormLabel, Select, Textarea } from '@/components/ui/form'
 import { useToast } from '@/components/ui/toast'
 import { DocumentActions } from '@/components/documents/DocumentActions'
-import { Plus, Search, Send, Check, X, Trash2, Tag, Clock, Layers } from 'lucide-react'
+import { ServiceCalculator, type ServiceLineItem } from '@/components/services/ServiceCalculator'
+import { Plus, Search, Send, Check, X, Trash2, Tag, Clock, Layers, AlertTriangle } from 'lucide-react'
 import { formatCurrency, formatDate } from '@/lib/utils'
 
 type PricingMode = 'fixed' | 'time' | 'combined'
@@ -34,6 +35,7 @@ export function QuotesPage({ refreshKey }: { refreshKey: number; onRefresh: () =
   const [modalOpen, setModalOpen] = useState(false)
   const [pricingMode, setPricingMode] = useState<PricingMode>('fixed')
   const [form, setForm] = useState<any>({ status: 'draft', tax_rate: 7.7, items: [], hourly_rate: 125, time_minutes: 0, time_label: '' })
+  const [serviceItems, setServiceItems] = useState<ServiceLineItem[]>([])
   const [saving, setSaving] = useState(false)
   const { toast } = useToast()
   const supabase = createClient()
@@ -79,6 +81,12 @@ export function QuotesPage({ refreshKey }: { refreshKey: number; onRefresh: () =
   })
 
   const calcTotals = () => {
+    // If using ServiceCalculator items (new mode), use those
+    if (pricingMode === 'fixed' && serviceItems.length > 0) {
+      const subtotal = serviceItems.reduce((s, it) => s + it.final_price, 0)
+      const total = subtotal * (1 + (form.tax_rate || 0) / 100)
+      return { parts: 0, labor: subtotal, subtotal, total }
+    }
     const items = form.items || []
     const parts = items.filter((i: any) => i.item_type === 'part').reduce((s: number, i: any) => s + (i.quantity * i.unit_price), 0)
     let labor = items.filter((i: any) => i.item_type !== 'part').reduce((s: number, i: any) => s + (i.quantity * i.unit_price), 0)
@@ -97,7 +105,17 @@ export function QuotesPage({ refreshKey }: { refreshKey: number; onRefresh: () =
     setSaving(true)
     const { parts, labor, total } = calcTotals()
 
-    let items = form.items || []
+    // Build items from ServiceCalculator if in fixed mode
+    let items = (pricingMode === 'fixed' && serviceItems.length > 0)
+      ? serviceItems.map(it => ({
+          description: it.service_name + (it.difficulty !== 'normal' ? ` (×${it.difficulty === 'hard' ? 1.25 : it.difficulty === 'very_hard' ? 1.5 : 2})` : ''),
+          quantity: it.quantity,
+          unit_price: it.final_price / Math.max(it.quantity, 1),
+          item_type: 'labor',
+          risk_acknowledged: it.risk_acknowledged,
+          technician_note: it.technician_note,
+        }))
+      : (form.items || [])
     if (pricingMode === 'time') {
       items = [{
         description: form.time_label || 'Munkadíj',
@@ -140,6 +158,7 @@ export function QuotesPage({ refreshKey }: { refreshKey: number; onRefresh: () =
 
   const openModal = () => {
     setForm({ status: 'draft', tax_rate: 7.7, items: [], hourly_rate: 125, time_minutes: 0, time_label: '' })
+    setServiceItems([])
     setPricingMode('fixed')
     setModalOpen(true)
   }
@@ -296,52 +315,36 @@ export function QuotesPage({ refreshKey }: { refreshKey: number; onRefresh: () =
           </div>
         )}
 
-        {/* FIXED / COMBINED items */}
-        {(pricingMode === 'fixed' || pricingMode === 'combined') && (
+        {/* FIXED mode – full ServiceCalculator with difficulty + risk */}
+        {pricingMode === 'fixed' && (
           <div className="mt-4">
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-[11px] font-semibold text-[#5a6a80] uppercase">Tételek</span>
-              <Button variant="secondary" size="sm" onClick={() => addItem()}><Plus size={12} /> Tétel</Button>
+            <div className="text-[11px] font-semibold text-[#5a6a80] uppercase tracking-[0.5px] mb-2">
+              Szolgáltatások & Tételek
             </div>
-
-            {/* Quick-add services */}
-            {services.length > 0 && (
-              <div className="flex flex-wrap gap-1.5 mb-3">
-                {services.slice(0, 8).map(svc => (
-                  <button
-                    key={svc.id}
-                    onClick={() => addServiceItem(svc)}
-                    className="px-2 py-1 bg-[#F4F5F7] hover:bg-[#0B1E3D] hover:text-white text-[11px] rounded-md border border-[rgba(11,30,61,0.12)] transition-colors text-[#0B1E3D]"
-                  >
-                    + {svc.name} {svc.base_price ? `(${formatCurrency(svc.base_price)})` : ''}
-                  </button>
-                ))}
+            <ServiceCalculator
+              items={serviceItems}
+              onChange={setServiceItems}
+              hourlyRateDefault={form.hourly_rate || 125}
+              showSummary={false}
+            />
+            {serviceItems.some(it => it.is_risky && !it.risk_acknowledged) && (
+              <div className="mt-2 flex items-center gap-2 text-[12px] text-orange-700 bg-orange-50 border border-orange-200 rounded-lg px-3 py-2">
+                <AlertTriangle size={13} /> Kockázatos tételek jóváhagyása szükséges az ár mentése előtt
               </div>
             )}
+          </div>
+        )}
 
-            {(form.items || []).map((item: any, i: number) => (
-              <div key={i} className="grid grid-cols-12 gap-2 mb-2 items-start">
-                <div className="col-span-5">
-                  <Input value={item.description} onChange={e => updateItem(i, 'description', e.target.value)} placeholder="Leírás" />
-                </div>
-                <div className="col-span-2">
-                  <Input type="number" value={item.quantity} onChange={e => updateItem(i, 'quantity', parseFloat(e.target.value))} placeholder="db" />
-                </div>
-                <div className="col-span-2">
-                  <Input type="number" step="0.01" value={item.unit_price} onChange={e => updateItem(i, 'unit_price', parseFloat(e.target.value))} placeholder="CHF" />
-                </div>
-                <div className="col-span-2">
-                  <Select value={item.item_type} onChange={e => updateItem(i, 'item_type', e.target.value)}>
-                    <option value="labor">Munkadíj</option>
-                    <option value="part">Alkatrész</option>
-                    <option value="other">Egyéb</option>
-                  </Select>
-                </div>
-                <div className="col-span-1 flex justify-center pt-1.5">
-                  <button onClick={() => removeItem(i)} className="text-[#C9384C] hover:text-red-700"><X size={16} /></button>
-                </div>
-              </div>
-            ))}
+        {/* COMBINED mode – ServiceCalculator + time-based */}
+        {pricingMode === 'combined' && (
+          <div className="mt-4">
+            <div className="text-[11px] font-semibold text-[#5a6a80] uppercase tracking-[0.5px] mb-2">Fix tételek</div>
+            <ServiceCalculator
+              items={serviceItems}
+              onChange={setServiceItems}
+              hourlyRateDefault={form.hourly_rate || 125}
+              showSummary={false}
+            />
           </div>
         )}
 
