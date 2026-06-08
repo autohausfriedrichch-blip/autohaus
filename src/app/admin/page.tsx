@@ -30,11 +30,13 @@ import { PartsInventoryPage } from '@/components/parts/PartsInventoryPage'
 import { RoutePlannerPage } from '@/components/route/RoutePlannerPage'
 import { CustomerValuePage } from '@/components/customers/CustomerValuePage'
 import { CEODashboardPage } from '@/components/dashboard/CEODashboardPage'
+import { RegistrationScanPage } from '@/components/registration/RegistrationScanPage'
 import type { Profile } from '@/lib/types'
 import { useRouter } from 'next/navigation'
 
 const PAGE_TITLES: Record<string, string> = {
   ceo_dashboard: 'CEO Operations Dashboard',
+  registration_scan: 'Forgalmi beolvasás – OCR',
   vehicle_lifecycle: 'Jármű élettörténet',
   reminders: 'Szerviz emlékeztetők',
   profit: 'Profit & Költségkezelés',
@@ -154,7 +156,8 @@ function AdminApp() {
       case 'parts_inventory':  return <PartsInventoryPage {...props} />
       case 'route_planner':    return <RoutePlannerPage {...props} />
       case 'customer_value':   return <CustomerValuePage {...props} />
-      case 'ceo_dashboard':    return <CEODashboardPage {...props} />
+      case 'ceo_dashboard':       return <CEODashboardPage {...props} />
+      case 'registration_scan':  return <RegistrationScanPage {...props} />
       default: return (
         <div className="flex flex-col items-center justify-center h-64 text-[#5a6a80]">
           <p className="text-lg font-medium">{pageTitle}</p>

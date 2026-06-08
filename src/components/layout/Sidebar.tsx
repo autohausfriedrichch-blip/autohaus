@@ -5,7 +5,7 @@ import {
   Truck, Wrench, Route, MessageCircle, BarChart2, Settings,
   Camera, FileText, Package, LogOut, Building2, ListTodo,
   Cog, Hammer, Star, CreditCard, Archive, Crown, Bell,
-  TrendingUp, MapPin, History
+  TrendingUp, MapPin, History, ScanLine
 } from 'lucide-react'
 
 interface NavItem {
@@ -33,6 +33,7 @@ const navItems: NavSection[] = [
       { id: 'customer_value', label: 'Ügyfélerték', icon: Crown, roles: ['super_admin','admin'] },
       { id: 'vehicles', label: 'Járművek', icon: Car, roles: ['super_admin','admin'] },
       { id: 'vehicle_lifecycle', label: 'Jármű élettörténet', icon: History, roles: ['super_admin','admin'] },
+      { id: 'registration_scan', label: 'Forgalmi OCR', icon: ScanLine, roles: ['super_admin','admin'] },
       { id: 'workorders', label: 'Munkalapok', icon: ClipboardList, badge: 'open' },
     ]
   },
