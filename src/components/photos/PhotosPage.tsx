@@ -11,7 +11,6 @@ const PHOTO_CATEGORIES = [
 
 interface UploadItem {
   file: File
-  preview: string
   status: 'pending' | 'uploading' | 'done' | 'error'
   error?: string
 }
@@ -58,7 +57,6 @@ export function PhotosPage({ refreshKey, profile }: { refreshKey: number; onRefr
       .filter(f => f.type.startsWith('image/'))
       .map(f => ({
         file: f,
-        preview: URL.createObjectURL(f),
         status: 'pending' as const,
       }))
     setFiles(prev => [...prev, ...items])
@@ -230,25 +228,23 @@ export function PhotosPage({ refreshKey, profile }: { refreshKey: number; onRefr
               )}
             </div>
 
-            <div className="grid grid-cols-3 gap-2">
+            <div className="space-y-2">
               {files.map((item, idx) => (
-                <div key={idx} className="relative">
-                  <img src={item.preview} alt="" className="w-full h-24 object-cover rounded-lg" />
-                  <div className={`absolute inset-0 rounded-lg flex items-center justify-center ${
-                    item.status === 'uploading' ? 'bg-black/50' :
-                    item.status === 'done' ? 'bg-green-500/40' :
-                    item.status === 'error' ? 'bg-red-500/50' : ''
-                  }`}>
-                    {item.status === 'uploading' && <Loader2 size={22} className="text-white animate-spin" />}
-                    {item.status === 'done' && <CheckCircle size={22} className="text-white" />}
-                    {item.status === 'error' && <X size={22} className="text-white" />}
-                  </div>
+                <div key={idx} className={`flex items-center gap-3 px-3 py-2.5 rounded-lg border ${
+                  item.status === 'done' ? 'bg-green-50 border-green-200' :
+                  item.status === 'error' ? 'bg-red-50 border-red-200' :
+                  item.status === 'uploading' ? 'bg-blue-50 border-blue-200' :
+                  'bg-gray-50 border-gray-200'
+                }`}>
+                  <Camera size={16} className="text-[#5a6a80] flex-shrink-0" />
+                  <span className="flex-1 text-sm text-[#0B1E3D] truncate">{item.file.name}</span>
+                  <span className="text-xs text-[#5a6a80] flex-shrink-0">{(item.file.size / 1024 / 1024).toFixed(1)} MB</span>
+                  {item.status === 'uploading' && <Loader2 size={16} className="text-blue-500 animate-spin flex-shrink-0" />}
+                  {item.status === 'done' && <CheckCircle size={16} className="text-green-500 flex-shrink-0" />}
+                  {item.status === 'error' && <X size={16} className="text-red-500 flex-shrink-0" />}
                   {item.status === 'pending' && !uploading && (
-                    <button
-                      onClick={() => removeFile(idx)}
-                      className="absolute top-1 right-1 bg-black/60 text-white rounded-full p-1"
-                    >
-                      <X size={11} />
+                    <button onClick={() => removeFile(idx)} className="text-gray-400 hover:text-red-500 flex-shrink-0">
+                      <X size={16} />
                     </button>
                   )}
                 </div>
