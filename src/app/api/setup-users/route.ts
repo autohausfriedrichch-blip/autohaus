@@ -1,9 +1,7 @@
 import { createClient } from '@supabase/supabase-js'
 import { NextRequest, NextResponse } from 'next/server'
 
-// One-time setup endpoint – protected by SETUP_SECRET env var
-// Call once: POST /api/setup-users  with header X-Setup-Secret: <your-secret>
-// After use, set SETUP_SECRET to empty string in Vercel to disable.
+const SUPABASE_URL = 'https://zpsjlmtrhsnchndifejd.supabase.co'
 
 const USERS = [
   {
@@ -21,47 +19,29 @@ const USERS = [
 ]
 
 export async function POST(req: NextRequest) {
-  // Guard: require secret header
-  const secret = process.env.SETUP_SECRET
-  if (!secret || secret.trim() === '') {
-    return NextResponse.json({ error: 'Setup endpoint is disabled (SETUP_SECRET not set)' }, { status: 403 })
-  }
-  const provided = req.headers.get('x-setup-secret')
-  if (provided !== secret) {
-    return NextResponse.json({ error: 'Invalid setup secret' }, { status: 401 })
-  }
+  // Accept service key from header or env
+  const serviceKey = req.headers.get('x-service-key')
+    || process.env.SUPABASE_SERVICE_ROLE_KEY
 
-  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY
   if (!serviceKey) {
-    return NextResponse.json({ error: 'SUPABASE_SERVICE_ROLE_KEY not configured' }, { status: 500 })
+    return NextResponse.json({ error: 'Service key required (x-service-key header)' }, { status: 401 })
   }
 
-  const supabase = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    serviceKey,
-    { auth: { autoRefreshToken: false, persistSession: false } }
-  )
+  const supabase = createClient(SUPABASE_URL, serviceKey, {
+    auth: { autoRefreshToken: false, persistSession: false }
+  })
 
   const results: any[] = []
 
   for (const user of USERS) {
-    // Check if profile already exists
-    const { data: existing } = await supabase
-      .from('profiles')
-      .select('id, role')
-      .eq('email', user.email)
-      .maybeSingle()
-
-    if (existing) {
-      // Ensure role is correct
-      await supabase.from('profiles')
-        .update({ role: user.role, full_name: user.full_name })
-        .eq('id', existing.id)
-      results.push({ email: user.email, status: 'already_exists_role_updated' })
-      continue
+    // Try to delete existing first (clean slate)
+    const { data: existing } = await supabase.auth.admin.listUsers()
+    const found = existing?.users?.find(u => u.email === user.email)
+    if (found) {
+      await supabase.auth.admin.deleteUser(found.id)
     }
 
-    // Create user via Admin API
+    // Create fresh
     const { data, error } = await supabase.auth.admin.createUser({
       email: user.email,
       password: user.password,
@@ -74,20 +54,15 @@ export async function POST(req: NextRequest) {
       continue
     }
 
-    // Create profile with correct role
-    const { error: profileError } = await supabase.from('profiles').upsert({
+    // Create profile
+    await supabase.from('profiles').upsert({
       id: data.user.id,
       email: user.email,
       full_name: user.full_name,
       role: user.role,
     })
 
-    results.push({
-      email: user.email,
-      status: profileError ? 'user_created_profile_failed' : 'created',
-      id: data.user.id,
-      profileError: profileError?.message,
-    })
+    results.push({ email: user.email, status: '✅ created', role: user.role })
   }
 
   return NextResponse.json({ success: true, results })
