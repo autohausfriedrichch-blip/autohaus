@@ -33,9 +33,7 @@ export function PhotosPage({ refreshKey, profile }: { refreshKey: number; onRefr
 
   const load = useCallback(async () => {
     setLoading(true)
-    const woQuery = isMechanic && profile?.id
-      ? supabase.from('work_orders').select('id, order_number, customer:customers(full_name)').eq('mechanic_id', profile.id).not('status', 'in', '(closed)')
-      : supabase.from('work_orders').select('id, order_number, customer:customers(full_name)').not('status', 'in', '(closed)')
+    const woQuery = supabase.from('work_orders').select('id, order_number, customer:customers(full_name)').not('status', 'in', '(closed)').order('created_at', { ascending: false })
     const [{ data: p }, { data: wo }] = await Promise.all([
       supabase.from('work_order_photos')
         .select('*, work_order:work_orders(order_number, customer:customers(full_name))')
@@ -44,7 +42,9 @@ export function PhotosPage({ refreshKey, profile }: { refreshKey: number; onRefr
       woQuery,
     ])
     setPhotos(p || [])
-    setWorkOrders(wo || [])
+    const woList = wo || []
+    setWorkOrders(woList)
+    if (woList.length === 1) setWorkOrderId(woList[0].id)
     setLoading(false)
   }, [refreshKey, isMechanic, profile?.id])
 
@@ -69,7 +69,7 @@ export function PhotosPage({ refreshKey, profile }: { refreshKey: number; onRefr
   }
 
   const handleUpload = async () => {
-    if (!workOrderId) { toast('Válassz munkalapot!', 'error'); return }
+    if (!workOrderId) { toast('Kérlek válassz munkalapot a feltöltés előtt!', 'error'); return }
     if (files.length === 0) { toast('Nincs kiválasztott kép!', 'error'); return }
     setUploading(true)
 
@@ -255,7 +255,7 @@ export function PhotosPage({ refreshKey, profile }: { refreshKey: number; onRefr
             {!allDone && (
               <button
                 onClick={handleUpload}
-                disabled={uploading || !workOrderId}
+                disabled={uploading}
                 className="w-full py-4 bg-[#C9A84C] hover:bg-[#b8943f] active:bg-[#a07e35] disabled:opacity-50 text-[#0B1E3D] rounded-xl font-bold text-base flex items-center justify-center gap-2 transition-colors"
               >
                 {uploading
