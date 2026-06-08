@@ -151,7 +151,7 @@ function AdminApp() {
       case 'services':    return <ServicesPage {...props} />
       case 'reports':     return <ReportsPage {...props} />
       case 'checkin':     return <CheckInPage {...props} />
-      case 'photos':      return <PhotosPage {...props} />
+      case 'photos':      return <PhotosPage {...props} profile={profile} />
       case 'mobile':      return <MobilePage {...props} />
       case 'mobile_service': return <MobileServicePage {...props} />
       case 'fleet':       return <FleetPage {...props} />
@@ -201,6 +201,7 @@ function AdminApp() {
           title={pageTitle}
           onMenuClick={() => setSidebarOpen(true)}
           onRefresh={() => setRefreshKey(k => k + 1)}
+          userRoleKey={profile?.role}
         />
         <main className="flex-1 overflow-y-auto p-5 pb-24 md:pb-5 animate-fade-in touch-scroll">
           {renderPage()}
