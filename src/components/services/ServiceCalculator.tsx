@@ -174,7 +174,7 @@ function ServicePickerModal({
                           {s.is_risky && <AlertTriangle size={12} className="text-orange-500" />}
                         </div>
                         <div className="flex items-center gap-3 mt-0.5">
-                          {s.pricing_type === 'fixed' && s.price && <span className="text-[12px] text-[#5a6a80]">{formatCurrency(s.price)}</span>}
+                          {s.pricing_type === 'fixed' && s.base_price && <span className="text-[12px] text-[#5a6a80]">{formatCurrency(s.base_price)}</span>}
                           {s.pricing_type === 'per_unit' && s.unit_price && <span className="text-[12px] text-[#5a6a80]">{formatCurrency(s.unit_price)} / {s.unit_label || 'db'}</span>}
                           {s.pricing_type === 'hourly' && <span className="text-[12px] text-[#5a6a80]">{formatCurrency(s.hourly_rate || 125)} / óra</span>}
                           {s.pricing_type === 'custom' && <span className="text-[12px] text-[#5a6a80]">Egyedi</span>}
@@ -399,7 +399,7 @@ export function ServiceCalculator({
       quantity: s.default_quantity || 1,
       unit_price: s.unit_price || undefined,
       unit_label: s.unit_label || 'db',
-      fixed_price: s.price || undefined,
+      fixed_price: s.base_price || undefined,
       hourly_rate: s.hourly_rate || hourlyRateDefault,
       hours: s.duration_minutes ? s.duration_minutes / 60 : 1,
       difficulty: 'normal',

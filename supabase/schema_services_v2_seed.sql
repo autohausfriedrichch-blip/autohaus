@@ -4,7 +4,7 @@
 -- ═══════════════════════════════════════════════════════════════
 
 INSERT INTO services
-  (name, category, pricing_type, price, unit_price, unit_label,
+  (name, category, pricing_type, base_price, unit_price, unit_label,
    unit_time_minutes, duration_minutes, is_mobile, is_active,
    is_visible_to_customer, is_risky, risk_level, risk_description,
    requires_customer_approval, default_quantity, sort_order, description)
