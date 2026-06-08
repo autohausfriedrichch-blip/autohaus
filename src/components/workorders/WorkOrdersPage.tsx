@@ -19,7 +19,7 @@ const STATUSES = [
   'ready','checkout_ready','delivered','closed'
 ]
 
-export function WorkOrdersPage({ refreshKey }: { refreshKey: number; onRefresh: () => void }) {
+export function WorkOrdersPage({ refreshKey, profile }: { refreshKey: number; onRefresh: () => void; profile?: any }) {
   const [orders, setOrders] = useState<WorkOrder[]>([])
   const [customers, setCustomers] = useState<any[]>([])
   const [vehicles, setVehicles] = useState<any[]>([])
@@ -34,11 +34,14 @@ export function WorkOrdersPage({ refreshKey }: { refreshKey: number; onRefresh: 
   const [laborCost, setLaborCost] = useState(0)
   const { toast } = useToast()
   const supabase = createClient()
+  const isMechanic = profile?.role === 'mechanic'
 
   const load = useCallback(async () => {
     setLoading(true)
+    let woQuery = supabase.from('work_orders').select('*, customer:customers(full_name,phone,email,whatsapp), vehicle:vehicles(make,model,license_plate,year), mechanic:profiles!work_orders_mechanic_id_fkey(full_name)').order('created_at', { ascending: false })
+    if (isMechanic && profile?.id) woQuery = woQuery.eq('mechanic_id', profile.id)
     const [{ data: wo }, { data: c }, { data: v }, { data: m }] = await Promise.all([
-      supabase.from('work_orders').select('*, customer:customers(full_name,phone,email,whatsapp), vehicle:vehicles(make,model,license_plate,year), mechanic:profiles!work_orders_mechanic_id_fkey(full_name)').order('created_at', { ascending: false }),
+      woQuery,
       supabase.from('customers').select('id, full_name').order('full_name'),
       supabase.from('vehicles').select('id, make, model, license_plate, customer_id'),
       supabase.from('profiles').select('id, full_name').in('role', ['mechanic', 'admin', 'super_admin']),
@@ -88,6 +91,16 @@ export function WorkOrdersPage({ refreshKey }: { refreshKey: number; onRefresh: 
   const updateStatus = async (id: string, status: string) => {
     await supabase.from('work_orders').update({ status }).eq('id', id)
     toast('Státusz frissítve')
+    load()
+  }
+
+  const recordPayment = async (id: string, method: 'cash' | 'card' | 'invoice') => {
+    await supabase.from('work_orders').update({
+      payment_status: 'paid',
+      status: 'delivered',
+      internal_notes: `Fizetve: ${method === 'cash' ? 'Készpénz' : method === 'card' ? 'Kártya' : 'Számla'} – ${new Date().toLocaleString('de-CH')}`
+    }).eq('id', id)
+    toast('Fizetés rögzítve ✓')
     load()
   }
 
@@ -144,7 +157,17 @@ export function WorkOrdersPage({ refreshKey }: { refreshKey: number; onRefresh: 
                   {o.service_type && <span>· {o.service_type}</span>}
                   {o.scheduled_date && <span>· {formatDate(o.scheduled_date)}</span>}
                   {o.total_amount > 0 && <span className="font-semibold text-[#0B1E3D]">{formatCurrency(o.total_amount)}</span>}
-                  <div className="ml-auto flex items-center gap-2">
+                  <div className="ml-auto flex items-center gap-2 flex-wrap">
+                    {o.payment_status === 'paid' && (
+                      <span className="text-[10px] bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full font-semibold">✓ Fizetve</span>
+                    )}
+                    {['ready','checkout_ready','delivered'].includes(o.status) && o.payment_status !== 'paid' && !isMechanic && (
+                      <div className="flex gap-1">
+                        <button onClick={() => recordPayment(o.id, 'cash')} className="text-[10px] bg-emerald-600 text-white px-2 py-1 rounded font-semibold hover:bg-emerald-700">Készpénz</button>
+                        <button onClick={() => recordPayment(o.id, 'card')} className="text-[10px] bg-[#2563eb] text-white px-2 py-1 rounded font-semibold hover:bg-blue-700">Kártya</button>
+                        <button onClick={() => recordPayment(o.id, 'invoice')} className="text-[10px] bg-[#0B1E3D] text-white px-2 py-1 rounded font-semibold">Számla</button>
+                      </div>
+                    )}
                     <select value={o.status} onChange={e => updateStatus(o.id, e.target.value)}
                       className="text-[11px] border border-[rgba(11,30,61,0.18)] rounded px-2 py-1 bg-white outline-none cursor-pointer">
                       {STATUSES.map(s => <option key={s} value={s}>{STATUS_LABELS[s]}</option>)}
@@ -158,12 +181,16 @@ export function WorkOrdersPage({ refreshKey }: { refreshKey: number; onRefresh: 
                     {/* Document actions */}
                     <div>
                       <div className="text-[11px] font-semibold text-[#5a6a80] uppercase tracking-wider mb-2">Dokumentumok</div>
-                      <DocumentActions
-                        type="workorder"
-                        data={o}
-                        customerId={(o as any).customer_id}
-                        workOrderId={o.id}
-                      />
+                      <div className="flex flex-wrap gap-2">
+                        <DocumentActions type="workorder" data={o} customerId={(o as any).customer_id} workOrderId={o.id} />
+                        <DocumentActions type="checkin" data={o} small />
+                        {['ready','checkout_ready','delivered','closed'].includes(o.status) && (
+                          <>
+                            <DocumentActions type="checkout" data={o} small />
+                            <DocumentActions type="invoice" data={o} small />
+                          </>
+                        )}
+                      </div>
                     </div>
 
                     {/* Details grid */}

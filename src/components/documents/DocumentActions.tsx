@@ -5,10 +5,10 @@ import { Modal } from '@/components/ui/modal'
 import { Input, FormGroup, FormLabel, Textarea } from '@/components/ui/form'
 import { useToast } from '@/components/ui/toast'
 import { createClient } from '@/lib/supabase/client'
-import { generateQuotePDF, generateWorkOrderPDF, generateCheckInPDF } from '@/lib/pdf'
+import { generateQuotePDF, generateWorkOrderPDF, generateCheckInPDF, generateCheckOutPDF, generateInvoicePDF } from '@/lib/pdf'
 import { Download, Printer, Mail, MessageCircle, Send } from 'lucide-react'
 
-type DocType = 'quote' | 'workorder' | 'checkin'
+type DocType = 'quote' | 'workorder' | 'checkin' | 'checkout' | 'invoice'
 
 interface DocumentActionsProps {
   type: DocType
@@ -35,6 +35,8 @@ export function DocumentActions({ type, data, customerId, workOrderId, quoteId, 
       case 'quote': return generateQuotePDF(data)
       case 'workorder': return generateWorkOrderPDF(data)
       case 'checkin': return generateCheckInPDF(data)
+      case 'checkout': return generateCheckOutPDF(data)
+      case 'invoice': return generateInvoicePDF(data)
     }
   }
 
@@ -43,6 +45,8 @@ export function DocumentActions({ type, data, customerId, workOrderId, quoteId, 
       case 'quote': return `Arajanlat_${data?.id?.slice(0, 8) || 'doc'}.pdf`
       case 'workorder': return `Munkalap_${data?.order_number || 'doc'}.pdf`
       case 'checkin': return `CheckIn_${data?.order_number || 'doc'}.pdf`
+      case 'checkout': return `CheckOut_${data?.order_number || 'doc'}.pdf`
+      case 'invoice': return `Szamla_${data?.order_number || 'doc'}.pdf`
     }
   }
 
@@ -180,6 +184,9 @@ function getDefaultSubject(type: DocType, data: any): string {
     case 'quote': return `Autohaus Friedrich – Árajánlat ${data?.customer?.full_name || ''}`
     case 'workorder': return `Autohaus Friedrich – Munkalap ${data?.order_number || ''}`
     case 'checkin': return `Autohaus Friedrich – Check-In visszaigazolás`
+    case 'checkout': return `Autohaus Friedrich – Check-Out ${data?.order_number || ''}`
+    case 'invoice': return `Autohaus Friedrich – Számla / Rechnung ${data?.order_number || ''}`
+    default: return 'Autohaus Friedrich – Dokumentum'
   }
 }
 
@@ -192,6 +199,11 @@ function getDefaultEmailBody(type: DocType, data: any): string {
       return `Tisztelt ${name}!\n\nMellékletben megküldjük a(z) ${data?.order_number || ''} számú munklap összefoglalóját.\n\nÜdvözlettel,\nAutohaus Friedrich`
     case 'checkin':
       return `Tisztelt ${name}!\n\nMegerősítjük járművének átvételét. A check-in dokumentumot mellékelten küldjük.\n\nÜdvözlettel,\nAutohaus Friedrich`
+    case 'checkout':
+      return `Tisztelt ${name}!\n\nJárműve elkészült és átvehető. A check-out dokumentumot mellékelten küldjük.\n\nÜdvözlettel,\nAutohaus Friedrich`
+    case 'invoice':
+      return `Tisztelt ${name}!\n\nMellékletben megküldjük a(z) ${data?.order_number || ''} számú számlát.\n\nKérjük, 30 napon belül szíveskedjen kiegyenlíteni.\n\nÜdvözlettel,\nAutohaus Friedrich`
+    default: return ''
   }
 }
 
@@ -205,5 +217,10 @@ function getDefaultWhatsApp(type: DocType, data: any): string {
       return `Kedves ${name}! 🔧\n\nA(z) *${data?.order_number || ''}* számú munkájáról küldünk összefoglalót.\n\nJárműve: *${plate}*\n\nKérdés esetén állunk rendelkezésére!\n\n– Autohaus Friedrich`
     case 'checkin':
       return `Kedves ${name}! ✅\n\nMegerősítjük, hogy *${plate}* rendszámú járművét átvettük.\n\nAmint elkészül az átnézés, értesítjük!\n\n– Autohaus Friedrich`
+    case 'checkout':
+      return `Kedves ${name}! 🎉\n\n*${plate}* rendszámú járműve elkészült és átvehető!\n\nNyitvatartás: H-P 8:00-18:00, Sz 9:00-13:00\n\n– Autohaus Friedrich`
+    case 'invoice':
+      return `Kedves ${name}! 📄\n\nA(z) *${data?.order_number || ''}* sz. számlát megküldjük.\n\nÖsszeg: *${data?.total_amount ? data.total_amount.toFixed(2) + ' CHF' : '–'}*\n\nKöszönjük a bizalmat! 🇨🇭\n\n– Autohaus Friedrich`
+    default: return ''
   }
 }
