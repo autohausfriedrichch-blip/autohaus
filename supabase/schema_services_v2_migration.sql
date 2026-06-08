@@ -5,6 +5,7 @@
 
 -- Alap oszlopok (ha hiányoznak)
 ALTER TABLE services ADD COLUMN IF NOT EXISTS category TEXT NOT NULL DEFAULT 'autószerviz';
+ALTER TABLE services ADD COLUMN IF NOT EXISTS service_type TEXT NOT NULL DEFAULT 'garage';
 ALTER TABLE services ADD COLUMN IF NOT EXISTS base_price NUMERIC;
 ALTER TABLE services ADD COLUMN IF NOT EXISTS duration_minutes INTEGER;
 ALTER TABLE services ADD COLUMN IF NOT EXISTS description TEXT;
