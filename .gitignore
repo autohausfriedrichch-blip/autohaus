@@ -3,3 +3,6 @@
 .next/
 node_modules/
 tsconfig.tsbuildinfo
+
+# Claude internal files
+.claude/
