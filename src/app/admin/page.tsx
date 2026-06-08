@@ -32,6 +32,7 @@ import { RoutePlannerPage } from '@/components/route/RoutePlannerPage'
 import { CustomerValuePage } from '@/components/customers/CustomerValuePage'
 import { CEODashboardPage } from '@/components/dashboard/CEODashboardPage'
 import { RegistrationScanPage } from '@/components/registration/RegistrationScanPage'
+import { InventoryPage } from '@/components/inventory/InventoryPage'
 import { MobileBottomNav } from '@/components/layout/MobileBottomNav'
 import { WorkOrderDetail } from '@/components/workorders/WorkOrderDetail'
 import type { Profile } from '@/lib/types'
@@ -68,6 +69,7 @@ const PAGE_TITLES: Record<string, string> = {
   parts_admin: 'Alkatrészek',
   settings: 'Beállítások',
   reviews: 'Review kérések',
+  inventory: 'Készlet & Árlista',
 }
 
 function AdminApp() {
@@ -164,6 +166,7 @@ function AdminApp() {
       case 'customer_value':   return <CustomerValuePage {...props} />
       case 'ceo_dashboard':       return <CEODashboardPage {...props} />
       case 'registration_scan':  return <RegistrationScanPage {...props} />
+      case 'inventory':          return <InventoryPage {...props} />
       default: return (
         <div className="flex flex-col items-center justify-center h-64 text-[#5a6a80]">
           <p className="text-lg font-medium">{pageTitle}</p>

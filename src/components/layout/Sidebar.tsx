@@ -114,7 +114,8 @@ const ADMIN_NAV: NavGroup[] = [
     icon: Package,
     roles: ['super_admin', 'admin'],
     children: [
-      { id: 'services',       label: 'Árlista' },
+      { id: 'services',   label: 'Árlista' },
+      { id: 'inventory',  label: 'Készlet & Árlista' },
     ],
   },
   {
