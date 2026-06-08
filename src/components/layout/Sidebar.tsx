@@ -119,6 +119,20 @@ const ADMIN_NAV: NavGroup[] = [
     ],
   },
   {
+    id: 'quality_control',
+    label: 'Minőségellenőrzés',
+    icon: CheckSquare,
+    direct: true,
+    roles: ['super_admin', 'admin'],
+  },
+  {
+    id: 'ai_assistant',
+    label: 'AI Asszisztens',
+    icon: Star,
+    direct: true,
+    roles: ['super_admin', 'admin', 'mechanic'],
+  },
+  {
     id: 'tasks',
     label: 'Feladatok',
     icon: ListTodo,
@@ -145,6 +159,7 @@ const MECHANIC_NAV: NavGroup[] = [
   { id: 'photos',       label: 'Fotók',               icon: Camera,       direct: true },
   { id: 'tasks',        label: 'Feladatok',            icon: ListTodo,     direct: true, badge: 'tasks' },
   { id: 'parts',        label: 'Alkatrész igénylés',  icon: Cog,          direct: true, badge: 'parts' },
+  { id: 'ai_assistant', label: 'AI Asszisztens',      icon: Star,         direct: true },
 ]
 
 // ─── Helper: which pages belong to a group ───────────────────────────────────

@@ -33,6 +33,8 @@ import { CustomerValuePage } from '@/components/customers/CustomerValuePage'
 import { CEODashboardPage } from '@/components/dashboard/CEODashboardPage'
 import { RegistrationScanPage } from '@/components/registration/RegistrationScanPage'
 import { InventoryPage } from '@/components/inventory/InventoryPage'
+import { QualityControlPage } from '@/components/quality-control/QualityControlPage'
+import AIAssistantPage from '@/components/ai-assistant/AIAssistantPage'
 import { MobileBottomNav } from '@/components/layout/MobileBottomNav'
 import { WorkOrderDetail } from '@/components/workorders/WorkOrderDetail'
 import type { Profile } from '@/lib/types'
@@ -70,6 +72,8 @@ const PAGE_TITLES: Record<string, string> = {
   settings: 'Beállítások',
   reviews: 'Review kérések',
   inventory: 'Készlet & Árlista',
+  quality_control: 'Minőségellenőrzés',
+  ai_assistant: 'AI Asszisztens',
 }
 
 function AdminApp() {
@@ -167,6 +171,8 @@ function AdminApp() {
       case 'ceo_dashboard':       return <CEODashboardPage {...props} />
       case 'registration_scan':  return <RegistrationScanPage {...props} />
       case 'inventory':          return <InventoryPage {...props} />
+      case 'quality_control':    return <QualityControlPage {...props} />
+      case 'ai_assistant':       return <AIAssistantPage {...props} />
       default: return (
         <div className="flex flex-col items-center justify-center h-64 text-[#5a6a80]">
           <p className="text-lg font-medium">{pageTitle}</p>
