@@ -1,6 +1,8 @@
 'use client'
-import { useEffect, useState, useCallback } from 'react'
+import { useEffect, useState, useCallback, useRef, memo } from 'react'
 import { createClient } from '@/lib/supabase/client'
+
+const supabase = createClient()
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Modal } from '@/components/ui/modal'
@@ -36,11 +38,14 @@ export function CustomersPage({ refreshKey }: { refreshKey: number; onRefresh: (
   }
 
   const handlePhoneChange = (raw: string) => {
+    // Store raw value while typing – format only on blur
+    setForm(f => ({ ...f, phone: raw, ...(whatsappSame ? { whatsapp: raw } : {}) }))
+  }
+
+  const handlePhoneBlur = (raw: string) => {
     const formatted = formatPhone(raw)
     setForm(f => ({ ...f, phone: formatted, ...(whatsappSame ? { whatsapp: formatted } : {}) }))
   }
-  const supabase = createClient()
-
   const load = useCallback(async () => {
     setLoading(true)
     const { data } = await supabase
@@ -184,16 +189,17 @@ export function CustomersPage({ refreshKey }: { refreshKey: number; onRefresh: (
         <div className="grid grid-cols-2 gap-3">
           <FormGroup className="col-span-2">
             <FormLabel>Vollständiger Name *</FormLabel>
-            <Input value={form.full_name || ''} onChange={e => setForm(f => ({ ...f, full_name: e.target.value }))} placeholder="Max Mustermann" />
+            <Input defaultValue={form.full_name || ''} onBlur={e => setForm(f => ({ ...f, full_name: e.target.value }))} placeholder="Max Mustermann" key={`name-${editCustomer?.id}`} />
           </FormGroup>
           <FormGroup className="col-span-2">
             <FormLabel>Telefonszám *</FormLabel>
             <Input
               type="tel"
-              value={form.phone || ''}
+              defaultValue={form.phone || ''}
               onChange={e => handlePhoneChange(e.target.value)}
-              onBlur={e => handlePhoneChange(e.target.value)}
+              onBlur={e => handlePhoneBlur(e.target.value)}
               placeholder="+41 79 123 45 67"
+              key={`phone-${editCustomer?.id}`}
             />
           </FormGroup>
           <FormGroup className="col-span-2">
@@ -214,26 +220,27 @@ export function CustomersPage({ refreshKey }: { refreshKey: number; onRefresh: (
             </div>
             <Input
               type="tel"
-              value={form.whatsapp || ''}
-              onChange={e => { setWhatsappSame(false); setForm(f => ({ ...f, whatsapp: e.target.value })) }}
+              defaultValue={form.whatsapp || ''}
+              onBlur={e => { setForm(f => ({ ...f, whatsapp: e.target.value })) }}
               placeholder="+41 79 123 45 67"
               disabled={whatsappSame}
               className={whatsappSame ? 'opacity-50' : ''}
+              key={`wa-${editCustomer?.id}-${whatsappSame}`}
             />
           </FormGroup>
           <FormGroup className="col-span-2">
             <FormLabel>E-Mail</FormLabel>
-            <Input type="email" value={form.email || ''} onChange={e => setForm(f => ({ ...f, email: e.target.value }))} placeholder="max@example.com" />
+            <Input type="email" defaultValue={form.email || ''} onBlur={e => setForm(f => ({ ...f, email: e.target.value }))} placeholder="max@example.com" key={`email-${editCustomer?.id}`} />
           </FormGroup>
           <FormGroup>
             <FormLabel>Strasse & Nr.</FormLabel>
-            <Input value={form.address || ''} onChange={e => setForm(f => ({ ...f, address: e.target.value }))} placeholder="Musterstrasse 1" />
+            <Input defaultValue={form.address || ''} onBlur={e => setForm(f => ({ ...f, address: e.target.value }))} placeholder="Musterstrasse 1" key={`addr-${editCustomer?.id}`} />
           </FormGroup>
           <FormGroup>
             <FormLabel>PLZ / Ort</FormLabel>
             <div className="flex gap-2">
-              <Input value={form.postal_code || ''} onChange={e => setForm(f => ({ ...f, postal_code: e.target.value }))} placeholder="8000" className="w-20" />
-              <Input value={form.city || ''} onChange={e => setForm(f => ({ ...f, city: e.target.value }))} placeholder="Zürich" />
+              <Input defaultValue={form.postal_code || ''} onBlur={e => setForm(f => ({ ...f, postal_code: e.target.value }))} placeholder="8000" className="w-20" key={`plz-${editCustomer?.id}`} />
+              <Input defaultValue={form.city || ''} onBlur={e => setForm(f => ({ ...f, city: e.target.value }))} placeholder="Zürich" key={`city-${editCustomer?.id}`} />
             </div>
           </FormGroup>
           <FormGroup>
@@ -253,7 +260,7 @@ export function CustomersPage({ refreshKey }: { refreshKey: number; onRefresh: (
           </FormGroup>
           <FormGroup className="col-span-2">
             <FormLabel>Notizen</FormLabel>
-            <Textarea value={form.notes || ''} onChange={e => setForm(f => ({ ...f, notes: e.target.value }))} placeholder="Interne Notizen..." />
+            <Textarea defaultValue={form.notes || ''} onBlur={e => setForm(f => ({ ...f, notes: e.target.value }))} placeholder="Interne Notizen..." key={`notes-${editCustomer?.id}`} />
           </FormGroup>
         </div>
       </Modal>
