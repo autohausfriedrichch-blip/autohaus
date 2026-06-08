@@ -22,6 +22,7 @@ import PickupDeliveryPage from '@/components/pickup/PickupDeliveryPage'
 import TechnicianPage from '@/components/technician/TechnicianPage'
 import { TasksPage } from '@/components/tasks/TasksPage'
 import { PartsPage } from '@/components/parts/PartsPage'
+import { SettingsPage } from '@/components/settings/SettingsPage'
 import type { Profile } from '@/lib/types'
 import { useRouter } from 'next/navigation'
 
@@ -132,6 +133,7 @@ function AdminApp() {
       case 'tasks':       return <TasksPage {...props} />
       case 'parts':
       case 'parts_admin': return <PartsPage {...props} />
+      case 'settings':    return <SettingsPage {...props} />
       default: return (
         <div className="flex flex-col items-center justify-center h-64 text-[#5a6a80]">
           <p className="text-lg font-medium">{pageTitle}</p>
