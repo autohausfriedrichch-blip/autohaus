@@ -90,7 +90,10 @@ export function WorkOrdersPage({ refreshKey, profile }: { refreshKey: number; on
       payment_status: form.payment_status || 'pending',
     }
     const { error } = await supabase.from('work_orders').insert(payload)
-    if (error) { toast('Hiba: ' + error.message, 'error') }
+    if (error) {
+      console.error('Work order insert error:', error)
+      toast(`Hiba: ${error.message} (${error.code})`, 'error')
+    }
     else { toast('Munkalap létrehozva'); setModalOpen(false); load() }
     setSaving(false)
   }
