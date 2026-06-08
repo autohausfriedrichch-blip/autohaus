@@ -74,6 +74,7 @@ export function WorkOrdersPage({ refreshKey, profile }: { refreshKey: number; on
     setSaving(true)
     const payload = {
       customer_id: form.customer_id, vehicle_id: form.vehicle_id,
+      service_id: (form as any).service_id || null,
       service_type: form.service_type || null,
       status: form.status || 'new_booking',
       mechanic_id: form.mechanic_id || null,
