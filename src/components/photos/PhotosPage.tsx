@@ -2,7 +2,7 @@
 import { useEffect, useState, useCallback } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { useToast } from '@/components/ui/toast'
-import { Camera, Upload, X, CheckCircle, Loader2, Eye, EyeOff, ArrowLeft, Trash2, Key } from 'lucide-react'
+import { Camera, Upload, X, CheckCircle, Loader2, Eye, EyeOff, ArrowLeft, Trash2 } from 'lucide-react'
 
 const CATEGORIES = [
   'check-in', 'sérülés', 'diagnosztika', 'javítás közben',
@@ -15,29 +15,20 @@ interface FileItem {
   error?: string
 }
 
-const SK_KEY = 'ag_service_key'
-
 export function PhotosPage({ refreshKey, profile }: { refreshKey: number; onRefresh: () => void; profile?: any }) {
   const [photos, setPhotos] = useState<any[]>([])
   const [workOrders, setWorkOrders] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
-  const [view, setView] = useState<'gallery' | 'upload' | 'setup'>('gallery')
+  const [view, setView] = useState<'gallery' | 'upload'>('gallery')
   const [files, setFiles] = useState<FileItem[]>([])
   const [workOrderId, setWorkOrderId] = useState('')
   const [category, setCategory] = useState('check-in')
   const [visibleToCustomer, setVisibleToCustomer] = useState(false)
   const [uploading, setUploading] = useState(false)
-  const [serviceKey, setServiceKey] = useState('')
-  const [savedKey, setSavedKey] = useState('')
   const [filterWO, setFilterWO] = useState('')
   const { toast } = useToast()
   const supabase = createClient()
   const isAdmin = profile?.role === 'super_admin' || profile?.role === 'admin'
-
-  useEffect(() => {
-    const k = localStorage.getItem(SK_KEY) || ''
-    setSavedKey(k)
-  }, [])
 
   const load = useCallback(async () => {
     setLoading(true)
@@ -60,14 +51,13 @@ export function PhotosPage({ refreshKey, profile }: { refreshKey: number; onRefr
 
   useEffect(() => { load() }, [load])
 
-  const saveKey = () => {
-    if (!serviceKey.trim()) return
-    localStorage.setItem(SK_KEY, serviceKey.trim())
-    setSavedKey(serviceKey.trim())
-    setServiceKey('')
-    toast('Service key elmentve ✅')
-    setView('upload')
-  }
+  const toBase64 = (file: File): Promise<string> =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader()
+      reader.onload = () => resolve(reader.result as string)
+      reader.onerror = reject
+      reader.readAsDataURL(file)
+    })
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files?.length) return
@@ -79,8 +69,6 @@ export function PhotosPage({ refreshKey, profile }: { refreshKey: number; onRefr
   }
 
   const handleUpload = async () => {
-    const key = savedKey
-    if (!key) { setView('setup'); return }
     if (!workOrderId) { toast('Válassz munkalapot!', 'error'); return }
     if (!files.length) { toast('Válassz képeket!', 'error'); return }
 
@@ -94,32 +82,19 @@ export function PhotosPage({ refreshKey, profile }: { refreshKey: number; onRefr
       updated[i] = { ...updated[i], status: 'uploading' }
       setFiles([...updated])
 
-      const fd = new FormData()
-      fd.append('file', updated[i].file)
-      fd.append('work_order_id', workOrderId)
-      fd.append('category', category)
-      fd.append('visible_to_customer', String(visibleToCustomer))
-      fd.append('uploaded_by_name', profile?.full_name || '')
-      fd.append('uploaded_by', profile?.id || '')
-      fd.append('order_number', wo?.order_number || '')
-      fd.append('customer_name', wo?.customer?.full_name || '')
-
       try {
-        const res = await fetch('/api/photos/upload', {
-          method: 'POST',
-          headers: { 'x-service-key': key },
-          body: fd,
+        const base64 = await toBase64(updated[i].file)
+
+        const { error } = await supabase.from('work_order_photos').insert({
+          work_order_id: workOrderId,
+          url: base64,
+          category,
+          is_visible_to_customer: visibleToCustomer,
         })
-        const json = await res.json()
-        if (json.error) {
-          updated[i] = { ...updated[i], status: 'error', error: json.error }
-          toast(`Hiba: ${json.error}`, 'error')
-          if (json.error.includes('Service key')) {
-            localStorage.removeItem(SK_KEY)
-            setSavedKey('')
-            setView('setup')
-            break
-          }
+
+        if (error) {
+          updated[i] = { ...updated[i], status: 'error', error: error.message }
+          toast(`Hiba: ${error.message}`, 'error')
         } else {
           updated[i] = { ...updated[i], status: 'done' }
           ok++
@@ -131,11 +106,23 @@ export function PhotosPage({ refreshKey, profile }: { refreshKey: number; onRefr
       setFiles([...updated])
     }
 
+    // Notify Barbara
+    if (ok > 0 && profile?.full_name) {
+      await supabase.from('notifications').insert({
+        type: 'photo_uploaded',
+        title: `${profile.full_name} ${ok} fotót töltött fel`,
+        message: `${profile.full_name} ${ok} db ${category} fotót töltött fel – ${wo?.order_number || ''} (${wo?.customer?.full_name || ''})`,
+        work_order_id: workOrderId,
+        created_by: profile?.id,
+        is_read: false,
+      })
+    }
+
     setUploading(false)
     if (ok > 0) {
       toast(`✅ ${ok} fotó feltöltve!`)
       load()
-      setTimeout(() => { setView('gallery'); setFiles([]) }, 1500)
+      setTimeout(() => { setView('gallery'); setFiles([]) }, 1200)
     }
   }
 
@@ -159,70 +146,14 @@ export function PhotosPage({ refreshKey, profile }: { refreshKey: number; onRefr
     return acc
   }, {})
 
-  // ── SERVICE KEY SETUP ────────────────────────────────────────────────────────
-  if (view === 'setup') {
-    return (
-      <div className="animate-fade-in max-w-md mx-auto space-y-4 pt-4">
-        <button onClick={() => setView('gallery')} className="flex items-center gap-2 text-sm text-[#5a6a80] hover:text-[#0B1E3D]">
-          <ArrowLeft size={16} /> Vissza
-        </button>
-        <div className="bg-white rounded-xl p-6 shadow-sm space-y-4">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-[#C9A84C] rounded-xl flex items-center justify-center">
-              <Key size={18} className="text-[#0B1E3D]" />
-            </div>
-            <div>
-              <h2 className="font-bold text-[#0B1E3D]">Egyszer szükséges beállítás</h2>
-              <p className="text-xs text-[#5a6a80]">Supabase service_role kulcs megadása</p>
-            </div>
-          </div>
-          <div className="bg-blue-50 rounded-lg p-3 text-xs text-blue-800 space-y-1">
-            <p className="font-semibold">Hol találod:</p>
-            <p>1. Supabase Dashboard → Settings → API</p>
-            <p>2. "Project API keys" szekció</p>
-            <p>3. <strong>service_role</strong> → Reveal gomb</p>
-            <p>4. Az <code className="bg-blue-100 px-1 rounded">eyJhbGci...</code> kezdetű kulcsot másold be</p>
-          </div>
-          <input
-            type="password"
-            value={serviceKey}
-            onChange={e => setServiceKey(e.target.value)}
-            placeholder="service_role kulcs beillesztése..."
-            className="w-full border border-gray-200 rounded-lg p-3 text-sm outline-none focus:border-[#0B1E3D]"
-          />
-          <button
-            onClick={saveKey}
-            disabled={!serviceKey.trim()}
-            className="w-full py-3 bg-[#0B1E3D] text-white rounded-xl font-semibold disabled:opacity-50"
-          >
-            Mentés és folytatás
-          </button>
-        </div>
-      </div>
-    )
-  }
-
   // ── UPLOAD VIEW ──────────────────────────────────────────────────────────────
   if (view === 'upload') {
     return (
       <div className="animate-fade-in max-w-lg mx-auto space-y-4 pb-8">
-        <div className="flex items-center justify-between">
-          <button onClick={() => { setView('gallery'); setFiles([]) }}
-            className="flex items-center gap-2 text-sm text-[#5a6a80] hover:text-[#0B1E3D]">
-            <ArrowLeft size={16} /> Vissza
-          </button>
-          <button onClick={() => setView('setup')}
-            className="flex items-center gap-2 text-xs text-[#5a6a80] hover:text-[#C9A84C]">
-            <Key size={12} /> Kulcs beállítása
-          </button>
-        </div>
-
-        {!savedKey && (
-          <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 text-sm text-amber-800">
-            ⚠️ Service key nincs beállítva.{' '}
-            <button onClick={() => setView('setup')} className="font-semibold underline">Beállítás most →</button>
-          </div>
-        )}
+        <button onClick={() => { setView('gallery'); setFiles([]) }}
+          className="flex items-center gap-2 text-sm text-[#5a6a80] hover:text-[#0B1E3D]">
+          <ArrowLeft size={16} /> Vissza
+        </button>
 
         <div className="bg-white rounded-xl p-5 shadow-sm space-y-4">
           <h2 className="font-bold text-[#0B1E3D] text-lg">📷 Fotók feltöltése</h2>
@@ -285,7 +216,7 @@ export function PhotosPage({ refreshKey, profile }: { refreshKey: number; onRefr
                   <span className="text-xs text-[#5a6a80] shrink-0">{(item.file.size/1024/1024).toFixed(1)}MB</span>
                   {item.status === 'uploading' && <Loader2 size={15} className="text-blue-500 animate-spin shrink-0" />}
                   {item.status === 'done' && <CheckCircle size={15} className="text-green-500 shrink-0" />}
-                  {item.status === 'error' && <span className="text-xs text-red-500 shrink-0 max-w-[100px] truncate">{item.error}</span>}
+                  {item.status === 'error' && <span className="text-xs text-red-500 shrink-0">{item.error}</span>}
                   {item.status === 'pending' && !uploading && (
                     <button onClick={() => setFiles(p => p.filter((_, i) => i !== idx))}><X size={15} className="text-gray-400" /></button>
                   )}
@@ -294,7 +225,7 @@ export function PhotosPage({ refreshKey, profile }: { refreshKey: number; onRefr
             </div>
 
             {!allDone ? (
-              <button onClick={handleUpload} disabled={uploading || !savedKey}
+              <button onClick={handleUpload} disabled={uploading}
                 className="w-full py-4 bg-[#C9A84C] hover:bg-[#b8943f] disabled:opacity-50 text-[#0B1E3D] rounded-xl font-bold text-base flex items-center justify-center gap-2 transition-colors">
                 {uploading
                   ? <><Loader2 size={18} className="animate-spin" /> Feltöltés folyamatban...</>
@@ -308,7 +239,7 @@ export function PhotosPage({ refreshKey, profile }: { refreshKey: number; onRefr
 
             {!uploading && !allDone && (
               <label className="block">
-                <div className="flex items-center justify-center gap-2 w-full py-2.5 border border-dashed border-gray-300 rounded-lg text-sm text-[#5a6a80] cursor-pointer hover:border-[#0B1E3D] hover:text-[#0B1E3D] transition-colors">
+                <div className="flex items-center justify-center gap-2 w-full py-2.5 border border-dashed border-gray-300 rounded-lg text-sm text-[#5a6a80] cursor-pointer hover:border-[#0B1E3D]">
                   <Camera size={14} /> További képek hozzáadása
                 </div>
                 <input type="file" accept="image/*" multiple className="hidden" onChange={handleFileChange} />
@@ -331,7 +262,7 @@ export function PhotosPage({ refreshKey, profile }: { refreshKey: number; onRefr
             <option key={wo.id} value={wo.id}>{wo.order_number} – {wo.customer?.full_name}</option>
           ))}
         </select>
-        <button onClick={() => savedKey ? setView('upload') : setView('setup')}
+        <button onClick={() => setView('upload')}
           className="flex items-center gap-2 px-4 py-2 bg-[#0B1E3D] text-white rounded-lg text-sm font-semibold hover:bg-[#142a50]">
           <Upload size={14} /> Fotó feltöltés
         </button>
@@ -362,9 +293,7 @@ export function PhotosPage({ refreshKey, profile }: { refreshKey: number; onRefr
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2 p-3">
               {gPhotos.map(p => (
                 <div key={p.id} className="bg-gray-50 rounded-lg overflow-hidden border border-gray-100">
-                  <a href={p.url} target="_blank" rel="noopener noreferrer">
-                    <img src={p.url} alt={p.category} className="w-full h-28 object-cover" loading="lazy" />
-                  </a>
+                  <img src={p.url} alt={p.category} className="w-full h-28 object-cover" loading="lazy" />
                   <div className="p-1.5">
                     <div className="text-[10px] font-semibold text-[#5a6a80] uppercase truncate">{p.category}</div>
                     <div className="flex items-center justify-between mt-0.5">
