@@ -187,16 +187,7 @@ export function WorkOrdersPage({ refreshKey, profile }: { refreshKey: number; on
                     className="text-[11px] border border-[rgba(11,30,61,0.18)] rounded px-2 py-1 bg-white outline-none cursor-pointer">
                     {STATUSES.map(s => <option key={s} value={s}>{STATUS_LABELS[s]}</option>)}
                   </select>
-                  <div className="flex gap-1">
-                    <DocumentActions type="workorder" data={o} customerId={(o as any).customer_id} workOrderId={o.id} />
-                    <DocumentActions type="checkin" data={o} small />
-                    {['ready','checkout_ready','delivered','closed'].includes(o.status) && (
-                      <>
-                        <DocumentActions type="checkout" data={o} small />
-                        <DocumentActions type="invoice" data={o} small />
-                      </>
-                    )}
-                  </div>
+                  <DocumentActions type={['ready','checkout_ready','delivered','closed'].includes(o.status) ? 'invoice' : 'workorder'} data={o} customerId={(o as any).customer_id} workOrderId={o.id} />
                 </div>
               </div>
             </div>
