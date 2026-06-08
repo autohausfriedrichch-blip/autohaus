@@ -3,22 +3,28 @@
 -- Advanced Service Pricing – Tábla migráció
 -- ═══════════════════════════════════════════════════════════════
 
--- Hiányzó alaposzlopok hozzáadása (ha az eredeti schema.sql nem futott)
+-- Hiányzó alaposzlopok hozzáadása (ha az eredeti schema.sql nem futott teljesen)
 DO $$
+DECLARE
+  col TEXT;
+  cols TEXT[][] := ARRAY[
+    ARRAY['category',               'TEXT NOT NULL DEFAULT ''autószerviz'''],
+    ARRAY['price',                  'NUMERIC'],
+    ARRAY['duration_minutes',       'INTEGER'],
+    ARRAY['description',            'TEXT'],
+    ARRAY['is_mobile',              'BOOLEAN NOT NULL DEFAULT FALSE'],
+    ARRAY['is_active',              'BOOLEAN NOT NULL DEFAULT TRUE'],
+    ARRAY['is_visible_to_customer', 'BOOLEAN NOT NULL DEFAULT TRUE']
+  ];
 BEGIN
-  IF NOT EXISTS (
-    SELECT 1 FROM information_schema.columns
-    WHERE table_name = 'services' AND column_name = 'category'
-  ) THEN
-    ALTER TABLE services ADD COLUMN category TEXT NOT NULL DEFAULT 'autószerviz';
-  END IF;
-
-  IF NOT EXISTS (
-    SELECT 1 FROM information_schema.columns
-    WHERE table_name = 'services' AND column_name = 'description'
-  ) THEN
-    ALTER TABLE services ADD COLUMN description TEXT;
-  END IF;
+  FOR i IN 1..array_length(cols, 1) LOOP
+    IF NOT EXISTS (
+      SELECT 1 FROM information_schema.columns
+      WHERE table_name = 'services' AND column_name = cols[i][1]
+    ) THEN
+      EXECUTE 'ALTER TABLE services ADD COLUMN ' || cols[i][1] || ' ' || cols[i][2];
+    END IF;
+  END LOOP;
 END $$;
 
 -- Új árazási oszlopok
