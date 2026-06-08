@@ -2,7 +2,7 @@
 import { useEffect, useState, useCallback } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { useToast } from '@/components/ui/toast'
-import { Camera, Upload, X, CheckCircle, Loader2, Eye, EyeOff, ArrowLeft, Trash2 } from 'lucide-react'
+import { Camera, Upload, X, CheckCircle, Loader2, Eye, EyeOff, ArrowLeft, Trash2, ShieldCheck, Clock } from 'lucide-react'
 
 const CATEGORIES = [
   'check-in', 'sérülés', 'diagnosztika', 'javítás közben',
@@ -26,8 +26,10 @@ export function PhotosPage({ refreshKey, profile }: { refreshKey: number; onRefr
   const [visibleToCustomer, setVisibleToCustomer] = useState(false)
   const [uploading, setUploading] = useState(false)
   const [filterWO, setFilterWO] = useState('')
+  const [confirmingIds, setConfirmingIds] = useState<Set<string>>(new Set())
   const { toast } = useToast()
   const supabase = createClient()
+  const isSuperAdmin = profile?.role === 'super_admin'
   const isAdmin = profile?.role === 'super_admin' || profile?.role === 'admin'
 
   const load = useCallback(async () => {
@@ -90,6 +92,7 @@ export function PhotosPage({ refreshKey, profile }: { refreshKey: number; onRefr
           url: base64,
           category,
           is_visible_to_customer: visibleToCustomer,
+          confirmed: false,
         })
 
         if (error) {
@@ -106,12 +109,11 @@ export function PhotosPage({ refreshKey, profile }: { refreshKey: number; onRefr
       setFiles([...updated])
     }
 
-    // Notify Barbara
     if (ok > 0 && profile?.full_name) {
       await supabase.from('notifications').insert({
         type: 'photo_uploaded',
         title: `${profile.full_name} ${ok} fotót töltött fel`,
-        message: `${profile.full_name} ${ok} db ${category} fotót töltött fel – ${wo?.order_number || ''} (${wo?.customer?.full_name || ''})`,
+        message: `${profile.full_name} ${ok} db ${category} fotót töltött fel – ${wo?.order_number || ''} (${wo?.customer?.full_name || ''}) – Rögzítés szükséges!`,
         work_order_id: workOrderId,
         created_by: profile?.id,
         is_read: false,
@@ -120,10 +122,29 @@ export function PhotosPage({ refreshKey, profile }: { refreshKey: number; onRefr
 
     setUploading(false)
     if (ok > 0) {
-      toast(`✅ ${ok} fotó feltöltve!`)
+      toast(`✅ ${ok} fotó feltöltve! Rögzítésre vár.`)
       load()
       setTimeout(() => { setView('gallery'); setFiles([]) }, 1200)
     }
+  }
+
+  const confirmPhoto = async (id: string) => {
+    setConfirmingIds(prev => new Set(prev).add(id))
+    await supabase.from('work_order_photos').update({ confirmed: true }).eq('id', id)
+    await load()
+    setConfirmingIds(prev => { const s = new Set(prev); s.delete(id); return s })
+  }
+
+  const confirmAllPending = async (woId: string) => {
+    const pendingIds = photos
+      .filter(p => p.work_order_id === woId && !p.confirmed)
+      .map(p => p.id)
+    if (!pendingIds.length) return
+    setConfirmingIds(prev => new Set([...prev, ...pendingIds]))
+    await supabase.from('work_order_photos').update({ confirmed: true }).in('id', pendingIds)
+    toast(`✅ ${pendingIds.length} fotó rögzítve!`)
+    await load()
+    setConfirmingIds(new Set())
   }
 
   const toggleVisibility = async (id: string, cur: boolean) => {
@@ -145,6 +166,9 @@ export function PhotosPage({ refreshKey, profile }: { refreshKey: number; onRefr
     acc[k].push(p)
     return acc
   }, {})
+
+  // pending count for badge
+  const pendingCount = photos.filter(p => !p.confirmed).length
 
   // ── UPLOAD VIEW ──────────────────────────────────────────────────────────────
   if (view === 'upload') {
@@ -262,6 +286,11 @@ export function PhotosPage({ refreshKey, profile }: { refreshKey: number; onRefr
             <option key={wo.id} value={wo.id}>{wo.order_number} – {wo.customer?.full_name}</option>
           ))}
         </select>
+        {isSuperAdmin && pendingCount > 0 && (
+          <span className="flex items-center gap-1.5 px-3 py-1.5 bg-amber-50 border border-amber-200 rounded-lg text-xs font-semibold text-amber-700">
+            <Clock size={12} /> {pendingCount} rögzítésre vár
+          </span>
+        )}
         <button onClick={() => setView('upload')}
           className="flex items-center gap-2 px-4 py-2 bg-[#0B1E3D] text-white rounded-lg text-sm font-semibold hover:bg-[#142a50]">
           <Upload size={14} /> Fotó feltöltés
@@ -276,49 +305,87 @@ export function PhotosPage({ refreshKey, profile }: { refreshKey: number; onRefr
           <p className="text-sm">Még nincsenek fotók</p>
         </div>
       ) : (
-        Object.entries(grouped).map(([orderNum, gPhotos]) => (
-          <div key={orderNum} className="bg-white rounded-xl shadow-sm overflow-hidden">
-            <div className="px-4 py-3 border-b border-gray-100 flex items-center justify-between">
-              <div className="flex items-center gap-2 flex-wrap">
-                <span className="font-semibold text-[#0B1E3D] text-sm">{orderNum}</span>
-                {gPhotos[0]?.work_order?.customer?.full_name && (
-                  <span className="text-xs text-[#5a6a80]">– {gPhotos[0].work_order.customer.full_name}</span>
-                )}
-                {gPhotos[0]?.work_order?.vehicle?.license_plate && (
-                  <span className="text-xs font-bold bg-[#0B1E3D] text-white px-2 py-0.5 rounded">{gPhotos[0].work_order.vehicle.license_plate}</span>
-                )}
+        Object.entries(grouped).map(([orderNum, gPhotos]) => {
+          const pendingInGroup = gPhotos.filter(p => !p.confirmed)
+          const woId = gPhotos[0]?.work_order_id
+          return (
+            <div key={orderNum} className="bg-white rounded-xl shadow-sm overflow-hidden">
+              <div className="px-4 py-3 border-b border-gray-100 flex items-center justify-between flex-wrap gap-2">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className="font-semibold text-[#0B1E3D] text-sm">{orderNum}</span>
+                  {gPhotos[0]?.work_order?.customer?.full_name && (
+                    <span className="text-xs text-[#5a6a80]">– {gPhotos[0].work_order.customer.full_name}</span>
+                  )}
+                  {gPhotos[0]?.work_order?.vehicle?.license_plate && (
+                    <span className="text-xs font-bold bg-[#0B1E3D] text-white px-2 py-0.5 rounded">{gPhotos[0].work_order.vehicle.license_plate}</span>
+                  )}
+                  {pendingInGroup.length > 0 && (
+                    <span className="text-xs bg-amber-100 text-amber-700 px-2 py-0.5 rounded-full font-medium">
+                      {pendingInGroup.length} függőben
+                    </span>
+                  )}
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-xs text-[#5a6a80]">{gPhotos.length} fotó</span>
+                  {isSuperAdmin && pendingInGroup.length > 0 && (
+                    <button
+                      onClick={() => confirmAllPending(woId)}
+                      className="flex items-center gap-1.5 px-3 py-1.5 bg-[#0B1E3D] hover:bg-[#142a50] text-white text-xs font-bold rounded-lg transition-colors"
+                    >
+                      <ShieldCheck size={13} /> Összes rögzítése ({pendingInGroup.length})
+                    </button>
+                  )}
+                </div>
               </div>
-              <span className="text-xs text-[#5a6a80] shrink-0">{gPhotos.length} fotó</span>
-            </div>
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2 p-3">
-              {gPhotos.map(p => (
-                <div key={p.id} className="bg-gray-50 rounded-lg overflow-hidden border border-gray-100">
-                  <img src={p.url} alt={p.category} className="w-full h-28 object-cover" loading="lazy" />
-                  <div className="p-1.5">
-                    <div className="text-[10px] font-semibold text-[#5a6a80] uppercase truncate">{p.category}</div>
-                    <div className="flex items-center justify-between mt-0.5">
-                      <div className="flex items-center gap-1">
-                        {p.is_visible_to_customer ? <Eye size={9} className="text-emerald-500" /> : <EyeOff size={9} className="text-gray-400" />}
-                        <span className="text-[9px] text-[#8fa0b5]">{p.is_visible_to_customer ? 'Látható' : 'Belső'}</span>
-                      </div>
-                      {isAdmin && (
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2 p-3">
+                {gPhotos.map(p => (
+                  <div key={p.id} className={`rounded-lg overflow-hidden border ${
+                    !p.confirmed ? 'border-amber-300 bg-amber-50' : 'border-gray-100 bg-gray-50'
+                  }`}>
+                    <div className="relative">
+                      <img src={p.url} alt={p.category} className={`w-full h-28 object-cover ${!p.confirmed ? 'opacity-70' : ''}`} loading="lazy" />
+                      {!p.confirmed && (
+                        <div className="absolute top-1 left-1 bg-amber-500 text-white text-[9px] font-bold px-1.5 py-0.5 rounded flex items-center gap-0.5">
+                          <Clock size={8} /> Függőben
+                        </div>
+                      )}
+                    </div>
+                    <div className="p-1.5">
+                      <div className="text-[10px] font-semibold text-[#5a6a80] uppercase truncate">{p.category}</div>
+                      <div className="flex items-center justify-between mt-0.5 gap-1">
+                        <div className="flex items-center gap-1">
+                          {p.is_visible_to_customer ? <Eye size={9} className="text-emerald-500" /> : <EyeOff size={9} className="text-gray-400" />}
+                          <span className="text-[9px] text-[#8fa0b5]">{p.is_visible_to_customer ? 'Látható' : 'Belső'}</span>
+                        </div>
                         <div className="flex gap-1 items-center">
-                          <button onClick={() => toggleVisibility(p.id, p.is_visible_to_customer)}
-                            className="text-[9px] text-blue-500 hover:underline">
-                            {p.is_visible_to_customer ? 'Elrejt' : 'Látható'}
-                          </button>
+                          {isSuperAdmin && !p.confirmed && (
+                            <button
+                              onClick={() => confirmPhoto(p.id)}
+                              disabled={confirmingIds.has(p.id)}
+                              className="flex items-center gap-0.5 text-[9px] bg-[#0B1E3D] text-white px-1.5 py-0.5 rounded font-bold hover:bg-[#142a50] disabled:opacity-50"
+                            >
+                              {confirmingIds.has(p.id) ? <Loader2 size={8} className="animate-spin" /> : <ShieldCheck size={8} />}
+                              Rögzít
+                            </button>
+                          )}
+                          {isAdmin && (
+                            <button onClick={() => toggleVisibility(p.id, p.is_visible_to_customer)}
+                              className="text-[9px] text-blue-500 hover:underline">
+                              {p.is_visible_to_customer ? 'Elrejt' : 'Látható'}
+                            </button>
+                          )}
                           <button onClick={() => deletePhoto(p.id)}>
                             <Trash2 size={9} className="text-[#C9384C]" />
                           </button>
                         </div>
-                      )}
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
-          </div>
-        ))
+          )
+        })
       )}
     </div>
   )
