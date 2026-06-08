@@ -162,7 +162,7 @@ export function RemindersPage({ refreshKey, onRefresh }: { refreshKey: number; o
     const [{ data: rData }, { data: vData }] = await Promise.all([
       supabase
         .from('maintenance_reminders')
-        .select('*, vehicle:vehicles(make,model,license_plate), customer:customers(full_name,phone,whatsapp)')
+        .select('*')
         .order('due_date'),
       supabase.from('vehicles').select('id,make,model,license_plate,customer_id').order('make'),
     ])

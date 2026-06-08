@@ -49,7 +49,7 @@ export function TasksPage({ refreshKey, onRefresh }: { refreshKey: number; onRef
   const load = useCallback(async () => {
     setLoading(true)
     const [{ data: t, error }, { data: p }, { data: c }, { data: wo }] = await Promise.all([
-      supabase.from('tasks').select('*, assignee:profiles!tasks_assigned_to_fkey(full_name), customer:customers(full_name), work_order:work_orders(order_number)').order('due_date', { ascending: true, nullsFirst: false }),
+      supabase.from('tasks').select('*, customer:customers(full_name), work_order:work_orders(order_number)').order('due_date', { ascending: true, nullsFirst: false }),
       supabase.from('profiles').select('id,full_name,role').order('full_name'),
       supabase.from('customers').select('id,full_name').order('full_name'),
       supabase.from('work_orders').select('id,order_number,customer_id').not('status','in','(delivered,closed)'),

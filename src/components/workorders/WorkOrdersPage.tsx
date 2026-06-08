@@ -9,6 +9,8 @@ import { StatusBadge } from '@/components/ui/badge'
 import { useToast } from '@/components/ui/toast'
 import { DocumentActions } from '@/components/documents/DocumentActions'
 import { TimeTracker } from '@/components/timetracker/TimeTracker'
+import { ServiceCalculator } from '@/components/services/ServiceCalculator'
+import type { ServiceLineItem } from '@/components/services/ServiceCalculator'
 import { Plus, Search, ChevronDown, ChevronUp, Clock } from 'lucide-react'
 import type { WorkOrder } from '@/lib/types'
 import { formatCurrency, formatDate, STATUS_LABELS } from '@/lib/utils'
@@ -32,6 +34,7 @@ export function WorkOrdersPage({ refreshKey, profile }: { refreshKey: number; on
   const [form, setForm] = useState<Partial<WorkOrder>>({})
   const [saving, setSaving] = useState(false)
   const [laborCost, setLaborCost] = useState(0)
+  const [serviceItemsMap, setServiceItemsMap] = useState<Record<string, ServiceLineItem[]>>({})
   const { toast } = useToast()
   const supabase = createClient()
   const isMechanic = profile?.role === 'mechanic'
@@ -202,6 +205,20 @@ export function WorkOrdersPage({ refreshKey, profile }: { refreshKey: number; on
                           </>
                         )}
                       </div>
+                    </div>
+
+                    {/* Service Calculator */}
+                    <div>
+                      <div className="text-[11px] font-semibold text-[#5a6a80] uppercase tracking-wider mb-2">Szolgáltatások & Árak</div>
+                      <ServiceCalculator
+                        items={serviceItemsMap[o.id] || []}
+                        onChange={items => {
+                          setServiceItemsMap(prev => ({ ...prev, [o.id]: items }))
+                          const labor = items.reduce((s, i) => s + i.final_price, 0)
+                          updateLaborCost(o.id, labor, o.parts_cost || 0)
+                        }}
+                        hourlyRateDefault={125}
+                      />
                     </div>
 
                     {/* Details grid */}

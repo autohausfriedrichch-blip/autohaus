@@ -48,7 +48,7 @@ export function PartsPage({ refreshKey, onRefresh }: { refreshKey: number; onRef
     setLoading(true)
     const { data, error } = await supabase
       .from('parts_requests')
-      .select('*, work_order:work_orders(order_number, customer:customers(full_name)), requested_by:profiles(full_name)')
+      .select('*, work_order:work_orders(order_number)')
       .order('created_at', { ascending: false })
 
     if (error?.code === '42P01') { setTableExists(false); setLoading(false); return }
