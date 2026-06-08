@@ -95,20 +95,16 @@ export function PhotosPage({ refreshKey, profile }: { refreshKey: number; onRefr
 
       const { data: { publicUrl } } = supabase.storage.from('photos').getPublicUrl(path)
 
-      const insertPayload = {
+      const { error: dbError } = await supabase.from('work_order_photos').insert({
         work_order_id: workOrderId,
         url: publicUrl,
-        category: category,
+        category,
         is_visible_to_customer: visibleToCustomer,
-      }
-      console.log('Inserting photo:', insertPayload)
-
-      const { error: dbError } = await supabase.from('work_order_photos').insert(insertPayload)
+      })
 
       if (dbError) {
-        console.error('DB error full:', JSON.stringify(dbError))
         updated[i] = { ...updated[i], status: 'error', error: dbError.message }
-        toast(`DB hiba: ${dbError.code} – ${dbError.message} – ${dbError.details}`, 'error')
+        toast(`DB hiba: ${dbError.message}`, 'error')
       } else {
         updated[i] = { ...updated[i], status: 'done' }
         successCount++
