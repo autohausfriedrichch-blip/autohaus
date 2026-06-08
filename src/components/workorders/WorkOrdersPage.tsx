@@ -7,8 +7,6 @@ import { Input, FormGroup, FormLabel, Select, Textarea } from '@/components/ui/f
 import { StatusBadge } from '@/components/ui/badge'
 import { useToast } from '@/components/ui/toast'
 import { DocumentActions } from '@/components/documents/DocumentActions'
-import { ServiceCalculator } from '@/components/services/ServiceCalculator'
-import type { ServiceLineItem } from '@/components/services/ServiceCalculator'
 import { Plus, Search, ExternalLink } from 'lucide-react'
 import type { WorkOrder } from '@/lib/types'
 import { formatCurrency, formatDate, STATUS_LABELS } from '@/lib/utils'
@@ -38,7 +36,6 @@ export function WorkOrdersPage({ refreshKey, profile }: { refreshKey: number; on
   const [detailOrderId, setDetailOrderId] = useState<string | null>(null)
   const [form, setForm] = useState<Partial<WorkOrder>>({})
   const [saving, setSaving] = useState(false)
-  const [serviceItemsMap, setServiceItemsMap] = useState<Record<string, ServiceLineItem[]>>({})
   const { toast } = useToast()
   const supabase = createClient()
   const isMechanic = profile?.role === 'mechanic'
