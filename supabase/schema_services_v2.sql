@@ -1,7 +1,13 @@
 -- Advanced Service Pricing System – Schema Migration
 -- Run this in Supabase SQL Editor
 
--- ── 1. Extend services table ──────────────────────────────────────────────────
+-- ── 1. Ensure base columns exist (in case original schema.sql wasn't fully run) ─
+
+ALTER TABLE services
+  ADD COLUMN IF NOT EXISTS category TEXT NOT NULL DEFAULT 'autószerviz',
+  ADD COLUMN IF NOT EXISTS description TEXT;
+
+-- ── 2. Extend services table ──────────────────────────────────────────────────
 
 ALTER TABLE services
   ADD COLUMN IF NOT EXISTS pricing_type TEXT NOT NULL DEFAULT 'fixed'
