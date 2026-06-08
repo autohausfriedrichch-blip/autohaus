@@ -151,7 +151,7 @@ export default function GaragePage({ refreshKey, onRefresh }: { refreshKey: numb
     setLoading(true)
     const { data, error } = await supabase
       .from('work_orders')
-      .select('*, customer:customers(full_name,phone), vehicle:vehicles(make,model,license_plate)')
+      .select('*, customer:customers(full_name,phone), vehicle:vehicles(make,model,license_plate), mechanic:profiles!work_orders_mechanic_id_fkey(full_name)')
       .order('scheduled_date', { ascending: true })
       .order('scheduled_time', { ascending: true })
     if (error) {
