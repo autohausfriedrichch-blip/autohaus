@@ -89,21 +89,26 @@ export function PhotosPage({ refreshKey, profile }: { refreshKey: number; onRefr
       if (uploadError) {
         updated[i] = { ...updated[i], status: 'error', error: uploadError.message }
         setFiles([...updated])
-        toast(`Hiba: ${uploadError.message}`, 'error')
+        toast(`Storage hiba: ${uploadError.message}`, 'error')
         continue
       }
 
       const { data: { publicUrl } } = supabase.storage.from('photos').getPublicUrl(path)
-      const { error: dbError } = await supabase.from('work_order_photos').insert({
+
+      const insertPayload = {
         work_order_id: workOrderId,
         url: publicUrl,
-        category,
+        category: category,
         is_visible_to_customer: visibleToCustomer,
-      })
+      }
+      console.log('Inserting photo:', insertPayload)
+
+      const { error: dbError } = await supabase.from('work_order_photos').insert(insertPayload)
 
       if (dbError) {
+        console.error('DB error full:', JSON.stringify(dbError))
         updated[i] = { ...updated[i], status: 'error', error: dbError.message }
-        toast(`DB hiba: ${dbError.message}`, 'error')
+        toast(`DB hiba: ${dbError.code} – ${dbError.message} – ${dbError.details}`, 'error')
       } else {
         updated[i] = { ...updated[i], status: 'done' }
         successCount++
