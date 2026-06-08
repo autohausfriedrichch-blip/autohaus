@@ -66,7 +66,7 @@ const navItems: NavSection[] = [
   },
   {
     section: 'Rendszer',
-    roles: ['super_admin'],
+    roles: ['super_admin', 'admin'],
     items: [
       { id: 'settings', label: 'Beállítások', icon: Settings },
     ]
