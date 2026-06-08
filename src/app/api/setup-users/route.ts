@@ -6,7 +6,7 @@ const SUPABASE_URL = 'https://zpsjlmtrhsnchndifejd.supabase.co'
 const USERS = [
   {
     email: 'adminfriedrichautohaus@gmail.com',
-    password: 'Puntigamer1989@',
+    password: 'AdminFA2026@',
     full_name: 'Barbara Friedrich',
     role: 'super_admin',
   },
