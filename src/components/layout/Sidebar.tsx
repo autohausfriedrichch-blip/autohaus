@@ -52,7 +52,7 @@ const navItems: NavSection[] = [
       { id: 'checkin', label: 'Check-In / Out', icon: CheckSquare },
       { id: 'garage', label: 'Garázs / Műhely', icon: Wrench },
       { id: 'pickup', label: 'Hozom-Viszem', icon: Route },
-      { id: 'mobile', label: 'Mobil Szerviz', icon: Truck },
+      { id: 'mobile_service', label: 'Mobile Service', icon: Truck },
       { id: 'route_planner', label: 'Útvonaltervező', icon: MapPin, roles: ['super_admin','admin'] },
     ]
   },

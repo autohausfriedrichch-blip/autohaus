@@ -16,6 +16,7 @@ import { ReportsPage } from '@/components/reports/ReportsPage'
 import { CheckInPage } from '@/components/checkin/CheckInPage'
 import { PhotosPage } from '@/components/photos/PhotosPage'
 import { MobilePage } from '@/components/mobile/MobilePage'
+import { MobileServicePage } from '@/components/mobile/MobileServicePage'
 import { FleetPage } from '@/components/fleet/FleetPage'
 import GaragePage from '@/components/garage/GaragePage'
 import PickupDeliveryPage from '@/components/pickup/PickupDeliveryPage'
@@ -52,6 +53,7 @@ const PAGE_TITLES: Record<string, string> = {
   bookings: 'Foglalások',
   checkin: 'Check-In / Check-Out',
   mobile: 'Mobil Szerviz',
+  mobile_service: 'Mobile Service',
   garage: 'Garázs / Műhely',
   pickup: 'Hozom-Viszem',
   quotes: 'Árajánlatok',
@@ -145,6 +147,7 @@ function AdminApp() {
       case 'checkin':     return <CheckInPage {...props} />
       case 'photos':      return <PhotosPage {...props} />
       case 'mobile':      return <MobilePage {...props} />
+      case 'mobile_service': return <MobileServicePage {...props} />
       case 'fleet':       return <FleetPage {...props} />
       case 'garage':      return <GaragePage {...props} profile={profile} />
       case 'pickup':      return <PickupDeliveryPage {...props} />
