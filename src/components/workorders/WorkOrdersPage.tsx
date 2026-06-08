@@ -38,7 +38,7 @@ export function WorkOrdersPage({ refreshKey }: { refreshKey: number; onRefresh: 
   const load = useCallback(async () => {
     setLoading(true)
     const [{ data: wo }, { data: c }, { data: v }, { data: m }] = await Promise.all([
-      supabase.from('work_orders').select('*, customer:customers(full_name,phone,email,whatsapp), vehicle:vehicles(make,model,license_plate,year), mechanic:profiles(full_name)').order('created_at', { ascending: false }),
+      supabase.from('work_orders').select('*, customer:customers(full_name,phone,email,whatsapp), vehicle:vehicles(make,model,license_plate,year)').order('created_at', { ascending: false }),
       supabase.from('customers').select('id, full_name').order('full_name'),
       supabase.from('vehicles').select('id, make, model, license_plate, customer_id'),
       supabase.from('profiles').select('id, full_name').in('role', ['mechanic', 'admin', 'super_admin']),
