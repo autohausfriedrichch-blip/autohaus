@@ -9,22 +9,11 @@ import { Input, FormGroup, FormLabel, Select, Textarea } from '@/components/ui/f
 import { Card } from '@/components/ui/card'
 import { formatDate } from '@/lib/utils'
 import {
-  Wrench,
-  Car,
-  Clock,
-  Play,
-  Pause,
-  Square,
-  Camera,
-  Package,
-  CheckCircle,
-  ChevronDown,
-  ChevronUp,
-  MapPin,
-  User,
-  AlertCircle,
-  ListChecks,
+  Wrench, Car, Clock, Play, Pause, Square, Camera, Package,
+  CheckCircle, ChevronDown, ChevronUp, MapPin, User, AlertCircle,
+  ListChecks, AlertTriangle,
 } from 'lucide-react'
+import { TechnicianFlagModal } from '@/components/services/ServiceCalculator'
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -896,8 +885,20 @@ function ActiveWorkOrderCard({
   onPhotoUpload: (orderId: string, file: File) => Promise<void>
 }) {
   const [expanded, setExpanded] = useState(false)
+  const [flagOpen, setFlagOpen] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
   const galleryInputRef = useRef<HTMLInputElement>(null)
+  const supabase = createClient()
+
+  const submitFlag = async (flag: { flag_type: string; description: string; extra_hours: number }) => {
+    await supabase.from('technician_flags').insert({
+      work_order_id: order.id,
+      flag_type: flag.flag_type,
+      description: flag.description,
+      extra_hours: flag.extra_hours,
+      created_by: null,
+    })
+  }
 
   return (
     <Card className="card-touchable">
@@ -928,6 +929,13 @@ function ActiveWorkOrderCard({
           {expanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
         </button>
       </div>
+
+      <TechnicianFlagModal
+        open={flagOpen}
+        workOrderId={order.id}
+        onClose={() => setFlagOpen(false)}
+        onSubmit={submitFlag}
+      />
 
       {/* Expanded content */}
       {expanded && (
@@ -965,6 +973,15 @@ function ActiveWorkOrderCard({
               Munka kész!
             </button>
           </div>
+
+          {/* Flag difficult work */}
+          <button
+            className="btn-mobile-action bg-amber-50 text-amber-800 border border-amber-300 w-full text-[13px]"
+            onClick={() => setFlagOpen(true)}
+          >
+            <AlertTriangle size={16} />
+            Nehézség / Kockázat jelölése
+          </button>
 
           {/* Photo upload – full width, camera-first on mobile */}
           <div className="grid grid-cols-2 gap-2">
