@@ -53,7 +53,12 @@ export function WorkOrdersPage({ refreshKey, profile }: { refreshKey: number; on
     setOrders((wo as any) || [])
     setCustomers(c || [])
     setVehicles(v || [])
-    setMechanics(m || [])
+    const mechList = m || []
+    setMechanics(mechList)
+    // Auto-select mechanic if only one exists
+    if (mechList.length === 1) {
+      setForm(f => ({ ...f, mechanic_id: mechList[0].id }))
+    }
     setLoading(false)
   }, [refreshKey])
 
@@ -69,8 +74,14 @@ export function WorkOrdersPage({ refreshKey, profile }: { refreshKey: number; on
   })
 
   const openNew = () => {
-    setForm({ status: 'new_booking', is_mobile: false, payment_status: 'pending', parts_cost: 0, labor_cost: 0, total_amount: 0 })
+    const autoMechanic = mechanics.length === 1 ? mechanics[0].id : undefined
+    setForm({ status: 'new_booking', is_mobile: false, payment_status: 'pending', parts_cost: 0, labor_cost: 0, total_amount: 0, mechanic_id: autoMechanic })
     setModalOpen(true)
+  }
+
+  const assignMechanic = async (orderId: string, mechanicId: string) => {
+    await supabase.from('work_orders').update({ mechanic_id: mechanicId }).eq('id', orderId)
+    load()
   }
 
   const handleSave = async () => {
@@ -172,6 +183,15 @@ export function WorkOrdersPage({ refreshKey, profile }: { refreshKey: number; on
                 {o.service_type && <span>· {o.service_type}</span>}
                 {o.scheduled_date && <span>· {formatDate(o.scheduled_date)}</span>}
                 {o.total_amount > 0 && <span className="font-semibold text-[#0B1E3D]">{formatCurrency(o.total_amount)}</span>}
+                {(o as any).mechanic?.full_name
+                  ? <span className="text-[11px] bg-blue-50 text-blue-700 px-2 py-0.5 rounded-full">👤 {(o as any).mechanic.full_name}</span>
+                  : !isMechanic && mechanics.length > 0 && (
+                    <button onClick={() => assignMechanic(o.id, mechanics[0].id)}
+                      className="text-[11px] bg-amber-50 text-amber-700 border border-amber-200 px-2 py-0.5 rounded-full hover:bg-amber-100 transition-colors">
+                      ⚡ Hozzárendelés: {mechanics[0].full_name}
+                    </button>
+                  )
+                }
                 <div className="ml-auto flex items-center gap-2 flex-wrap">
                   {o.payment_status === 'paid' && (
                     <span className="text-[10px] bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full font-semibold">✓ Fizetve</span>
