@@ -3,8 +3,9 @@ import { createClient as createSupabaseClient, SupabaseClient } from '@supabase/
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL
   || 'https://zpsjlmtrhsnchndifejd.supabase.co'
 
-const SUPABASE_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-  || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inpwc2psbXRyaHNuY2huZGlmZWpkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA4MDYwMTgsImV4cCI6MjA5NjM4MjAxOH0.Er_vfq8uvobMC1cpJWfxcz4Zsrhck-bTbX45Fn5jSIA'
+const FALLBACK_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inpwc2psbXRyaHNuY2huZGlmZWpkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA4MDYwMTgsImV4cCI6MjA5NjM4MjAxOH0.Er_vfq8uvobMC1cpJWfxcz4Zsrhck-bTbX45Fn5jSIA'
+const envKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+const SUPABASE_ANON_KEY = (envKey && envKey.startsWith('eyJ')) ? envKey : FALLBACK_ANON_KEY
 
 let client: SupabaseClient | null = null
 
