@@ -33,7 +33,7 @@ export function WorkOrdersPage({ refreshKey, profile, openOrderId, onClearOpenOr
   const [statusFilter, setStatusFilter] = useState('')
   const [loading, setLoading] = useState(true)
   const [modalOpen, setModalOpen] = useState(false)
-  const [detailOrderId, setDetailOrderId] = useState<string | null>(null)
+  const [detailOrderId, setDetailOrderId] = useState<string | null>(openOrderId ?? null)
   const [form, setForm] = useState<Partial<WorkOrder>>({})
   const [saving, setSaving] = useState(false)
   const { toast } = useToast()
