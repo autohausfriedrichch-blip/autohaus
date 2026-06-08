@@ -120,9 +120,10 @@ function toDateString(d: Date): string {
   return d.toISOString().split('T')[0]
 }
 
-export default function GaragePage({ refreshKey, onRefresh }: { refreshKey: number; onRefresh: () => void }) {
+export default function GaragePage({ refreshKey, onRefresh, profile }: { refreshKey: number; onRefresh: () => void; profile?: any }) {
   const supabase = createClient()
   const { toast } = useToast()
+  const isMechanic = profile?.role === 'mechanic'
 
   const [activeTab, setActiveTab] = useState<TabKey>('daily')
   const [selectedDate, setSelectedDate] = useState<Date>(new Date())
@@ -149,11 +150,13 @@ export default function GaragePage({ refreshKey, onRefresh }: { refreshKey: numb
 
   const fetchWorkOrders = useCallback(async () => {
     setLoading(true)
-    const { data, error } = await supabase
+    let query = supabase
       .from('work_orders')
       .select('*, customer:customers(full_name,phone), vehicle:vehicles(make,model,license_plate), mechanic:profiles!work_orders_mechanic_id_fkey(full_name)')
       .order('scheduled_date', { ascending: true })
       .order('scheduled_time', { ascending: true })
+    if (isMechanic && profile?.id) query = query.eq('mechanic_id', profile.id)
+    const { data, error } = await query
     if (error) {
       toast('Hiba a munkalapok betöltésekor', 'error')
     } else {

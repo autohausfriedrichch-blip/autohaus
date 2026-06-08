@@ -5,8 +5,9 @@ import { Card, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input, FormGroup, FormLabel, Select } from '@/components/ui/form'
 import { useToast } from '@/components/ui/toast'
-import { CheckSquare, LogIn, LogOut, Search } from 'lucide-react'
+import { CheckSquare, LogIn, LogOut, Search, FileText } from 'lucide-react'
 import { formatDateTime } from '@/lib/utils'
+import { DocumentActions } from '@/components/documents/DocumentActions'
 
 export function CheckInPage({ refreshKey }: { refreshKey: number; onRefresh: () => void }) {
   const [orders, setOrders] = useState<any[]>([])
@@ -132,9 +133,13 @@ export function CheckInPage({ refreshKey }: { refreshKey: number; onRefresh: () 
                   {o.vehicle?.make} {o.vehicle?.model}
                   {o.checkin_at && <span className="ml-2 text-[#8fa0b5]">Check-In: {formatDateTime(o.checkin_at)}</span>}
                 </div>
-                <Button variant="primary" size="sm" onClick={() => handleCheckOut(o.id)}>
-                  <LogOut size={13} /> Check-Out & Übergabe
-                </Button>
+                <div className="flex items-center gap-2 flex-wrap">
+                  <Button variant="primary" size="sm" onClick={() => handleCheckOut(o.id)}>
+                    <LogOut size={13} /> Check-Out & Übergabe
+                  </Button>
+                  <DocumentActions type="checkout" data={o} small />
+                  <DocumentActions type="invoice" data={o} small />
+                </div>
               </div>
             ))
           )}

@@ -133,7 +133,7 @@ function AdminApp() {
       case 'dashboard':   return <DashboardPage {...props} onNavigate={setActivePage} />
       case 'customers':   return <CustomersPage {...props} />
       case 'vehicles':    return <VehiclesPage {...props} />
-      case 'workorders':  return <WorkOrdersPage {...props} />
+      case 'workorders':  return <WorkOrdersPage {...props} profile={profile} />
       case 'bookings':    return <BookingsPage {...props} />
       case 'quotes':      return <QuotesPage {...props} />
       case 'communication': return <CommunicationPage {...props} />
@@ -143,7 +143,7 @@ function AdminApp() {
       case 'photos':      return <PhotosPage {...props} />
       case 'mobile':      return <MobilePage {...props} />
       case 'fleet':       return <FleetPage {...props} />
-      case 'garage':      return <GaragePage {...props} />
+      case 'garage':      return <GaragePage {...props} profile={profile} />
       case 'pickup':      return <PickupDeliveryPage {...props} />
       case 'technician':  return <TechnicianPage {...props} profile={profile} />
       case 'tasks':       return <TasksPage {...props} />

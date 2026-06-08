@@ -329,3 +329,164 @@ export function generateCheckInPDF(wo: any): jsPDF {
   addFooter(doc)
   return doc
 }
+
+export function generateCheckOutPDF(order: any, settings?: any): jsPDF {
+  const doc = new jsPDF()
+  const pageW = doc.internal.pageSize.width
+  const companyName = settings?.company?.name || 'Autohaus Friedrich'
+  const date = new Date().toLocaleDateString('de-CH')
+
+  addHeader(doc, 'CHECK-OUT DOKUMENTUM', order.order_number || '', date)
+
+  let y = 55
+  // Customer info
+  infoBox(doc, 15, y, 85, 'ÜGYFÉL', [
+    (order.customer?.full_name || order.customer_name || '–'),
+    (order.customer?.phone || ''),
+  ])
+  // Vehicle info
+  infoBox(doc, 110, y, 85, 'JÁRMŰ', [
+    `${order.vehicle?.make || ''} ${order.vehicle?.model || ''}`.trim() || '–',
+    `Rendszám: ${order.vehicle?.license_plate || '–'}`,
+    `Km-állás be: ${order.checkin_mileage || '–'}`,
+  ])
+
+  y += 38
+  // Work summary
+  doc.setFontSize(10); doc.setTextColor(...NAVY); doc.setFont('helvetica', 'bold')
+  doc.text('Elvégzett munkák:', 15, y)
+  doc.setFont('helvetica', 'normal')
+  y += 7
+  const workText = doc.splitTextToSize(order.work_done || order.fault_description || '–', pageW - 30)
+  doc.setFontSize(10); doc.setTextColor(...GRAY)
+  doc.text(workText, 15, y)
+  y += workText.length * 5 + 8
+
+  // Cost table
+  autoTable(doc, {
+    startY: y,
+    head: [['Tétel', 'Összeg (CHF)']],
+    body: [
+      ['Munkadíj', formatCurrency(order.labor_cost || 0)],
+      ['Alkatrész', formatCurrency(order.parts_cost || 0)],
+      ['ÁFA (7.7%)', formatCurrency((order.total_amount || 0) * 0.077 / 1.077)],
+      ['ÖSSZESEN', formatCurrency(order.total_amount || 0)],
+    ],
+    headStyles: { fillColor: NAVY, textColor: [255,255,255], fontStyle: 'bold', fontSize: 9 },
+    bodyStyles: { fontSize: 9 },
+    columnStyles: { 1: { halign: 'right', fontStyle: 'bold' } },
+    didParseCell: (data) => {
+      if (data.row.index === 3) {
+        data.cell.styles.fillColor = [244,245,247]
+        data.cell.styles.fontStyle = 'bold'
+      }
+    },
+    margin: { left: 15, right: 15 },
+  })
+
+  y = (doc as any).lastAutoTable.finalY + 12
+  // Payment status
+  const paid = order.payment_status === 'paid'
+  doc.setFillColor(...(paid ? [220,252,231] as [number,number,number] : [254,242,242] as [number,number,number]))
+  doc.roundedRect(15, y, pageW - 30, 10, 2, 2, 'F')
+  doc.setFontSize(10); doc.setTextColor(...(paid ? [22,163,74] as [number,number,number] : RED))
+  doc.text(paid ? '✓ FIZETVE' : '○ FIZETÉS FOLYAMATBAN', pageW / 2, y + 6.5, { align: 'center' })
+  y += 18
+
+  // Signatures
+  doc.setDrawColor(...GRAY)
+  doc.line(15, y, 90, y); doc.line(120, y, pageW - 15, y)
+  doc.setFontSize(7); doc.setTextColor(...GRAY)
+  doc.text('Ügyfél átvételi aláírása / Dátum', 15, y + 5)
+  doc.text('Átadó aláírása / Dátum', 120, y + 5)
+
+  addFooter(doc)
+  return doc
+}
+
+export function generateInvoicePDF(order: any, settings?: any): jsPDF {
+  const doc = new jsPDF()
+  const pageW = doc.internal.pageSize.width
+  const companyName = settings?.company?.name || 'Autohaus Friedrich'
+  const companyAddress = `${settings?.company?.address || ''}, ${settings?.company?.postal_code || ''} ${settings?.company?.city || ''}`
+  const iban = settings?.company?.iban || 'CH56 0483 5012 3456 7800 9'
+  const mwst = settings?.company?.mwst || 'CHE-123.456.789 MWST'
+  const invoiceDate = new Date().toLocaleDateString('de-CH')
+  const dueDate = new Date(Date.now() + 30 * 86400000).toLocaleDateString('de-CH')
+
+  addHeader(doc, 'RECHNUNG / SZÁMLA', `RE-${order.order_number || ''}`, invoiceDate)
+
+  let y = 55
+  // Biller info (left)
+  doc.setFontSize(8); doc.setTextColor(...GRAY)
+  doc.text([companyName, companyAddress, settings?.company?.phone || '', settings?.company?.email || ''], 15, y)
+
+  // Customer/recipient (right)
+  infoBox(doc, 120, y, 75, 'SZÁMLÁZVA ERRE', [
+    order.customer?.full_name || '–',
+    order.customer?.address || '',
+    `${order.customer?.postal_code || ''} ${order.customer?.city || ''}`.trim(),
+  ])
+
+  y += 30
+  // Invoice meta
+  autoTable(doc, {
+    startY: y,
+    head: [['Számla száma', 'Munkalap', 'Dátum', 'Fizetési határidő']],
+    body: [[
+      `RE-${order.order_number}`, order.order_number || '–', invoiceDate, dueDate
+    ]],
+    headStyles: { fillColor: LIGHT, textColor: NAVY, fontStyle: 'bold', fontSize: 8 },
+    bodyStyles: { fontSize: 9 },
+    margin: { left: 15, right: 15 },
+  })
+
+  y = (doc as any).lastAutoTable.finalY + 10
+  // Services table
+  const subTotal = (order.labor_cost || 0) + (order.parts_cost || 0)
+  const vatAmt = subTotal * 0.077
+  const total = subTotal + vatAmt
+
+  const rows: any[] = []
+  if (order.labor_cost > 0) rows.push(['Munkadíj / Arbeitskosten', '1', formatCurrency(order.labor_cost), formatCurrency(order.labor_cost)])
+  if (order.parts_cost > 0) rows.push(['Alkatrész / Ersatzteile', '1', formatCurrency(order.parts_cost), formatCurrency(order.parts_cost)])
+  if (order.travel_cost > 0) rows.push(['Kiszállási díj / Fahrtkosten', '1', formatCurrency(order.travel_cost), formatCurrency(order.travel_cost)])
+  rows.push(['', '', 'Nettó összeg:', formatCurrency(subTotal)])
+  rows.push(['', '', 'MWST 7.7%:', formatCurrency(vatAmt)])
+  rows.push(['', '', 'ÖSSZESEN / TOTAL:', formatCurrency(total)])
+
+  autoTable(doc, {
+    startY: y,
+    head: [['Leírás', 'Menny.', 'Egységár', 'Összeg (CHF)']],
+    body: rows,
+    headStyles: { fillColor: NAVY, textColor: [255,255,255], fontStyle: 'bold', fontSize: 9 },
+    bodyStyles: { fontSize: 9 },
+    columnStyles: { 1: { halign: 'center' }, 2: { halign: 'right' }, 3: { halign: 'right', fontStyle: 'bold' } },
+    didParseCell: (data) => {
+      if (data.row.index >= rows.length - 3 && data.section === 'body') {
+        data.cell.styles.fillColor = LIGHT
+      }
+      if (data.row.index === rows.length - 1 && data.section === 'body') {
+        data.cell.styles.fontSize = 11
+        data.cell.styles.fillColor = NAVY
+        data.cell.styles.textColor = [255, 255, 255]
+      }
+    },
+    margin: { left: 15, right: 15 },
+  })
+
+  y = (doc as any).lastAutoTable.finalY + 14
+  // Payment info box
+  doc.setFillColor(...LIGHT)
+  doc.roundedRect(15, y, pageW - 30, 24, 3, 3, 'F')
+  doc.setFontSize(8); doc.setTextColor(...GRAY)
+  doc.text('Bankverbindung / Bankszámla:', 20, y + 6)
+  doc.setTextColor(...NAVY)
+  doc.setFontSize(9)
+  doc.text(`IBAN: ${iban}`, 20, y + 12)
+  doc.text(`MWST-Nr: ${mwst}`, 20, y + 18)
+  doc.text(`Zahlungsfrist: ${dueDate}`, 120, y + 12)
+
+  addFooter(doc)
+  return doc
+}
