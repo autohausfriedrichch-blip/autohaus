@@ -170,8 +170,8 @@ export function QuotesPage({ refreshKey, autoOpenNew, onAutoOpenConsumed }: {
     const payload: any = {
       customer_id: form.customer_id, vehicle_id: form.vehicle_id || null,
       work_order_id: form.work_order_id || null, status: form.status,
-      valid_until: form.valid_until, items, labor_cost: labor, parts_cost: parts,
-      tax_rate: form.tax_rate || 7.7, total_amount: total, notes: form.notes,
+      valid_until: form.valid_until || null, items: items || [], labor_cost: labor || 0, parts_cost: parts || 0,
+      tax_rate: form.tax_rate || 7.7, total_amount: total || 0, notes: form.notes || null,
       pricing_mode: pricingMode,
     }
 
