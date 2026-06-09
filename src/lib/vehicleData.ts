@@ -241,14 +241,6 @@ export const vehicleDatabase: VehicleMake[] = [
         ],
       },
       {
-        model: 'Megane',
-        years: yrs(1995, 2025),
-        variants: [
-          { engine: '1.3 TCe', fuel: 'petrol', power_kw: 103, power_hp: 140, displacement_cc: 1332, transmission: 'manual', drive: 'fwd', body: 'hatchback', doors: 5, year_from: 2016, tire_size: '205/55 R16', oil_spec: '5W-40' },
-          { engine: '1.5 dCi', fuel: 'diesel', power_kw: 85, power_hp: 115, displacement_cc: 1461, transmission: 'manual', drive: 'fwd', body: 'estate', doors: 5, year_from: 2016, year_to: 2023, tire_size: '205/55 R16', oil_spec: '5W-30' },
-        ],
-      },
-      {
         model: 'Kadjar',
         years: yrs(2015, 2022),
         variants: [
@@ -390,7 +382,6 @@ export const vehicleDatabase: VehicleMake[] = [
         years: yrs(2004, 2025),
         variants: [
           { engine: '1.6 T-GDI', fuel: 'petrol', power_kw: 110, power_hp: 150, displacement_cc: 1591, transmission: 'manual', drive: 'fwd', body: 'suv', doors: 5, year_from: 2015, tire_size: '225/60 R17', oil_spec: '5W-30' },
-          { engine: '1.6 CRDi', fuel: 'diesel', power_kw: 100, power_hp: 136, displacement_cc: 1598, transmission: 'manual', drive: 'fwd', body: 'suv', doors: 5, year_from: 2020, tire_size: '235/55 R18', oil_spec: '5W-30' },
           { engine: '1.6 PHEV AWD', fuel: 'phev', power_kw: 195, power_hp: 265, displacement_cc: 1598, transmission: 'automatic', drive: 'awd', body: 'suv', doors: 5, year_from: 2021, tire_size: '235/55 R19', oil_spec: '0W-20' },
         ],
       },
@@ -413,14 +404,6 @@ export const vehicleDatabase: VehicleMake[] = [
         variants: [
           { engine: '1.0 T-GDI', fuel: 'petrol', power_kw: 88, power_hp: 120, displacement_cc: 998, transmission: 'manual', drive: 'fwd', body: 'hatchback', doors: 5, year_from: 2018, tire_size: '205/60 R16', oil_spec: '5W-30' },
           { engine: '1.6 CRDi', fuel: 'diesel', power_kw: 85, power_hp: 115, displacement_cc: 1582, transmission: 'manual', drive: 'fwd', body: 'estate', doors: 5, year_from: 2018, year_to: 2024, tire_size: '205/60 R16', oil_spec: '5W-30' },
-        ],
-      },
-      {
-        model: 'Sportage',
-        years: yrs(2004, 2025),
-        variants: [
-          { engine: '1.6 T-GDI', fuel: 'petrol', power_kw: 110, power_hp: 150, displacement_cc: 1591, transmission: 'manual', drive: 'fwd', body: 'suv', doors: 5, year_from: 2016, tire_size: '225/60 R17', oil_spec: '5W-30' },
-          { engine: '1.6 CRDi AWD', fuel: 'diesel', power_kw: 100, power_hp: 136, displacement_cc: 1598, transmission: 'automatic', drive: 'awd', body: 'suv', doors: 5, year_from: 2021, tire_size: '235/55 R19', oil_spec: '5W-30' },
         ],
       },
       {
@@ -450,14 +433,6 @@ export const vehicleDatabase: VehicleMake[] = [
         variants: [
           { engine: 'B4 FWD', fuel: 'hybrid', power_kw: 145, power_hp: 197, displacement_cc: 1969, transmission: 'automatic', drive: 'fwd', body: 'estate', doors: 5, year_from: 2019, tire_size: '235/50 R18', oil_spec: '0W-20' },
           { engine: 'T8 Recharge AWD', fuel: 'phev', power_kw: 335, power_hp: 455, displacement_cc: 1969, transmission: 'automatic', drive: 'awd', body: 'estate', doors: 5, year_from: 2019, tire_size: '245/40 R19', oil_spec: '0W-20' },
-        ],
-      },
-      {
-        model: 'S90',
-        years: yrs(2016, 2025),
-        variants: [
-          { engine: 'B5 AWD', fuel: 'hybrid', power_kw: 183, power_hp: 249, displacement_cc: 1969, transmission: 'automatic', drive: 'awd', body: 'sedan', doors: 4, year_from: 2021, tire_size: '245/45 R19', oil_spec: '0W-20' },
-          { engine: 'T8 Recharge AWD', fuel: 'phev', power_kw: 335, power_hp: 455, displacement_cc: 1969, transmission: 'automatic', drive: 'awd', body: 'sedan', doors: 4, year_from: 2016, tire_size: '245/40 R20', oil_spec: '0W-20' },
         ],
       },
     ],
