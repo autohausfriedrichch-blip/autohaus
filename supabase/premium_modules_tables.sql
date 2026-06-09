@@ -53,24 +53,12 @@ CREATE TABLE IF NOT EXISTS family_accounts (
 );
 ALTER TABLE family_accounts DISABLE ROW LEVEL SECURITY;
 
--- Add family_account_id to customers (if not exists)
+-- Add family_account_id to customers
 ALTER TABLE customers ADD COLUMN IF NOT EXISTS family_account_id UUID REFERENCES family_accounts(id) ON DELETE SET NULL;
 
 -- 4. Maintenance reminders enhancements
 ALTER TABLE maintenance_reminders ADD COLUMN IF NOT EXISTS customer_id UUID REFERENCES customers(id) ON DELETE SET NULL;
 ALTER TABLE maintenance_reminders ADD COLUMN IF NOT EXISTS approved_by TEXT;
 ALTER TABLE maintenance_reminders ADD COLUMN IF NOT EXISTS approved_at TIMESTAMPTZ;
-
--- 5. Update communication tables only if they exist
-DO $$
-BEGIN
-  IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'messages') THEN
-    EXECUTE 'ALTER TABLE messages ADD COLUMN IF NOT EXISTS channel TEXT DEFAULT ''whatsapp''';
-    EXECUTE 'ALTER TABLE messages ADD COLUMN IF NOT EXISTS direction TEXT DEFAULT ''outbound''';
-  END IF;
-  IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'communication_logs') THEN
-    EXECUTE 'ALTER TABLE communication_logs ADD COLUMN IF NOT EXISTS channel TEXT DEFAULT ''whatsapp''';
-  END IF;
-END $$;
 
 -- Done!
