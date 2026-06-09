@@ -244,6 +244,8 @@ export function WorkOrderDetail({ workOrderId, profile, onClose }: Props) {
   const [tasks, setTasks] = useState<WOTask[]>([])
   const [photos, setPhotos] = useState<WOPhoto[]>([])
   const [parts, setParts] = useState<WOPart[]>([])
+  const [editModal, setEditModal] = useState(false)
+  const [editForm, setEditForm] = useState<any>({})
   const [loading, setLoading] = useState(true)
   const [openPhaseDropdown, setOpenPhaseDropdown] = useState<string | null>(null)
   const [newEventForm, setNewEventForm] = useState({ open: false, title: '', description: '', event_type: 'note_added' })
@@ -317,6 +319,57 @@ export function WorkOrderDetail({ workOrderId, profile, onClose }: Props) {
     setOpenPhaseDropdown(null)
     load()
     toast('Fázis frissítve')
+  }
+
+  const isAdmin = profile.role === 'super_admin' || profile.role === 'admin'
+
+  const deleteWorkOrder = async () => {
+    if (!confirm(`Biztosan törlöd a ${wo?.order_number} munkalapot? Ez nem visszavonható!`)) return
+    await supabase.from('work_order_tasks').delete().eq('work_order_id', workOrderId)
+    await supabase.from('work_order_events').delete().eq('work_order_id', workOrderId)
+    await supabase.from('work_order_photos').delete().eq('work_order_id', workOrderId)
+    await supabase.from('parts_inventory').delete().eq('work_order_id', workOrderId)
+    const { error } = await supabase.from('work_orders').delete().eq('id', workOrderId)
+    if (error) { toast(`Törlési hiba: ${error.message}`, 'error'); return }
+    toast('Munkalap törölve')
+    onClose()
+  }
+
+  const openEdit = () => {
+    if (!wo) return
+    setEditForm({
+      status: wo.status,
+      scheduled_date: wo.scheduled_date || '',
+      scheduled_time: wo.scheduled_time || '',
+      fault_description: wo.fault_description || '',
+      work_to_do: wo.work_to_do || '',
+      internal_notes: wo.internal_notes || '',
+      customer_notes: wo.customer_notes || '',
+      parts_cost: wo.parts_cost || 0,
+      labor_cost: wo.labor_cost || 0,
+    })
+    setEditModal(true)
+  }
+
+  const saveEdit = async () => {
+    const total = (parseFloat(editForm.parts_cost) || 0) + (parseFloat(editForm.labor_cost) || 0)
+    const { error } = await supabase.from('work_orders').update({
+      status: editForm.status,
+      scheduled_date: editForm.scheduled_date || null,
+      scheduled_time: editForm.scheduled_time || null,
+      fault_description: editForm.fault_description || null,
+      work_to_do: editForm.work_to_do || null,
+      internal_notes: editForm.internal_notes || null,
+      customer_notes: editForm.customer_notes || null,
+      parts_cost: parseFloat(editForm.parts_cost) || 0,
+      labor_cost: parseFloat(editForm.labor_cost) || 0,
+      total_amount: total,
+    }).eq('id', workOrderId)
+    if (error) { toast(`Hiba: ${error.message}`, 'error'); return }
+    await logEvent('note_added', 'Munkalap adatok módosítva', undefined)
+    setEditModal(false)
+    load()
+    toast('Munkalap mentve')
   }
 
   const addEvent = async () => {
@@ -519,7 +572,19 @@ export function WorkOrderDetail({ workOrderId, profile, onClose }: Props) {
               </>
             )}
             {wo.scheduled_date && <span className="text-[12px] text-[#5a6a80]">{formatDate(wo.scheduled_date)}</span>}
-            <div className="ml-auto">
+            <div className="ml-auto flex items-center gap-1">
+              {isAdmin && (
+                <>
+                  <button onClick={openEdit}
+                    className="flex items-center gap-1 text-[11px] font-semibold px-2.5 py-1.5 border border-[#C9A84C] text-[#C9A84C] hover:bg-[#C9A84C] hover:text-white rounded-lg transition-colors">
+                    ✏️ Szerkesztés
+                  </button>
+                  <button onClick={deleteWorkOrder}
+                    className="flex items-center gap-1 text-[11px] font-semibold px-2.5 py-1.5 border border-red-300 text-red-500 hover:bg-red-500 hover:text-white rounded-lg transition-colors">
+                    🗑️ Törlés
+                  </button>
+                </>
+              )}
               <button onClick={onClose} className="p-2 rounded-full hover:bg-[#F4F5F7] text-[#5a6a80] hover:text-[#0B1E3D]">
                 <X size={20} />
               </button>
@@ -992,6 +1057,68 @@ export function WorkOrderDetail({ workOrderId, profile, onClose }: Props) {
 
         </div>
       </div>
+
+      {/* Edit modal */}
+      {editModal && (
+        <div className="fixed inset-0 z-[60] bg-black/50 flex items-center justify-center p-4" onClick={() => setEditModal(false)}>
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
+            <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
+              <h2 className="font-bold text-[#0B1E3D] text-base">✏️ Munkalap szerkesztése</h2>
+              <button onClick={() => setEditModal(false)} className="p-1 text-[#5a6a80] hover:text-[#0B1E3D]"><X size={18} /></button>
+            </div>
+            <div className="p-5 space-y-3">
+              <FormGroup>
+                <FormLabel>Státusz</FormLabel>
+                <Select value={editForm.status || ''} onChange={e => setEditForm((f: any) => ({ ...f, status: e.target.value }))}>
+                  {['new_booking','confirmed','checked_in','diagnostics','waiting_quote','waiting_approval','waiting_parts','in_repair','quality_check','ready','checkout_ready','delivered','closed'].map(s => (
+                    <option key={s} value={s}>{s}</option>
+                  ))}
+                </Select>
+              </FormGroup>
+              <div className="grid grid-cols-2 gap-3">
+                <FormGroup>
+                  <FormLabel>Dátum</FormLabel>
+                  <Input type="date" value={editForm.scheduled_date || ''} onChange={e => setEditForm((f: any) => ({ ...f, scheduled_date: e.target.value }))} />
+                </FormGroup>
+                <FormGroup>
+                  <FormLabel>Időpont</FormLabel>
+                  <Input type="time" value={editForm.scheduled_time || ''} onChange={e => setEditForm((f: any) => ({ ...f, scheduled_time: e.target.value }))} />
+                </FormGroup>
+              </div>
+              <FormGroup>
+                <FormLabel>Hibaleírás</FormLabel>
+                <Textarea value={editForm.fault_description || ''} onChange={e => setEditForm((f: any) => ({ ...f, fault_description: e.target.value }))} placeholder="Mit jelzett az ügyfél?" />
+              </FormGroup>
+              <FormGroup>
+                <FormLabel>Elvégzendő munka</FormLabel>
+                <Textarea value={editForm.work_to_do || ''} onChange={e => setEditForm((f: any) => ({ ...f, work_to_do: e.target.value }))} placeholder="Tervezett munkák..." />
+              </FormGroup>
+              <div className="grid grid-cols-2 gap-3">
+                <FormGroup>
+                  <FormLabel>Alkatrész (CHF)</FormLabel>
+                  <Input type="number" step="0.01" value={editForm.parts_cost || ''} onChange={e => setEditForm((f: any) => ({ ...f, parts_cost: e.target.value }))} />
+                </FormGroup>
+                <FormGroup>
+                  <FormLabel>Munkadíj (CHF)</FormLabel>
+                  <Input type="number" step="0.01" value={editForm.labor_cost || ''} onChange={e => setEditForm((f: any) => ({ ...f, labor_cost: e.target.value }))} />
+                </FormGroup>
+              </div>
+              <FormGroup>
+                <FormLabel>Belső megjegyzés</FormLabel>
+                <Textarea value={editForm.internal_notes || ''} onChange={e => setEditForm((f: any) => ({ ...f, internal_notes: e.target.value }))} />
+              </FormGroup>
+              <FormGroup>
+                <FormLabel>Ügyfélnek látható megjegyzés</FormLabel>
+                <Textarea value={editForm.customer_notes || ''} onChange={e => setEditForm((f: any) => ({ ...f, customer_notes: e.target.value }))} />
+              </FormGroup>
+            </div>
+            <div className="flex gap-2 px-5 pb-5">
+              <Button variant="secondary" onClick={() => setEditModal(false)} className="flex-1">Mégse</Button>
+              <Button variant="primary" onClick={saveEdit} className="flex-1">Mentés</Button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
