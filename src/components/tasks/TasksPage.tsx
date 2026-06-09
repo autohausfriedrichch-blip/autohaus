@@ -120,7 +120,7 @@ export function TasksPage({ refreshKey, onRefresh, profile }: {
     const [{ data: t, error }, { data: p }, { data: c }, { data: wo }] = await Promise.all([
       supabase.from('tasks')
         .select('*, assignee:profiles!tasks_assigned_to_fkey(id,full_name,role), customer:customers(full_name), work_order:work_orders(order_number,customer_id)')
-        .eq('is_template', false)
+        .or('is_template.is.null,is_template.eq.false')
         .order('priority', { ascending: false })
         .order('due_date', { ascending: true, nullsFirst: false }),
       supabase.from('profiles').select('id,full_name,role').order('full_name'),
