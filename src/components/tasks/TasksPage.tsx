@@ -102,17 +102,19 @@ export function TasksPage({ refreshKey, onRefresh, profile }: {
     return p?.full_name || null
   }
 
-  const activeTasks = tasks.filter(t => t.status !== 'done' && t.status !== 'cancelled' && t.status !== 'closed')
+  const isMechanic = profile?.role === 'mechanic'
+  const visibleTasks = isMechanic ? tasks.filter(t => t.assigned_to === profile?.id) : tasks
+  const activeTasks = visibleTasks.filter(t => t.status !== 'done' && t.status !== 'cancelled' && t.status !== 'closed')
 
   const stats = {
-    today:       tasks.filter(t => t.due_date === today && t.status !== 'done').length,
+    today:       visibleTasks.filter(t => t.due_date === today && t.status !== 'done').length,
     urgent:      activeTasks.filter(t => t.priority === 'urgent').length,
-    overdue:     tasks.filter(t => t.due_date && t.due_date < today && t.status !== 'done').length,
+    overdue:     visibleTasks.filter(t => t.due_date && t.due_date < today && t.status !== 'done').length,
     problem:     activeTasks.filter(t => t.status === 'problem').length,
-    done_today:  tasks.filter(t => t.completed_at?.startsWith(today)).length,
+    done_today:  visibleTasks.filter(t => t.completed_at?.startsWith(today)).length,
   }
 
-  const filtered = tasks.filter(t => {
+  const filtered = visibleTasks.filter(t => {
     const s = search.toLowerCase()
     if (s && !(t.title || '').toLowerCase().includes(s) &&
         !(t.customer?.full_name || '').toLowerCase().includes(s)) return false
