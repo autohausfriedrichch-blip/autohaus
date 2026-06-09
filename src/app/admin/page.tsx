@@ -83,6 +83,7 @@ function AdminApp() {
   const [badges, setBadges] = useState<Record<string, number>>({})
   const [refreshKey, setRefreshKey] = useState(0)
   const [openWorkOrderId, setOpenWorkOrderId] = useState<string | null>(null)
+  const [openNewQuote, setOpenNewQuote] = useState(false)
   const router = useRouter()
   const supabase = createClient()
 
@@ -142,15 +143,20 @@ function AdminApp() {
 
   const pageTitle = PAGE_TITLES[activePage] || activePage
 
+  const navigateToNewQuote = () => {
+    setOpenNewQuote(true)
+    setActivePage('quotes')
+  }
+
   const renderPage = () => {
-    const props = { refreshKey, onRefresh: () => setRefreshKey(k => k + 1) }
+    const props = { refreshKey, onRefresh: () => setRefreshKey(k => k + 1), onNewQuote: navigateToNewQuote }
     switch (activePage) {
       case 'dashboard':   return <DashboardPage {...props} onNavigate={(page, id) => { if (id) setOpenWorkOrderId(id); setActivePage(page) }} />
       case 'customers':   return <CustomersPage {...props} onNavigate={setActivePage} />
       case 'vehicles':    return <VehiclesPage {...props} />
-      case 'workorders':  return <WorkOrdersPage {...props} profile={profile} />
+      case 'workorders':  return <WorkOrdersPage {...props} profile={profile} onNewQuote={navigateToNewQuote} />
       case 'bookings':    return <BookingsPage {...props} />
-      case 'quotes':      return <QuotesPage {...props} />
+      case 'quotes':      return <QuotesPage {...props} autoOpenNew={openNewQuote} onAutoOpenConsumed={() => setOpenNewQuote(false)} />
       case 'communication': return <CommunicationPage {...props} />
       case 'services':    return <ServicesPage {...props} />
       case 'reports':     return <ReportsPage {...props} />

@@ -240,9 +240,10 @@ interface Props {
   workOrderId: string
   profile: { id: string; full_name: string; role: string }
   onClose: () => void
+  onNewQuote?: () => void
 }
 
-export function WorkOrderDetail({ workOrderId, profile, onClose }: Props) {
+export function WorkOrderDetail({ workOrderId, profile, onClose, onNewQuote }: Props) {
   const [tab, setTab] = useState<Tab>('overview')
   const [wo, setWo] = useState<WorkOrderFull | null>(null)
   const [events, setEvents] = useState<WOEvent[]>([])
@@ -716,6 +717,18 @@ export function WorkOrderDetail({ workOrderId, profile, onClose }: Props) {
                   )
                 })}
               </div>
+
+              {phaseValues.quote_status === 'preparing' && onNewQuote && (
+                <div className="flex">
+                  <button
+                    onClick={onNewQuote}
+                    className="flex items-center gap-2 px-4 py-2.5 bg-[#185FA5] text-white rounded-lg text-[13px] font-semibold hover:bg-[#1472c4] transition-colors shadow-sm"
+                  >
+                    <span className="text-base">📋</span>
+                    Árajánlat készítése
+                  </button>
+                </div>
+              )}
 
               <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-3">
                 <div className="bg-[#F4F5F7] rounded-lg p-3 text-center">

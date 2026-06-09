@@ -24,7 +24,7 @@ function HealthDot({ health }: { health?: string }) {
   return <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 inline-block flex-shrink-0" title="Zöld" />
 }
 
-export function WorkOrdersPage({ refreshKey, onRefresh, profile }: { refreshKey: number; onRefresh: () => void; profile?: any }) {
+export function WorkOrdersPage({ refreshKey, onRefresh, profile, onNewQuote }: { refreshKey: number; onRefresh: () => void; profile?: any; onNewQuote?: () => void }) {
   const [orders, setOrders] = useState<WorkOrder[]>([])
   const [customers, setCustomers] = useState<any[]>([])
   const [vehicles, setVehicles] = useState<any[]>([])
@@ -291,6 +291,7 @@ export function WorkOrdersPage({ refreshKey, onRefresh, profile }: { refreshKey:
           workOrderId={detailOrderId}
           profile={detailProfile}
           onClose={() => { setDetailOrderId(null); load(); onRefresh() }}
+          onNewQuote={onNewQuote}
         />
       )}
 
