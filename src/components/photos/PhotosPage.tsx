@@ -5,7 +5,7 @@ import { useToast } from '@/components/ui/toast'
 import {
   Camera, Upload, X, CheckCircle, Loader2, Eye, EyeOff,
   ArrowLeft, Trash2, ShieldCheck, Clock, User, FileText,
-  ZoomIn, Printer, MessageSquare, ChevronLeft, ChevronRight
+  ZoomIn, Printer, MessageSquare, ChevronLeft, ChevronRight, Download
 } from 'lucide-react'
 
 const CATEGORIES = [
@@ -214,6 +214,21 @@ export function PhotosPage({ refreshKey, profile }: { refreshKey: number; onRefr
     load()
   }
 
+  const downloadPhoto = (photo: Photo) => {
+    const a = document.createElement('a')
+    a.href = photo.url
+    const wo = photo.work_order?.order_number || 'foto'
+    const ts = new Date(photo.created_at).toISOString().slice(0, 10)
+    a.download = `${wo}_${photo.category}_${ts}.jpg`
+    a.click()
+  }
+
+  const downloadAll = (groupPhotos: Photo[]) => {
+    groupPhotos.forEach((p, i) => {
+      setTimeout(() => downloadPhoto(p), i * 150)
+    })
+  }
+
   const saveNote = async (id: string) => {
     await supabase.from('work_order_photos').update({ notes: noteText }).eq('id', id)
     setEditingNoteId(null)
@@ -276,6 +291,12 @@ export function PhotosPage({ refreshKey, profile }: { refreshKey: number; onRefr
               <button onClick={() => { deletePhoto(ph.id); setLightbox(null) }}
                 className="px-3 py-1.5 bg-red-600/80 text-white text-xs rounded-lg hover:bg-red-600">
                 <Trash2 size={12} className="inline mr-1" />Töröl
+              </button>
+            )}
+            {isAdmin && (
+              <button onClick={() => downloadPhoto(ph)}
+                className="px-3 py-1.5 bg-white/10 text-white text-xs rounded-lg hover:bg-white/20 flex items-center gap-1">
+                <Download size={12} /> Letöltés
               </button>
             )}
             <button onClick={() => setLightbox(null)} className="text-white/60 hover:text-white p-2">
@@ -471,6 +492,12 @@ export function PhotosPage({ refreshKey, profile }: { refreshKey: number; onRefr
                 </div>
                 <div className="flex items-center gap-2">
                   <span className="text-xs text-[#5a6a80]">{gPhotos.length} fotó</span>
+                  {isAdmin && gPhotos.length > 0 && (
+                    <button onClick={() => downloadAll(gPhotos)}
+                      className="flex items-center gap-1 px-2.5 py-1.5 border border-[#C9A84C] text-[#C9A84C] text-xs rounded-lg hover:bg-amber-50 font-semibold">
+                      <Download size={12} /> Összes letöltése
+                    </button>
+                  )}
                   {isAdmin && confirmedInGroup.length > 0 && (
                     <button onClick={() => printPhotos(gPhotos)}
                       className="flex items-center gap-1 px-2.5 py-1.5 border border-gray-200 text-[#5a6a80] text-xs rounded-lg hover:bg-gray-50">
@@ -574,6 +601,13 @@ export function PhotosPage({ refreshKey, profile }: { refreshKey: number; onRefr
                                 {p.notes ? 'Szerk.' : 'Megjegyzés'}
                               </button>
                             )
+                          )}
+                          {/* Download – admin */}
+                          {isAdmin && (
+                            <button onClick={() => downloadPhoto(p)}
+                              className="flex items-center gap-0.5 text-[9px] text-[#5a6a80] hover:text-[#0B1E3D] px-1 py-1 rounded">
+                              <Download size={8} /> Letölt
+                            </button>
                           )}
                           {/* Delete – super admin only */}
                           {isSuperAdmin && (
