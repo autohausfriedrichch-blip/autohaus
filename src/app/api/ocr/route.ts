@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 
+export const maxDuration = 30
+
 // Swiss Fahrzeugausweis field codes (EU registration doc format)
 const SWISS_FIELD_PATTERNS = {
   license_plate: [/(?:Kennzeichen|Immatrikulationsnummer|A\s*[:\-])\s*([A-Z]{2}\s*\d{1,6})/i, /\b([A-Z]{2}\s+\d{3,4}\s+[A-Z]{0,3})\b/],
@@ -106,7 +108,9 @@ I: CH-BE-2023-001234`
       success: true,
       raw_text: rawText,
       extracted: data,
+      extracted_data: data,
       confidence,
+      confidence_scores: confidence,
       demo_mode: !apiKey,
     })
   } catch (error: any) {
