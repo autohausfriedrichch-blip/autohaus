@@ -269,6 +269,7 @@ export function WorkOrderDetail({ workOrderId, profile, onClose, onNewQuote }: P
   const [tasks, setTasks] = useState<WOTask[]>([])
   const [photos, setPhotos] = useState<WOPhoto[]>([])
   const [parts, setParts] = useState<WOPart[]>([])
+  const [services, setServices] = useState<any[]>([])
   const [editModal, setEditModal] = useState(false)
   const [editForm, setEditForm] = useState<any>({})
   const [editCustomers, setEditCustomers] = useState<any[]>([])
@@ -284,27 +285,50 @@ export function WorkOrderDetail({ workOrderId, profile, onClose, onNewQuote }: P
   const [taskTimers, setTaskTimers] = useState<Record<string, number>>({})
   const [expandedTaskId, setExpandedTaskId] = useState<string | null>(null)
   const [activeNoteTab, setActiveNoteTab] = useState<Record<string, string>>({})
+  const [svcPickerOpen, setSvcPickerOpen] = useState(false)
+  const [svcPickerIds, setSvcPickerIds] = useState<string[]>([])
+  const [generatingTasks, setGeneratingTasks] = useState(false)
+  const firstLoadRef = useRef(true)
   const fileInputRef = useRef<HTMLInputElement>(null)
   const { toast } = useToast()
   const supabase = createClient()
 
   const load = useCallback(async () => {
     setLoading(true)
-    const [{ data: woData }, { data: evData }, { data: taskData }, { data: photoData }, { data: partsData }] = await Promise.all([
+    const [{ data: woData }, { data: evData }, { data: taskData }, { data: photoData }, { data: partsData }, { data: svcData }] = await Promise.all([
       supabase.from('work_orders').select('*, customer:customers(full_name,phone,email), vehicle:vehicles(make,model,license_plate,year)').eq('id', workOrderId).single(),
       supabase.from('work_order_events').select('*').eq('work_order_id', workOrderId).order('created_at', { ascending: true }),
       supabase.from('work_order_tasks').select('*').eq('work_order_id', workOrderId).order('sort_order', { ascending: true }),
       supabase.from('work_order_photos').select('*').eq('work_order_id', workOrderId).order('created_at', { ascending: false }),
       supabase.from('parts_inventory').select('*').eq('work_order_id', workOrderId),
+      supabase.from('services').select('id, name, category, pricing_type, base_price, hourly_rate, duration_minutes, description, checklist_template, technician_task, technician_checklist').eq('is_active', true).order('category'),
     ])
     if (woData) {
       setWo(woData as WorkOrderFull)
       setNotes({ internal: (woData as WorkOrderFull).internal_notes || '', customer: (woData as WorkOrderFull).customer_notes || '' })
     }
-    setEvents((evData || []) as WOEvent[])
-    setTasks((taskData || []) as WOTask[])
+    const loadedEvents = (evData || []) as WOEvent[]
+    const loadedTasks = (taskData || []) as WOTask[]
+    setEvents(loadedEvents)
+    setTasks(loadedTasks)
     setPhotos((photoData || []) as WOPhoto[])
     setParts((partsData || []) as WOPart[])
+    setServices(svcData || [])
+
+    // Log "opened" event once per session for work orders with no events yet
+    if (firstLoadRef.current && loadedEvents.length === 0 && woData) {
+      firstLoadRef.current = false
+      await supabase.from('work_order_events').insert({
+        work_order_id: workOrderId,
+        event_type: 'created',
+        title: 'Munkalap megnyitva',
+        user_name: profile.full_name,
+        phase: 'general',
+        metadata: {},
+      })
+    } else {
+      firstLoadRef.current = false
+    }
     setLoading(false)
   }, [workOrderId])
 
@@ -480,11 +504,56 @@ export function WorkOrderDetail({ workOrderId, profile, onClose, onNewQuote }: P
     const started = task.timer_started_at ? new Date(task.timer_started_at).getTime() : now
     const added = Math.floor((now - started) / 1000)
     await supabase.from('work_order_tasks').update({
-      status: 'paused',
+      status: 'waiting',
       timer_started_at: null,
       elapsed_seconds: task.elapsed_seconds + added,
     }).eq('id', task.id)
     await logEvent('time_stop', `Feladat szüneteltetve: ${task.title}`)
+    load()
+  }
+
+  const generateTasksFromServices = async () => {
+    if (svcPickerIds.length === 0) { toast('Válassz legalább egy szolgáltatást', 'error'); return }
+    setGeneratingTasks(true)
+    const selectedSvcs = services.filter(s => svcPickerIds.includes(s.id))
+    const taskInserts = selectedSvcs.map((svc, idx) => ({
+      work_order_id: workOrderId,
+      title: svc.technician_task || svc.name,
+      assigned_name: null,
+      sort_order: tasks.length + idx,
+      status: 'pending',
+      service_id: svc.id,
+      pricing_type: svc.pricing_type || 'fixed',
+      price: svc.pricing_type === 'hourly' ? (svc.hourly_rate || 0) : (svc.base_price || 0),
+      estimated_minutes: svc.duration_minutes || 0,
+      checklist: Array.isArray(svc.technician_checklist) && svc.technician_checklist.length > 0 ? svc.technician_checklist : (Array.isArray(svc.checklist_template) ? svc.checklist_template : []),
+      checklist_done: [],
+      requires_photo: false,
+      priority: 'normal',
+      notes_internal: '',
+      notes_customer: '',
+      notes_problem: '',
+      notes_extra: svc.description || '',
+    }))
+    const { error: taskErr } = await supabase.from('work_order_tasks').insert(taskInserts)
+    if (taskErr) { toast(`Hiba: ${taskErr.message}`, 'error'); setGeneratingTasks(false); return }
+    // Log events
+    const taskEvents = selectedSvcs.map(svc => ({
+      work_order_id: workOrderId,
+      event_type: 'task_created',
+      title: `Feladat generálva: ${svc.technician_task || svc.name}`,
+      user_name: profile.full_name,
+      phase: 'repair',
+      metadata: { service_id: svc.id, service_name: svc.name },
+    }))
+    await supabase.from('work_order_events').insert(taskEvents)
+    // Update service_type on work order
+    const svcNames = selectedSvcs.map(s => s.name).join(', ')
+    await supabase.from('work_orders').update({ service_type: svcNames }).eq('id', workOrderId)
+    toast(`${selectedSvcs.length} feladat generálva`)
+    setSvcPickerOpen(false)
+    setSvcPickerIds([])
+    setGeneratingTasks(false)
     load()
   }
 
@@ -1017,9 +1086,50 @@ export function WorkOrderDetail({ workOrderId, profile, onClose, onNewQuote }: P
                 )
               })()}
               {tasks.length === 0 && (
-                <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 text-center">
+                <div className="bg-amber-50 border border-amber-200 rounded-xl p-4">
                   <div className="text-amber-600 font-semibold text-[13px] mb-1">Nincs szolgáltatásból generált feladat</div>
-                  <div className="text-amber-500 text-[12px]">Adj hozzá szolgáltatásokat a munkalaphoz, hogy feladatok generálódjanak Karl számára.</div>
+                  <div className="text-amber-500 text-[12px] mb-3">Adj hozzá szolgáltatásokat, hogy feladatok generálódjanak Karl számára.</div>
+                  {isAdmin && !svcPickerOpen && (
+                    <button onClick={() => setSvcPickerOpen(true)}
+                      className="flex items-center gap-1.5 text-[12px] font-semibold bg-amber-600 text-white px-3 py-1.5 rounded-lg hover:bg-amber-700">
+                      <Plus size={13} /> Szolgáltatásból feladatok generálása
+                    </button>
+                  )}
+                </div>
+              )}
+              {isAdmin && svcPickerOpen && (
+                <div className="bg-[#F4F5F7] rounded-xl p-4 space-y-3">
+                  <div className="text-[12px] font-bold text-[#0B1E3D] uppercase tracking-wide">Szolgáltatás kiválasztása</div>
+                  <div className="border border-gray-200 rounded-xl max-h-52 overflow-y-auto divide-y divide-gray-100 bg-white">
+                    {services.length === 0 && <div className="px-3 py-4 text-[12px] text-[#8fa0b5] text-center">Nincs aktív szolgáltatás</div>}
+                    {Object.entries(services.reduce((acc: Record<string, any[]>, s) => { const cat = s.category || 'Egyéb'; if (!acc[cat]) acc[cat] = []; acc[cat].push(s); return acc }, {})).map(([cat, svcs]) => (
+                      <div key={cat}>
+                        <div className="px-3 py-1 bg-gray-50 text-[10px] font-bold text-[#5a6a80] uppercase tracking-wider">{cat}</div>
+                        {(svcs as any[]).map((svc: any) => {
+                          const checked = svcPickerIds.includes(svc.id)
+                          return (
+                            <button key={svc.id} type="button"
+                              onClick={() => setSvcPickerIds(prev => checked ? prev.filter(x => x !== svc.id) : [...prev, svc.id])}
+                              className={`w-full flex items-center gap-3 px-3 py-2 hover:bg-gray-50 transition-colors text-left ${checked ? 'bg-blue-50/60' : ''}`}>
+                              <span className={`w-4 h-4 rounded border-2 flex-shrink-0 flex items-center justify-center ${checked ? 'bg-[#0B1E3D] border-[#0B1E3D]' : 'border-gray-300'}`}>
+                                {checked && <Check size={10} className="text-white" />}
+                              </span>
+                              <span className="flex-1 text-[13px] font-medium text-[#0B1E3D]">{svc.name}</span>
+                              <span className="text-[11px] text-[#8fa0b5] shrink-0">
+                                {svc.pricing_type === 'hourly' ? `${svc.hourly_rate || 0} CHF/h` : svc.base_price ? `${svc.base_price} CHF` : ''}
+                              </span>
+                            </button>
+                          )
+                        })}
+                      </div>
+                    ))}
+                  </div>
+                  <div className="flex gap-2">
+                    <Button variant="primary" onClick={generateTasksFromServices} disabled={generatingTasks || svcPickerIds.length === 0}>
+                      {generatingTasks ? 'Generálás...' : `${svcPickerIds.length > 0 ? svcPickerIds.length + ' feladat ' : ''}Generálás`}
+                    </Button>
+                    <Button variant="secondary" onClick={() => { setSvcPickerOpen(false); setSvcPickerIds([]) }}>Mégse</Button>
+                  </div>
                 </div>
               )}
               {!newTaskForm.open ? (
