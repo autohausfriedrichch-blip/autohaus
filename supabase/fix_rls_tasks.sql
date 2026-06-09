@@ -4,7 +4,6 @@
 ALTER TABLE tasks DISABLE ROW LEVEL SECURITY;
 ALTER TABLE parts_requests DISABLE ROW LEVEL SECURITY;
 ALTER TABLE pickup_deliveries DISABLE ROW LEVEL SECURITY;
-ALTER TABLE customer_followups DISABLE ROW LEVEL SECURITY;
 
 -- If DISABLE doesn't work (e.g. superuser restriction), use permissive policies instead:
 -- ALTER TABLE tasks ENABLE ROW LEVEL SECURITY;
