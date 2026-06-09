@@ -35,6 +35,7 @@ interface WOTask {
   notes_problem?: string
   notes_extra?: string
   sort_order: number
+  task_number?: string
   completed_at?: string | null
   created_at: string
   service_id?: string
@@ -839,6 +840,7 @@ export function WorkOrderDetail({ workOrderId, profile, onClose }: Props) {
                           <div className="px-4 py-3 cursor-pointer" onClick={() => setExpandedTaskId(isExpanded ? null : task.id)}>
                             <div className="flex items-center gap-2 flex-wrap">
                               <span className={`w-2 h-2 rounded-full flex-shrink-0 ${cfg.dot}`} />
+                              {task.task_number && <span className="text-[10px] font-bold text-[#5a6a80] bg-[#F4F5F7] px-1.5 py-0.5 rounded font-mono">{task.task_number}</span>}
                               <span className="font-semibold text-[14px] text-[#0B1E3D] flex-1">{task.title}</span>
                               {task.priority === 'urgent' && <span className="text-[9px] bg-red-100 text-red-700 px-1.5 py-0.5 rounded font-bold">SÜRGŐS</span>}
                               {checklist.length > 0 && (

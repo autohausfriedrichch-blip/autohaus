@@ -61,7 +61,8 @@ export function CustomersPage({ refreshKey }: { refreshKey: number; onRefresh: (
   const filtered = customers.filter(c =>
     c.full_name.toLowerCase().includes(search.toLowerCase()) ||
     (c.phone || '').includes(search) ||
-    (c.email || '').toLowerCase().includes(search.toLowerCase())
+    (c.email || '').toLowerCase().includes(search.toLowerCase()) ||
+    (c.customer_number || '').toLowerCase().includes(search.toLowerCase())
   )
 
   const openNew = () => {
@@ -79,7 +80,7 @@ export function CustomersPage({ refreshKey }: { refreshKey: number; onRefresh: (
   }
 
   const handleSave = async () => {
-    if (!form.full_name || !form.phone) { toast('Name und Telefon sind Pflichtfelder', 'error'); return }
+    if (!form.full_name || !form.phone) { toast('A név és telefonszám kötelező', 'error'); return }
     setSaving(true)
     const payload = {
       full_name: form.full_name, phone: form.phone, email: form.email,
@@ -98,7 +99,7 @@ export function CustomersPage({ refreshKey }: { refreshKey: number; onRefresh: (
   }
 
   const handleDelete = async (id: string) => {
-    if (!confirm('Kunden wirklich löschen?')) return
+    if (!confirm('Biztosan törlöd az ügyfelet?')) return
     const { error } = await supabase.from('customers').delete().eq('id', id)
     if (error) { toast('Hiba a törlés során', 'error') } else { toast('Ügyfél törölve'); load() }
   }
@@ -112,25 +113,25 @@ export function CustomersPage({ refreshKey }: { refreshKey: number; onRefresh: (
             type="text"
             value={search}
             onChange={e => setSearch(e.target.value)}
-            placeholder="Suchen nach Name, Telefon, E-Mail..."
+            placeholder="Keresés név, telefon, e-mail, ügyfélszám szerint..."
             className="w-full pl-9 pr-3 py-2 border border-[rgba(11,30,61,0.18)] rounded-lg text-[13px] bg-white outline-none focus:border-[#0B1E3D]"
           />
         </div>
-        <Button variant="primary" onClick={openNew}><Plus size={14} /> Neuer Kunde</Button>
+        <Button variant="primary" onClick={openNew}><Plus size={14} /> Új ügyfél</Button>
       </div>
 
       {loading ? (
-        <div className="text-center py-12 text-[#5a6a80] text-sm">Kunden werden geladen...</div>
+        <div className="text-center py-12 text-[#5a6a80] text-sm">Ügyfelek betöltése...</div>
       ) : (
         <Card className="p-0 overflow-hidden">
           <table className="w-full text-[13px]">
             <thead>
               <tr className="bg-[#F4F5F7] border-b border-[rgba(11,30,61,0.10)]">
-                <th className="text-left px-4 py-3 text-[11px] font-semibold text-[#5a6a80] uppercase tracking-wider">Name</th>
-                <th className="text-left px-4 py-3 text-[11px] font-semibold text-[#5a6a80] uppercase tracking-wider hidden md:table-cell">Kontakt</th>
-                <th className="text-left px-4 py-3 text-[11px] font-semibold text-[#5a6a80] uppercase tracking-wider hidden lg:table-cell">Adresse</th>
-                <th className="text-center px-4 py-3 text-[11px] font-semibold text-[#5a6a80] uppercase tracking-wider hidden sm:table-cell">Fahrzeuge</th>
-                <th className="text-left px-4 py-3 text-[11px] font-semibold text-[#5a6a80] uppercase tracking-wider hidden lg:table-cell">Seit</th>
+                <th className="text-left px-4 py-3 text-[11px] font-semibold text-[#5a6a80] uppercase tracking-wider">Név</th>
+                <th className="text-left px-4 py-3 text-[11px] font-semibold text-[#5a6a80] uppercase tracking-wider hidden md:table-cell">Kapcsolat</th>
+                <th className="text-left px-4 py-3 text-[11px] font-semibold text-[#5a6a80] uppercase tracking-wider hidden lg:table-cell">Cím</th>
+                <th className="text-center px-4 py-3 text-[11px] font-semibold text-[#5a6a80] uppercase tracking-wider hidden sm:table-cell">Járművek</th>
+                <th className="text-left px-4 py-3 text-[11px] font-semibold text-[#5a6a80] uppercase tracking-wider hidden lg:table-cell">Regisztrált</th>
                 <th className="px-4 py-3" />
               </tr>
             </thead>
@@ -138,7 +139,10 @@ export function CustomersPage({ refreshKey }: { refreshKey: number; onRefresh: (
               {filtered.map(c => (
                 <tr key={c.id} className="border-b border-[rgba(11,30,61,0.06)] hover:bg-[#fafbfc] transition-colors">
                   <td className="px-4 py-3">
-                    <div className="font-semibold text-[#0B1E3D]">{c.full_name}</div>
+                    <div className="font-semibold text-[#0B1E3D] flex items-center gap-2">
+                      {c.full_name}
+                      {c.customer_number && <span className="text-[10px] font-bold text-[#185FA5] bg-[#E6F1FB] px-1.5 py-0.5 rounded font-mono">{c.customer_number}</span>}
+                    </div>
                     <div className="text-[11px] text-[#5a6a80] flex items-center gap-1 mt-0.5 md:hidden">
                       <Phone size={10} /> {c.phone}
                     </div>
@@ -178,7 +182,7 @@ export function CustomersPage({ refreshKey }: { refreshKey: number; onRefresh: (
       <Modal
         open={modalOpen}
         onClose={() => setModalOpen(false)}
-        title={editCustomer ? 'Kunde bearbeiten' : 'Neuer Kunde'}
+        title={editCustomer ? 'Ügyfél szerkesztése' : 'Új ügyfél'}
         footer={
           <>
             <Button variant="secondary" onClick={() => setModalOpen(false)}>Mégse</Button>
@@ -188,8 +192,8 @@ export function CustomersPage({ refreshKey }: { refreshKey: number; onRefresh: (
       >
         <div className="grid grid-cols-2 gap-3">
           <FormGroup className="col-span-2">
-            <FormLabel>Vollständiger Name *</FormLabel>
-            <Input defaultValue={form.full_name || ''} onBlur={e => setForm(f => ({ ...f, full_name: e.target.value }))} placeholder="Max Mustermann" key={`name-${editCustomer?.id}`} />
+            <FormLabel>Teljes név *</FormLabel>
+            <Input defaultValue={form.full_name || ''} onBlur={e => setForm(f => ({ ...f, full_name: e.target.value }))} placeholder="Kovács János" key={`name-${editCustomer?.id}`} />
           </FormGroup>
           <FormGroup className="col-span-2">
             <FormLabel>Telefonszám *</FormLabel>
@@ -233,18 +237,18 @@ export function CustomersPage({ refreshKey }: { refreshKey: number; onRefresh: (
             <Input type="email" defaultValue={form.email || ''} onBlur={e => setForm(f => ({ ...f, email: e.target.value }))} placeholder="max@example.com" key={`email-${editCustomer?.id}`} />
           </FormGroup>
           <FormGroup>
-            <FormLabel>Strasse & Nr.</FormLabel>
-            <Input defaultValue={form.address || ''} onBlur={e => setForm(f => ({ ...f, address: e.target.value }))} placeholder="Musterstrasse 1" key={`addr-${editCustomer?.id}`} />
+            <FormLabel>Utca & hsz.</FormLabel>
+            <Input defaultValue={form.address || ''} onBlur={e => setForm(f => ({ ...f, address: e.target.value }))} placeholder="Fő utca 1" key={`addr-${editCustomer?.id}`} />
           </FormGroup>
           <FormGroup>
-            <FormLabel>PLZ / Ort</FormLabel>
+            <FormLabel>Irányítószám / Város</FormLabel>
             <div className="flex gap-2">
-              <Input defaultValue={form.postal_code || ''} onBlur={e => setForm(f => ({ ...f, postal_code: e.target.value }))} placeholder="8000" className="w-20" key={`plz-${editCustomer?.id}`} />
-              <Input defaultValue={form.city || ''} onBlur={e => setForm(f => ({ ...f, city: e.target.value }))} placeholder="Zürich" key={`city-${editCustomer?.id}`} />
+              <Input defaultValue={form.postal_code || ''} onBlur={e => setForm(f => ({ ...f, postal_code: e.target.value }))} placeholder="1234" className="w-20" key={`plz-${editCustomer?.id}`} />
+              <Input defaultValue={form.city || ''} onBlur={e => setForm(f => ({ ...f, city: e.target.value }))} placeholder="Budapest" key={`city-${editCustomer?.id}`} />
             </div>
           </FormGroup>
           <FormGroup>
-            <FormLabel>Bevorzugter Kontakt</FormLabel>
+            <FormLabel>Preferált kapcsolat</FormLabel>
             <Select value={form.preferred_contact || 'phone'} onChange={e => setForm(f => ({ ...f, preferred_contact: e.target.value as any }))}>
               <option value="phone">Telefon</option>
               <option value="whatsapp">WhatsApp</option>
@@ -254,13 +258,13 @@ export function CustomersPage({ refreshKey }: { refreshKey: number; onRefresh: (
           <FormGroup>
             <FormLabel>Marketing</FormLabel>
             <Select value={form.marketing_consent ? 'yes' : 'no'} onChange={e => setForm(f => ({ ...f, marketing_consent: e.target.value === 'yes' }))}>
-              <option value="no">Nein</option>
-              <option value="yes">Ja, zugestimmt</option>
+              <option value="no">Nem</option>
+              <option value="yes">Igen, hozzájárult</option>
             </Select>
           </FormGroup>
           <FormGroup className="col-span-2">
-            <FormLabel>Notizen</FormLabel>
-            <Textarea defaultValue={form.notes || ''} onBlur={e => setForm(f => ({ ...f, notes: e.target.value }))} placeholder="Interne Notizen..." key={`notes-${editCustomer?.id}`} />
+            <FormLabel>Megjegyzések</FormLabel>
+            <Textarea defaultValue={form.notes || ''} onBlur={e => setForm(f => ({ ...f, notes: e.target.value }))} placeholder="Belső megjegyzések..." key={`notes-${editCustomer?.id}`} />
           </FormGroup>
         </div>
       </Modal>

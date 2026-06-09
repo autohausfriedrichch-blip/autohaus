@@ -23,6 +23,7 @@ export interface Customer {
   marketing_consent: boolean
   notes?: string
   fleet_account_id?: string
+  customer_number?: string
   created_at: string
   updated_at: string
   vehicles?: Vehicle[]
