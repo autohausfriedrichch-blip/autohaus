@@ -215,7 +215,8 @@ input, select, textarea {
 /* ── Mobile nav bottom bar ──────────────────────────────────── */
 
 .mobile-nav {
-  padding-bottom: max(12px, var(--safe-bottom));
+  padding-bottom: max(6px, var(--safe-bottom));
+  min-height: 48px;
 }
 
 /* ── Mobile button minimum touch targets ─────────────────────── */

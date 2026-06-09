@@ -213,7 +213,7 @@ function AdminApp() {
           onRefresh={() => setRefreshKey(k => k + 1)}
           userRoleKey={profile?.role}
         />
-        <main className="flex-1 overflow-y-auto p-3 sm:p-4 lg:p-5 pb-24 md:pb-6 animate-fade-in touch-scroll">
+        <main className="flex-1 overflow-y-auto p-3 sm:p-4 lg:p-5 pb-16 md:pb-6 animate-fade-in touch-scroll">
           {renderPage()}
         </main>
         <MobileBottomNav

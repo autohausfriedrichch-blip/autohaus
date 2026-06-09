@@ -39,21 +39,21 @@ export function MobileBottomNav({ activePage, onNavigate, role, badges = {} }: M
             key={tab.id}
             onClick={() => onNavigate(tab.id)}
             className={cn(
-              'flex-1 flex flex-col items-center justify-center py-2 gap-0.5 relative transition-colors',
+              'flex-1 flex flex-col items-center justify-center py-1 gap-0 relative transition-colors',
               isActive ? 'text-[#C9A84C]' : 'text-white/40 active:text-white/70'
             )}
           >
             <div className="relative">
-              <Icon size={22} />
+              <Icon size={18} />
               {badgeCount !== undefined && badgeCount > 0 && (
-                <span className="absolute -top-1.5 -right-2 bg-[#C9384C] text-white text-[9px] font-bold min-w-[16px] h-4 flex items-center justify-center rounded-full px-1">
+                <span className="absolute -top-1 -right-1.5 bg-[#C9384C] text-white text-[8px] font-bold min-w-[14px] h-3.5 flex items-center justify-center rounded-full px-0.5">
                   {badgeCount}
                 </span>
               )}
             </div>
-            <span className="text-[10px] font-medium leading-tight">{tab.label}</span>
+            <span className="text-[9px] font-medium leading-tight mt-0.5">{tab.label}</span>
             {isActive && (
-              <span className="absolute top-0 left-1/2 -translate-x-1/2 w-8 h-0.5 bg-[#C9A84C] rounded-full" />
+              <span className="absolute top-0 left-1/2 -translate-x-1/2 w-6 h-0.5 bg-[#C9A84C] rounded-full" />
             )}
           </button>
         )
