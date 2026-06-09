@@ -218,6 +218,46 @@ input, select, textarea {
   padding-bottom: max(12px, var(--safe-bottom));
 }
 
+/* ── Mobile button minimum touch targets ─────────────────────── */
+@media (max-width: 767px) {
+  /* Ensure interactive elements have sufficient touch targets */
+  button:not(.no-touch-target) {
+    min-height: 36px;
+  }
+
+  /* Form controls: larger touch targets on mobile */
+  select {
+    min-height: 44px;
+  }
+
+  /* Status buttons in task/phase selectors: ensure tappable */
+  .status-btn-row button {
+    min-height: 40px;
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+}
+
+/* ── Responsive action rows ──────────────────────────────────── */
+/* Action button rows should wrap gracefully on small screens */
+.action-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+@media (max-width: 480px) {
+  .action-row-mobile-stack {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .action-row-mobile-stack button,
+  .action-row-mobile-stack a {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
 /* ── Card swipe feedback ─────────────────────────────────────── */
 .card-touchable {
   transition: transform 0.1s ease, box-shadow 0.1s ease;

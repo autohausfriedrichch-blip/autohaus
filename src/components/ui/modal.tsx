@@ -58,7 +58,7 @@ export function Modal({ open, onClose, title, children, footer, className }: Mod
         <div className="px-5 py-4 sm:px-6 sm:py-5">{children}</div>
         {footer && (
           <div
-            className="px-5 py-4 sm:px-6 border-t border-[rgba(11,30,61,0.10)] flex justify-end gap-2"
+            className="px-5 py-4 sm:px-6 border-t border-[rgba(11,30,61,0.10)] flex flex-wrap justify-end gap-2"
             style={{ paddingBottom: 'max(16px, env(safe-area-inset-bottom, 16px))' }}
           >
             {footer}

@@ -732,10 +732,11 @@ export function WorkOrderDetail({ workOrderId, profile, onClose, onNewQuote }: P
             </div>
           </div>
 
-          <div className="flex gap-0 overflow-x-auto">
+          <div className="flex gap-0 overflow-x-auto scrollbar-hide">
             {TABS.map(t => (
               <button key={t.id} onClick={() => setTab(t.id)}
-                className={`px-4 py-2.5 text-[13px] font-medium whitespace-nowrap border-b-2 transition-colors ${tab === t.id ? 'border-[#C9A84C] text-[#0B1E3D]' : 'border-transparent text-[#5a6a80] hover:text-[#0B1E3D]'}`}>
+                className={`px-3 sm:px-4 py-2.5 text-[12px] sm:text-[13px] font-medium whitespace-nowrap border-b-2 transition-colors flex-shrink-0 ${tab === t.id ? 'border-[#C9A84C] text-[#0B1E3D]' : 'border-transparent text-[#5a6a80] hover:text-[#0B1E3D]'}`}
+                style={{ minHeight: 44 }}>
                 {t.label}
               </button>
             ))}
@@ -792,7 +793,7 @@ export function WorkOrderDetail({ workOrderId, profile, onClose, onNewQuote }: P
                 </div>
               )}
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-3">
                 {PHASE_DEFS.map(pd => {
                   const val = phaseValues[pd.key]
                   const color = phaseColor(pd, val)
@@ -1018,12 +1019,13 @@ export function WorkOrderDetail({ workOrderId, profile, onClose, onNewQuote }: P
                             <div className="border-t border-gray-100 px-4 py-3 space-y-4">
                               <div>
                                 <div className="text-[10px] font-bold text-[#5a6a80] uppercase tracking-wide mb-2">Státusz</div>
-                                <div className="flex flex-wrap gap-1.5">
+                                <div className="flex flex-wrap gap-1.5 status-btn-row">
                                   {Object.entries(STATUS_CFG).map(([key, c]) => (
                                     <button key={key} onClick={() => setTaskStatus(task, key)}
-                                      className={`text-[11px] font-semibold px-2.5 py-1 rounded-full border transition-all ${
+                                      className={`text-[11px] font-semibold px-3 py-1.5 rounded-full border transition-all ${
                                         task.status === key ? `${c.color} border-current` : 'bg-white border-gray-200 text-gray-500 hover:border-gray-400'
-                                      }`}>
+                                      }`}
+                                      style={{ minHeight: 36 }}>
                                       {c.label}
                                     </button>
                                   ))}

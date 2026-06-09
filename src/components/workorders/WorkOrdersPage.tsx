@@ -247,10 +247,10 @@ export function WorkOrdersPage({ refreshKey, onRefresh, profile, onNewQuote }: {
         <div>
           {filtered.map(o => (
             <div key={o.id} className="bg-white border border-[rgba(11,30,61,0.10)] rounded-[14px] overflow-hidden mb-3">
-              <div className="flex items-center gap-3 px-4 py-3 border-b border-[rgba(11,30,61,0.08)]">
+              <div className="flex flex-wrap items-center gap-2 px-3 sm:px-4 py-3 border-b border-[rgba(11,30,61,0.08)]">
                 <HealthDot health={(o as any).health} />
                 <span className="text-[11px] font-bold text-[#185FA5] bg-[#E6F1FB] px-2 py-0.5 rounded">{o.order_number || `#${o.id.slice(0,8)}`}</span>
-                <span className="font-semibold text-[13px] flex-1">{(o as any).customer?.full_name}</span>
+                <span className="font-semibold text-[13px] flex-1 min-w-0 truncate">{(o as any).customer?.full_name}</span>
                 {(o as any).vehicle && (
                   <span className="bg-[#0B1E3D] text-white text-[11px] font-bold px-2 py-1 rounded hidden sm:inline">
                     {(o as any).vehicle.license_plate}
@@ -258,19 +258,23 @@ export function WorkOrdersPage({ refreshKey, onRefresh, profile, onNewQuote }: {
                 )}
                 <StatusBadge status={o.status} />
                 {o.is_mobile && <span className="text-[10px] bg-purple-100 text-purple-700 px-2 py-0.5 rounded-full font-semibold hidden sm:inline">MOBIL</span>}
-                {!isMechanic && (
-                  <button onClick={() => openEdit(o)}
-                    className="flex items-center gap-1 text-[11px] font-semibold text-[#5a6a80] hover:text-[#0B1E3D] px-2 py-1 border border-[rgba(11,30,61,0.18)] rounded hover:border-[#0B1E3D] transition-colors">
-                    <Edit2 size={12} /> Szerkesztés
+                <div className="flex items-center gap-1.5 ml-auto">
+                  {!isMechanic && (
+                    <button onClick={() => openEdit(o)}
+                      className="flex items-center gap-1 text-[11px] font-semibold text-[#5a6a80] hover:text-[#0B1E3D] px-2.5 py-1.5 border border-[rgba(11,30,61,0.18)] rounded-lg hover:border-[#0B1E3D] transition-colors"
+                      style={{ minHeight: 36 }}>
+                      <Edit2 size={12} /> <span className="hidden sm:inline">Szerkesztés</span>
+                    </button>
+                  )}
+                  <button onClick={() => setDetailOrderId(o.id)}
+                    className="flex items-center gap-1 text-[11px] font-semibold text-[#C9A84C] hover:text-[#0B1E3D] px-2.5 py-1.5 border border-[#C9A84C] rounded-lg hover:border-[#0B1E3D] transition-colors"
+                    style={{ minHeight: 36 }}>
+                    <ExternalLink size={12} /> <span className="hidden xs:inline sm:inline">Megnyitás</span>
                   </button>
-                )}
-                <button onClick={() => setDetailOrderId(o.id)}
-                  className="flex items-center gap-1 text-[11px] font-semibold text-[#C9A84C] hover:text-[#0B1E3D] ml-1 px-2 py-1 border border-[#C9A84C] rounded hover:border-[#0B1E3D] transition-colors">
-                  <ExternalLink size={12} /> Megnyitás
-                </button>
+                </div>
               </div>
 
-              <div className="px-4 py-2 flex flex-wrap gap-3 text-[12px] text-[#5a6a80] items-center">
+              <div className="px-3 sm:px-4 py-2 flex flex-wrap gap-2 sm:gap-3 text-[12px] text-[#5a6a80] items-center">
                 {(o as any).vehicle && <span>{(o as any).vehicle.make} {(o as any).vehicle.model}</span>}
                 {o.service_type && <span>· {o.service_type}</span>}
                 {o.scheduled_date && <span>· {formatDate(o.scheduled_date)}</span>}
