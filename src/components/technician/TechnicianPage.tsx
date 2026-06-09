@@ -16,6 +16,7 @@ import {
 } from 'lucide-react'
 import { TechnicianFlagModal } from '@/components/services/ServiceCalculator'
 import { WorkflowModal, type WFWorkOrder } from './WorkflowModal'
+import { uploadPhoto } from '@/lib/uploadPhoto'
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -950,33 +951,27 @@ export default function TechnicianPage({
   }
 
   const handlePhotoUpload = async (orderId: string, file: File, phase?: string) => {
-    // Read as base64 and store in work_order_photos
-    const reader = new FileReader()
-    reader.onload = async (e) => {
-      const base64 = e.target?.result as string
-      const { error } = await supabase.from('work_order_photos').insert({
-        work_order_id: orderId,
-        url: base64,
+    try {
+      await uploadPhoto({
+        file,
+        workOrderId: orderId,
         category: phase ?? 'general',
-        uploaded_by: userId ?? 'karl',
+        userId,
+        uploaderName: profile?.full_name ?? 'Karl',
       })
-      if (error) {
-        toast('Fotó feltöltési hiba', 'error')
-      } else {
-        toast('Fotó feltöltve', 'success')
-        // Log timeline
-        await supabase.from('work_order_timeline').insert({
-          work_order_id: orderId,
-          event_type: 'photo_upload',
-          title: `Fotó feltöltve (${phase ?? 'általános'})`,
-          user_name: profile?.full_name ?? 'Karl',
-          phase: phase ?? 'general',
-          metadata: { category: phase ?? 'general' },
-        })
-        onRefresh()
-      }
+      toast('Fotó feltöltve', 'success')
+      await supabase.from('work_order_timeline').insert({
+        work_order_id: orderId,
+        event_type: 'photo_upload',
+        title: `Fotó feltöltve (${phase ?? 'általános'})`,
+        user_name: profile?.full_name ?? 'Karl',
+        phase: phase ?? 'general',
+        metadata: { category: phase ?? 'general' },
+      })
+      onRefresh()
+    } catch (err: any) {
+      toast(`Feltöltési hiba: ${err.message}`, 'error')
     }
-    reader.readAsDataURL(file)
   }
 
   const advanceDeliveryStatus = async (id: string, currentStatus: string) => {

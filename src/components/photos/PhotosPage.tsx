@@ -2,6 +2,7 @@
 import { useEffect, useState, useCallback } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { useToast } from '@/components/ui/toast'
+import { uploadPhoto as uploadPhotoUtil } from '@/lib/uploadPhoto'
 import {
   Camera, Upload, X, CheckCircle, Loader2, Eye, EyeOff,
   ArrowLeft, Trash2, ShieldCheck, Clock, User, FileText,
@@ -75,14 +76,6 @@ export function PhotosPage({ refreshKey, profile }: { refreshKey: number; onRefr
 
   useEffect(() => { load() }, [load])
 
-  const toBase64 = (file: File): Promise<string> =>
-    new Promise((resolve, reject) => {
-      const reader = new FileReader()
-      reader.onload = () => resolve(reader.result as string)
-      reader.onerror = reject
-      reader.readAsDataURL(file)
-    })
-
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files?.length) return
     const items: FileItem[] = Array.from(e.target.files)
@@ -108,23 +101,17 @@ export function PhotosPage({ refreshKey, profile }: { refreshKey: number; onRefr
       setFiles([...updated])
 
       try {
-        const base64 = await toBase64(updated[i].file)
-        const { error } = await supabase.from('work_order_photos').insert({
-          work_order_id: workOrderId,
-          url: base64,
+        await uploadPhotoUtil({
+          file: updated[i].file,
+          workOrderId,
           category,
-          is_visible_to_customer: visibleToCustomer,
-          confirmed: false,
-          uploaded_by_name: uploaderName,
-          notes: '',
+          uploaderName,
+          orderNumber: wo?.order_number ?? '',
+          customerName: (wo as any)?.customer?.full_name ?? '',
+          visibleToCustomer,
         })
-        if (error) {
-          updated[i] = { ...updated[i], status: 'error', error: error.message }
-          toast(`Hiba: ${error.message}`, 'error')
-        } else {
-          updated[i] = { ...updated[i], status: 'done' }
-          ok++
-        }
+        updated[i] = { ...updated[i], status: 'done' }
+        ok++
       } catch (e: any) {
         updated[i] = { ...updated[i], status: 'error', error: e.message }
         toast(`Hiba: ${e.message}`, 'error')

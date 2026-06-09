@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { useToast } from '@/components/ui/toast'
+import { uploadPhoto } from '@/lib/uploadPhoto'
 import {
   X, CheckSquare, Circle, Camera, Clock, Play, Pause, Square,
   CheckCircle, AlertTriangle, Package, Flag, Wrench, User,
@@ -101,7 +102,6 @@ function PhotoBtn({
   userId: string | null
   onUploaded: (category: string) => void
 }) {
-  const supabase = createClient()
   const { toast } = useToast()
   const camRef = useRef<HTMLInputElement>(null)
   const galRef = useRef<HTMLInputElement>(null)
@@ -109,24 +109,15 @@ function PhotoBtn({
 
   const upload = async (file: File) => {
     setUploading(true)
-    const reader = new FileReader()
-    reader.onload = async (e) => {
-      const base64 = e.target?.result as string
-      const { error } = await supabase.from('work_order_photos').insert({
-        work_order_id: orderId,
-        url: base64,
-        category,
-        uploaded_by: userId ?? 'karl',
-      })
+    try {
+      await uploadPhoto({ file, workOrderId: orderId, category, userId, uploaderName: 'Karl' })
+      toast(`${label} feltöltve ✓`, 'success')
+      onUploaded(category)
+    } catch (err: any) {
+      toast(`Feltöltési hiba: ${err.message}`, 'error')
+    } finally {
       setUploading(false)
-      if (error) {
-        toast('Fotó feltöltési hiba', 'error')
-      } else {
-        toast(`${label} feltöltve ✓`, 'success')
-        onUploaded(category)
-      }
     }
-    reader.readAsDataURL(file)
   }
 
   return (
