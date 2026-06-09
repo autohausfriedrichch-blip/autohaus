@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button'
 import { Modal } from '@/components/ui/modal'
 import { Input, FormGroup, FormLabel, Select, Textarea } from '@/components/ui/form'
 import { useToast } from '@/components/ui/toast'
-import { Plus, Search, Phone, Mail, MapPin, Car, Edit2, Trash2 } from 'lucide-react'
+import { Plus, Search, Phone, Mail, MapPin, Car, Edit2, Trash2, ClipboardList } from 'lucide-react'
 import type { Customer } from '@/lib/types'
 import { formatDate } from '@/lib/utils'
 import { NewCustomerWizard } from './NewCustomerWizard'
@@ -170,6 +170,8 @@ export function CustomersPage({ refreshKey, onNavigate }: { refreshKey: number; 
                   <td className="px-4 py-3 hidden lg:table-cell text-[12px] text-[#8fa0b5]">{formatDate(c.created_at)}</td>
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-1 justify-end">
+                      <button onClick={() => setWizardCustomer({ id: c.id, name: c.full_name })} title="Árajánlat / Munkalap indítása"
+                        className="p-1.5 text-[#5a6a80] hover:text-[#C9A84C] transition-colors"><ClipboardList size={14} /></button>
                       <button onClick={() => openEdit(c)} className="p-1.5 text-[#5a6a80] hover:text-[#0B1E3D] transition-colors"><Edit2 size={14} /></button>
                       <button onClick={() => handleDelete(c.id)} className="p-1.5 text-[#5a6a80] hover:text-[#C9384C] transition-colors"><Trash2 size={14} /></button>
                     </div>
