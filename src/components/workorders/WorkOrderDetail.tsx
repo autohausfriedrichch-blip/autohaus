@@ -25,14 +25,26 @@ interface WOTask {
   id: string
   work_order_id: string
   title: string
-  status: 'pending' | 'in_progress' | 'paused' | 'done'
+  status: 'pending' | 'in_progress' | 'waiting' | 'done' | 'problem'
   assigned_name?: string
   timer_started_at?: string | null
   elapsed_seconds: number
   notes?: string
+  notes_internal?: string
+  notes_customer?: string
+  notes_problem?: string
+  notes_extra?: string
   sort_order: number
   completed_at?: string | null
   created_at: string
+  service_id?: string
+  pricing_type?: string
+  price?: number
+  estimated_minutes?: number
+  checklist?: string[]
+  checklist_done?: string[]
+  requires_photo?: boolean
+  priority?: string
 }
 
 interface WOPhoto {
@@ -240,6 +252,8 @@ export function WorkOrderDetail({ workOrderId, profile, onClose }: Props) {
   const [notes, setNotes] = useState({ internal: '', customer: '' })
   const [notesSaving, setNotesSaving] = useState(false)
   const [taskTimers, setTaskTimers] = useState<Record<string, number>>({})
+  const [expandedTaskId, setExpandedTaskId] = useState<string | null>(null)
+  const [activeNoteTab, setActiveNoteTab] = useState<Record<string, string>>({})
   const fileInputRef = useRef<HTMLInputElement>(null)
   const { toast } = useToast()
   const supabase = createClient()
@@ -368,6 +382,41 @@ export function WorkOrderDetail({ workOrderId, profile, onClose }: Props) {
 
   const updateTaskNotes = async (taskId: string, notes: string) => {
     await supabase.from('work_order_tasks').update({ notes }).eq('id', taskId)
+    load()
+  }
+
+  const setTaskStatus = async (task: WOTask, newStatus: string) => {
+    const updates: any = { status: newStatus }
+    if (newStatus === 'in_progress' && !task.timer_started_at && task.pricing_type === 'hourly') {
+      updates.timer_started_at = new Date().toISOString()
+    }
+    if (newStatus === 'done') {
+      const now = Date.now()
+      const started = task.timer_started_at ? new Date(task.timer_started_at).getTime() : now
+      const added = task.timer_started_at ? Math.floor((now - started) / 1000) : 0
+      updates.timer_started_at = null
+      updates.elapsed_seconds = (task.elapsed_seconds || 0) + added
+      updates.completed_at = new Date().toISOString()
+    } else if (task.timer_started_at && newStatus !== 'in_progress') {
+      const now = Date.now()
+      const started = new Date(task.timer_started_at).getTime()
+      updates.timer_started_at = null
+      updates.elapsed_seconds = (task.elapsed_seconds || 0) + Math.floor((now - started) / 1000)
+    }
+    await supabase.from('work_order_tasks').update(updates).eq('id', task.id)
+    await logEvent('note_added', `Feladat státusz: ${task.title} → ${newStatus}`)
+    load()
+  }
+
+  const toggleChecklistItem = async (task: WOTask, item: string) => {
+    const done = task.checklist_done || []
+    const newDone = done.includes(item) ? done.filter((x: string) => x !== item) : [...done, item]
+    await supabase.from('work_order_tasks').update({ checklist_done: newDone }).eq('id', task.id)
+    load()
+  }
+
+  const updateTaskNoteField = async (taskId: string, field: string, value: string) => {
+    await supabase.from('work_order_tasks').update({ [field]: value }).eq('id', taskId)
     load()
   }
 
@@ -634,58 +683,148 @@ export function WorkOrderDetail({ workOrderId, profile, onClose }: Props) {
 
           {tab === 'tasks' && (
             <div className="space-y-3">
-              {tasks.map(task => {
-                const elapsed = task.status === 'in_progress' ? (taskTimers[task.id] || task.elapsed_seconds) : task.elapsed_seconds
-                const statusColors: Record<string, string> = {
-                  pending: 'bg-[#dde3ec] text-[#5a6a80]',
-                  in_progress: 'bg-blue-100 text-blue-700',
-                  paused: 'bg-yellow-100 text-yellow-700',
-                  done: 'bg-emerald-100 text-emerald-700',
+              {(() => {
+                const STATUS_CFG: Record<string, { label: string; color: string; dot: string }> = {
+                  pending:    { label: 'Nem kezdődött el', color: 'bg-gray-100 text-gray-600',      dot: 'bg-gray-400' },
+                  in_progress:{ label: 'Folyamatban',      color: 'bg-blue-100 text-blue-700',      dot: 'bg-blue-500' },
+                  waiting:    { label: 'Várakozik',         color: 'bg-yellow-100 text-yellow-700', dot: 'bg-yellow-400' },
+                  done:       { label: 'Kész',              color: 'bg-emerald-100 text-emerald-700', dot: 'bg-emerald-500' },
+                  problem:    { label: 'Probléma',          color: 'bg-red-100 text-red-700',        dot: 'bg-red-500' },
                 }
-                const statusLabels: Record<string, string> = { pending: 'Várakozik', in_progress: 'Folyamatban', paused: 'Szünetel', done: 'Kész' }
+                const NOTE_TABS = [
+                  { key: 'notes_internal', label: 'Belső' },
+                  { key: 'notes_customer', label: 'Ügyfélnek' },
+                  { key: 'notes_problem',  label: 'Probléma' },
+                  { key: 'notes_extra',    label: 'Extra munka' },
+                ]
+                const doneTasks = tasks.filter(t => t.status === 'done').length
                 return (
-                  <div key={task.id} className="bg-white border border-[rgba(11,30,61,0.08)] rounded-lg px-4 py-3">
-                    <div className="flex items-center gap-3 flex-wrap">
-                      <span className="font-semibold text-[14px] text-[#0B1E3D] flex-1">{task.title}</span>
-                      <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${statusColors[task.status]}`}>{statusLabels[task.status]}</span>
-                      {task.assigned_name && <span className="text-[11px] text-[#8fa0b5]">{task.assigned_name}</span>}
-                    </div>
-                    <div className="flex items-center gap-2 mt-2 flex-wrap">
-                      <Clock size={13} className="text-[#8fa0b5]" />
-                      <span className="text-[12px] text-[#5a6a80]">{formatElapsed(elapsed)}</span>
-                      {task.status === 'in_progress' && <span className="text-[10px] text-blue-500 animate-pulse">● Fut</span>}
-                      <div className="flex gap-1 ml-auto">
-                        {task.status !== 'done' && task.status !== 'in_progress' && (
-                          <button onClick={() => startTask(task)} className="flex items-center gap-1 text-[11px] bg-blue-500 text-white px-2 py-1 rounded font-semibold hover:bg-blue-600">
-                            <Play size={11} /> Indítás
-                          </button>
-                        )}
-                        {task.status === 'in_progress' && (
-                          <button onClick={() => pauseTask(task)} className="flex items-center gap-1 text-[11px] bg-yellow-500 text-white px-2 py-1 rounded font-semibold hover:bg-yellow-600">
-                            <Pause size={11} /> Szünet
-                          </button>
-                        )}
-                        {task.status !== 'done' && (
-                          <button onClick={() => doneTask(task)} className="flex items-center gap-1 text-[11px] bg-emerald-500 text-white px-2 py-1 rounded font-semibold hover:bg-emerald-600">
-                            <Check size={11} /> Kész
-                          </button>
-                        )}
+                  <>
+                    {tasks.length > 0 && (
+                      <div className="flex items-center gap-2 text-[12px] text-[#5a6a80] bg-[#F4F5F7] rounded-lg px-3 py-2">
+                        <Check size={13} className="text-emerald-500" />
+                        <span>{doneTasks}/{tasks.length} feladat kész</span>
+                        {tasks.some(t => t.status === 'problem') && <span className="ml-2 text-red-600 font-semibold">⚠️ Probléma!</span>}
                       </div>
-                    </div>
-                    <div className="mt-2">
-                      <input
-                        type="text"
-                        placeholder="Megjegyzés..."
-                        defaultValue={task.notes || ''}
-                        onBlur={e => { if (e.target.value !== (task.notes || '')) updateTaskNotes(task.id, e.target.value) }}
-                        className="w-full text-[12px] px-2 py-1 border border-[rgba(11,30,61,0.15)] rounded outline-none focus:border-[#0B1E3D]"
-                      />
-                    </div>
-                  </div>
+                    )}
+                    {tasks.map(task => {
+                      const elapsed = task.status === 'in_progress' ? (taskTimers[task.id] ?? task.elapsed_seconds) : (task.elapsed_seconds || 0)
+                      const cfg = STATUS_CFG[task.status] || STATUS_CFG.pending
+                      const isExpanded = expandedTaskId === task.id
+                      const checklist = task.checklist || []
+                      const checkDone = task.checklist_done || []
+                      const noteTabKey = activeNoteTab[task.id] || 'notes_internal'
+                      const isHourly = task.pricing_type === 'hourly'
+                      return (
+                        <div key={task.id} className={`bg-white border rounded-xl overflow-hidden ${
+                          task.status === 'problem' ? 'border-red-300' : task.status === 'done' ? 'border-emerald-200' : 'border-[rgba(11,30,61,0.10)]'
+                        }`}>
+                          <div className="px-4 py-3 cursor-pointer" onClick={() => setExpandedTaskId(isExpanded ? null : task.id)}>
+                            <div className="flex items-center gap-2 flex-wrap">
+                              <span className={`w-2 h-2 rounded-full flex-shrink-0 ${cfg.dot}`} />
+                              <span className="font-semibold text-[14px] text-[#0B1E3D] flex-1">{task.title}</span>
+                              {task.priority === 'urgent' && <span className="text-[9px] bg-red-100 text-red-700 px-1.5 py-0.5 rounded font-bold">SÜRGŐS</span>}
+                              {checklist.length > 0 && (
+                                <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${checkDone.length === checklist.length ? 'bg-emerald-100 text-emerald-700' : 'bg-gray-100 text-gray-600'}`}>
+                                  {checkDone.length}/{checklist.length}
+                                </span>
+                              )}
+                              <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${cfg.color}`}>{cfg.label}</span>
+                              <ChevronDown size={14} className={`text-[#8fa0b5] transition-transform ${isExpanded ? 'rotate-180' : ''}`} />
+                            </div>
+                            {isHourly && (
+                              <div className="flex items-center gap-2 mt-1.5 flex-wrap" onClick={e => e.stopPropagation()}>
+                                <Clock size={12} className="text-[#8fa0b5]" />
+                                <span className="text-[11px] text-[#5a6a80]">{formatElapsed(elapsed)}</span>
+                                {task.estimated_minutes ? <span className="text-[11px] text-[#8fa0b5]">/ {task.estimated_minutes}p</span> : null}
+                                {task.status === 'in_progress' && <span className="text-[10px] text-blue-500 animate-pulse font-semibold">● Fut</span>}
+                                <div className="flex gap-1 ml-auto">
+                                  {task.status !== 'in_progress' && task.status !== 'done' && (
+                                    <button onClick={() => startTask(task)} className="flex items-center gap-1 text-[11px] bg-blue-500 text-white px-2 py-1 rounded font-semibold">
+                                      <Play size={10} /> Indít
+                                    </button>
+                                  )}
+                                  {task.status === 'in_progress' && (
+                                    <button onClick={() => pauseTask(task)} className="flex items-center gap-1 text-[11px] bg-yellow-500 text-white px-2 py-1 rounded font-semibold">
+                                      <Pause size={10} /> Szünet
+                                    </button>
+                                  )}
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                          {isExpanded && (
+                            <div className="border-t border-gray-100 px-4 py-3 space-y-4">
+                              <div>
+                                <div className="text-[10px] font-bold text-[#5a6a80] uppercase tracking-wide mb-2">Státusz</div>
+                                <div className="flex flex-wrap gap-1.5">
+                                  {Object.entries(STATUS_CFG).map(([key, c]) => (
+                                    <button key={key} onClick={() => setTaskStatus(task, key)}
+                                      className={`text-[11px] font-semibold px-2.5 py-1 rounded-full border transition-all ${
+                                        task.status === key ? `${c.color} border-current` : 'bg-white border-gray-200 text-gray-500 hover:border-gray-400'
+                                      }`}>
+                                      {c.label}
+                                    </button>
+                                  ))}
+                                </div>
+                              </div>
+                              {checklist.length > 0 && (
+                                <div>
+                                  <div className="text-[10px] font-bold text-[#5a6a80] uppercase tracking-wide mb-2">Checklist — {checkDone.length}/{checklist.length}</div>
+                                  <div className="space-y-1.5">
+                                    {checklist.map((item: string) => {
+                                      const done = checkDone.includes(item)
+                                      return (
+                                        <button key={item} onClick={() => toggleChecklistItem(task, item)}
+                                          className={`flex items-center gap-2.5 w-full text-left px-3 py-2 rounded-lg border transition-all ${done ? 'bg-emerald-50 border-emerald-200' : 'bg-gray-50 border-gray-200 hover:border-gray-300'}`}>
+                                          <span className={`w-4 h-4 rounded border-2 flex-shrink-0 flex items-center justify-center ${done ? 'bg-emerald-500 border-emerald-500' : 'border-gray-300'}`}>
+                                            {done && <Check size={10} className="text-white" />}
+                                          </span>
+                                          <span className={`text-[12px] ${done ? 'text-emerald-700 line-through' : 'text-[#0B1E3D]'}`}>{item}</span>
+                                        </button>
+                                      )
+                                    })}
+                                  </div>
+                                </div>
+                              )}
+                              <div>
+                                <div className="text-[10px] font-bold text-[#5a6a80] uppercase tracking-wide mb-2">Jegyzetek</div>
+                                <div className="flex gap-1 mb-2">
+                                  {NOTE_TABS.map(nt => (
+                                    <button key={nt.key} onClick={() => setActiveNoteTab(prev => ({ ...prev, [task.id]: nt.key }))}
+                                      className={`text-[10px] px-2 py-1 rounded-md font-semibold transition-colors ${noteTabKey === nt.key ? 'bg-[#0B1E3D] text-white' : 'bg-gray-100 text-[#5a6a80] hover:bg-gray-200'}`}>
+                                      {nt.label}
+                                    </button>
+                                  ))}
+                                </div>
+                                <textarea
+                                  key={`${task.id}-${noteTabKey}`}
+                                  defaultValue={(task as any)[noteTabKey] || ''}
+                                  onBlur={e => { if (e.target.value !== ((task as any)[noteTabKey] || '')) updateTaskNoteField(task.id, noteTabKey, e.target.value) }}
+                                  placeholder={
+                                    noteTabKey === 'notes_internal' ? 'Belső technikus megjegyzés...' :
+                                    noteTabKey === 'notes_customer' ? 'Ügyfélnek látható szöveg...' :
+                                    noteTabKey === 'notes_problem' ? 'Probléma / akadály...' : 'Extra munka javaslata...'
+                                  }
+                                  rows={3}
+                                  className="w-full text-[12px] px-3 py-2 border border-gray-200 rounded-lg outline-none focus:border-[#0B1E3D] resize-none"
+                                />
+                              </div>
+                              {task.status !== 'done' && (
+                                <button onClick={() => setTaskStatus(task, 'done')}
+                                  className="w-full flex items-center justify-center gap-2 py-2.5 bg-emerald-500 hover:bg-emerald-600 text-white rounded-lg text-sm font-bold transition-colors">
+                                  <Check size={16} /> Feladat kész
+                                </button>
+                              )}
+                            </div>
+                          )}
+                        </div>
+                      )
+                    })}
+                  </>
                 )
-              })}
+              })()}
               {tasks.length === 0 && <div className="text-[#8fa0b5] text-sm py-4 text-center">Nincs feladat</div>}
-
               {!newTaskForm.open ? (
                 <button onClick={() => setNewTaskForm(f => ({ ...f, open: true }))}
                   className="flex items-center gap-2 text-[13px] text-[#C9A84C] font-semibold hover:text-[#0B1E3D]">

@@ -7,7 +7,7 @@ import { Input, FormGroup, FormLabel, Select, Textarea } from '@/components/ui/f
 import { StatusBadge } from '@/components/ui/badge'
 import { useToast } from '@/components/ui/toast'
 import { DocumentActions } from '@/components/documents/DocumentActions'
-import { Plus, Search, ExternalLink } from 'lucide-react'
+import { Plus, Search, ExternalLink, CheckSquare, Square } from 'lucide-react'
 import type { WorkOrder } from '@/lib/types'
 import { formatCurrency, formatDate, STATUS_LABELS } from '@/lib/utils'
 import { WorkOrderDetail } from '@/components/workorders/WorkOrderDetail'
@@ -36,6 +36,8 @@ export function WorkOrdersPage({ refreshKey, profile }: { refreshKey: number; on
   const [detailOrderId, setDetailOrderId] = useState<string | null>(null)
   const [form, setForm] = useState<Partial<WorkOrder>>({})
   const [saving, setSaving] = useState(false)
+  const [services, setServices] = useState<any[]>([])
+  const [selectedServiceIds, setSelectedServiceIds] = useState<string[]>([])
   const { toast } = useToast()
   const supabase = createClient()
   const isMechanic = profile?.role === 'mechanic'
@@ -44,21 +46,20 @@ export function WorkOrdersPage({ refreshKey, profile }: { refreshKey: number; on
     setLoading(true)
     let woQuery = supabase.from('work_orders').select('*, customer:customers(full_name,phone,email,whatsapp), vehicle:vehicles(make,model,license_plate,year), mechanic:profiles!work_orders_mechanic_id_fkey(full_name)').order('created_at', { ascending: false })
     if (isMechanic && profile?.id) woQuery = woQuery.eq('mechanic_id', profile.id)
-    const [{ data: wo }, { data: c }, { data: v }, { data: m }] = await Promise.all([
+    const [{ data: wo }, { data: c }, { data: v }, { data: m }, { data: svc }] = await Promise.all([
       woQuery,
       supabase.from('customers').select('id, full_name').order('full_name'),
       supabase.from('vehicles').select('id, make, model, license_plate, customer_id'),
       supabase.from('profiles').select('id, full_name').in('role', ['mechanic', 'admin', 'super_admin']),
+      supabase.from('services').select('id, name, category, pricing_type, base_price, hourly_rate, duration_minutes, description, checklist_template').eq('is_active', true).order('sort_order', { ascending: true }),
     ])
     setOrders((wo as any) || [])
     setCustomers(c || [])
     setVehicles(v || [])
     const mechList = m || []
     setMechanics(mechList)
-    // Auto-select mechanic if only one exists
-    if (mechList.length === 1) {
-      setForm(f => ({ ...f, mechanic_id: mechList[0].id }))
-    }
+    if (mechList.length === 1) setForm(f => ({ ...f, mechanic_id: mechList[0].id }))
+    setServices(svc || [])
     setLoading(false)
   }, [refreshKey])
 
@@ -76,7 +77,12 @@ export function WorkOrdersPage({ refreshKey, profile }: { refreshKey: number; on
   const openNew = () => {
     const autoMechanic = mechanics.length === 1 ? mechanics[0].id : undefined
     setForm({ status: 'new_booking', is_mobile: false, payment_status: 'pending', parts_cost: 0, labor_cost: 0, total_amount: 0, mechanic_id: autoMechanic })
+    setSelectedServiceIds([])
     setModalOpen(true)
+  }
+
+  const toggleService = (id: string) => {
+    setSelectedServiceIds(prev => prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id])
   }
 
   const assignMechanic = async (orderId: string, mechanicId: string) => {
@@ -85,12 +91,15 @@ export function WorkOrdersPage({ refreshKey, profile }: { refreshKey: number; on
   }
 
   const handleSave = async () => {
-    if (!form.customer_id || !form.vehicle_id) { toast('Kunde und Fahrzeug sind Pflichtfelder', 'error'); return }
+    if (!form.customer_id || !form.vehicle_id) { toast('Ügyfél és jármű kötelező!', 'error'); return }
     setSaving(true)
+
+    const selectedSvcs = services.filter(s => selectedServiceIds.includes(s.id))
+    const serviceNames = selectedSvcs.map(s => s.name).join(', ')
+
     const payload = {
       customer_id: form.customer_id, vehicle_id: form.vehicle_id,
-      service_id: (form as any).service_id || null,
-      service_type: form.service_type || null,
+      service_type: serviceNames || form.service_type || null,
       status: form.status || 'new_booking',
       mechanic_id: form.mechanic_id || null,
       scheduled_date: form.scheduled_date || null,
@@ -105,12 +114,41 @@ export function WorkOrdersPage({ refreshKey, profile }: { refreshKey: number; on
       customer_notes: form.customer_notes || null,
       payment_status: form.payment_status || 'pending',
     }
-    const { error } = await supabase.from('work_orders').insert(payload)
+    const { data: woData, error } = await supabase.from('work_orders').insert(payload).select('id').single()
     if (error) {
-      console.error('Work order insert error:', error)
-      toast(`Hiba: ${error.message} (${error.code})`, 'error')
+      toast(`Hiba: ${error.message}`, 'error')
+      setSaving(false)
+      return
     }
-    else { toast('Munkalap létrehozva'); setModalOpen(false); load() }
+
+    if (selectedSvcs.length > 0 && woData?.id) {
+      const mechanic = mechanics.find(m => m.id === form.mechanic_id)
+      const taskInserts = selectedSvcs.map((svc, idx) => ({
+        work_order_id: woData.id,
+        title: svc.name,
+        assigned_name: mechanic?.full_name || null,
+        sort_order: idx,
+        status: 'pending',
+        service_id: svc.id,
+        pricing_type: svc.pricing_type || 'fixed',
+        price: svc.pricing_type === 'hourly' ? (svc.hourly_rate || 0) : (svc.base_price || 0),
+        estimated_minutes: svc.duration_minutes || 0,
+        checklist: Array.isArray(svc.checklist_template) ? svc.checklist_template : [],
+        checklist_done: [],
+        requires_photo: false,
+        priority: 'normal',
+        notes_internal: '',
+        notes_customer: '',
+        notes_problem: '',
+        notes_extra: svc.description || '',
+      }))
+      const { error: taskErr } = await supabase.from('work_order_tasks').insert(taskInserts)
+      if (taskErr) toast(`Feladat hiba: ${taskErr.message}`, 'error')
+    }
+
+    toast(`Munkalap létrehozva${selectedSvcs.length ? ` – ${selectedSvcs.length} feladat hozzáadva` : ''}`)
+    setModalOpen(false)
+    load()
     setSaving(false)
   }
 
@@ -242,19 +280,43 @@ export function WorkOrdersPage({ refreshKey, profile }: { refreshKey: number; on
               {filteredVehicles.map(v => <option key={v.id} value={v.id}>{v.make} {v.model} – {v.license_plate}</option>)}
             </Select>
           </FormGroup>
-          <FormGroup>
-            <FormLabel>Szolgáltatás</FormLabel>
-            <Select value={form.service_type || ''} onChange={e => setForm(f => ({ ...f, service_type: e.target.value }))}>
-              <option value="">Válassz...</option>
-              <option value="Inspektion">Inspektion</option>
-              <option value="Ölwechsel">Ölwechsel</option>
-              <option value="Diagnose">Diagnose</option>
-              <option value="Reparatur">Reparatur</option>
-              <option value="Reifenwechsel">Reifenwechsel</option>
-              <option value="Detailing">Detailing</option>
-              <option value="MFK Vorbereitung">MFK Vorbereitung</option>
-              <option value="Sonstiges">Sonstiges</option>
-            </Select>
+          <FormGroup className="col-span-2">
+            <FormLabel>
+              Elvégzendő szolgáltatások
+              {selectedServiceIds.length > 0 && <span className="ml-2 text-[#C9A84C] font-bold">{selectedServiceIds.length} kiválasztva</span>}
+            </FormLabel>
+            {services.length === 0 ? (
+              <p className="text-xs text-[#8fa0b5] py-2">Nincs aktív szolgáltatás – add hozzá a Szolgáltatások menüben.</p>
+            ) : (
+              <div className="border border-gray-200 rounded-xl max-h-48 overflow-y-auto divide-y divide-gray-100">
+                {Object.entries(
+                  services.reduce((acc: Record<string, any[]>, s) => {
+                    const cat = s.category || 'Egyéb'
+                    if (!acc[cat]) acc[cat] = []
+                    acc[cat].push(s)
+                    return acc
+                  }, {})
+                ).map(([cat, svcs]) => (
+                  <div key={cat}>
+                    <div className="px-3 py-1 bg-gray-50 text-[10px] font-bold text-[#5a6a80] uppercase tracking-wider">{cat}</div>
+                    {(svcs as any[]).map((svc: any) => {
+                      const checked = selectedServiceIds.includes(svc.id)
+                      return (
+                        <button key={svc.id} type="button" onClick={() => toggleService(svc.id)}
+                          className={`w-full flex items-center gap-3 px-3 py-2 hover:bg-gray-50 transition-colors text-left ${checked ? 'bg-blue-50/60' : ''}`}>
+                          {checked ? <CheckSquare size={15} className="text-[#0B1E3D] flex-shrink-0" /> : <Square size={15} className="text-gray-300 flex-shrink-0" />}
+                          <span className="flex-1 text-[13px] font-medium text-[#0B1E3D]">{svc.name}</span>
+                          <span className="text-[11px] text-[#8fa0b5] shrink-0">
+                            {svc.pricing_type === 'hourly' ? `${svc.hourly_rate || 0} CHF/h` : svc.base_price ? `${svc.base_price} CHF` : ''}
+                            {svc.duration_minutes ? ` · ${svc.duration_minutes}p` : ''}
+                          </span>
+                        </button>
+                      )
+                    })}
+                  </div>
+                ))}
+              </div>
+            )}
           </FormGroup>
           <FormGroup>
             <FormLabel>Státusz</FormLabel>
