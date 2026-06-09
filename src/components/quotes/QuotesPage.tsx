@@ -376,6 +376,17 @@ export function QuotesPage({ refreshKey, autoOpenNew, onAutoOpenConsumed }: {
               }} placeholder="pl. Beragadt porlasztó kiszedés" />
             </FormGroup>
 
+            {/* Szolgáltatások & Tételek */}
+            <div>
+              <div className="text-[11px] font-semibold text-[#5a6a80] uppercase tracking-[0.5px] mb-2">Szolgáltatások & Tételek</div>
+              <ServiceCalculator items={serviceItems} onChange={setServiceItems} hourlyRateDefault={form.hourly_rate || 125} showSummary={false} />
+              {serviceItems.some(it => it.is_risky && !it.risk_acknowledged) && (
+                <div className="mt-2 flex items-center gap-2 text-[12px] text-orange-700 bg-orange-50 border border-orange-200 rounded-lg px-3 py-2">
+                  <AlertTriangle size={13} /> Kockázatos tételek jóváhagyása szükséges az ár mentése előtt
+                </div>
+              )}
+            </div>
+
             {/* Time range + quantity + rate */}
             <div className="bg-[#0B1E3D] rounded-xl p-4 space-y-3">
               <p className="text-[11px] font-semibold text-[#C9A84C] uppercase flex items-center gap-1"><Clock size={11} /> Időbecslés</p>
