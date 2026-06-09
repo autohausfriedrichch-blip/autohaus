@@ -325,10 +325,11 @@ export default function TechnicianPage({
       .in('status', ACTIVE_STATUSES)
       .order('checked_in_at', { ascending: true })
 
-    // All garage (not completed/delivered) – all mechanics
+    // Karl's assigned garage orders only
     const { data: garageData } = await supabase
       .from('work_orders')
       .select('*, customer:customers(id,full_name), vehicle:vehicles(make,model,license_plate)')
+      .eq('mechanic_id', userId)
       .in('status', IN_GARAGE_STATUSES)
       .order('scheduled_date', { ascending: true })
 
