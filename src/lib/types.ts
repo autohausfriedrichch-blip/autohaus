@@ -19,6 +19,12 @@ export interface Customer {
   address?: string
   city?: string
   postal_code?: string
+  canton?: string
+  country?: string
+  lat?: number
+  lng?: number
+  address_source?: 'google' | 'manual'
+  address_formatted?: string
   preferred_contact: 'phone' | 'whatsapp' | 'email'
   marketing_consent: boolean
   notes?: string
@@ -38,11 +44,36 @@ export interface Vehicle {
   license_plate: string
   vin?: string
   mileage?: number
-  fuel_type: 'petrol' | 'diesel' | 'electric' | 'hybrid' | 'lpg'
+  fuel_type: 'petrol' | 'diesel' | 'electric' | 'hybrid' | 'lpg' | 'phev'
   color?: string
   notes?: string
+  // Extended fields
+  power_kw?: number
+  power_hp?: number
+  displacement_cc?: number
+  body_type?: string
+  transmission?: string
+  drive_type?: string
+  doors?: number
+  tire_size?: string
+  oil_spec?: string
+  engine_label?: string
+  data_source?: 'database' | 'vin_api' | 'manual' | 'ocr'
+  vin_validated?: boolean
   created_at: string
   customer?: Customer
+}
+
+export interface CustomerAddress {
+  address?: string
+  city?: string
+  postal_code?: string
+  canton?: string
+  country?: string
+  lat?: number
+  lng?: number
+  address_formatted?: string
+  address_source?: 'google' | 'manual'
 }
 
 export type WorkOrderStatus =

@@ -12,6 +12,7 @@ import { Plus, Search, Phone, Mail, MapPin, Car, Edit2, Trash2, ClipboardList } 
 import type { Customer } from '@/lib/types'
 import { formatDate } from '@/lib/utils'
 import { NewCustomerWizard } from './NewCustomerWizard'
+import AddressAutocomplete, { AddressResult } from '@/components/ui/AddressAutocomplete'
 
 export function CustomersPage({ refreshKey, onNavigate }: { refreshKey: number; onRefresh: () => void; onNavigate?: (page: string) => void }) {
   const [customers, setCustomers] = useState<Customer[]>([])
@@ -23,7 +24,15 @@ export function CustomersPage({ refreshKey, onNavigate }: { refreshKey: number; 
   const [saving, setSaving] = useState(false)
   const [whatsappSame, setWhatsappSame] = useState(true)
   const [wizardCustomer, setWizardCustomer] = useState<{ id: string; name: string } | null>(null)
+  const [googleMapsKey, setGoogleMapsKey] = useState<string | undefined>(undefined)
   const { toast } = useToast()
+
+  useEffect(() => {
+    fetch('/api/settings?key=google_maps_key')
+      .then(r => r.json())
+      .then(d => { if (d.value) setGoogleMapsKey(d.value) })
+      .catch(() => {})
+  }, [])
 
   const formatPhone = (value: string): string => {
     const digits = value.replace(/\D/g, '')
@@ -87,7 +96,10 @@ export function CustomersPage({ refreshKey, onNavigate }: { refreshKey: number; 
     const payload = {
       full_name: form.full_name, phone: form.phone, email: form.email,
       whatsapp: form.whatsapp, address: form.address, city: form.city,
-      postal_code: form.postal_code, preferred_contact: form.preferred_contact,
+      postal_code: form.postal_code, canton: form.canton, country: form.country || 'CH',
+      lat: form.lat, lng: form.lng, address_source: form.address_source || 'manual',
+      address_formatted: form.address_formatted,
+      preferred_contact: form.preferred_contact,
       marketing_consent: form.marketing_consent, notes: form.notes,
     }
     if (editCustomer) {
@@ -245,6 +257,29 @@ export function CustomersPage({ refreshKey, onNavigate }: { refreshKey: number; 
             <FormLabel>E-Mail</FormLabel>
             <Input type="email" defaultValue={form.email || ''} onBlur={e => setForm(f => ({ ...f, email: e.target.value }))} placeholder="max@example.com" key={`email-${editCustomer?.id}`} />
           </FormGroup>
+          <FormGroup className="col-span-2">
+            <FormLabel>Cím keresése (Google)</FormLabel>
+            <AddressAutocomplete
+              value={form.address_formatted || form.address || ''}
+              apiKey={googleMapsKey}
+              placeholder="Kezdj el gépelni: Thun, Bahnhofstrasse..."
+              onSelect={(result: AddressResult) => {
+                setForm(f => ({
+                  ...f,
+                  address: result.street || f.address,
+                  postal_code: result.postal_code || f.postal_code,
+                  city: result.city || f.city,
+                  canton: result.canton || f.canton,
+                  country: result.country || 'CH',
+                  lat: result.lat,
+                  lng: result.lng,
+                  address_formatted: result.formatted_address,
+                  address_source: result.validated ? 'google' : 'manual',
+                }))
+              }}
+              key={`addr-ac-${editCustomer?.id}`}
+            />
+          </FormGroup>
           <FormGroup>
             <FormLabel>Utca & hsz.</FormLabel>
             <Input defaultValue={form.address || ''} onBlur={e => setForm(f => ({ ...f, address: e.target.value }))} placeholder="Fő utca 1" key={`addr-${editCustomer?.id}`} />
@@ -253,8 +288,12 @@ export function CustomersPage({ refreshKey, onNavigate }: { refreshKey: number; 
             <FormLabel>Irányítószám / Város</FormLabel>
             <div className="flex gap-2">
               <Input defaultValue={form.postal_code || ''} onBlur={e => setForm(f => ({ ...f, postal_code: e.target.value }))} placeholder="1234" className="w-20" key={`plz-${editCustomer?.id}`} />
-              <Input defaultValue={form.city || ''} onBlur={e => setForm(f => ({ ...f, city: e.target.value }))} placeholder="Budapest" key={`city-${editCustomer?.id}`} />
+              <Input defaultValue={form.city || ''} onBlur={e => setForm(f => ({ ...f, city: e.target.value }))} placeholder="Thun" key={`city-${editCustomer?.id}`} />
             </div>
+          </FormGroup>
+          <FormGroup>
+            <FormLabel>Kanton</FormLabel>
+            <Input defaultValue={form.canton || ''} onBlur={e => setForm(f => ({ ...f, canton: e.target.value }))} placeholder="BE" key={`canton-${editCustomer?.id}`} />
           </FormGroup>
           <FormGroup>
             <FormLabel>Preferált kapcsolat</FormLabel>

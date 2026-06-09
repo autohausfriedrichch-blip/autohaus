@@ -25,7 +25,8 @@ const TABS = [
   { id: 'review',        label: 'Google Review',     icon: Globe },
   { id: 'security',      label: 'Biztonság',         icon: Shield },
   { id: 'backup',        label: 'Backup & Export',   icon: Database },
-  { id: 'future',        label: 'Jövőbeni modulok',  icon: Zap },
+  { id: 'apis',          label: 'API kulcsok',        icon: Zap },
+  { id: 'future',        label: 'Jövőbeni modulok',  icon: Database },
 ]
 
 const DAYS = [
@@ -680,6 +681,11 @@ export function SettingsPage({ refreshKey }: { refreshKey: number; onRefresh: ()
             </div>
           )}
 
+          {/* ── API KEYS ── */}
+          {activeTab === 'apis' && (
+            <ApiKeysTab />
+          )}
+
           {/* ── FUTURE ── */}
           {activeTab === 'future' && (
             <div>
@@ -710,6 +716,87 @@ export function SettingsPage({ refreshKey }: { refreshKey: number; onRefresh: ()
 
         </Card>
       </div>
+    </div>
+  )
+}
+
+function ApiKeysTab() {
+  const [googleKey, setGoogleKey] = useState('')
+  const [vinKey, setVinKey] = useState('')
+  const [saving, setSaving] = useState(false)
+  const [loaded, setLoaded] = useState(false)
+  const { toast } = useToast()
+
+  useEffect(() => {
+    Promise.all([
+      fetch('/api/settings?key=google_maps_key').then(r => r.json()),
+      fetch('/api/settings?key=vin_api_key').then(r => r.json()),
+    ]).then(([g, v]) => {
+      setGoogleKey(g.value || '')
+      setVinKey(v.value || '')
+      setLoaded(true)
+    }).catch(() => setLoaded(true))
+  }, [])
+
+  const save = async () => {
+    setSaving(true)
+    await Promise.all([
+      fetch('/api/settings', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ key: 'google_maps_key', value: googleKey }) }),
+      fetch('/api/settings', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ key: 'vin_api_key', value: vinKey }) }),
+    ])
+    setSaving(false)
+    toast('API kulcsok mentve')
+  }
+
+  if (!loaded) return <div className="py-8 text-center text-sm text-[#5a6a80]">Betöltés...</div>
+
+  return (
+    <div className="space-y-6">
+      <SectionTitle>Google Maps & Places API</SectionTitle>
+      <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 text-sm text-blue-800">
+        <p className="font-semibold mb-1">Google Maps Platform szükséges a következőkhöz:</p>
+        <ul className="list-disc list-inside space-y-0.5 text-[12px]">
+          <li>Cím autocomplete (Places API)</li>
+          <li>GPS koordináták lekérdezése</li>
+          <li>Útvonaltervező (Karl napi útvonal)</li>
+          <li>Kiszállási díj kalkuláció</li>
+        </ul>
+        <p className="mt-2 text-[11px] text-blue-600">API kulcs a Google Cloud Console-ban igényelhető: console.cloud.google.com</p>
+      </div>
+      <FormGroup>
+        <FormLabel>Google Maps API kulcs</FormLabel>
+        <Input
+          type="password"
+          value={googleKey}
+          onChange={e => setGoogleKey(e.target.value)}
+          placeholder="AIza..."
+        />
+        <p className="text-[11px] text-[#5a6a80] mt-1">Szükséges API-k: Maps JavaScript API, Places API, Geocoding API</p>
+      </FormGroup>
+      <div className="flex items-center gap-2">
+        <div className={`w-2 h-2 rounded-full ${googleKey ? 'bg-emerald-500' : 'bg-gray-300'}`} />
+        <span className="text-[12px] text-[#5a6a80]">{googleKey ? 'API kulcs konfigurálva' : 'Nem konfigurálva – manuális cím bevitel aktív'}</span>
+      </div>
+
+      <SectionTitle>VIN Decoder API</SectionTitle>
+      <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 text-sm text-amber-800">
+        <p className="font-semibold mb-1">VIN dekódolás</p>
+        <p className="text-[12px]">Alap funkció: ingyenes NHTSA API (USA járművek). Európai/svájci járművekhez külső API szükséges (pl. CarMD, VINAudit, Auto-Data).</p>
+        <p className="mt-1 text-[11px] text-amber-600">Ha üresen marad, az ingyenes NHTSA API aktív.</p>
+      </div>
+      <FormGroup>
+        <FormLabel>VIN API kulcs (opcionális)</FormLabel>
+        <Input
+          type="password"
+          value={vinKey}
+          onChange={e => setVinKey(e.target.value)}
+          placeholder="Opcionális külső VIN API kulcs"
+        />
+      </FormGroup>
+
+      <Button variant="primary" onClick={save} disabled={saving}>
+        {saving ? 'Mentés...' : 'API kulcsok mentése'}
+      </Button>
     </div>
   )
 }
