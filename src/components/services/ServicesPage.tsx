@@ -28,6 +28,8 @@ export interface ServiceV2 {
   unit_label?: string | null
   unit_time_minutes?: number | null
   hourly_rate?: number | null
+  min_hours?: number | null
+  max_hours?: number | null
   duration_minutes?: number | null
   is_mobile?: boolean
   is_active?: boolean
@@ -141,7 +143,7 @@ export function ServicesPage({ refreshKey }: { refreshKey: number; onRefresh: ()
     // Clean up irrelevant price fields based on pricing_type
     if (payload.pricing_type !== 'fixed')    { payload.base_price = null }
     if (payload.pricing_type !== 'per_unit') { payload.unit_price = null; payload.unit_time_minutes = null }
-    if (payload.pricing_type !== 'hourly')   { payload.hourly_rate = null }
+    if (payload.pricing_type !== 'hourly')   { payload.hourly_rate = null; payload.min_hours = null; payload.max_hours = null }
 
     if (editService) {
       const { error } = await supabase.from('services').update(payload).eq('id', editService.id)
@@ -409,15 +411,32 @@ export function ServicesPage({ refreshKey }: { refreshKey: number; onRefresh: ()
             )}
 
             {form.pricing_type === 'hourly' && (
-              <div className="grid grid-cols-2 gap-3">
-                <FormGroup className="mb-0">
-                  <FormLabel>Óradíj (CHF)</FormLabel>
-                  <Input type="number" step="0.01" value={form.hourly_rate || ''} onChange={e => setForm(f => ({ ...f, hourly_rate: parseFloat(e.target.value) || null }))} placeholder="125.00" />
-                </FormGroup>
-                <FormGroup className="mb-0">
-                  <FormLabel>Becsült idő (perc)</FormLabel>
-                  <Input type="number" value={form.duration_minutes || ''} onChange={e => setForm(f => ({ ...f, duration_minutes: parseInt(e.target.value) || null }))} placeholder="60" />
-                </FormGroup>
+              <div className="space-y-2">
+                <div className="grid grid-cols-2 gap-3">
+                  <FormGroup className="mb-0">
+                    <FormLabel>Óradíj (CHF)</FormLabel>
+                    <Input type="number" step="0.01" value={form.hourly_rate || ''} onChange={e => setForm(f => ({ ...f, hourly_rate: parseFloat(e.target.value) || null }))} placeholder="125.00" />
+                  </FormGroup>
+                  <FormGroup className="mb-0">
+                    <FormLabel>Becsült idő (perc)</FormLabel>
+                    <Input type="number" value={form.duration_minutes || ''} onChange={e => setForm(f => ({ ...f, duration_minutes: parseInt(e.target.value) || null }))} placeholder="60" />
+                  </FormGroup>
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                  <FormGroup className="mb-0">
+                    <FormLabel>Min. óra / db</FormLabel>
+                    <Input type="number" step="0.5" value={form.min_hours || ''} onChange={e => setForm(f => ({ ...f, min_hours: parseFloat(e.target.value) || null }))} placeholder="0.5" />
+                  </FormGroup>
+                  <FormGroup className="mb-0">
+                    <FormLabel>Max. óra / db</FormLabel>
+                    <Input type="number" step="0.5" value={form.max_hours || ''} onChange={e => setForm(f => ({ ...f, max_hours: parseFloat(e.target.value) || null }))} placeholder="5.0" />
+                  </FormGroup>
+                </div>
+                {form.min_hours && form.max_hours && form.hourly_rate && (
+                  <div className="text-[11px] text-[#5a6a80] bg-white rounded-lg px-3 py-2 border border-[rgba(11,30,61,0.08)]">
+                    Becslési tartomány: <span className="font-semibold text-[#0B1E3D]">{(form.min_hours * form.hourly_rate).toFixed(0)} – {(form.max_hours * form.hourly_rate).toFixed(0)} CHF</span> / db (1 db alapján)
+                  </div>
+                )}
               </div>
             )}
 
