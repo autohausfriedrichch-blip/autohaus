@@ -56,10 +56,10 @@ export function VehiclesPage({ refreshKey }: { refreshKey: number; onRefresh: ()
     }
     if (editVehicle) {
       const { error } = await supabase.from('vehicles').update(payload).eq('id', editVehicle.id)
-      if (error) { toast('Fehler', 'error') } else { toast('Fahrzeug aktualisiert'); setModalOpen(false); load() }
+      if (error) { toast(`Hiba: ${error.message}`, 'error') } else { toast('Jármű frissítve'); setModalOpen(false); load() }
     } else {
       const { error } = await supabase.from('vehicles').insert(payload)
-      if (error) { toast('Fehler', 'error') } else { toast('Fahrzeug erstellt'); setModalOpen(false); load() }
+      if (error) { toast(`Hiba: ${error.message}`, 'error') } else { toast('Jármű létrehozva'); setModalOpen(false); load() }
     }
     setSaving(false)
   }
