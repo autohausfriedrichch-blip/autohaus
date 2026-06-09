@@ -6,7 +6,7 @@ import {
   Wrench, Route, MessageCircle, BarChart2, Settings,
   Camera, FileText, Package, LogOut, Building2, ListTodo,
   Cog, Hammer, Star, TrendingUp, MapPin, History, ScanLine,
-  Calendar, Truck, ChevronRight, Crown, Bell, BarChart
+  Truck, ChevronRight, Crown, Bell, BarChart, Calendar
 } from 'lucide-react'
 
 // ─── Types ───────────────────────────────────────────────────────────────────
@@ -36,6 +36,12 @@ const ADMIN_NAV: NavGroup[] = [
     id: 'dashboard',
     label: 'Dashboard',
     icon: LayoutDashboard,
+    direct: true,
+  },
+  {
+    id: 'calendar',
+    label: 'Naptár',
+    icon: Calendar,
     direct: true,
   },
   {
@@ -152,6 +158,7 @@ const ADMIN_NAV: NavGroup[] = [
 
 const MECHANIC_NAV: NavGroup[] = [
   { id: 'technician',   label: 'Mai munkáim',         icon: Hammer,       direct: true },
+  { id: 'calendar',    label: 'Naptár',              icon: Calendar,     direct: true },
   { id: 'workorders',   label: 'Aktív munkalapok',    icon: ClipboardList, direct: true, badge: 'open' },
   { id: 'checkin',      label: 'Check-In / Out',      icon: CheckSquare,  direct: true },
   { id: 'mobile_service', label: 'Mobile Service',   icon: Truck,        direct: true },

@@ -37,6 +37,7 @@ import { QualityControlPage } from '@/components/quality-control/QualityControlP
 import AIAssistantPage from '@/components/ai-assistant/AIAssistantPage'
 import { MobileBottomNav } from '@/components/layout/MobileBottomNav'
 import { WorkOrderDetail } from '@/components/workorders/WorkOrderDetail'
+import { CalendarPage } from '@/components/calendar/CalendarPage'
 import type { Profile } from '@/lib/types'
 import { useRouter } from 'next/navigation'
 
@@ -74,6 +75,7 @@ const PAGE_TITLES: Record<string, string> = {
   inventory: 'Készlet & Árlista',
   quality_control: 'Minőségellenőrzés',
   ai_assistant: 'AI Asszisztens',
+  calendar: 'Naptár',
 }
 
 function AdminApp() {
@@ -183,6 +185,7 @@ function AdminApp() {
       case 'inventory':          return <InventoryPage {...props} />
       case 'quality_control':    return <QualityControlPage {...props} />
       case 'ai_assistant':       return <AIAssistantPage {...props} />
+      case 'calendar':           return <CalendarPage refreshKey={refreshKey} onRefresh={() => setRefreshKey(k => k + 1)} profile={profile} />
       default: return (
         <div className="flex flex-col items-center justify-center h-64 text-[#5a6a80]">
           <p className="text-lg font-medium">{pageTitle}</p>
