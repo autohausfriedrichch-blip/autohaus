@@ -220,7 +220,7 @@ export function WorkOrdersPage({ refreshKey, profile }: { refreshKey: number; on
             <div key={o.id} className="bg-white border border-[rgba(11,30,61,0.10)] rounded-[14px] overflow-hidden mb-3">
               <div className="flex items-center gap-3 px-4 py-3 border-b border-[rgba(11,30,61,0.08)]">
                 <HealthDot health={(o as any).health} />
-                <span className="text-[11px] font-bold text-[#185FA5] bg-[#E6F1FB] px-2 py-0.5 rounded">{o.order_number}</span>
+                <span className="text-[11px] font-bold text-[#185FA5] bg-[#E6F1FB] px-2 py-0.5 rounded">{o.order_number || `#${o.id.slice(0,8)}`}</span>
                 <span className="font-semibold text-[13px] flex-1">{(o as any).customer?.full_name}</span>
                 {(o as any).vehicle && (
                   <span className="bg-[#0B1E3D] text-white text-[11px] font-bold px-2 py-1 rounded hidden sm:inline">

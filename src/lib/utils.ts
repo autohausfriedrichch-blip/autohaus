@@ -23,19 +23,19 @@ export function formatCurrency(amount: number) {
 }
 
 export const STATUS_LABELS: Record<string, string> = {
-  new_booking: 'Neue Buchung',
-  confirmed: 'Bestätigt',
+  new_booking: 'Új foglalás',
+  confirmed: 'Megerősítve',
   checked_in: 'Check-in',
-  diagnostics: 'Diagnose',
-  waiting_quote: 'Warte auf Angebot',
-  waiting_approval: 'Warte auf Genehmigung',
-  waiting_parts: 'Warte auf Teile',
-  in_repair: 'In Reparatur',
-  quality_check: 'Qualitätskontrolle',
-  ready: 'Fertig',
-  checkout_ready: 'Check-out bereit',
-  delivered: 'Übergeben',
-  closed: 'Abgeschlossen',
+  diagnostics: 'Diagnosztika',
+  waiting_quote: 'Árajánlatra vár',
+  waiting_approval: 'Jóváhagyásra vár',
+  waiting_parts: 'Alkatrészre vár',
+  in_repair: 'Javítás folyamatban',
+  quality_check: 'Minőség-ellenőrzés',
+  ready: 'Kész',
+  checkout_ready: 'Átadásra vár',
+  delivered: 'Kiadva',
+  closed: 'Lezárva',
 }
 
 export const STATUS_COLORS: Record<string, string> = {
