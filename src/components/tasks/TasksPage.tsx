@@ -83,7 +83,17 @@ export function TasksPage({ refreshKey, onRefresh }: { refreshKey: number; onRef
     if (!form.title?.trim()) { toast('A feladat neve kötelező', 'error'); return }
     setSaving(true)
     const { data: { user } } = await supabase.auth.getUser()
-    const payload: any = { ...form, created_by: user?.id }
+    const payload: any = {
+      title: form.title?.trim(),
+      description: form.description || null,
+      priority: form.priority || 'normal',
+      status: form.status || 'open',
+      due_date: form.due_date || null,
+      assigned_to: form.assigned_to || null,
+      customer_id: form.customer_id || null,
+      work_order_id: form.work_order_id || null,
+      created_by: user?.id,
+    }
     if (form.status === 'done' && editItem?.status !== 'done') payload.completed_at = new Date().toISOString()
     const { error } = editItem
       ? await supabase.from('tasks').update(payload).eq('id', editItem.id)
