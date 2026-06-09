@@ -146,7 +146,7 @@ function AdminApp() {
     const props = { refreshKey, onRefresh: () => setRefreshKey(k => k + 1) }
     switch (activePage) {
       case 'dashboard':   return <DashboardPage {...props} onNavigate={(page, id) => { if (id) setOpenWorkOrderId(id); setActivePage(page) }} />
-      case 'customers':   return <CustomersPage {...props} />
+      case 'customers':   return <CustomersPage {...props} onNavigate={setActivePage} />
       case 'vehicles':    return <VehiclesPage {...props} />
       case 'workorders':  return <WorkOrdersPage {...props} profile={profile} />
       case 'bookings':    return <BookingsPage {...props} />

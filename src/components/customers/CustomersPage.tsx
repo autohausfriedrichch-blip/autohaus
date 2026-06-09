@@ -11,8 +11,9 @@ import { useToast } from '@/components/ui/toast'
 import { Plus, Search, Phone, Mail, MapPin, Car, Edit2, Trash2 } from 'lucide-react'
 import type { Customer } from '@/lib/types'
 import { formatDate } from '@/lib/utils'
+import { NewCustomerWizard } from './NewCustomerWizard'
 
-export function CustomersPage({ refreshKey }: { refreshKey: number; onRefresh: () => void }) {
+export function CustomersPage({ refreshKey, onNavigate }: { refreshKey: number; onRefresh: () => void; onNavigate?: (page: string) => void }) {
   const [customers, setCustomers] = useState<Customer[]>([])
   const [search, setSearch] = useState('')
   const [loading, setLoading] = useState(true)
@@ -21,6 +22,7 @@ export function CustomersPage({ refreshKey }: { refreshKey: number; onRefresh: (
   const [form, setForm] = useState<Partial<Customer>>({})
   const [saving, setSaving] = useState(false)
   const [whatsappSame, setWhatsappSame] = useState(true)
+  const [wizardCustomer, setWizardCustomer] = useState<{ id: string; name: string } | null>(null)
   const { toast } = useToast()
 
   const formatPhone = (value: string): string => {
@@ -92,8 +94,13 @@ export function CustomersPage({ refreshKey }: { refreshKey: number; onRefresh: (
       const { error } = await supabase.from('customers').update(payload).eq('id', editCustomer.id)
       if (error) { toast('Hiba: ' + error.message, 'error'); console.error(error) } else { toast('Ügyfél frissítve'); setModalOpen(false); load() }
     } else {
-      const { error } = await supabase.from('customers').insert(payload)
-      if (error) { toast('Hiba: ' + error.message, 'error'); console.error(error) } else { toast('Ügyfél rögzítve'); setModalOpen(false); load() }
+      const { data: newC, error } = await supabase.from('customers').insert(payload).select('id, full_name').single()
+      if (error) { toast('Hiba: ' + error.message, 'error'); console.error(error) }
+      else {
+        setModalOpen(false)
+        load()
+        setWizardCustomer({ id: newC.id, name: newC.full_name })
+      }
     }
     setSaving(false)
   }
@@ -268,6 +275,15 @@ export function CustomersPage({ refreshKey }: { refreshKey: number; onRefresh: (
           </FormGroup>
         </div>
       </Modal>
+
+      {wizardCustomer && (
+        <NewCustomerWizard
+          customerId={wizardCustomer.id}
+          customerName={wizardCustomer.name}
+          onClose={() => setWizardCustomer(null)}
+          onNavigate={onNavigate}
+        />
+      )}
     </div>
   )
 }
