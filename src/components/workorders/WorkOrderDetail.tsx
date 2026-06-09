@@ -9,6 +9,7 @@ import { X, Plus, Play, Pause, Check, Clock, Camera, ChevronDown, Download } fro
 import dynamic from 'next/dynamic'
 const VehicleHealthReportLazy = dynamic(() => import('@/components/vehicles/VehicleHealthReport').then(m => m.VehicleHealthReport), { ssr: false })
 import { WorkOrderChecklist } from './WorkOrderChecklist'
+import { createNotification, notifyPhotoUploaded, notifyWorkOrderStatus, notifyTaskUpdate } from '@/lib/notifications'
 
 type Tab = 'overview' | 'timeline' | 'tasks' | 'parts' | 'photos' | 'notes' | 'checklist'
 
@@ -402,6 +403,18 @@ export function WorkOrderDetail({ workOrderId, profile, onClose, onNewQuote }: P
     const phaseDef = PHASE_DEFS.find(p => p.key === phaseKey)
     const valueLabel = phaseDef ? ((phaseDef.labels as unknown) as Record<string, string>)[value] || value : value
     await logEvent('status_change', `${phaseLabel}: ${valueLabel}`, undefined, phaseKey)
+    // Notify the other role about important phase changes
+    if (wo) {
+      const recipientRole = profile.role === 'mechanic' ? 'admin' : 'mechanic'
+      const notifyStatuses = ['done', 'approved', 'in_progress', 'delivered']
+      if (notifyStatuses.includes(value)) {
+        notifyWorkOrderStatus({
+          workOrderId, orderNumber: wo.order_number, status: `${phaseKey}:${value}`,
+          changedBy: profile.full_name, recipientRole,
+          customerId: wo.customer_id, vehicleId: wo.vehicle_id,
+        })
+      }
+    }
     setOpenPhaseDropdown(null)
     load()
     toast('Fázis frissítve')
@@ -612,6 +625,14 @@ export function WorkOrderDetail({ workOrderId, profile, onClose, onNewQuote }: P
     }
     await supabase.from('work_order_tasks').update(updates).eq('id', task.id)
     await logEvent('note_added', `Feladat státusz: ${task.title} → ${newStatus}`)
+    if ((newStatus === 'done' || newStatus === 'problem') && wo) {
+      notifyTaskUpdate({
+        workOrderId, orderNumber: wo.order_number, taskTitle: task.title,
+        status: newStatus as 'done' | 'problem',
+        changedBy: profile.full_name,
+        recipientRole: profile.role === 'mechanic' ? 'admin' : 'mechanic',
+      })
+    }
     if (newStatus === 'done') await syncRepairStatus(supabase, workOrderId)
     load()
   }
@@ -667,6 +688,9 @@ export function WorkOrderDetail({ workOrderId, profile, onClose, onNewQuote }: P
       uploaded_by: profile.full_name,
     })
     await logEvent('photo_upload', 'Fotó feltöltve')
+    if (profile.role === 'mechanic' && wo) {
+      notifyPhotoUploaded({ workOrderId, orderNumber: wo.order_number, uploaderName: profile.full_name })
+    }
     load()
     toast('Fotó feltöltve')
   }

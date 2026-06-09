@@ -1,6 +1,7 @@
 'use client'
 import { useEffect, useState, useCallback } from 'react'
 import { createClient } from '@/lib/supabase/client'
+import { notifyQuoteAction } from '@/lib/notifications'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Modal } from '@/components/ui/modal'
@@ -194,6 +195,16 @@ export function QuotesPage({ refreshKey, autoOpenNew, onAutoOpenConsumed }: {
 
   const updateStatus = async (id: string, status: string) => {
     await supabase.from('quotes').update({ status }).eq('id', id)
+    if (status === 'approved' || status === 'rejected' || status === 'sent') {
+      const q = quotes.find((q: any) => q.id === id)
+      notifyQuoteAction({
+        quoteId: id,
+        customerName: q?.customer?.full_name || 'Ügyfél',
+        action: (status === 'approved' ? 'accepted' : status) as 'accepted' | 'rejected' | 'sent',
+        amount: q?.total_amount,
+        changedBy: 'Barbara',
+      })
+    }
     toast('Státusz frissítve'); load()
   }
 

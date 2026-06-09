@@ -40,6 +40,7 @@ import { WorkOrderDetail } from '@/components/workorders/WorkOrderDetail'
 import { CalendarPage } from '@/components/calendar/CalendarPage'
 import { DocumentsPage } from '@/components/documents/DocumentsPage'
 import { FamilyFleetPage } from '@/components/fleet/FamilyFleetPage'
+import { NotificationsPage } from '@/components/notifications/NotificationsPage'
 import type { Profile } from '@/lib/types'
 import { useRouter } from 'next/navigation'
 
@@ -81,6 +82,7 @@ const PAGE_TITLES: Record<string, string> = {
   documents: 'Dokumentumközpont',
   family_fleet: 'Family Fleet',
   signatures: 'Digitális aláírások',
+  notifications: 'Értesítések',
 }
 
 function AdminApp() {
@@ -114,12 +116,13 @@ function AdminApp() {
     const isMechanic = profile.role === 'mechanic'
     let woQuery = supabase.from('work_orders').select('id', { count: 'exact', head: true }).not('status', 'in', '(delivered,closed)')
     if (isMechanic && profile.id) woQuery = woQuery.eq('mechanic_id', profile.id)
-    const [bookings, workorders, quotes, tasks, parts] = await Promise.all([
+    const [bookings, workorders, quotes, tasks, parts, notifs] = await Promise.all([
       supabase.from('bookings').select('id', { count: 'exact', head: true }).eq('scheduled_date', today).eq('status', 'confirmed'),
       woQuery,
       supabase.from('quotes').select('id', { count: 'exact', head: true }).eq('status', 'sent'),
       supabase.from('tasks').select('id', { count: 'exact', head: true }).eq('status', 'open'),
       supabase.from('parts_requests').select('id', { count: 'exact', head: true }).eq('status', 'searching'),
+      supabase.from('notifications').select('id', { count: 'exact', head: true }).eq('is_read', false),
     ])
     setBadges({
       today: bookings.count || 0,
@@ -127,6 +130,7 @@ function AdminApp() {
       quotes: quotes.count || 0,
       tasks: tasks.count || 0,
       parts: parts.count || 0,
+      notifs: notifs.count || 0,
     })
   }, [profile])
 
@@ -193,6 +197,7 @@ function AdminApp() {
       case 'calendar':           return <CalendarPage refreshKey={refreshKey} onRefresh={() => setRefreshKey(k => k + 1)} profile={profile} />
       case 'documents':          return <DocumentsPage {...props} />
       case 'family_fleet':       return <FamilyFleetPage {...props} />
+      case 'notifications':      return <NotificationsPage {...props} onNavigate={(page, id) => { if (id) setOpenWorkOrderId(id); setActivePage(page) }} />
       default: return (
         <div className="flex flex-col items-center justify-center h-64 text-[#5a6a80]">
           <p className="text-lg font-medium">{pageTitle}</p>
@@ -222,6 +227,10 @@ function AdminApp() {
           onMenuClick={() => setSidebarOpen(true)}
           onRefresh={() => setRefreshKey(k => k + 1)}
           userRoleKey={profile?.role}
+          onNavigate={(page, id) => {
+            if (id) setOpenWorkOrderId(id)
+            setActivePage(page)
+          }}
         />
         <main className="flex-1 overflow-y-auto p-3 sm:p-4 lg:p-5 pb-16 md:pb-6 animate-fade-in touch-scroll">
           {renderPage()}

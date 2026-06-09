@@ -157,6 +157,13 @@ const ADMIN_NAV: NavGroup[] = [
     badge: 'tasks',
   },
   {
+    id: 'notifications',
+    label: 'Értesítések',
+    icon: Bell,
+    direct: true,
+    badge: 'notifs',
+  },
+  {
     id: 'settings',
     label: 'Beállítások',
     icon: Settings,
