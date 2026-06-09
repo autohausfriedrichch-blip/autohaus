@@ -48,7 +48,10 @@ function generateEstimateText(
   return text
 }
 
-export function QuotesPage({ refreshKey }: { refreshKey: number; onRefresh: () => void }) {
+export function QuotesPage({ refreshKey, autoOpenNew, onAutoOpenConsumed }: {
+  refreshKey: number; onRefresh: () => void
+  autoOpenNew?: boolean; onAutoOpenConsumed?: () => void
+}) {
   const [quotes, setQuotes] = useState<any[]>([])
   const [customers, setCustomers] = useState<any[]>([])
   const [vehicles, setVehicles] = useState<any[]>([])
@@ -88,6 +91,10 @@ export function QuotesPage({ refreshKey }: { refreshKey: number; onRefresh: () =
   }, [refreshKey])
 
   useEffect(() => { load() }, [load])
+
+  useEffect(() => {
+    if (autoOpenNew) { openModal(); onAutoOpenConsumed?.() }
+  }, [autoOpenNew])
 
   const filtered = quotes.filter(q => {
     const s = search.toLowerCase()
