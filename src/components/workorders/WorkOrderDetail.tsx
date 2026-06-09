@@ -8,8 +8,9 @@ import { formatCurrency, formatDate, STATUS_LABELS } from '@/lib/utils'
 import { X, Plus, Play, Pause, Check, Clock, Camera, ChevronDown, Download } from 'lucide-react'
 import dynamic from 'next/dynamic'
 const VehicleHealthReportLazy = dynamic(() => import('@/components/vehicles/VehicleHealthReport').then(m => m.VehicleHealthReport), { ssr: false })
+import { WorkOrderChecklist } from './WorkOrderChecklist'
 
-type Tab = 'overview' | 'timeline' | 'tasks' | 'parts' | 'photos' | 'notes'
+type Tab = 'overview' | 'timeline' | 'tasks' | 'parts' | 'photos' | 'notes' | 'checklist'
 
 interface WOEvent {
   id: string
@@ -696,13 +697,30 @@ export function WorkOrderDetail({ workOrderId, profile, onClose, onNewQuote }: P
     delivery_status: wo.delivery_status || 'waiting',
   }
 
-  const TABS: { id: Tab; label: string }[] = [
-    { id: 'overview', label: 'Áttekintés' },
-    { id: 'timeline', label: 'Idővonal' },
-    { id: 'tasks', label: 'Feladatok' },
-    { id: 'parts', label: 'Alkatrészek' },
-    { id: 'photos', label: 'Fotók' },
-    { id: 'notes', label: 'Megjegyzések' },
+  const checklistScore = (() => {
+    const openTasks = tasks.filter(t => t.status === 'pending' || t.status === 'in_progress' || t.status === 'problem')
+    const checkinPhotos = photos.filter(p => p.category === 'checkin' || p.category === 'intake')
+    const checkoutPhotos = photos.filter(p => p.category === 'checkout' || p.category === 'delivery')
+    const required = [
+      !!wo.customer_id, !!wo.customer?.phone, !!wo.vehicle_id,
+      !!wo.vehicle?.license_plate, !!(wo as any).checkin_mileage,
+      openTasks.length === 0,
+      wo.checkin_status === 'done', wo.repair_status === 'done', wo.quality_status === 'approved',
+      checkinPhotos.length >= 1, checkoutPhotos.length >= 1,
+      !!(notes.internal?.trim()), !!(notes.customer?.trim()),
+    ]
+    const passed = required.filter(Boolean).length
+    return Math.round((passed / required.length) * 100)
+  })()
+
+  const TABS: { id: Tab; label: string; badge?: number }[] = [
+    { id: 'overview',  label: 'Áttekintés' },
+    { id: 'timeline',  label: 'Idővonal' },
+    { id: 'tasks',     label: 'Feladatok' },
+    { id: 'parts',     label: 'Alkatrészek' },
+    { id: 'photos',    label: 'Fotók' },
+    { id: 'notes',     label: 'Megjegyzések' },
+    { id: 'checklist', label: `Lezárás ${checklistScore}%`, badge: checklistScore < 100 ? 1 : 0 },
   ]
 
   const totalPartsCost = parts.reduce((s, p) => s + p.purchase_price * p.quantity, 0)
@@ -749,9 +767,10 @@ export function WorkOrderDetail({ workOrderId, profile, onClose, onNewQuote }: P
           <div className="flex gap-0 overflow-x-auto scrollbar-hide">
             {TABS.map(t => (
               <button key={t.id} onClick={() => setTab(t.id)}
-                className={`px-3 sm:px-4 py-2.5 text-[12px] sm:text-[13px] font-medium whitespace-nowrap border-b-2 transition-colors flex-shrink-0 ${tab === t.id ? 'border-[#C9A84C] text-[#0B1E3D]' : 'border-transparent text-[#5a6a80] hover:text-[#0B1E3D]'}`}
+                className={`relative px-3 sm:px-4 py-2.5 text-[12px] sm:text-[13px] font-medium whitespace-nowrap border-b-2 transition-colors flex-shrink-0 ${tab === t.id ? 'border-[#C9A84C] text-[#0B1E3D]' : 'border-transparent text-[#5a6a80] hover:text-[#0B1E3D]'} ${t.id === 'checklist' && checklistScore === 100 ? 'text-emerald-600' : ''}`}
                 style={{ minHeight: 44 }}>
                 {t.label}
+                {t.badge ? <span className="absolute top-1.5 right-0.5 w-1.5 h-1.5 bg-red-500 rounded-full" /> : null}
               </button>
             ))}
           </div>
@@ -1342,6 +1361,19 @@ export function WorkOrderDetail({ workOrderId, profile, onClose, onNewQuote }: P
                 {notesSaving ? 'Mentés...' : 'Mentés'}
               </Button>
             </div>
+          )}
+
+          {tab === 'checklist' && (
+            <WorkOrderChecklist
+              wo={wo}
+              tasks={tasks}
+              photos={photos}
+              parts={parts}
+              events={events}
+              notes={notes}
+              profile={profile}
+              onClose={(id) => { onClose(); }}
+            />
           )}
 
         </div>
