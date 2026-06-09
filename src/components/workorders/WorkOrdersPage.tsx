@@ -284,7 +284,7 @@ export function WorkOrdersPage({ refreshKey, profile }: { refreshKey: number; on
         <WorkOrderDetail
           workOrderId={detailOrderId}
           profile={detailProfile}
-          onClose={() => { setDetailOrderId(null); load() }}
+          onClose={() => { setDetailOrderId(null); load(); onRefresh() }}
         />
       )}
 
