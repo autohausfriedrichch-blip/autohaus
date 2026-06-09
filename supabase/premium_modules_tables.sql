@@ -6,10 +6,10 @@
 -- 1. Digital Signatures
 CREATE TABLE IF NOT EXISTS signatures (
   id                   UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  type                 TEXT NOT NULL, -- checkin | checkout | quote_accept | pickup | delivery
+  type                 TEXT NOT NULL,
   customer_name        TEXT,
   signed_at            TIMESTAMPTZ DEFAULT NOW(),
-  signature_data       TEXT, -- base64 data URL
+  signature_data       TEXT,
   document_label       TEXT,
   work_order_id        UUID REFERENCES work_orders(id) ON DELETE SET NULL,
   quote_id             UUID REFERENCES quotes(id) ON DELETE SET NULL,
@@ -56,18 +56,21 @@ ALTER TABLE family_accounts DISABLE ROW LEVEL SECURITY;
 -- Add family_account_id to customers (if not exists)
 ALTER TABLE customers ADD COLUMN IF NOT EXISTS family_account_id UUID REFERENCES family_accounts(id) ON DELETE SET NULL;
 
--- 4. Customer portal role (ensure 'customer' role is allowed in profiles)
--- profiles.role already supports custom values, just ensure customers get assigned
-
--- 5. Maintenance reminders enhancements (add missing columns if needed)
+-- 4. Maintenance reminders enhancements
 ALTER TABLE maintenance_reminders ADD COLUMN IF NOT EXISTS customer_id UUID REFERENCES customers(id) ON DELETE SET NULL;
 ALTER TABLE maintenance_reminders ADD COLUMN IF NOT EXISTS approved_by TEXT;
 ALTER TABLE maintenance_reminders ADD COLUMN IF NOT EXISTS approved_at TIMESTAMPTZ;
 
--- Update messages table to support portal channel
-ALTER TABLE messages ADD COLUMN IF NOT EXISTS channel TEXT DEFAULT 'whatsapp';
-ALTER TABLE messages ADD COLUMN IF NOT EXISTS direction TEXT DEFAULT 'outbound';
+-- 5. Update communication tables only if they exist
+DO $$
+BEGIN
+  IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'messages') THEN
+    EXECUTE 'ALTER TABLE messages ADD COLUMN IF NOT EXISTS channel TEXT DEFAULT ''whatsapp''';
+    EXECUTE 'ALTER TABLE messages ADD COLUMN IF NOT EXISTS direction TEXT DEFAULT ''outbound''';
+  END IF;
+  IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'communication_logs') THEN
+    EXECUTE 'ALTER TABLE communication_logs ADD COLUMN IF NOT EXISTS channel TEXT DEFAULT ''whatsapp''';
+  END IF;
+END $$;
 
--- ============================================================
--- Done! All premium module tables created.
--- ============================================================
+-- Done!
