@@ -203,6 +203,25 @@ function calcHealth(wo: WorkOrderFull): 'green' | 'yellow' | 'red' {
   return 'green'
 }
 
+async function syncRepairStatus(supabase: any, workOrderId: string) {
+  const { data: remaining } = await supabase
+    .from('work_order_tasks')
+    .select('id')
+    .eq('work_order_id', workOrderId)
+    .not('status', 'in', '(done,cancelled)')
+  if ((remaining || []).length === 0) {
+    await supabase.from('work_orders').update({ repair_status: 'done' }).eq('id', workOrderId)
+    await supabase.from('work_order_timeline').insert({
+      work_order_id: workOrderId,
+      event_type: 'repair_done',
+      title: 'Minden feladat teljesítve – Javítás kész',
+      user_name: 'Rendszer',
+      phase: 'repair',
+      metadata: { auto_sync: true },
+    })
+  }
+}
+
 function formatElapsed(seconds: number) {
   const h = Math.floor(seconds / 3600)
   const m = Math.floor((seconds % 3600) / 60)
@@ -478,6 +497,7 @@ export function WorkOrderDetail({ workOrderId, profile, onClose, onNewQuote }: P
       completed_at: new Date().toISOString(),
     }).eq('id', task.id)
     await logEvent('note_added', `Feladat kész: ${task.title}`)
+    await syncRepairStatus(supabase, workOrderId)
     load()
   }
 
@@ -506,6 +526,7 @@ export function WorkOrderDetail({ workOrderId, profile, onClose, onNewQuote }: P
     }
     await supabase.from('work_order_tasks').update(updates).eq('id', task.id)
     await logEvent('note_added', `Feladat státusz: ${task.title} → ${newStatus}`)
+    if (newStatus === 'done') await syncRepairStatus(supabase, workOrderId)
     load()
   }
 

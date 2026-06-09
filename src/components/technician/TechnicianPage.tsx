@@ -3,6 +3,25 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { useToast } from '@/components/ui/toast'
+
+async function syncRepairStatus(supabase: any, workOrderId: string, userName: string) {
+  const { data: remaining } = await supabase
+    .from('work_order_tasks')
+    .select('id')
+    .eq('work_order_id', workOrderId)
+    .not('status', 'in', '(done,cancelled)')
+  if ((remaining || []).length === 0) {
+    await supabase.from('work_orders').update({ repair_status: 'done' }).eq('id', workOrderId)
+    await supabase.from('work_order_timeline').insert({
+      work_order_id: workOrderId,
+      event_type: 'repair_done',
+      title: 'Minden feladat teljesítve – Javítás kész',
+      user_name: userName,
+      phase: 'repair',
+      metadata: { auto_sync: true },
+    })
+  }
+}
 import { Button } from '@/components/ui/button'
 import { Modal } from '@/components/ui/modal'
 import { Input, FormGroup, FormLabel, Select, Textarea } from '@/components/ui/form'
@@ -444,7 +463,6 @@ function WOTaskCard({
       completed_at: new Date().toISOString(),
       timer_started_at: null,
     }).eq('id', task.id)
-    // Log timeline
     await supabase.from('work_order_timeline').insert({
       work_order_id: task.work_order_id,
       event_type: 'task_done',
@@ -453,6 +471,7 @@ function WOTaskCard({
       phase: 'repair',
       metadata: { task_id: task.id },
     })
+    await syncRepairStatus(supabase, task.work_order_id, 'Karl')
     onUpdate(task.id, { status: 'done' })
     toast('Feladat kész!', 'success')
   }

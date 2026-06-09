@@ -69,29 +69,40 @@ export function TasksPage({ refreshKey, onRefresh, profile }: {
   const [tableExists, setTableExists] = useState(true)
   const [showFilterPanel, setShowFilterPanel] = useState(false)
   const [expandedId, setExpandedId] = useState<string | null>(null)
+  const [woTasks, setWoTasks] = useState<any[]>([])
   const { toast } = useToast()
   const supabase = createClient()
   const today = new Date().toISOString().split('T')[0]
 
   const load = useCallback(async () => {
     setLoading(true)
-    const [{ data: t, error }, { data: p }, { data: c }, { data: wo }] = await Promise.all([
+    const isMechanic = profile?.role === 'mechanic'
+    let woTaskQuery = supabase
+      .from('work_order_tasks')
+      .select('*, work_order:work_orders(id,order_number,customer_id,mechanic_id,customer:customers(full_name),vehicle:vehicles(make,model,license_plate))')
+      .not('status', 'in', '(done,cancelled)')
+      .order('sort_order', { ascending: true })
+    if (isMechanic && profile?.id) {
+      woTaskQuery = woTaskQuery.eq('work_order.mechanic_id', profile.id)
+    }
+    const [{ data: t, error }, { data: p }, { data: c }, { data: wo }, { data: wot }] = await Promise.all([
       supabase.from('tasks')
         .select('*, customer:customers(full_name), work_order:work_orders(order_number,customer_id)')
         .order('created_at', { ascending: false }),
       supabase.from('profiles').select('id,full_name,role').order('full_name'),
       supabase.from('customers').select('id,full_name').order('full_name'),
       supabase.from('work_orders').select('id,order_number,customer_id').not('status','in','(delivered,closed)'),
+      woTaskQuery,
     ])
     if (error?.code === '42P01') { setTableExists(false); setLoading(false); return }
-    // Filter out templates client-side to handle both NULL and false
     const nonTemplates = (t || []).filter((task: any) => !task.is_template)
     setTasks(nonTemplates)
+    setWoTasks((wot || []).filter((t: any) => t.work_order !== null))
     setProfiles(p || [])
     setCustomers(c || [])
     setWorkOrders(wo || [])
     setLoading(false)
-  }, [refreshKey])
+  }, [refreshKey, profile?.id, profile?.role])
 
   useEffect(() => { load() }, [load])
 
@@ -406,6 +417,62 @@ export function TasksPage({ refreshKey, onRefresh, profile }: {
                     ))}
                   </div>
                 )}
+              </div>
+            )
+          })}
+        </div>
+      )}
+
+      {/* Work order tasks section */}
+      {woTasks.length > 0 && (filterKey === 'all' || filterKey === 'workorder') && (
+        <div className="border border-[rgba(11,30,61,0.1)] rounded-xl overflow-hidden">
+          <div className="flex items-center gap-2 px-4 py-3 bg-blue-50 border-b border-blue-100">
+            <span className="text-base">🔧</span>
+            <span className="text-[12px] font-bold text-blue-800">Munkalap feladatok ({woTasks.length} nyitott)</span>
+          </div>
+          {/* Group by work order */}
+          {Array.from(new Set(woTasks.map((t: any) => t.work_order_id))).map(woId => {
+            const woGroup = woTasks.filter((t: any) => t.work_order_id === woId)
+            const wo = woGroup[0]?.work_order
+            if (!wo) return null
+            const doneCnt = woGroup.filter((t: any) => t.status === 'done').length
+            return (
+              <div key={woId as string} className="border-b border-[rgba(11,30,61,0.06)] last:border-0">
+                <div className="flex items-center gap-3 px-4 py-2.5 bg-white">
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2">
+                      <span className="text-[11px] font-bold text-[#185FA5]">📋 {wo.order_number}</span>
+                      {wo.vehicle && <span className="text-[11px] text-[#5a6a80]">{wo.vehicle.make} {wo.vehicle.model} · {wo.vehicle.license_plate}</span>}
+                      {wo.customer && <span className="text-[11px] text-[#8fa0b5]">– {wo.customer.full_name}</span>}
+                    </div>
+                    <div className="text-[10px] text-[#8fa0b5] mt-0.5">{doneCnt}/{woGroup.length} feladat kész</div>
+                  </div>
+                  <div className="flex-shrink-0">
+                    <div className="w-20 bg-gray-200 rounded-full h-1.5">
+                      <div className="bg-[#185FA5] h-1.5 rounded-full transition-all" style={{ width: `${woGroup.length ? (doneCnt / woGroup.length) * 100 : 0}%` }} />
+                    </div>
+                  </div>
+                </div>
+                <div className="divide-y divide-[rgba(11,30,61,0.04)]">
+                  {woGroup.map((task: any) => {
+                    const ST: Record<string, string> = { pending: 'Várakozik', in_progress: 'Folyamatban', waiting: 'Várakozik', done: 'Kész', problem: '⚠️ Probléma' }
+                    const SC: Record<string, string> = { pending: 'bg-gray-100 text-gray-600', in_progress: 'bg-amber-100 text-amber-800', done: 'bg-green-100 text-green-800', problem: 'bg-red-100 text-red-700', waiting: 'bg-gray-100 text-gray-600' }
+                    const checklist = task.checklist || []
+                    const done = task.checklist_done || []
+                    return (
+                      <div key={task.id} className="flex items-center gap-3 px-4 py-2 bg-white hover:bg-[#F8F9FB]">
+                        <div className={`w-2 h-2 rounded-full flex-shrink-0 ${task.status === 'done' ? 'bg-green-500' : task.status === 'problem' ? 'bg-red-500' : task.status === 'in_progress' ? 'bg-amber-500' : 'bg-gray-300'}`} />
+                        <div className="flex-1 min-w-0">
+                          <span className={`text-[12px] font-medium ${task.status === 'done' ? 'text-[#8fa0b5] line-through' : 'text-[#0B1E3D]'}`}>{task.title}</span>
+                          {checklist.length > 0 && (
+                            <span className="ml-2 text-[10px] text-[#8fa0b5]">☑ {done.length}/{checklist.length}</span>
+                          )}
+                        </div>
+                        <span className={`text-[9px] font-semibold px-1.5 py-0.5 rounded-full ${SC[task.status] || SC.pending}`}>{ST[task.status] || task.status}</span>
+                      </div>
+                    )
+                  })}
+                </div>
               </div>
             )
           })}
