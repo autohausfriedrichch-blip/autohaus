@@ -101,10 +101,14 @@ function AdminApp() {
   }, [])
 
   const loadBadges = useCallback(async () => {
+    if (!profile) return
     const today = new Date().toISOString().split('T')[0]
+    const isMechanic = profile.role === 'mechanic'
+    let woQuery = supabase.from('work_orders').select('id', { count: 'exact', head: true }).not('status', 'in', '(delivered,closed)')
+    if (isMechanic && profile.id) woQuery = woQuery.eq('mechanic_id', profile.id)
     const [bookings, workorders, quotes, tasks, parts] = await Promise.all([
       supabase.from('bookings').select('id', { count: 'exact', head: true }).eq('scheduled_date', today).eq('status', 'confirmed'),
-      supabase.from('work_orders').select('id', { count: 'exact', head: true }).not('status', 'in', '(delivered,closed)'),
+      woQuery,
       supabase.from('quotes').select('id', { count: 'exact', head: true }).eq('status', 'sent'),
       supabase.from('tasks').select('id', { count: 'exact', head: true }).eq('status', 'open'),
       supabase.from('parts_requests').select('id', { count: 'exact', head: true }).eq('status', 'searching'),
@@ -116,7 +120,7 @@ function AdminApp() {
       tasks: tasks.count || 0,
       parts: parts.count || 0,
     })
-  }, [])
+  }, [profile])
 
   useEffect(() => { loadBadges() }, [loadBadges, refreshKey])
 

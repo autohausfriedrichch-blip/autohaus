@@ -272,6 +272,7 @@ export default function TechnicianPage({
   const [todayOrders, setTodayOrders] = useState<WorkOrder[]>([])
   const [activeOrders, setActiveOrders] = useState<WorkOrder[]>([])
   const [garageOrders, setGarageOrders] = useState<WorkOrder[]>([])
+  const [allMyOrders, setAllMyOrders] = useState<WorkOrder[]>([])
   const [deliveries, setDeliveries] = useState<PickupDelivery[]>([])
   const [tasks, setTasks] = useState<Task[]>([])
   const [tasksError, setTasksError] = useState(false)
@@ -359,9 +360,17 @@ export default function TechnicianPage({
       setTasks((taskData as Task[]) ?? [])
     }
 
+    // All assigned open work orders (for total count in header)
+    const { data: allMyData } = await supabase
+      .from('work_orders')
+      .select('id, status')
+      .eq('mechanic_id', userId)
+      .not('status', 'in', '(delivered,closed)')
+
     setTodayOrders((todayData as WorkOrder[]) ?? [])
     setActiveOrders((activeData as WorkOrder[]) ?? [])
     setGarageOrders((garageData as WorkOrder[]) ?? [])
+    setAllMyOrders((allMyData as WorkOrder[]) ?? [])
     setDeliveries((deliveryData as PickupDelivery[]) ?? [])
     setLoading(false)
   }, [userId, profile, supabase])
@@ -512,12 +521,16 @@ export default function TechnicianPage({
         {/* Quick stat pills */}
         <div className="flex gap-2 mt-4 flex-wrap">
           <div className="flex items-center gap-1.5 bg-white/10 rounded-full px-3 py-1.5">
-            <span className="text-[#C9A84C] font-bold text-[13px]">{todayOrders.length}</span>
-            <span className="text-white/70 text-[11px]">mai feladat</span>
+            <span className="text-[#C9A84C] font-bold text-[13px]">{allMyOrders.length}</span>
+            <span className="text-white/70 text-[11px]">munkalap összesen</span>
           </div>
           <div className="flex items-center gap-1.5 bg-white/10 rounded-full px-3 py-1.5">
             <span className="text-[#C9A84C] font-bold text-[13px]">{activeOrders.length}</span>
             <span className="text-white/70 text-[11px]">aktív munkalap</span>
+          </div>
+          <div className="flex items-center gap-1.5 bg-white/10 rounded-full px-3 py-1.5">
+            <span className="text-[#C9A84C] font-bold text-[13px]">{todayOrders.length}</span>
+            <span className="text-white/70 text-[11px]">mai feladat</span>
           </div>
           <div className="flex items-center gap-1.5 bg-white/10 rounded-full px-3 py-1.5">
             <span className="text-[#C9A84C] font-bold text-[13px]">{tasks.length}</span>
