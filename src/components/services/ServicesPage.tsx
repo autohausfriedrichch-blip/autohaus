@@ -9,7 +9,7 @@ import { useToast } from '@/components/ui/toast'
 import {
   Plus, Edit2, Trash2, ToggleLeft, ToggleRight,
   AlertTriangle, Zap, Package, Clock, DollarSign,
-  ChevronDown, ChevronUp, Info, Shield
+  ChevronDown, ChevronUp, Info, Shield, Wrench
 } from 'lucide-react'
 import { formatCurrency } from '@/lib/utils'
 
@@ -39,6 +39,8 @@ export interface ServiceV2 {
   default_quantity?: number
   sort_order?: number
   description?: string | null
+  technician_task?: string
+  technician_checklist?: string[]
 }
 
 // ─── Constants ────────────────────────────────────────────────────────────────
@@ -264,6 +266,7 @@ export function ServicesPage({ refreshKey }: { refreshKey: number; onRefresh: ()
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2 flex-wrap mb-1">
                             <span className="font-semibold text-[13px] text-[#0B1E3D]">{s.name}</span>
+                            {s.technician_checklist && s.technician_checklist.length > 0 && <span className="text-[10px] bg-emerald-50 text-emerald-700 px-1.5 py-0.5 rounded font-semibold">{s.technician_checklist.length} lépés</span>}
                             <PricingBadge type={s.pricing_type} />
                             {s.is_risky && s.risk_level && <RiskBadge level={s.risk_level} />}
                             {s.requires_customer_approval && (
@@ -474,6 +477,30 @@ export function ServicesPage({ refreshKey }: { refreshKey: number; onRefresh: ()
                 </FormGroup>
               </div>
             )}
+          </div>
+
+          {/* Technician task template section */}
+          <div className="bg-[#F4F5F7] rounded-xl p-3 mb-3 space-y-2">
+            <p className="text-[11px] font-semibold text-[#5a6a80] uppercase tracking-[0.5px] mb-2 flex items-center gap-1.5">
+              <Wrench size={12} /> Technikusi feladat sablon
+            </p>
+            <FormGroup className="mb-0">
+              <FormLabel>Feladat neve (Karl látja)</FormLabel>
+              <Input
+                value={form.technician_task || ''}
+                onChange={e => setForm(f => ({ ...f, technician_task: e.target.value }))}
+                placeholder={`pl. ${form.name ? form.name + ' elvégzése' : 'Motorolaj és olajszűrő cseréje'}`}
+              />
+            </FormGroup>
+            <FormGroup className="mb-0">
+              <FormLabel>Technikusi checklist (soronként 1 tétel)</FormLabel>
+              <Textarea
+                value={(form.technician_checklist || []).join('\n')}
+                onChange={e => setForm(f => ({ ...f, technician_checklist: e.target.value.split('\n').filter(l => l.trim()) }))}
+                placeholder={"Olaj leengedve\nOlajszűrő cserélve\nÚj olaj betöltve\nOlajszint ellenőrizve"}
+                className="min-h-[80px] font-mono text-[12px]"
+              />
+            </FormGroup>
           </div>
 
           {/* Options */}

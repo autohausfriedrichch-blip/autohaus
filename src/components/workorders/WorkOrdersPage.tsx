@@ -52,7 +52,7 @@ export function WorkOrdersPage({ refreshKey, profile }: { refreshKey: number; on
       supabase.from('customers').select('id, full_name').order('full_name'),
       supabase.from('vehicles').select('id, make, model, license_plate, customer_id'),
       supabase.from('profiles').select('id, full_name').in('role', ['mechanic', 'admin', 'super_admin']),
-      supabase.from('services').select('id, name, category, pricing_type, base_price, hourly_rate, duration_minutes, description, checklist_template').eq('is_active', true).order('sort_order', { ascending: true }),
+      supabase.from('services').select('id, name, category, pricing_type, base_price, hourly_rate, duration_minutes, description, checklist_template, technician_task, technician_checklist').eq('is_active', true).order('sort_order', { ascending: true }),
     ])
     setOrders((wo as any) || [])
     setCustomers(c || [])
@@ -144,7 +144,7 @@ export function WorkOrdersPage({ refreshKey, profile }: { refreshKey: number; on
       const mechanic = mechanics.find(m => m.id === form.mechanic_id)
       const taskInserts = selectedSvcs.map((svc, idx) => ({
         work_order_id: woData.id,
-        title: svc.name,
+        title: svc.technician_task || svc.name,
         assigned_name: mechanic?.full_name || null,
         sort_order: idx,
         status: 'pending',
@@ -152,7 +152,7 @@ export function WorkOrdersPage({ refreshKey, profile }: { refreshKey: number; on
         pricing_type: svc.pricing_type || 'fixed',
         price: svc.pricing_type === 'hourly' ? (svc.hourly_rate || 0) : (svc.base_price || 0),
         estimated_minutes: svc.duration_minutes || 0,
-        checklist: Array.isArray(svc.checklist_template) ? svc.checklist_template : [],
+        checklist: Array.isArray(svc.technician_checklist) && svc.technician_checklist.length > 0 ? svc.technician_checklist : (Array.isArray(svc.checklist_template) ? svc.checklist_template : []),
         checklist_done: [],
         requires_photo: false,
         priority: 'normal',

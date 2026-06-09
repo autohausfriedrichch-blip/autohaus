@@ -842,13 +842,25 @@ export function WorkOrderDetail({ workOrderId, profile, onClose }: Props) {
                 const doneTasks = tasks.filter(t => t.status === 'done').length
                 return (
                   <>
-                    {tasks.length > 0 && (
-                      <div className="flex items-center gap-2 text-[12px] text-[#5a6a80] bg-[#F4F5F7] rounded-lg px-3 py-2">
-                        <Check size={13} className="text-emerald-500" />
-                        <span>{doneTasks}/{tasks.length} feladat kész</span>
-                        {tasks.some(t => t.status === 'problem') && <span className="ml-2 text-red-600 font-semibold">⚠️ Probléma!</span>}
-                      </div>
-                    )}
+                    {tasks.length > 0 && (() => {
+                      const done = tasks.filter(t => t.status === 'done').length
+                      const pct = Math.round((done / tasks.length) * 100)
+                      return (
+                        <div className="mb-4 bg-white border border-[rgba(11,30,61,0.08)] rounded-xl p-3">
+                          <div className="flex items-center justify-between mb-2">
+                            <span className="text-[12px] font-semibold text-[#0B1E3D]">Haladás</span>
+                            <span className="text-[12px] font-bold text-[#C9A84C]">{done}/{tasks.length} kész ({pct}%)</span>
+                          </div>
+                          <div className="h-2 bg-[#F4F5F7] rounded-full overflow-hidden">
+                            <div
+                              className={`h-full rounded-full transition-all duration-500 ${pct === 100 ? 'bg-emerald-500' : pct >= 50 ? 'bg-[#C9A84C]' : 'bg-blue-400'}`}
+                              style={{ width: `${pct}%` }}
+                            />
+                          </div>
+                          {tasks.some(t => t.status === 'problem') && <span className="mt-2 block text-[12px] text-red-600 font-semibold">⚠️ Probléma!</span>}
+                        </div>
+                      )
+                    })()}
                     {tasks.map(task => {
                       const elapsed = task.status === 'in_progress' ? (taskTimers[task.id] ?? task.elapsed_seconds) : (task.elapsed_seconds || 0)
                       const cfg = STATUS_CFG[task.status] || STATUS_CFG.pending
