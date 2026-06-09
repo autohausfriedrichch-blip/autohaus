@@ -138,8 +138,7 @@ export function PhotosPage({ refreshKey, profile }: { refreshKey: number; onRefr
       const plate = wo?.vehicle?.license_plate || ''
       const notifMsg = `${uploaderName} új ${category} fotót töltött fel a ${orderNum} munkalaphoz. Ügyfél: ${customerName}${plate ? ', rendszám: ' + plate : ''}.`
 
-      await Promise.all([
-        // Notification
+      const [notifRes, eventRes, taskRes] = await Promise.all([
         supabase.from('notifications').insert({
           type: 'photo_uploaded',
           title: `${uploaderName} ${ok} fotót töltött fel`,
@@ -148,7 +147,6 @@ export function PhotosPage({ refreshKey, profile }: { refreshKey: number; onRefr
           created_by: profile?.id || null,
           is_read: false,
         }),
-        // Timeline event
         supabase.from('work_order_events').insert({
           work_order_id: workOrderId,
           event_type: 'photo_uploaded',
@@ -156,7 +154,6 @@ export function PhotosPage({ refreshKey, profile }: { refreshKey: number; onRefr
           description: `${ok} db fotó feltöltve – kategória: ${category}. ${visibleToCustomer ? 'Ügyfélnek látható.' : 'Csak belső.'} Rögzítés szükséges.`,
           user_name: uploaderName,
         }),
-        // Task for Barbara
         supabase.from('tasks').insert({
           title: `Fotódokumentáció rögzítése – ${orderNum}`,
           description: `${uploaderName} ${ok} db ${category} fotót töltött fel.\nÜgyfél: ${customerName}${plate ? '\nRendszám: ' + plate : ''}\n\nJóváhagyás és rögzítés szükséges a Fotódokumentáció menüben.`,
@@ -166,6 +163,9 @@ export function PhotosPage({ refreshKey, profile }: { refreshKey: number; onRefr
           created_by: profile?.id || null,
         }),
       ])
+      if (taskRes.error) toast(`Feladat hiba: ${taskRes.error.message}`, 'error')
+      if (eventRes.error) console.error('Timeline event error:', eventRes.error)
+      if (notifRes.error) console.error('Notification error:', notifRes.error)
     }
 
     setUploading(false)
