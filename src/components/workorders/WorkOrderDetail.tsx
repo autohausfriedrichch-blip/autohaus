@@ -97,6 +97,7 @@ interface WorkOrderFull {
   total_amount: number
   payment_status: string
   scheduled_date?: string
+  scheduled_time?: string
   customer?: { full_name: string; phone?: string; email?: string }
   vehicle?: { make: string; model: string; license_plate: string; year?: number }
 }
