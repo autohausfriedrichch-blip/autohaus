@@ -6,6 +6,8 @@ import { Input, FormGroup, FormLabel, Select, Textarea } from '@/components/ui/f
 import { useToast } from '@/components/ui/toast'
 import { formatCurrency, formatDate, STATUS_LABELS } from '@/lib/utils'
 import { X, Plus, Play, Pause, Check, Clock, Camera, ChevronDown, Download } from 'lucide-react'
+import dynamic from 'next/dynamic'
+const VehicleHealthReportLazy = dynamic(() => import('@/components/vehicles/VehicleHealthReport').then(m => m.VehicleHealthReport), { ssr: false })
 
 type Tab = 'overview' | 'timeline' | 'tasks' | 'parts' | 'photos' | 'notes'
 
@@ -288,6 +290,9 @@ export function WorkOrderDetail({ workOrderId, profile, onClose, onNewQuote }: P
   const [svcPickerOpen, setSvcPickerOpen] = useState(false)
   const [svcPickerIds, setSvcPickerIds] = useState<string[]>([])
   const [generatingTasks, setGeneratingTasks] = useState(false)
+  const [closeChecklist, setCloseChecklist] = useState<{ open: boolean; pendingPhaseKey?: string; pendingValue?: string; pendingLabel?: string }>({ open: false })
+  const [closeActions, setCloseActions] = useState({ checkout_doc: false, vhr: false, reminder: false, review: false })
+  const [showVHR, setShowVHR] = useState(false)
   const firstLoadRef = useRef(true)
   const fileInputRef = useRef<HTMLInputElement>(null)
   const { toast } = useToast()
@@ -378,6 +383,15 @@ export function WorkOrderDetail({ workOrderId, profile, onClose, onNewQuote }: P
   }, [workOrderId, profile.full_name])
 
   const updatePhase = async (phaseKey: string, value: string, phaseLabel: string) => {
+    // Intercept delivery to show close checklist (admin only)
+    if (phaseKey === 'checkout_status' && value === 'delivered' && (profile.role === 'super_admin' || profile.role === 'admin')) {
+      setCloseChecklist({ open: true, pendingPhaseKey: phaseKey, pendingValue: value, pendingLabel: phaseLabel })
+      return
+    }
+    await _doUpdatePhase(phaseKey, value, phaseLabel)
+  }
+
+  const _doUpdatePhase = async (phaseKey: string, value: string, phaseLabel: string) => {
     const health = wo ? calcHealth({ ...wo, [phaseKey]: value } as WorkOrderFull) : 'green'
     await supabase.from('work_orders').update({
       [phaseKey]: value,
@@ -1427,6 +1441,76 @@ export function WorkOrderDetail({ workOrderId, profile, onClose, onNewQuote }: P
             </div>
           </div>
         </div>
+      )}
+
+      {/* Close Checklist Modal */}
+      {closeChecklist.open && wo && (
+        <div className="fixed inset-0 z-[70] flex items-center justify-center bg-black/60 p-4">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-sm">
+            <div className="p-5 border-b border-[rgba(11,30,61,0.08)]">
+              <h3 className="text-[15px] font-semibold text-[#0B1E3D]">Munkalap lezárása</h3>
+              <p className="text-[12px] text-[#5a6a80] mt-0.5">Válassza ki a szükséges lépéseket</p>
+            </div>
+            <div className="p-5 space-y-3">
+              {[
+                { key: 'checkout_doc', label: 'Check-Out dokumentum készítése', desc: 'PDF átadási bizonyítvány generálás' },
+                { key: 'vhr',          label: 'Vehicle Health Report',           desc: 'Jármű állapotjelentés kitöltése' },
+                { key: 'reminder',     label: 'Szervizemlékeztető küldése',      desc: 'Következő szerviz ütemezése' },
+                { key: 'review',       label: 'Google Review kérés',             desc: 'Értékelési link küldése' },
+              ].map(action => (
+                <label key={action.key} className="flex items-start gap-3 cursor-pointer group">
+                  <input
+                    type="checkbox"
+                    checked={(closeActions as any)[action.key]}
+                    onChange={e => setCloseActions(prev => ({ ...prev, [action.key]: e.target.checked }))}
+                    className="mt-0.5 w-4 h-4 accent-[#C9A84C]"
+                  />
+                  <div>
+                    <div className="text-[13px] font-medium text-[#0B1E3D]">{action.label}</div>
+                    <div className="text-[11px] text-[#8fa0b5]">{action.desc}</div>
+                  </div>
+                </label>
+              ))}
+            </div>
+            <div className="px-5 pb-5 flex gap-2">
+              <button
+                onClick={() => setCloseChecklist({ open: false })}
+                className="flex-1 py-2.5 border border-[rgba(11,30,61,0.15)] rounded-xl text-[13px] text-[#5a6a80] hover:bg-gray-50 transition-colors"
+              >
+                Mégse
+              </button>
+              <button
+                onClick={async () => {
+                  setCloseChecklist({ open: false })
+                  if (closeChecklist.pendingPhaseKey) {
+                    await _doUpdatePhase(closeChecklist.pendingPhaseKey, closeChecklist.pendingValue!, closeChecklist.pendingLabel!)
+                  }
+                  if (closeActions.vhr) setShowVHR(true)
+                  if (closeActions.review) {
+                    await supabase.from('work_order_events').insert({
+                      work_order_id: workOrderId, event_type: 'note_added',
+                      title: 'Google Review kérés küldve', user_name: profile.full_name,
+                      phase: 'general', metadata: {},
+                    })
+                    toast('Review kérés rögzítve')
+                  }
+                }}
+                className="flex-1 py-2.5 bg-[#0B1E3D] text-white rounded-xl text-[13px] font-semibold hover:bg-[#142a50] transition-colors"
+              >
+                Lezárás
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Vehicle Health Report */}
+      {showVHR && wo && (
+        <VehicleHealthReportLazy
+          workOrderId={workOrderId}
+          workOrder={wo}
+          onClose={() => { setShowVHR(false); load() }}
+        />
       )}
     </div>
     </div>

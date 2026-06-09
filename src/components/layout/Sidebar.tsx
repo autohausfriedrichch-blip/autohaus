@@ -6,7 +6,7 @@ import {
   Wrench, Route, MessageCircle, BarChart2, Settings,
   Camera, FileText, Package, LogOut, Building2, ListTodo,
   Cog, Hammer, Star, TrendingUp, MapPin, History, ScanLine,
-  Truck, ChevronRight, Crown, Bell, BarChart, Calendar
+  Truck, ChevronRight, Crown, Bell, BarChart, Calendar, FolderOpen, PenLine
 } from 'lucide-react'
 
 // ─── Types ───────────────────────────────────────────────────────────────────
@@ -122,6 +122,17 @@ const ADMIN_NAV: NavGroup[] = [
     children: [
       { id: 'services',   label: 'Árlista' },
       { id: 'inventory',  label: 'Készlet & Árlista' },
+    ],
+  },
+  {
+    id: 'documents_group',
+    label: 'Dokumentumok & Prémium',
+    icon: FolderOpen,
+    roles: ['super_admin', 'admin'],
+    children: [
+      { id: 'documents',    label: 'Dokumentumközpont' },
+      { id: 'family_fleet', label: 'Family Fleet' },
+      { id: 'signatures',   label: 'Aláírások' },
     ],
   },
   {

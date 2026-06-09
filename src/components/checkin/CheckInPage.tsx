@@ -8,6 +8,7 @@ import { useToast } from '@/components/ui/toast'
 import { CheckSquare, LogIn, LogOut, Search, FileText } from 'lucide-react'
 import { formatDateTime } from '@/lib/utils'
 import { DocumentActions } from '@/components/documents/DocumentActions'
+import { SignatureModal } from '@/components/signature/SignatureModal'
 
 export function CheckInPage({ refreshKey }: { refreshKey: number; onRefresh: () => void }) {
   const [orders, setOrders] = useState<any[]>([])
@@ -16,6 +17,8 @@ export function CheckInPage({ refreshKey }: { refreshKey: number; onRefresh: () 
   const [selectedOrder, setSelectedOrder] = useState<any>(null)
   const [checkInForm, setCheckInForm] = useState<any>({})
   const [saving, setSaving] = useState(false)
+  const [checkInSigned, setCheckInSigned] = useState(false)
+  const [checkoutOrder, setCheckoutOrder] = useState<any>(null)
   const { toast } = useToast()
   const supabase = createClient()
 
@@ -96,7 +99,14 @@ export function CheckInPage({ refreshKey }: { refreshKey: number; onRefresh: () 
                         </Select>
                       </FormGroup>
                     </div>
-                    <div className="flex gap-2 flex-col sm:flex-row">
+                    <div className="flex gap-2 flex-wrap items-center mt-2">
+                      <SignatureModal
+                        type="checkin"
+                        workOrderId={selectedOrder.id}
+                        customerName={selectedOrder.customer?.full_name || ''}
+                        documentLabel={`Check-In – ${selectedOrder.order_number}`}
+                        onComplete={() => setCheckInSigned(true)}
+                      />
                       <button
                         className="btn-mobile-action bg-[#0B1E3D] text-white flex-1"
                         onClick={handleCheckIn}
@@ -104,7 +114,7 @@ export function CheckInPage({ refreshKey }: { refreshKey: number; onRefresh: () 
                       >
                         <LogIn size={16} /> Check-In bestätigen
                       </button>
-                      <Button variant="secondary" size="sm" onClick={() => setSelectedOrder(null)}>Mégse</Button>
+                      <Button variant="secondary" size="sm" onClick={() => { setSelectedOrder(null); setCheckInSigned(false) }}>Mégse</Button>
                     </div>
                   </div>
                 ) : (
@@ -138,9 +148,13 @@ export function CheckInPage({ refreshKey }: { refreshKey: number; onRefresh: () 
                   {o.checkin_at && <span className="ml-2 text-[#8fa0b5]">Check-In: {formatDateTime(o.checkin_at)}</span>}
                 </div>
                 <div className="flex items-center gap-2 flex-wrap">
-                  <Button variant="primary" size="sm" onClick={() => handleCheckOut(o.id)}>
-                    <LogOut size={13} /> Check-Out & Übergabe
-                  </Button>
+                  <SignatureModal
+                    type="checkout"
+                    workOrderId={o.id}
+                    customerName={o.customer?.full_name || ''}
+                    documentLabel={`Check-Out – ${o.order_number}`}
+                    onComplete={() => handleCheckOut(o.id)}
+                  />
                   <DocumentActions type="checkout" data={o} small />
                   <DocumentActions type="invoice" data={o} small />
                 </div>

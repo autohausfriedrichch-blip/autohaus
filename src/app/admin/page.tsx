@@ -38,6 +38,8 @@ import AIAssistantPage from '@/components/ai-assistant/AIAssistantPage'
 import { MobileBottomNav } from '@/components/layout/MobileBottomNav'
 import { WorkOrderDetail } from '@/components/workorders/WorkOrderDetail'
 import { CalendarPage } from '@/components/calendar/CalendarPage'
+import { DocumentsPage } from '@/components/documents/DocumentsPage'
+import { FamilyFleetPage } from '@/components/fleet/FamilyFleetPage'
 import type { Profile } from '@/lib/types'
 import { useRouter } from 'next/navigation'
 
@@ -76,6 +78,9 @@ const PAGE_TITLES: Record<string, string> = {
   quality_control: 'Minőségellenőrzés',
   ai_assistant: 'AI Asszisztens',
   calendar: 'Naptár',
+  documents: 'Dokumentumközpont',
+  family_fleet: 'Family Fleet',
+  signatures: 'Digitális aláírások',
 }
 
 function AdminApp() {
@@ -186,6 +191,8 @@ function AdminApp() {
       case 'quality_control':    return <QualityControlPage {...props} />
       case 'ai_assistant':       return <AIAssistantPage {...props} />
       case 'calendar':           return <CalendarPage refreshKey={refreshKey} onRefresh={() => setRefreshKey(k => k + 1)} profile={profile} />
+      case 'documents':          return <DocumentsPage {...props} />
+      case 'family_fleet':       return <FamilyFleetPage {...props} />
       default: return (
         <div className="flex flex-col items-center justify-center h-64 text-[#5a6a80]">
           <p className="text-lg font-medium">{pageTitle}</p>
