@@ -37,7 +37,7 @@ export function MobilePage({ refreshKey }: { refreshKey: number; onRefresh: () =
 
       {loading ? <div className="text-center py-12 text-[#5a6a80] text-sm">Wird geladen...</div> : (
         jobs.length === 0 ? (
-          <div className="text-center py-16 text-[#8fa0b5] text-sm">Keine aktiven mobilen Aufträge</div>
+          <div className="text-center py-16 text-[#8fa0b5] text-sm">Nincs aktív mobil megrendelés</div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             {jobs.map(job => (

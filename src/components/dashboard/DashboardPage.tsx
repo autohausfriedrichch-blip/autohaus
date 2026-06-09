@@ -75,7 +75,7 @@ export function DashboardPage({ refreshKey, onNavigate }: DashboardPageProps) {
 
   if (loading) return (
     <div className="flex items-center justify-center h-48">
-      <div className="text-[#5a6a80] text-sm">Dashboard wird geladen...</div>
+      <div className="text-[#5a6a80] text-sm">Dashboard betöltése...</div>
     </div>
   )
 
@@ -83,23 +83,23 @@ export function DashboardPage({ refreshKey, onNavigate }: DashboardPageProps) {
     <div className="animate-fade-in">
       {/* KPIs */}
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 mb-4">
-        <KpiCard label="Heute Termine" value={stats.todayBookings} accent="gold" />
-        <KpiCard label="Offene Aufträge" value={stats.openWorkOrders} accent="navy" />
-        <KpiCard label="Offene Angebote" value={stats.pendingQuotes} accent="red" />
-        <KpiCard label="Monatsumsatz" value={formatCurrency(stats.monthRevenue)} accent="green" />
-        <KpiCard label="Neue Kunden" value={stats.newCustomers} accent="navy" />
-        <KpiCard label="Mobile Jobs" value={stats.mobileJobs} accent="gold" />
+        <KpiCard label="Mai időpontok" value={stats.todayBookings} accent="gold" />
+        <KpiCard label="Nyitott munkalapok" value={stats.openWorkOrders} accent="navy" />
+        <KpiCard label="Függő árajánlatok" value={stats.pendingQuotes} accent="red" />
+        <KpiCard label="Havi bevétel" value={formatCurrency(stats.monthRevenue)} accent="green" />
+        <KpiCard label="Új ügyfelek" value={stats.newCustomers} accent="navy" />
+        <KpiCard label="Mobil munkák" value={stats.mobileJobs} accent="gold" />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4">
         {/* Today's bookings */}
         <Card>
           <div className="flex items-center justify-between mb-3.5">
-            <CardTitle icon={<Calendar size={16} />}>Heutige Termine</CardTitle>
-            <button onClick={() => onNavigate('bookings')} className="text-[11px] text-[#5a6a80] hover:text-[#0B1E3D]">Alle →</button>
+            <CardTitle icon={<Calendar size={16} />}>Mai időpontok</CardTitle>
+            <button onClick={() => onNavigate('bookings')} className="text-[11px] text-[#5a6a80] hover:text-[#0B1E3D]">Mind →</button>
           </div>
           {todayBookings.length === 0 ? (
-            <p className="text-[12px] text-[#8fa0b5] py-4 text-center">Keine Termine heute</p>
+            <p className="text-[12px] text-[#8fa0b5] py-4 text-center">Ma nincs időpont</p>
           ) : (
             <div>
               {todayBookings.map((b: any) => (
@@ -122,9 +122,9 @@ export function DashboardPage({ refreshKey, onNavigate }: DashboardPageProps) {
 
         {/* Urgent tasks */}
         <Card>
-          <CardTitle icon={<AlertTriangle size={16} />}>Dringende Aufgaben</CardTitle>
+          <CardTitle icon={<AlertTriangle size={16} />}>Sürgős feladatok</CardTitle>
           {urgentTasks.length === 0 ? (
-            <p className="text-[12px] text-[#8fa0b5] py-4 text-center">Keine dringenden Aufgaben</p>
+            <p className="text-[12px] text-[#8fa0b5] py-4 text-center">Nincs sürgős feladat</p>
           ) : (
             <div>
               {urgentTasks.map((wo: any) => (
@@ -145,18 +145,18 @@ export function DashboardPage({ refreshKey, onNavigate }: DashboardPageProps) {
       {/* Active work orders */}
       <Card>
         <div className="flex items-center justify-between mb-3.5">
-          <CardTitle icon={<ClipboardList size={16} />}>Aktive Aufträge</CardTitle>
-          <button onClick={() => onNavigate('workorders')} className="text-[11px] text-[#5a6a80] hover:text-[#0B1E3D]">Alle →</button>
+          <CardTitle icon={<ClipboardList size={16} />}>Aktív munkalapok</CardTitle>
+          <button onClick={() => onNavigate('workorders')} className="text-[11px] text-[#5a6a80] hover:text-[#0B1E3D]">Mind →</button>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-[12px]">
             <thead>
               <tr className="border-b border-[rgba(11,30,61,0.10)]">
-                <th className="text-left py-2 text-[#5a6a80] font-semibold">Nr.</th>
-                <th className="text-left py-2 text-[#5a6a80] font-semibold">Kunde</th>
-                <th className="text-left py-2 text-[#5a6a80] font-semibold hidden md:table-cell">Fahrzeug</th>
-                <th className="text-left py-2 text-[#5a6a80] font-semibold">Status</th>
-                <th className="text-right py-2 text-[#5a6a80] font-semibold hidden sm:table-cell">Betrag</th>
+                <th className="text-left py-2 text-[#5a6a80] font-semibold">Szám</th>
+                <th className="text-left py-2 text-[#5a6a80] font-semibold">Ügyfél</th>
+                <th className="text-left py-2 text-[#5a6a80] font-semibold hidden md:table-cell">Jármű</th>
+                <th className="text-left py-2 text-[#5a6a80] font-semibold">Státusz</th>
+                <th className="text-right py-2 text-[#5a6a80] font-semibold hidden sm:table-cell">Összeg</th>
               </tr>
             </thead>
             <tbody>
@@ -178,7 +178,7 @@ export function DashboardPage({ refreshKey, onNavigate }: DashboardPageProps) {
             </tbody>
           </table>
           {activeWorkOrders.length === 0 && (
-            <p className="text-[12px] text-[#8fa0b5] py-6 text-center">Keine aktiven Aufträge</p>
+            <p className="text-[12px] text-[#8fa0b5] py-6 text-center">Nincs aktív munkalap</p>
           )}
         </div>
       </Card>

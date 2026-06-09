@@ -73,7 +73,7 @@ export function CommunicationPage({ refreshKey }: { refreshKey: number; onRefres
       <div className="flex gap-2.5 mb-4">
         <div className="relative flex-1">
           <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#8fa0b5]" />
-          <input type="text" value={search} onChange={e => setSearch(e.target.value)} placeholder="Kunde, Nachrichteninhalt..."
+          <input type="text" value={search} onChange={e => setSearch(e.target.value)} placeholder="Ügyfél, üzenet tartalma..."
             className="w-full pl-9 pr-3 py-2 border border-[rgba(11,30,61,0.18)] rounded-lg text-[13px] bg-white outline-none focus:border-[#0B1E3D]" />
         </div>
         <Button variant="primary" onClick={() => { setForm({ direction: 'inbound', channel: 'whatsapp', message_type: 'inquiry' }); setModalOpen(true) }}>
@@ -103,12 +103,12 @@ export function CommunicationPage({ refreshKey }: { refreshKey: number; onRefres
               <div className="text-[11px] text-[#8fa0b5] shrink-0">{formatDateTime(log.created_at)}</div>
             </div>
           ))}
-          {filtered.length === 0 && <div className="text-center py-10 text-[#8fa0b5] text-sm">Keine Einträge</div>}
+          {filtered.length === 0 && <div className="text-center py-10 text-[#8fa0b5] text-sm">Nincs bejegyzés</div>}
         </Card>
       )}
 
       <Modal open={modalOpen} onClose={() => setModalOpen(false)} title="Kommunikation erfassen"
-        footer={<><Button variant="secondary" onClick={() => setModalOpen(false)}>Abbrechen</Button><Button variant="primary" onClick={handleSave} disabled={saving}>{saving ? 'Speichern...' : 'Speichern'}</Button></>}>
+        footer={<><Button variant="secondary" onClick={() => setModalOpen(false)}>Mégse</Button><Button variant="primary" onClick={handleSave} disabled={saving}>{saving ? 'Mentés...' : 'Mentés'}</Button></>}>
         <div className="grid grid-cols-2 gap-3">
           <FormGroup className="col-span-2">
             <FormLabel>Kunde *</FormLabel>

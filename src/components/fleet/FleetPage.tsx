@@ -76,12 +76,12 @@ export function FleetPage({ refreshKey }: { refreshKey: number; onRefresh: () =>
               <button onClick={() => openEdit(f)} className="absolute top-4 right-10 p-1.5 text-[#5a6a80] hover:text-[#0B1E3D]"><Edit2 size={14} /></button>
             </Card>
           ))}
-          {fleets.length === 0 && <div className="col-span-full text-center py-10 text-[#8fa0b5] text-sm">Keine Flottenkonten vorhanden</div>}
+          {fleets.length === 0 && <div className="col-span-full text-center py-10 text-[#8fa0b5] text-sm">Nincs flottafiók</div>}
         </div>
       )}
 
       <Modal open={modalOpen} onClose={() => setModalOpen(false)} title={editFleet ? 'Flottenkunde bearbeiten' : 'Neuer Flottenkunde'}
-        footer={<><Button variant="secondary" onClick={() => setModalOpen(false)}>Abbrechen</Button><Button variant="primary" onClick={handleSave} disabled={saving}>{saving ? 'Speichern...' : 'Speichern'}</Button></>}>
+        footer={<><Button variant="secondary" onClick={() => setModalOpen(false)}>Mégse</Button><Button variant="primary" onClick={handleSave} disabled={saving}>{saving ? 'Mentés...' : 'Mentés'}</Button></>}>
         <div className="grid grid-cols-2 gap-3">
           <FormGroup className="col-span-2">
             <FormLabel>Firmenname *</FormLabel>

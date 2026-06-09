@@ -2,7 +2,7 @@
 import { Menu, RefreshCw, Plus, Bell } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { format } from 'date-fns'
-import { de } from 'date-fns/locale'
+import { hu } from 'date-fns/locale'
 import { useEffect, useState, useRef } from 'react'
 import { createClient } from '@/lib/supabase/client'
 
@@ -17,7 +17,7 @@ interface TopbarProps {
 
 export function Topbar({ title, onMenuClick, onRefresh, onNewItem, newItemLabel, userRoleKey }: TopbarProps) {
   const now = new Date()
-  const dateStr = format(now, 'EEEE, d. MMMM yyyy', { locale: de })
+  const dateStr = format(now, 'EEEE, yyyy. MMMM d.', { locale: hu })
   const [notifications, setNotifications] = useState<any[]>([])
   const [open, setOpen] = useState(false)
   const dropRef = useRef<HTMLDivElement>(null)
@@ -138,7 +138,7 @@ export function Topbar({ title, onMenuClick, onRefresh, onNewItem, newItemLabel,
       {onNewItem && (
         <Button variant="primary" size="sm" onClick={onNewItem}>
           <Plus size={14} />
-          <span className="hidden sm:inline">{newItemLabel || 'Neu'}</span>
+          <span className="hidden sm:inline">{newItemLabel || 'Új'}</span>
         </Button>
       )}
     </div>

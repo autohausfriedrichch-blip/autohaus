@@ -62,7 +62,7 @@ export function CheckInPage({ refreshKey }: { refreshKey: number; onRefresh: () 
     <div className="animate-fade-in">
       <div className="relative mb-4">
         <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#8fa0b5]" />
-        <input type="text" value={search} onChange={e => setSearch(e.target.value)} placeholder="Kunde, Kennzeichen, Auftragsnummer..."
+        <input type="text" value={search} onChange={e => setSearch(e.target.value)} placeholder="Ügyfél, rendszám, munkalapszám..."
           className="w-full pl-9 pr-3 py-2 border border-[rgba(11,30,61,0.18)] rounded-lg text-[13px] bg-white outline-none focus:border-[#0B1E3D]" />
       </div>
 
@@ -89,7 +89,7 @@ export function CheckInPage({ refreshKey }: { refreshKey: number; onRefresh: () 
                         <Input type="number" placeholder="km" value={checkInForm.mileage || ''} onChange={e => setCheckInForm((f: any) => ({ ...f, mileage: parseInt(e.target.value) }))} />
                       </FormGroup>
                       <FormGroup>
-                        <FormLabel>Kraftstoff %</FormLabel>
+                        <FormLabel>Üzemanyag %</FormLabel>
                         <Select value={checkInForm.fuel_level || ''} onChange={e => setCheckInForm((f: any) => ({ ...f, fuel_level: parseInt(e.target.value) }))}>
                           <option value="">–</option>
                           {[100, 75, 50, 25, 10].map(v => <option key={v} value={v}>{v}%</option>)}
@@ -104,7 +104,7 @@ export function CheckInPage({ refreshKey }: { refreshKey: number; onRefresh: () 
                       >
                         <LogIn size={16} /> Check-In bestätigen
                       </button>
-                      <Button variant="secondary" size="sm" onClick={() => setSelectedOrder(null)}>Abbrechen</Button>
+                      <Button variant="secondary" size="sm" onClick={() => setSelectedOrder(null)}>Mégse</Button>
                     </div>
                   </div>
                 ) : (
@@ -116,7 +116,7 @@ export function CheckInPage({ refreshKey }: { refreshKey: number; onRefresh: () 
             ))
           )}
           {!loading && filtered.filter(o => o.status === 'confirmed').length === 0 && (
-            <p className="text-[12px] text-[#8fa0b5] py-4 text-center">Keine ausstehenden Check-Ins</p>
+            <p className="text-[12px] text-[#8fa0b5] py-4 text-center">Nincs függő Check-In</p>
           )}
         </Card>
 
@@ -148,7 +148,7 @@ export function CheckInPage({ refreshKey }: { refreshKey: number; onRefresh: () 
             ))
           )}
           {!loading && filtered.filter(o => ['ready', 'checkout_ready'].includes(o.status)).length === 0 && (
-            <p className="text-[12px] text-[#8fa0b5] py-4 text-center">Keine Check-Outs bereit</p>
+            <p className="text-[12px] text-[#8fa0b5] py-4 text-center">Nincs Check-Out-ra váró</p>
           )}
         </Card>
       </div>
@@ -160,10 +160,10 @@ export function CheckInPage({ refreshKey }: { refreshKey: number; onRefresh: () 
           <table className="w-full text-[12px]">
             <thead>
               <tr className="border-b border-[rgba(11,30,61,0.10)]">
-                <th className="text-left py-2 text-[#5a6a80] font-semibold">Auftrag</th>
-                <th className="text-left py-2 text-[#5a6a80] font-semibold">Kunde</th>
-                <th className="text-left py-2 text-[#5a6a80] font-semibold hidden md:table-cell">Fahrzeug</th>
-                <th className="text-left py-2 text-[#5a6a80] font-semibold">Status</th>
+                <th className="text-left py-2 text-[#5a6a80] font-semibold">Munkalap</th>
+                <th className="text-left py-2 text-[#5a6a80] font-semibold">Ügyfél</th>
+                <th className="text-left py-2 text-[#5a6a80] font-semibold hidden md:table-cell">Jármű</th>
+                <th className="text-left py-2 text-[#5a6a80] font-semibold">Státusz</th>
                 <th className="text-left py-2 text-[#5a6a80] font-semibold hidden sm:table-cell">Check-In</th>
               </tr>
             </thead>

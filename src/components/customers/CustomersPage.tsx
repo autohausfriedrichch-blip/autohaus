@@ -100,7 +100,7 @@ export function CustomersPage({ refreshKey }: { refreshKey: number; onRefresh: (
   const handleDelete = async (id: string) => {
     if (!confirm('Kunden wirklich löschen?')) return
     const { error } = await supabase.from('customers').delete().eq('id', id)
-    if (error) { toast('Fehler beim Löschen', 'error') } else { toast('Kunde gelöscht'); load() }
+    if (error) { toast('Hiba a törlés során', 'error') } else { toast('Ügyfél törölve'); load() }
   }
 
   return (
@@ -169,7 +169,7 @@ export function CustomersPage({ refreshKey }: { refreshKey: number; onRefresh: (
           </table>
           {filtered.length === 0 && (
             <div className="text-center py-10 text-[#8fa0b5] text-sm">
-              {search ? 'Keine Kunden gefunden' : 'Noch keine Kunden vorhanden'}
+              {search ? 'Nem található ügyfél' : 'Még nincs ügyfél'}
             </div>
           )}
         </Card>
@@ -181,8 +181,8 @@ export function CustomersPage({ refreshKey }: { refreshKey: number; onRefresh: (
         title={editCustomer ? 'Kunde bearbeiten' : 'Neuer Kunde'}
         footer={
           <>
-            <Button variant="secondary" onClick={() => setModalOpen(false)}>Abbrechen</Button>
-            <Button variant="primary" onClick={handleSave} disabled={saving}>{saving ? 'Speichern...' : 'Speichern'}</Button>
+            <Button variant="secondary" onClick={() => setModalOpen(false)}>Mégse</Button>
+            <Button variant="primary" onClick={handleSave} disabled={saving}>{saving ? 'Mentés...' : 'Mentés'}</Button>
           </>
         }
       >

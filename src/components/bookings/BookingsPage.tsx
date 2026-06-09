@@ -72,7 +72,7 @@ export function BookingsPage({ refreshKey }: { refreshKey: number; onRefresh: ()
       <div className="flex gap-2.5 mb-4">
         <div className="relative flex-1">
           <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#8fa0b5]" />
-          <input type="text" value={search} onChange={e => setSearch(e.target.value)} placeholder="Kunde, Kennzeichen, Service..."
+          <input type="text" value={search} onChange={e => setSearch(e.target.value)} placeholder="Ügyfél, rendszám, szolgáltatás..."
             className="w-full pl-9 pr-3 py-2 border border-[rgba(11,30,61,0.18)] rounded-lg text-[13px] bg-white outline-none focus:border-[#0B1E3D]" />
         </div>
         <Button variant="primary" onClick={() => { setForm({ status: 'pending', urgency: 'normal', is_mobile: false, duration_minutes: 60 }); setModalOpen(true) }}>
@@ -88,7 +88,7 @@ export function BookingsPage({ refreshKey }: { refreshKey: number; onRefresh: ()
                 <th className="text-left px-4 py-3 text-[11px] font-semibold text-[#5a6a80] uppercase tracking-wider">Datum / Zeit</th>
                 <th className="text-left px-4 py-3 text-[11px] font-semibold text-[#5a6a80] uppercase tracking-wider">Kunde</th>
                 <th className="text-left px-4 py-3 text-[11px] font-semibold text-[#5a6a80] uppercase tracking-wider hidden md:table-cell">Service</th>
-                <th className="text-left px-4 py-3 text-[11px] font-semibold text-[#5a6a80] uppercase tracking-wider hidden sm:table-cell">Fahrzeug</th>
+                <th className="text-left px-4 py-3 text-[11px] font-semibold text-[#5a6a80] uppercase tracking-wider hidden sm:table-cell">Jármű</th>
                 <th className="text-left px-4 py-3 text-[11px] font-semibold text-[#5a6a80] uppercase tracking-wider">Status</th>
                 <th className="px-4 py-3" />
               </tr>
@@ -126,12 +126,12 @@ export function BookingsPage({ refreshKey }: { refreshKey: number; onRefresh: ()
               ))}
             </tbody>
           </table>
-          {filtered.length === 0 && <div className="text-center py-10 text-[#8fa0b5] text-sm">Keine Buchungen gefunden</div>}
+          {filtered.length === 0 && <div className="text-center py-10 text-[#8fa0b5] text-sm">Nem található foglalás</div>}
         </Card>
       )}
 
       <Modal open={modalOpen} onClose={() => setModalOpen(false)} title="Neue Buchung" className="max-w-xl"
-        footer={<><Button variant="secondary" onClick={() => setModalOpen(false)}>Abbrechen</Button><Button variant="primary" onClick={handleSave} disabled={saving}>{saving ? 'Speichern...' : 'Speichern'}</Button></>}>
+        footer={<><Button variant="secondary" onClick={() => setModalOpen(false)}>Mégse</Button><Button variant="primary" onClick={handleSave} disabled={saving}>{saving ? 'Mentés...' : 'Mentés'}</Button></>}>
         <div className="grid grid-cols-2 gap-3">
           <FormGroup>
             <FormLabel>Kunde *</FormLabel>
@@ -141,7 +141,7 @@ export function BookingsPage({ refreshKey }: { refreshKey: number; onRefresh: ()
             </Select>
           </FormGroup>
           <FormGroup>
-            <FormLabel>Fahrzeug</FormLabel>
+            <FormLabel>Jármű</FormLabel>
             <Select value={form.vehicle_id || ''} onChange={e => setForm((f: any) => ({ ...f, vehicle_id: e.target.value }))}>
               <option value="">Bitte wählen...</option>
               {filteredVehicles.map(v => <option key={v.id} value={v.id}>{v.make} {v.model} – {v.license_plate}</option>)}

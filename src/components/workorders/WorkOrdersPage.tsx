@@ -162,7 +162,7 @@ export function WorkOrdersPage({ refreshKey, profile }: { refreshKey: number; on
     await supabase.from('work_orders').update({
       payment_status: 'paid',
       status: 'delivered',
-      internal_notes: `Fizetve: ${method === 'cash' ? 'Készpénz' : method === 'card' ? 'Kártya' : 'Számla'} – ${new Date().toLocaleString('de-CH')}`
+      internal_notes: `Fizetve: ${method === 'cash' ? 'Készpénz' : method === 'card' ? 'Kártya' : 'Számla'} – ${new Date().toLocaleString('hu-HU')}`
     }).eq('id', id)
     toast('Fizetés rögzítve ✓')
     load()
@@ -182,12 +182,12 @@ export function WorkOrdersPage({ refreshKey, profile }: { refreshKey: number; on
       <div className="flex flex-wrap gap-2.5 mb-4">
         <div className="relative flex-1 min-w-[200px]">
           <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#8fa0b5]" />
-          <input type="text" value={search} onChange={e => setSearch(e.target.value)} placeholder="Auftragsnummer, Kunde, Kennzeichen..."
+          <input type="text" value={search} onChange={e => setSearch(e.target.value)} placeholder="Munkalapszám, ügyfél, rendszám..."
             className="w-full pl-9 pr-3 py-2 border border-[rgba(11,30,61,0.18)] rounded-lg text-[13px] bg-white outline-none focus:border-[#0B1E3D]" />
         </div>
         <select value={statusFilter} onChange={e => setStatusFilter(e.target.value)}
           className="px-3 py-2 border border-[rgba(11,30,61,0.18)] rounded-lg text-[13px] bg-white outline-none focus:border-[#0B1E3D]">
-          <option value="">Alle Status</option>
+          <option value="">Minden státusz</option>
           {STATUSES.map(s => <option key={s} value={s}>{STATUS_LABELS[s]}</option>)}
         </select>
         <Button variant="primary" onClick={openNew}><Plus size={14} /> Új munkalap</Button>
