@@ -322,7 +322,7 @@ export function PhotosPage({ refreshKey, profile }: { refreshKey: number; onRefr
   // ── UPLOAD VIEW ──────────────────────────────────────────────────────────────
   if (view === 'upload') {
     return (
-      <div className="animate-fade-in max-w-lg mx-auto space-y-4 pb-8">
+      <div className="animate-fade-in max-w-lg mx-auto space-y-4 pb-32 md:pb-8">
         <button onClick={() => { setView('gallery'); setFiles([]) }}
           className="flex items-center gap-2 text-sm text-[#5a6a80] hover:text-[#0B1E3D]">
           <ArrowLeft size={16} /> Vissza
