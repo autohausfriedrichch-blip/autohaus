@@ -168,7 +168,7 @@ function AdminApp() {
       case 'garage':      return <GaragePage {...props} profile={profile} />
       case 'pickup':      return <PickupDeliveryPage {...props} />
       case 'technician':  return <TechnicianPage {...props} profile={profile} onOpenWorkOrder={id => setOpenWorkOrderId(id)} />
-      case 'tasks':       return <TasksPage {...props} />
+      case 'tasks':       return <TasksPage {...props} profile={profile} />
       case 'parts':
       case 'parts_admin':      return <PartsPage {...props} />
       case 'settings':         return <SettingsPage {...props} />
