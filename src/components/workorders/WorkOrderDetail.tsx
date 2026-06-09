@@ -509,12 +509,14 @@ export function WorkOrderDetail({ workOrderId, profile, onClose, onNewQuote }: P
 
   const addTask = async () => {
     if (!newTaskForm.title) return
-    await supabase.from('work_order_tasks').insert({
+    const { error } = await supabase.from('work_order_tasks').insert({
       work_order_id: workOrderId,
       title: newTaskForm.title,
       assigned_name: newTaskForm.assigned_name || null,
       sort_order: tasks.length,
+      status: 'pending',
     })
+    if (error) { toast(`Hiba: ${error.message}`, 'error'); return }
     await logEvent('task_created', `Feladat hozzáadva: ${newTaskForm.title}`, undefined, 'repair')
     setNewTaskForm({ open: false, title: '', assigned_name: '' })
     load()
