@@ -523,19 +523,19 @@ export default function TechnicianPage({
         <div className="flex gap-2 mt-4 flex-wrap">
           <div className="flex items-center gap-1.5 bg-white/10 rounded-full px-3 py-1.5">
             <span className="text-[#C9A84C] font-bold text-[13px]">{allMyOrders.length}</span>
-            <span className="text-white/70 text-[11px]">munkalap összesen</span>
+            <span className="text-white/70 text-[11px]">összes munkalap</span>
           </div>
-          <div className="flex items-center gap-1.5 bg-white/10 rounded-full px-3 py-1.5">
-            <span className="text-[#C9A84C] font-bold text-[13px]">{activeOrders.length}</span>
-            <span className="text-white/70 text-[11px]">aktív munkalap</span>
+          <div className={`flex items-center gap-1.5 rounded-full px-3 py-1.5 ${garageOrders.length > 0 ? 'bg-[#C9A84C]/20' : 'bg-white/10'}`}>
+            <span className={`font-bold text-[13px] ${garageOrders.length > 0 ? 'text-[#C9A84C]' : 'text-[#C9A84C]'}`}>{garageOrders.length}</span>
+            <span className="text-white/70 text-[11px]">garázsban</span>
+          </div>
+          <div className={`flex items-center gap-1.5 rounded-full px-3 py-1.5 ${activeOrders.length > 0 ? 'bg-emerald-500/20' : 'bg-white/10'}`}>
+            <span className={`font-bold text-[13px] ${activeOrders.length > 0 ? 'text-emerald-300' : 'text-[#C9A84C]'}`}>{activeOrders.length}</span>
+            <span className="text-white/70 text-[11px]">aktív javítás</span>
           </div>
           <div className="flex items-center gap-1.5 bg-white/10 rounded-full px-3 py-1.5">
             <span className="text-[#C9A84C] font-bold text-[13px]">{todayOrders.length}</span>
             <span className="text-white/70 text-[11px]">mai feladat</span>
-          </div>
-          <div className="flex items-center gap-1.5 bg-white/10 rounded-full px-3 py-1.5">
-            <span className="text-[#C9A84C] font-bold text-[13px]">{tasks.length}</span>
-            <span className="text-white/70 text-[11px]">feladat</span>
           </div>
         </div>
       </div>
