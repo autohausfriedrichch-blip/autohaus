@@ -56,15 +56,19 @@ interface Task {
 // ─── Constants ────────────────────────────────────────────────────────────────
 
 const STATUS_META: Record<string, { label: string; color: string; bg: string }> = {
-  scheduled:        { label: 'Ütemezett',     color: 'text-blue-700',   bg: 'bg-blue-100' },
-  arrived:          { label: 'Megérkezett',   color: 'text-cyan-700',   bg: 'bg-cyan-100' },
-  checked_in:       { label: 'Check-in',      color: 'text-indigo-700', bg: 'bg-indigo-100' },
-  in_progress:      { label: 'Folyamatban',   color: 'text-amber-700',  bg: 'bg-amber-100' },
-  completed:        { label: 'Elkészült',     color: 'text-green-700',  bg: 'bg-green-100' },
-  ready_for_pickup: { label: 'Átadásra vár',  color: 'text-[#C9A84C]',  bg: 'bg-yellow-50' },
-  waiting_parts:    { label: 'Alkatrész vár', color: 'text-orange-700', bg: 'bg-orange-100' },
-  on_hold:          { label: 'Felfüggesztve', color: 'text-gray-600',   bg: 'bg-gray-100' },
-  delivered:        { label: 'Kiadva',        color: 'text-gray-500',   bg: 'bg-gray-100' },
+  new_booking:       { label: 'Új foglalás',     color: 'text-blue-700',   bg: 'bg-blue-100' },
+  confirmed:         { label: 'Megerősítve',     color: 'text-cyan-700',   bg: 'bg-cyan-100' },
+  checked_in:        { label: 'Check-in',        color: 'text-indigo-700', bg: 'bg-indigo-100' },
+  diagnostics:       { label: 'Diagnosztika',    color: 'text-purple-700', bg: 'bg-purple-100' },
+  waiting_quote:     { label: 'Árajánlat',       color: 'text-amber-700',  bg: 'bg-amber-100' },
+  waiting_approval:  { label: 'Jóváhagyás',      color: 'text-amber-700',  bg: 'bg-amber-100' },
+  waiting_parts:     { label: 'Alkatrész vár',   color: 'text-orange-700', bg: 'bg-orange-100' },
+  in_repair:         { label: 'Javítás folyamatban', color: 'text-amber-700', bg: 'bg-amber-100' },
+  quality_check:     { label: 'Minőség-ellenőrzés', color: 'text-teal-700', bg: 'bg-teal-100' },
+  ready:             { label: 'Kész',            color: 'text-green-700',  bg: 'bg-green-100' },
+  checkout_ready:    { label: 'Átadásra vár',    color: 'text-[#C9A84C]',  bg: 'bg-yellow-50' },
+  delivered:         { label: 'Kiadva',          color: 'text-gray-500',   bg: 'bg-gray-100' },
+  closed:            { label: 'Lezárva',         color: 'text-gray-400',   bg: 'bg-gray-50' },
 }
 
 const PRIORITY_META: Record<string, { label: string; color: string; bg: string; border: string }> = {
@@ -86,8 +90,8 @@ const DELIVERY_STATUS_LABEL: Record<string, { label: string; color: string; bg: 
   delivered: { label: 'Teljesítve', color: 'text-green-700', bg: 'bg-green-100' },
 }
 
-const ACTIVE_STATUSES = ['checked_in', 'in_progress', 'waiting_parts']
-const IN_GARAGE_STATUSES = ['scheduled', 'arrived', 'checked_in', 'in_progress', 'waiting_parts', 'on_hold', 'completed', 'ready_for_pickup']
+const ACTIVE_STATUSES = ['checked_in', 'diagnostics', 'in_repair', 'waiting_parts', 'quality_check']
+const IN_GARAGE_STATUSES = ['new_booking', 'confirmed', 'checked_in', 'diagnostics', 'waiting_quote', 'waiting_approval', 'waiting_parts', 'in_repair', 'quality_check', 'ready', 'checkout_ready']
 
 function toDateString(d: Date) {
   return d.toISOString().split('T')[0]
@@ -251,10 +255,12 @@ export default function TechnicianPage({
   refreshKey,
   onRefresh,
   profile,
+  onOpenWorkOrder,
 }: {
   refreshKey: number
   onRefresh: () => void
   profile?: any
+  onOpenWorkOrder?: (id: string) => void
 }) {
   const supabase = createClient()
   const { toast } = useToast()
@@ -369,7 +375,7 @@ export default function TechnicianPage({
   const changeOrderStatus = async (id: string, newStatus: string) => {
     setStatusChanging(id)
     const updates: Record<string, unknown> = { status: newStatus }
-    if (newStatus === 'completed') updates.completed_at = new Date().toISOString()
+    if (newStatus === 'quality_check') updates.completed_at = new Date().toISOString()
     const { error } = await supabase.from('work_orders').update(updates).eq('id', id)
     if (error) {
       toast('Állapot frissítési hiba', 'error')
@@ -560,11 +566,19 @@ export default function TechnicianPage({
                       </div>
 
                       {/* Expanded detail */}
-                      {expandedOrder === order.id && order.fault_description && (
-                        <div className="mt-3 pt-3 border-t border-[rgba(11,30,61,0.08)]">
-                          <p className="text-[11px] text-[#5a6a80] leading-relaxed">
-                            {order.fault_description}
-                          </p>
+                      {expandedOrder === order.id && (
+                        <div className="mt-3 pt-3 border-t border-[rgba(11,30,61,0.08)] space-y-2">
+                          {order.fault_description && (
+                            <p className="text-[11px] text-[#5a6a80] leading-relaxed">{order.fault_description}</p>
+                          )}
+                          {onOpenWorkOrder && (
+                            <button
+                              onClick={e => { e.stopPropagation(); onOpenWorkOrder(order.id) }}
+                              className="w-full btn-mobile-action bg-[#0B1E3D] text-white text-[12px] py-2"
+                            >
+                              <Wrench size={13} /> Feladatok megnyitása
+                            </button>
+                          )}
                         </div>
                       )}
                     </div>
@@ -588,6 +602,7 @@ export default function TechnicianPage({
                       onStatusChange={changeOrderStatus}
                       onWorkLogged={handleWorkLogged}
                       onPhotoUpload={handlePhotoUpload}
+                      onOpenDetail={onOpenWorkOrder ? () => onOpenWorkOrder(order.id) : undefined}
                     />
                   ))}
                 </div>
@@ -877,12 +892,14 @@ function ActiveWorkOrderCard({
   onStatusChange,
   onWorkLogged,
   onPhotoUpload,
+  onOpenDetail,
 }: {
   order: WorkOrder
   statusChanging: string | null
   onStatusChange: (id: string, status: string) => Promise<void>
   onWorkLogged: (orderId: string, notes: string) => Promise<void>
   onPhotoUpload: (orderId: string, file: File) => Promise<void>
+  onOpenDetail?: () => void
 }) {
   const [expanded, setExpanded] = useState(false)
   const [flagOpen, setFlagOpen] = useState(false)
@@ -945,7 +962,16 @@ function ActiveWorkOrderCard({
 
           {/* Status actions – large touch-friendly buttons */}
           <div className="grid grid-cols-2 gap-2 pt-2">
-            {order.status !== 'waiting_parts' ? (
+            {order.status === 'waiting_parts' ? (
+              <button
+                className="btn-mobile-action bg-blue-50 text-blue-700 border border-blue-200 text-[13px] col-span-1"
+                disabled={statusChanging === order.id}
+                onClick={() => onStatusChange(order.id, 'in_repair')}
+              >
+                <Play size={16} />
+                Folytatás
+              </button>
+            ) : order.status === 'in_repair' ? (
               <button
                 className="btn-mobile-action bg-[#F4F5F7] text-[#0B1E3D] border border-[rgba(11,30,61,0.12)] text-[13px] col-span-1"
                 disabled={statusChanging === order.id}
@@ -956,23 +982,34 @@ function ActiveWorkOrderCard({
               </button>
             ) : (
               <button
-                className="btn-mobile-action bg-blue-50 text-blue-700 border border-blue-200 text-[13px] col-span-1"
+                className="btn-mobile-action bg-[#0B1E3D] text-white text-[13px] col-span-1"
                 disabled={statusChanging === order.id}
-                onClick={() => onStatusChange(order.id, 'in_progress')}
+                onClick={() => onStatusChange(order.id, 'in_repair')}
               >
                 <Play size={16} />
-                Folytatás
+                Javítás indítása
               </button>
             )}
             <button
               className="btn-mobile-action bg-[#C9A84C] text-[#0B1E3D] text-[13px] font-bold col-span-1"
               disabled={statusChanging === order.id}
-              onClick={() => onStatusChange(order.id, 'completed')}
+              onClick={() => onStatusChange(order.id, 'quality_check')}
             >
               <CheckCircle size={16} />
               Munka kész!
             </button>
           </div>
+
+          {/* Open full work order detail with tasks */}
+          {onOpenDetail && (
+            <button
+              className="btn-mobile-action bg-[#185FA5] text-white w-full text-[13px]"
+              onClick={onOpenDetail}
+            >
+              <ListChecks size={16} />
+              Feladatok & Munkalap megnyitása
+            </button>
+          )}
 
           {/* Flag difficult work */}
           <button

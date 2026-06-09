@@ -283,6 +283,23 @@ export function WorkOrderDetail({ workOrderId, profile, onClose }: Props) {
 
   useEffect(() => { load() }, [load])
 
+  // Silent background refresh — keeps both profiles in sync without resetting loading state
+  const silentRefresh = useCallback(async () => {
+    const [{ data: evData }, { data: taskData }, { data: woData }] = await Promise.all([
+      supabase.from('work_order_events').select('*').eq('work_order_id', workOrderId).order('created_at', { ascending: true }),
+      supabase.from('work_order_tasks').select('*').eq('work_order_id', workOrderId).order('sort_order', { ascending: true }),
+      supabase.from('work_orders').select('*, customer:customers(full_name,phone,email), vehicle:vehicles(make,model,license_plate,year)').eq('id', workOrderId).single(),
+    ])
+    if (evData) setEvents(evData as WOEvent[])
+    if (taskData) setTasks(taskData as WOTask[])
+    if (woData) setWo(woData as WorkOrderFull)
+  }, [workOrderId])
+
+  useEffect(() => {
+    const interval = setInterval(silentRefresh, 15000)
+    return () => clearInterval(interval)
+  }, [silentRefresh])
+
   useEffect(() => {
     const interval = setInterval(() => {
       const now = Date.now()
@@ -320,6 +337,10 @@ export function WorkOrderDetail({ workOrderId, profile, onClose }: Props) {
     setOpenPhaseDropdown(null)
     load()
     toast('Fázis frissítve')
+    // Auto-switch to Tasks tab when repair starts
+    if (phaseKey === 'repair_status' && value === 'in_progress') {
+      setTab('tasks')
+    }
   }
 
   const isAdmin = profile.role === 'super_admin' || profile.role === 'admin'
@@ -688,6 +709,36 @@ export function WorkOrderDetail({ workOrderId, profile, onClose }: Props) {
                   <div className="text-[16px] font-bold text-[#0B1E3D]">{formatCurrency(wo.total_amount)}</div>
                 </div>
               </div>
+
+              {/* Inline timeline for admin/super_admin — always visible on overview */}
+              {isAdmin && (
+                <div>
+                  <div className="flex items-center justify-between mb-3">
+                    <h3 className="text-[11px] font-bold text-[#5a6a80] uppercase tracking-wider">Idővonal</h3>
+                    <span className="text-[10px] text-[#8fa0b5]">automatikusan frissül</span>
+                  </div>
+                  <div className="space-y-2 max-h-[320px] overflow-y-auto pr-1">
+                    {events.length === 0 && (
+                      <div className="text-[12px] text-[#8fa0b5] py-3 text-center">Még nincs esemény</div>
+                    )}
+                    {[...events].reverse().map(ev => (
+                      <div key={ev.id} className="flex gap-2.5 items-start">
+                        <span className="text-[16px] flex-shrink-0 mt-0.5">{EVENT_ICONS[ev.event_type] || 'ℹ️'}</span>
+                        <div className="flex-1 min-w-0 border-b border-[rgba(11,30,61,0.05)] pb-2">
+                          <div className="flex items-center gap-1.5 flex-wrap">
+                            <span className="text-[12px] font-semibold text-[#0B1E3D]">{ev.title}</span>
+                            {ev.user_name && (
+                              <span className="text-[9px] bg-[#E6F1FB] text-[#185FA5] px-1.5 py-0.5 rounded-full font-semibold">{ev.user_name}</span>
+                            )}
+                            <span className="text-[10px] text-[#8fa0b5] ml-auto">{formatTime(ev.created_at)}</span>
+                          </div>
+                          {ev.description && <p className="text-[11px] text-[#5a6a80] mt-0.5">{ev.description}</p>}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           )}
 
