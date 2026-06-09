@@ -27,6 +27,7 @@ import { SettingsPage } from '@/components/settings/SettingsPage'
 import { VehicleLifecyclePage } from '@/components/vehicles/VehicleLifecyclePage'
 import { RemindersPage } from '@/components/reminders/RemindersPage'
 import { ProfitPage } from '@/components/profit/ProfitPage'
+import { FinancePage } from '@/components/finance/FinancePage'
 import { PartsInventoryPage } from '@/components/parts/PartsInventoryPage'
 import { RoutePlannerPage } from '@/components/route/RoutePlannerPage'
 import { CustomerValuePage } from '@/components/customers/CustomerValuePage'
@@ -50,6 +51,7 @@ const PAGE_TITLES: Record<string, string> = {
   vehicle_lifecycle: 'Jármű élettörténet',
   reminders: 'Szerviz emlékeztetők',
   profit: 'Profit & Költségkezelés',
+  finance: 'Pénzügy & Számlázás',
   parts_inventory: 'Alkatrész raktár',
   route_planner: 'Útvonaltervező',
   customer_value: 'Ügyfélerték Dashboard',
@@ -186,6 +188,7 @@ function AdminApp() {
       case 'vehicle_lifecycle': return <VehicleLifecyclePage {...props} />
       case 'reminders':        return <RemindersPage {...props} />
       case 'profit':           return <ProfitPage {...props} />
+      case 'finance':          return <FinancePage {...props} profile={profile} />
       case 'parts_inventory':  return <PartsInventoryPage {...props} />
       case 'route_planner':    return <RoutePlannerPage {...props} />
       case 'customer_value':   return <CustomerValuePage {...props} />

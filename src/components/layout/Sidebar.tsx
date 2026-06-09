@@ -110,6 +110,7 @@ const ADMIN_NAV: NavGroup[] = [
     icon: BarChart,
     roles: ['super_admin', 'admin'],
     children: [
+      { id: 'finance',       label: 'Pénzügy & Számlázás' },
       { id: 'profit',        label: 'Profit & Költség' },
       { id: 'ceo_dashboard', label: 'CEO Dashboard' },
     ],
