@@ -15,6 +15,7 @@ import {
   ChevronRight, Flag,
 } from 'lucide-react'
 import { TechnicianFlagModal } from '@/components/services/ServiceCalculator'
+import { WorkflowModal, type WFWorkOrder } from './WorkflowModal'
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -746,6 +747,7 @@ export default function TechnicianPage({
 
   // UI state
   const [expandedOrder, setExpandedOrder] = useState<string | null>(null)
+  const [workflowOrder, setWorkflowOrder] = useState<WFWorkOrder | null>(null)
   const [statusChanging, setStatusChanging] = useState<string | null>(null)
   const [deliveryChanging, setDeliveryChanging] = useState<string | null>(null)
 
@@ -1169,6 +1171,7 @@ export default function TechnicianPage({
                       onWorkLogged={handleWorkLogged}
                       onPhotoUpload={handlePhotoUpload}
                       onOpenDetail={onOpenWorkOrder ? () => onOpenWorkOrder(order.id) : undefined}
+                      onOpenWorkflow={() => setWorkflowOrder(order as WFWorkOrder)}
                       onTaskUpdate={(taskId, updates) => updateTaskLocal(order.id, taskId, updates)}
                       userId={userId}
                       profile={profile}
@@ -1203,26 +1206,13 @@ export default function TechnicianPage({
                           <StatusBadge status={order.status} />
                         </div>
                         <div className="flex gap-2 px-4 pb-3">
-                          {canStart && (
-                            <button
-                              className="btn-mobile-action bg-[#0B1E3D] text-white flex-1 text-[12px]"
-                              disabled={statusChanging === order.id}
-                              onClick={() => changeOrderStatus(order.id, 'in_repair', 'repair')}
-                            >
-                              <Play size={14} />
-                              {statusChanging === order.id ? 'Indítás...' : 'Munka elkezdése'}
-                            </button>
-                          )}
-                          {isActive && (
-                            <button
-                              className="btn-mobile-action bg-[#C9A84C] text-[#0B1E3D] font-bold flex-1 text-[12px]"
-                              disabled={statusChanging === order.id}
-                              onClick={() => changeOrderStatus(order.id, 'quality_check', 'qc')}
-                            >
-                              <CheckCircle size={14} />
-                              Munka kész!
-                            </button>
-                          )}
+                          <button
+                            className="btn-mobile-action bg-[#0B1E3D] text-white flex-1 text-[12px]"
+                            onClick={() => setWorkflowOrder(order as WFWorkOrder)}
+                          >
+                            <Wrench size={14} />
+                            {canStart ? 'Munka kezdése' : 'Munkalap megnyitása'}
+                          </button>
                           {onOpenWorkOrder && (
                             <button
                               className="btn-mobile-action bg-[#F4F5F7] text-[#0B1E3D] border border-[rgba(11,30,61,0.12)] text-[12px] px-3"
@@ -1452,6 +1442,17 @@ export default function TechnicianPage({
         </div>
       </Modal>
 
+      {/* ── Workflow Modal ──────────────────────────────────────────────────── */}
+      {workflowOrder && (
+        <WorkflowModal
+          order={workflowOrder}
+          onClose={() => { setWorkflowOrder(null); fetchAll(); onRefresh() }}
+          onRefresh={() => { fetchAll(); onRefresh() }}
+          userId={userId}
+          profile={profile}
+        />
+      )}
+
     </div>
   )
 }
@@ -1502,6 +1503,7 @@ function ActiveWorkOrderCard({
   onWorkLogged,
   onPhotoUpload,
   onOpenDetail,
+  onOpenWorkflow,
   onTaskUpdate,
   userId,
   profile,
@@ -1516,6 +1518,7 @@ function ActiveWorkOrderCard({
   onWorkLogged: (orderId: string, notes: string) => Promise<void>
   onPhotoUpload: (orderId: string, file: File, phase?: string) => void
   onOpenDetail?: () => void
+  onOpenWorkflow?: () => void
   onTaskUpdate: (taskId: string, updates: Partial<WOTask>) => void
   userId: string | null
   profile?: any
@@ -1762,6 +1765,17 @@ function ActiveWorkOrderCard({
                 }}
               />
             </div>
+          )}
+
+          {/* Open workflow */}
+          {onOpenWorkflow && (
+            <button
+              className="btn-mobile-action bg-[#C9A84C] text-[#0B1E3D] font-bold w-full text-[13px]"
+              onClick={onOpenWorkflow}
+            >
+              <Wrench size={16} />
+              Munkafolyamat megnyitása
+            </button>
           )}
 
           {/* Open full detail */}
