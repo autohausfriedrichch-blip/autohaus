@@ -106,6 +106,11 @@ export function WorkOrdersPage({ refreshKey, onRefresh, profile }: { refreshKey:
     const selectedSvcs = services.filter(s => selectedServiceIds.includes(s.id))
     const serviceNames = selectedSvcs.map(s => s.name).join(', ')
 
+    // Derive pricing_mode from selected services
+    const hasHourly = selectedSvcs.some(s => s.pricing_type === 'hourly')
+    const hasFixed = selectedSvcs.some(s => s.pricing_type !== 'hourly')
+    const pricingMode = hasHourly && hasFixed ? 'combined' : hasHourly ? 'hourly' : 'fixed'
+
     const payload = {
       customer_id: form.customer_id, vehicle_id: form.vehicle_id,
       service_type: serviceNames || form.service_type || null,
@@ -122,6 +127,7 @@ export function WorkOrdersPage({ refreshKey, onRefresh, profile }: { refreshKey:
       internal_notes: form.internal_notes || null,
       customer_notes: form.customer_notes || null,
       payment_status: form.payment_status || 'pending',
+      pricing_mode: pricingMode,
     }
     if (editOrder) {
       const { error } = await supabase.from('work_orders').update(payload).eq('id', editOrder.id)
