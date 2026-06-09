@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button'
 import { Input, FormGroup, FormLabel, Select, Textarea } from '@/components/ui/form'
 import { useToast } from '@/components/ui/toast'
 import { formatCurrency, formatDate, STATUS_LABELS } from '@/lib/utils'
-import { X, Plus, Play, Pause, Check, Clock, Camera, ChevronDown } from 'lucide-react'
+import { X, Plus, Play, Pause, Check, Clock, Camera, ChevronDown, Download } from 'lucide-react'
 
 type Tab = 'overview' | 'timeline' | 'tasks' | 'parts' | 'photos' | 'notes'
 
@@ -1094,10 +1094,41 @@ export function WorkOrderDetail({ workOrderId, profile, onClose }: Props) {
 
           {tab === 'photos' && (
             <div className="space-y-4">
+              {photos.length > 0 && (profile.role === 'admin' || profile.role === 'super_admin') && (
+                <div className="flex justify-end">
+                  <button
+                    onClick={() => photos.forEach((p, i) => {
+                      setTimeout(() => {
+                        const a = document.createElement('a')
+                        a.href = p.url
+                        a.download = `${wo?.order_number || 'foto'}_${p.category}_${new Date(p.created_at).toISOString().slice(0,10)}.jpg`
+                        a.click()
+                      }, i * 150)
+                    })}
+                    className="flex items-center gap-1.5 px-3 py-1.5 border border-[#C9A84C] text-[#C9A84C] text-[12px] font-semibold rounded-lg hover:bg-amber-50">
+                    <Download size={13} /> Összes letöltése ({photos.length})
+                  </button>
+                </div>
+              )}
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
                 {photos.map(photo => (
-                  <div key={photo.id} className="rounded-lg overflow-hidden border border-[rgba(11,30,61,0.08)] bg-white">
-                    <img src={photo.url} alt={photo.caption || 'Photo'} className="w-full h-32 object-cover" />
+                  <div key={photo.id} className="rounded-lg overflow-hidden border border-[rgba(11,30,61,0.08)] bg-white group">
+                    <div className="relative">
+                      <img src={photo.url} alt={photo.caption || 'Photo'} className="w-full h-32 object-cover" />
+                      {(profile.role === 'admin' || profile.role === 'super_admin') && (
+                        <button
+                          onClick={() => {
+                            const a = document.createElement('a')
+                            a.href = photo.url
+                            a.download = `${wo?.order_number || 'foto'}_${photo.category}_${new Date(photo.created_at).toISOString().slice(0,10)}.jpg`
+                            a.click()
+                          }}
+                          className="absolute bottom-1 right-1 bg-black/60 hover:bg-black/80 text-white rounded p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                          title="Letöltés">
+                          <Download size={12} />
+                        </button>
+                      )}
+                    </div>
                     <div className="px-2 py-1.5">
                       <span className="text-[10px] font-semibold text-[#5a6a80] uppercase">{photo.category}</span>
                       <div className="text-[10px] text-[#8fa0b5]">{photo.uploaded_by} · {formatTime(photo.created_at)}</div>
