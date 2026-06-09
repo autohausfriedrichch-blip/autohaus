@@ -82,7 +82,8 @@ export function BookingsPage({ refreshKey }: { refreshKey: number; onRefresh: ()
 
       {loading ? <div className="text-center py-12 text-[#5a6a80] text-sm">Wird geladen...</div> : (
         <Card className="p-0 overflow-hidden">
-          <table className="w-full text-[13px]">
+          <div className="overflow-x-auto">
+          <table className="w-full text-[13px] min-w-[560px]">
             <thead>
               <tr className="bg-[#F4F5F7] border-b border-[rgba(11,30,61,0.10)]">
                 <th className="text-left px-4 py-3 text-[11px] font-semibold text-[#5a6a80] uppercase tracking-wider">Datum / Zeit</th>
@@ -126,6 +127,7 @@ export function BookingsPage({ refreshKey }: { refreshKey: number; onRefresh: ()
               ))}
             </tbody>
           </table>
+          </div>
           {filtered.length === 0 && <div className="text-center py-10 text-[#8fa0b5] text-sm">Nem található foglalás</div>}
         </Card>
       )}

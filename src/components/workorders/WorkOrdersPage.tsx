@@ -296,7 +296,7 @@ export function WorkOrdersPage({ refreshKey, onRefresh, profile }: { refreshKey:
 
       <Modal open={modalOpen} onClose={() => setModalOpen(false)} title={editOrder ? `Munkalap szerkesztése – ${editOrder.order_number || ''}` : 'Új Munkalap'} className="max-w-2xl"
         footer={<><Button variant="secondary" onClick={() => setModalOpen(false)}>Mégse</Button><Button variant="primary" onClick={handleSave} disabled={saving}>{saving ? 'Mentés...' : editOrder ? 'Frissítés' : 'Létrehozás'}</Button></>}>
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <FormGroup>
             <FormLabel>Ügyfél *</FormLabel>
             <Select value={form.customer_id || ''} onChange={e => setForm(f => ({ ...f, customer_id: e.target.value, vehicle_id: '' }))}>

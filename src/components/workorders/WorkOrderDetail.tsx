@@ -604,11 +604,12 @@ export function WorkOrderDetail({ workOrderId, profile, onClose }: Props) {
   const tasksDone = tasks.filter(t => t.status === 'done').length
 
   return (
-    <div className="fixed inset-0 z-50 bg-white overflow-y-auto" onClick={e => { if (openPhaseDropdown && !(e.target as HTMLElement).closest('[data-phase-dropdown]')) setOpenPhaseDropdown(null) }}>
-      <div className="max-w-6xl mx-auto px-4 pb-10">
+    <div className="wo-detail-overlay" onClick={e => { if (openPhaseDropdown && !(e.target as HTMLElement).closest('[data-phase-dropdown]')) setOpenPhaseDropdown(null) }}>
+    <div className="wo-detail-panel animate-slide-right">
+      <div className="px-3 sm:px-5 pb-10">
 
-        <div className="sticky top-0 bg-white border-b border-[rgba(11,30,61,0.10)] z-10 pt-4 pb-0">
-          <div className="flex items-center gap-3 flex-wrap mb-3">
+        <div className="sticky top-0 bg-white border-b border-[rgba(11,30,61,0.10)] z-10 pt-3 sm:pt-4 pb-0">
+          <div className="flex items-center gap-2 sm:gap-3 flex-wrap mb-2 sm:mb-3">
             <span className="text-[11px] font-bold text-[#185FA5] bg-[#E6F1FB] px-2 py-0.5 rounded">{wo.order_number}</span>
             {healthDot(wo.health || 'green')}
             <span className="font-bold text-[15px] text-[#0B1E3D]">{wo.customer?.full_name}</span>
@@ -698,7 +699,7 @@ export function WorkOrderDetail({ workOrderId, profile, onClose }: Props) {
                 </div>
               )}
 
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
                 {PHASE_DEFS.map(pd => {
                   const val = phaseValues[pd.key]
                   const color = phaseColor(pd, val)
@@ -716,7 +717,7 @@ export function WorkOrderDetail({ workOrderId, profile, onClose }: Props) {
                 })}
               </div>
 
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+              <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-3">
                 <div className="bg-[#F4F5F7] rounded-lg p-3 text-center">
                   <div className="text-[11px] text-[#5a6a80] mb-1">Feladatok</div>
                   <div className="text-[22px] font-bold text-[#0B1E3D]">{tasksDone}/{tasks.length}</div>
@@ -1053,7 +1054,7 @@ export function WorkOrderDetail({ workOrderId, profile, onClose }: Props) {
                 </button>
               ) : (
                 <div className="bg-[#F4F5F7] rounded-lg p-4">
-                  <div className="grid grid-cols-2 gap-3">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <FormGroup>
                       <FormLabel>Név *</FormLabel>
                       <Input value={newPartForm.name} onChange={e => setNewPartForm(f => ({ ...f, name: e.target.value }))} placeholder="Alkatrész neve..." />
@@ -1181,14 +1182,14 @@ export function WorkOrderDetail({ workOrderId, profile, onClose }: Props) {
 
       {/* Edit modal */}
       {editModal && (
-        <div className="fixed inset-0 z-[60] bg-black/50 flex items-center justify-center p-4" onClick={() => setEditModal(false)}>
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
+        <div className="fixed inset-0 z-[60] bg-black/50 flex items-end sm:items-center justify-center sm:p-4" onClick={() => setEditModal(false)}>
+          <div className="bg-white rounded-t-2xl sm:rounded-2xl shadow-2xl w-full sm:max-w-2xl max-h-[92vh] sm:max-h-[90vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
             <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
               <h2 className="font-bold text-[#0B1E3D] text-base">✏️ Munkalap szerkesztése – {wo?.order_number || ''}</h2>
               <button onClick={() => setEditModal(false)} className="p-1 text-[#5a6a80] hover:text-[#0B1E3D]"><X size={18} /></button>
             </div>
             <div className="p-5">
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <FormGroup>
                   <FormLabel>Ügyfél *</FormLabel>
                   <Select value={editForm.customer_id || ''} onChange={e => setEditForm((f: any) => ({ ...f, customer_id: e.target.value, vehicle_id: '' }))}>
@@ -1274,6 +1275,7 @@ export function WorkOrderDetail({ workOrderId, profile, onClose }: Props) {
           </div>
         </div>
       )}
+    </div>
     </div>
   )
 }

@@ -18,7 +18,6 @@
   --shadow-lg: 0 4px 24px rgba(11,30,61,0.13);
   --radius: 10px;
   --radius-lg: 14px;
-  /* Safe area insets for notch/home bar */
   --safe-top: env(safe-area-inset-top, 0px);
   --safe-bottom: env(safe-area-inset-bottom, 0px);
   --safe-left: env(safe-area-inset-left, 0px);
@@ -28,7 +27,6 @@
 * { box-sizing: border-box; }
 
 html {
-  /* Prevent text size adjustment on orientation change */
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
 }
@@ -39,63 +37,177 @@ body {
   font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
   font-size: 14px;
   line-height: 1.5;
-  /* Prevent elastic bounce on iOS for main body */
   overscroll-behavior: none;
 }
 
 ::-webkit-scrollbar { width: 5px; height: 5px; }
 ::-webkit-scrollbar-thumb { background: rgba(11,30,61,0.15); border-radius: 10px; }
 
-/* ── Touch optimization ─────────────────────────────────────── */
+/* ── Touch optimization ────────────────────────────────────── */
 
-/* Minimum 44×44 touch targets */
-button, a, [role="button"] {
-  touch-action: manipulation;
-}
+button, a, [role="button"] { touch-action: manipulation; }
 
-/* Prevent double-tap zoom on buttons */
 button {
   touch-action: manipulation;
   -webkit-tap-highlight-color: transparent;
 }
 
-/* Remove iOS input zoom (prevent zoom on focus if font-size < 16px) */
+/* Prevent iOS input zoom (font-size must be ≥16px on mobile) */
 input, select, textarea {
   font-size: 16px !important;
   -webkit-tap-highlight-color: transparent;
 }
-
-/* But keep visual size for desktop */
 @media (min-width: 768px) {
-  input, select, textarea {
-    font-size: 13px !important;
-  }
+  input, select, textarea { font-size: 13px !important; }
 }
 
-/* Scrollable containers on touch */
+/* ── Scrollable containers ─────────────────────────────────── */
 .touch-scroll {
   -webkit-overflow-scrolling: touch;
   overflow-y: auto;
+}
+
+/* ── Responsive page content ───────────────────────────────── */
+
+/* Main content area: tighter padding on phone, comfortable on desktop */
+.page-content {
+  padding: 12px;
+  max-width: 100%;
+}
+@media (min-width: 640px) {
+  .page-content { padding: 16px; }
+}
+@media (min-width: 1024px) {
+  .page-content { padding: 24px; max-width: 1400px; margin: 0 auto; }
+}
+
+/* ── Responsive tables ─────────────────────────────────────── */
+
+/* Wrap any .resp-table in a scrollable container on mobile */
+.resp-table-wrap {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.resp-table-wrap table {
+  min-width: 560px;
+}
+
+/* ── Responsive grid helpers ───────────────────────────────── */
+
+/* 2-col on tablet+, 1-col on phone */
+.grid-responsive-2 {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+@media (min-width: 640px) {
+  .grid-responsive-2 { grid-template-columns: 1fr 1fr; gap: 16px; }
+}
+
+/* 3-col on desktop, 2-col on tablet, 1-col on phone */
+.grid-responsive-3 {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+@media (min-width: 640px) {
+  .grid-responsive-3 { grid-template-columns: 1fr 1fr; }
+}
+@media (min-width: 1024px) {
+  .grid-responsive-3 { grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+}
+
+/* ── Responsive form rows ──────────────────────────────────── */
+
+/* Form grids: stacked on mobile, side-by-side on tablet+ */
+.form-row-2 {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+@media (min-width: 560px) {
+  .form-row-2 { grid-template-columns: 1fr 1fr; }
+}
+
+.form-row-3 {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+@media (min-width: 560px) {
+  .form-row-3 { grid-template-columns: 1fr 1fr; }
+}
+@media (min-width: 900px) {
+  .form-row-3 { grid-template-columns: 1fr 1fr 1fr; }
+}
+
+/* ── WorkOrderDetail overlay ───────────────────────────────── */
+
+/* The WO detail is a right-side panel on desktop, full-screen on mobile */
+.wo-detail-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  align-items: stretch;
+  justify-content: flex-end;
+  background: rgba(11,30,61,0.35);
+  backdrop-filter: blur(2px);
+}
+.wo-detail-panel {
+  width: 100%;
+  background: white;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+@media (min-width: 768px) {
+  .wo-detail-panel {
+    width: 580px;
+    box-shadow: -4px 0 24px rgba(11,30,61,0.15);
+  }
+}
+@media (min-width: 1200px) {
+  .wo-detail-panel {
+    width: 680px;
+  }
+}
+
+/* ── Notification dropdown ─────────────────────────────────── */
+@media (max-width: 479px) {
+  .notif-dropdown {
+    position: fixed !important;
+    right: 8px !important;
+    left: 8px !important;
+    width: auto !important;
+    top: 56px !important;
+  }
 }
 
 /* ── Animations ─────────────────────────────────────────────── */
 
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(4px); }
-  to { opacity: 1; transform: translateY(0); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 @keyframes slideUp {
   from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(32px); }
+  to   { opacity: 1; transform: translateX(0); }
 }
 @keyframes spin { to { transform: rotate(360deg); } }
 @keyframes pulse-dot { 0%,100% { opacity:1; } 50% { opacity:0.4; } }
 
-.animate-fade-in { animation: fadeIn 0.2s ease; }
-.animate-slide-up { animation: slideUp 0.25s ease; }
-.pulse-dot { animation: pulse-dot 2s infinite; }
+.animate-fade-in    { animation: fadeIn 0.2s ease; }
+.animate-slide-up   { animation: slideUp 0.25s ease; }
+.animate-slide-right { animation: slideInRight 0.22s ease; }
+.pulse-dot          { animation: pulse-dot 2s infinite; }
 
-/* ── Mobile safe areas ──────────────────────────────────────── */
+/* ── Safe areas ──────────────────────────────────────────────── */
 
 .pb-safe { padding-bottom: max(1.25rem, var(--safe-bottom)); }
 .pt-safe { padding-top: max(0px, var(--safe-top)); }
@@ -106,7 +218,7 @@ input, select, textarea {
   padding-bottom: max(12px, var(--safe-bottom));
 }
 
-/* ── Card swipe feedback ────────────────────────────────────── */
+/* ── Card swipe feedback ─────────────────────────────────────── */
 .card-touchable {
   transition: transform 0.1s ease, box-shadow 0.1s ease;
 }
@@ -115,28 +227,44 @@ input, select, textarea {
   box-shadow: 0 1px 4px rgba(11,30,61,0.08);
 }
 
-/* ── Big action button (Karl's mobile) ──────────────────────── */
+/* ── Big action button (Karl mobile) ─────────────────────────── */
 .btn-mobile-action {
-  min-height: 56px;
-  min-width: 56px;
-  border-radius: 16px;
-  font-size: 15px;
+  min-height: 48px;
+  border-radius: 14px;
+  font-size: 14px;
   font-weight: 600;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
-  padding: 0 24px;
+  padding: 0 20px;
   touch-action: manipulation;
   -webkit-tap-highlight-color: transparent;
   transition: opacity 0.15s, transform 0.1s;
+}
+@media (min-width: 640px) {
+  .btn-mobile-action {
+    min-height: 44px;
+    font-size: 13px;
+  }
 }
 .btn-mobile-action:active {
   opacity: 0.85;
   transform: scale(0.97);
 }
 
-/* ── iPad split view ────────────────────────────────────────── */
+/* ── Status badge ────────────────────────────────────────────── */
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* ── iPad split view ─────────────────────────────────────────── */
 @media (min-width: 1024px) {
   .ipad-split-left {
     width: 340px;
@@ -150,3 +278,10 @@ input, select, textarea {
     overflow-y: auto;
   }
 }
+
+/* ── Hide scrollbar (tabs etc.) ──────────────────────────────── */
+.scrollbar-hide {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.scrollbar-hide::-webkit-scrollbar { display: none; }

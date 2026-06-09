@@ -98,7 +98,7 @@ export function Topbar({ title, onMenuClick, onRefresh, onNewItem, newItemLabel,
           </button>
 
           {open && (
-            <div className="absolute right-0 top-full mt-1 w-80 bg-white rounded-xl shadow-xl border border-gray-100 z-50 overflow-hidden">
+            <div className="notif-dropdown absolute right-0 top-full mt-1 w-80 bg-white rounded-xl shadow-xl border border-gray-100 z-50 overflow-hidden">
               <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100">
                 <span className="font-semibold text-[#0B1E3D] text-sm">Értesítések</span>
                 {unreadCount > 0 && (

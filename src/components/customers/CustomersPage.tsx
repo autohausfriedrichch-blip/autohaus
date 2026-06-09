@@ -199,7 +199,7 @@ export function CustomersPage({ refreshKey, onNavigate }: { refreshKey: number; 
           </>
         }
       >
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <FormGroup className="col-span-2">
             <FormLabel>Teljes név *</FormLabel>
             <Input defaultValue={form.full_name || ''} onBlur={e => setForm(f => ({ ...f, full_name: e.target.value }))} placeholder="Kovács János" key={`name-${editCustomer?.id}`} />
