@@ -14,17 +14,16 @@ ALTER TABLE work_order_tasks ADD COLUMN IF NOT EXISTS notes_extra TEXT;
 ALTER TABLE work_order_tasks ADD COLUMN IF NOT EXISTS task_number TEXT;
 
 -- Fix 2: work_order_timeline does not exist — create it as alias for work_order_events
--- so existing code that inserts into work_order_timeline continues to work
 CREATE TABLE IF NOT EXISTS work_order_timeline (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  work_order_id UUID NOT NULL REFERENCES work_orders(id) ON DELETE CASCADE,
-  event_type TEXT NOT NULL DEFAULT 'info',
-  title TEXT NOT NULL,
+  id          UUID        PRIMARY KEY DEFAULT gen_random_uuid(),
+  work_order_id UUID      NOT NULL REFERENCES work_orders(id) ON DELETE CASCADE,
+  event_type  TEXT        NOT NULL DEFAULT 'info',
+  title       TEXT        NOT NULL,
   description TEXT,
-  user_name TEXT,
-  phase TEXT,
-  metadata JSONB DEFAULT '{}',
-  created_at TIMESTAMPTZ DEFAULT NOW()
+  user_name   TEXT,
+  phase       TEXT,
+  metadata    JSONB       DEFAULT '{}',
+  created_at  TIMESTAMPTZ DEFAULT NOW()
 );
 ALTER TABLE work_order_timeline DISABLE ROW LEVEL SECURITY;
 CREATE INDEX IF NOT EXISTS idx_wo_timeline ON work_order_timeline(work_order_id, created_at);
