@@ -211,7 +211,7 @@ async function syncRepairStatus(supabase: any, workOrderId: string) {
     .not('status', 'in', '(done,cancelled)')
   if ((remaining || []).length === 0) {
     await supabase.from('work_orders').update({ repair_status: 'done' }).eq('id', workOrderId)
-    await supabase.from('work_order_timeline').insert({
+    await supabase.from('work_order_events').insert({
       work_order_id: workOrderId,
       event_type: 'repair_done',
       title: 'Minden feladat teljesítve – Javítás kész',
@@ -360,7 +360,9 @@ export function WorkOrderDetail({ workOrderId, profile, onClose, onNewQuote }: P
       health,
       last_activity_at: new Date().toISOString(),
     }).eq('id', workOrderId)
-    await logEvent('status_change', `${phaseLabel}: ${value}`, undefined, phaseKey)
+    const phaseDef = PHASE_DEFS.find(p => p.key === phaseKey)
+    const valueLabel = phaseDef ? ((phaseDef.labels as unknown) as Record<string, string>)[value] || value : value
+    await logEvent('status_change', `${phaseLabel}: ${valueLabel}`, undefined, phaseKey)
     setOpenPhaseDropdown(null)
     load()
     toast('Fázis frissítve')
@@ -461,7 +463,7 @@ export function WorkOrderDetail({ workOrderId, profile, onClose, onNewQuote }: P
       assigned_name: newTaskForm.assigned_name || null,
       sort_order: tasks.length,
     })
-    await logEvent('note_added', `Feladat hozzáadva: ${newTaskForm.title}`)
+    await logEvent('task_created', `Feladat hozzáadva: ${newTaskForm.title}`, undefined, 'repair')
     setNewTaskForm({ open: false, title: '', assigned_name: '' })
     load()
     toast('Feladat hozzáadva')
@@ -1014,7 +1016,12 @@ export function WorkOrderDetail({ workOrderId, profile, onClose, onNewQuote }: P
                   </>
                 )
               })()}
-              {tasks.length === 0 && <div className="text-[#8fa0b5] text-sm py-4 text-center">Nincs feladat</div>}
+              {tasks.length === 0 && (
+                <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 text-center">
+                  <div className="text-amber-600 font-semibold text-[13px] mb-1">Nincs szolgáltatásból generált feladat</div>
+                  <div className="text-amber-500 text-[12px]">Adj hozzá szolgáltatásokat a munkalaphoz, hogy feladatok generálódjanak Karl számára.</div>
+                </div>
+              )}
               {!newTaskForm.open ? (
                 <button onClick={() => setNewTaskForm(f => ({ ...f, open: true }))}
                   className="flex items-center gap-2 text-[13px] text-[#C9A84C] font-semibold hover:text-[#0B1E3D]">

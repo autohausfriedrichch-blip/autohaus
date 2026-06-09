@@ -146,6 +146,16 @@ export function WorkOrdersPage({ refreshKey, onRefresh, profile, onNewQuote }: {
       return
     }
 
+    // Timeline: work order created
+    await supabase.from('work_order_events').insert({
+      work_order_id: woData.id,
+      event_type: 'created',
+      title: 'Munkalap létrehozva',
+      user_name: 'Barbara',
+      phase: 'general',
+      metadata: { service_count: selectedSvcs.length },
+    })
+
     if (selectedSvcs.length > 0 && woData?.id) {
       const mechanic = mechanics.find(m => m.id === form.mechanic_id)
       const taskInserts = selectedSvcs.map((svc, idx) => ({
@@ -168,10 +178,23 @@ export function WorkOrdersPage({ refreshKey, onRefresh, profile, onNewQuote }: {
         notes_extra: svc.description || '',
       }))
       const { error: taskErr } = await supabase.from('work_order_tasks').insert(taskInserts)
-      if (taskErr) toast(`Feladat hiba: ${taskErr.message}`, 'error')
+      if (taskErr) {
+        toast(`Feladat hiba: ${taskErr.message}`, 'error')
+      } else {
+        // Timeline: one event per generated task
+        const taskEvents = selectedSvcs.map(svc => ({
+          work_order_id: woData.id,
+          event_type: 'task_created',
+          title: `Feladat generálva: ${svc.technician_task || svc.name}`,
+          user_name: 'Rendszer',
+          phase: 'repair',
+          metadata: { service_id: svc.id, service_name: svc.name },
+        }))
+        await supabase.from('work_order_events').insert(taskEvents)
+      }
     }
 
-    toast(`Munkalap létrehozva${selectedSvcs.length ? ` – ${selectedSvcs.length} feladat hozzáadva` : ''}`)
+    toast(`Munkalap létrehozva${selectedSvcs.length ? ` – ${selectedSvcs.length} feladat generálva` : ''}`)
     setModalOpen(false)
     load()
     setSaving(false)
