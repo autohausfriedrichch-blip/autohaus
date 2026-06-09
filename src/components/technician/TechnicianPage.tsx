@@ -629,24 +629,59 @@ export default function TechnicianPage({
               {garageOrders.length === 0 ? (
                 <EmptyState icon={<Car size={28} />} message="Nincs autó a garázsban" />
               ) : (
-                <Card>
-                  <div className="space-y-2">
-                    {garageOrders.map(order => (
-                      <div key={order.id} className="flex items-center gap-3 py-2 border-b border-[rgba(11,30,61,0.06)] last:border-0">
-                        <PlateBadge plate={order.vehicle?.license_plate ?? '—'} />
-                        <div className="flex-1 min-w-0">
-                          <div className="text-[13px] font-semibold text-[#0B1E3D] truncate">
-                            {order.vehicle?.make} {order.vehicle?.model}
+                <div className="space-y-2">
+                  {garageOrders.map(order => {
+                    const isActive = ACTIVE_STATUSES.includes(order.status)
+                    const canStart = !['in_repair', 'quality_check', 'ready', 'checkout_ready', 'delivered', 'closed'].includes(order.status)
+                    return (
+                      <Card key={order.id} className="p-0 overflow-hidden">
+                        <div className="flex items-center gap-3 px-4 py-3">
+                          <PlateBadge plate={order.vehicle?.license_plate ?? '—'} />
+                          <div className="flex-1 min-w-0">
+                            <div className="text-[13px] font-semibold text-[#0B1E3D] truncate">
+                              {order.vehicle?.make} {order.vehicle?.model}
+                            </div>
+                            <div className="text-[11px] text-[#5a6a80] truncate">
+                              {order.customer?.full_name}
+                            </div>
                           </div>
-                          <div className="text-[11px] text-[#5a6a80] truncate">
-                            {order.customer?.full_name}
-                          </div>
+                          <StatusBadge status={order.status} />
                         </div>
-                        <StatusBadge status={order.status} />
-                      </div>
-                    ))}
-                  </div>
-                </Card>
+                        {/* Action buttons */}
+                        <div className="flex gap-2 px-4 pb-3">
+                          {canStart && (
+                            <button
+                              className="btn-mobile-action bg-[#0B1E3D] text-white flex-1 text-[12px]"
+                              disabled={statusChanging === order.id}
+                              onClick={() => changeOrderStatus(order.id, 'in_repair')}
+                            >
+                              <Play size={14} />
+                              {statusChanging === order.id ? 'Indítás...' : 'Munka elkezdése'}
+                            </button>
+                          )}
+                          {isActive && (
+                            <button
+                              className="btn-mobile-action bg-[#C9A84C] text-[#0B1E3D] font-bold flex-1 text-[12px]"
+                              disabled={statusChanging === order.id}
+                              onClick={() => changeOrderStatus(order.id, 'quality_check')}
+                            >
+                              <CheckCircle size={14} />
+                              Munka kész!
+                            </button>
+                          )}
+                          {onOpenWorkOrder && (
+                            <button
+                              className="btn-mobile-action bg-[#F4F5F7] text-[#0B1E3D] border border-[rgba(11,30,61,0.12)] text-[12px] px-3"
+                              onClick={() => onOpenWorkOrder(order.id)}
+                            >
+                              <ListChecks size={14} />
+                            </button>
+                          )}
+                        </div>
+                      </Card>
+                    )
+                  })}
+                </div>
               )}
             </section>
 
