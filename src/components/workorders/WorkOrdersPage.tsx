@@ -7,7 +7,7 @@ import { Input, FormGroup, FormLabel, Select, Textarea } from '@/components/ui/f
 import { StatusBadge } from '@/components/ui/badge'
 import { useToast } from '@/components/ui/toast'
 import { DocumentActions } from '@/components/documents/DocumentActions'
-import { Plus, Search, ExternalLink, CheckSquare, Square } from 'lucide-react'
+import { Plus, Search, ExternalLink, CheckSquare, Square, Edit2 } from 'lucide-react'
 import type { WorkOrder } from '@/lib/types'
 import { formatCurrency, formatDate, STATUS_LABELS } from '@/lib/utils'
 import { WorkOrderDetail } from '@/components/workorders/WorkOrderDetail'
@@ -38,6 +38,7 @@ export function WorkOrdersPage({ refreshKey, profile }: { refreshKey: number; on
   const [saving, setSaving] = useState(false)
   const [services, setServices] = useState<any[]>([])
   const [selectedServiceIds, setSelectedServiceIds] = useState<string[]>([])
+  const [editOrder, setEditOrder] = useState<WorkOrder | null>(null)
   const { toast } = useToast()
   const supabase = createClient()
   const isMechanic = profile?.role === 'mechanic'
@@ -78,6 +79,14 @@ export function WorkOrdersPage({ refreshKey, profile }: { refreshKey: number; on
     const autoMechanic = mechanics.length === 1 ? mechanics[0].id : undefined
     setForm({ status: 'new_booking', is_mobile: false, payment_status: 'pending', parts_cost: 0, labor_cost: 0, total_amount: 0, mechanic_id: autoMechanic })
     setSelectedServiceIds([])
+    setEditOrder(null)
+    setModalOpen(true)
+  }
+
+  const openEdit = (o: WorkOrder) => {
+    setEditOrder(o)
+    setForm({ ...o })
+    setSelectedServiceIds([])
     setModalOpen(true)
   }
 
@@ -114,6 +123,16 @@ export function WorkOrdersPage({ refreshKey, profile }: { refreshKey: number; on
       customer_notes: form.customer_notes || null,
       payment_status: form.payment_status || 'pending',
     }
+    if (editOrder) {
+      const { error } = await supabase.from('work_orders').update(payload).eq('id', editOrder.id)
+      if (error) { toast(`Hiba: ${error.message}`, 'error'); setSaving(false); return }
+      toast('Munkalap frissítve')
+      setModalOpen(false)
+      load()
+      setSaving(false)
+      return
+    }
+
     const { data: woData, error } = await supabase.from('work_orders').insert(payload).select('id').single()
     if (error) {
       toast(`Hiba: ${error.message}`, 'error')
@@ -210,6 +229,12 @@ export function WorkOrdersPage({ refreshKey, profile }: { refreshKey: number; on
                 )}
                 <StatusBadge status={o.status} />
                 {o.is_mobile && <span className="text-[10px] bg-purple-100 text-purple-700 px-2 py-0.5 rounded-full font-semibold hidden sm:inline">MOBIL</span>}
+                {!isMechanic && (
+                  <button onClick={() => openEdit(o)}
+                    className="flex items-center gap-1 text-[11px] font-semibold text-[#5a6a80] hover:text-[#0B1E3D] px-2 py-1 border border-[rgba(11,30,61,0.18)] rounded hover:border-[#0B1E3D] transition-colors">
+                    <Edit2 size={12} /> Szerkesztés
+                  </button>
+                )}
                 <button onClick={() => setDetailOrderId(o.id)}
                   className="flex items-center gap-1 text-[11px] font-semibold text-[#C9A84C] hover:text-[#0B1E3D] ml-1 px-2 py-1 border border-[#C9A84C] rounded hover:border-[#0B1E3D] transition-colors">
                   <ExternalLink size={12} /> Megnyitás
@@ -263,8 +288,8 @@ export function WorkOrdersPage({ refreshKey, profile }: { refreshKey: number; on
         />
       )}
 
-      <Modal open={modalOpen} onClose={() => setModalOpen(false)} title="Új Munkalap" className="max-w-2xl"
-        footer={<><Button variant="secondary" onClick={() => setModalOpen(false)}>Mégse</Button><Button variant="primary" onClick={handleSave} disabled={saving}>{saving ? 'Mentés...' : 'Létrehozás'}</Button></>}>
+      <Modal open={modalOpen} onClose={() => setModalOpen(false)} title={editOrder ? `Munkalap szerkesztése – ${editOrder.order_number || ''}` : 'Új Munkalap'} className="max-w-2xl"
+        footer={<><Button variant="secondary" onClick={() => setModalOpen(false)}>Mégse</Button><Button variant="primary" onClick={handleSave} disabled={saving}>{saving ? 'Mentés...' : editOrder ? 'Frissítés' : 'Létrehozás'}</Button></>}>
         <div className="grid grid-cols-2 gap-3">
           <FormGroup>
             <FormLabel>Ügyfél *</FormLabel>
@@ -280,7 +305,7 @@ export function WorkOrdersPage({ refreshKey, profile }: { refreshKey: number; on
               {filteredVehicles.map(v => <option key={v.id} value={v.id}>{v.make} {v.model} – {v.license_plate}</option>)}
             </Select>
           </FormGroup>
-          <FormGroup className="col-span-2">
+          {!editOrder && <FormGroup className="col-span-2">
             <FormLabel>
               Elvégzendő szolgáltatások
               {selectedServiceIds.length > 0 && <span className="ml-2 text-[#C9A84C] font-bold">{selectedServiceIds.length} kiválasztva</span>}
@@ -317,7 +342,7 @@ export function WorkOrdersPage({ refreshKey, profile }: { refreshKey: number; on
                 ))}
               </div>
             )}
-          </FormGroup>
+          </FormGroup>}
           <FormGroup>
             <FormLabel>Státusz</FormLabel>
             <Select value={form.status || 'new_booking'} onChange={e => setForm(f => ({ ...f, status: e.target.value as any }))}>
