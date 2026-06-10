@@ -3,88 +3,70 @@ import { NextRequest } from 'next/server'
 
 const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
 
-const SYSTEM_PROMPT = `Te az Autohaus Friedrich svájci autószerviz AI asszisztense vagy.
-A szerviz prémium svájci autószerviz, ahol kiváló minőségű ügyfélkommunikációt végzünk.
-
-Feladataid:
-- Professzionális ügyfélüzenetek írása (WhatsApp, email, SMS)
-- Technikus megjegyzések átírása ügyfélbarát szöveggé
-- Többnyelvű kommunikáció (de, hu, en)
-
-Stílus:
-- Svájci/német üzleti stílus: udvarias, precíz, rövid
-- Magyar: formális, de barátságos
-- Angol: professional, clean
-- Mindig: "Autohaus Friedrich" aláírás
-- Emojis csak WhatsApp esetén, mértékkel
-- Soha ne találj ki adatokat (pl. CHF összegek, dátumok) — csak a megadott kontextust használd
-
-Formátum: Csak magát az üzenetet add vissza, semmi más magyarázat.`
+const SYSTEM_PROMPT = `Te az Autohaus Friedrich svájci autószerelő műhely AI asszisztense vagy.
+Segítesz professzionális ügyfélkommunikációban: emailek, WhatsApp üzenetek, foglalás visszaigazolások.
+Stílusod: udvarias, precíz, svájci professzionalizmus. Alapértelmezetten magyar nyelven válaszolsz,
+de ha a kérésben más nyelv szerepel (DE/FR/EN), azon a nyelven.
+Soha nem adsz ki belső műszaki vagy pénzügyi adatokat. Max 300 szó per üzenet.`
 
 export async function POST(req: NextRequest) {
-  const { mode, lang, msgType, context, techInput } = await req.json()
+  try {
+    const body = await req.json()
+    const { mode, context } = body
 
-  let userPrompt = ''
+    let userPrompt = ''
 
-  if (mode === 'compose') {
-    const typeLabels: Record<string, string> = {
-      whatsapp_reply: 'WhatsApp válasz',
-      email_reply: 'formális email válasz',
-      appointment_confirm: 'időpont visszaigazolás',
-      quote_cover: 'árajánlat kísérő levél',
-      status_update: 'státuszfrissítés',
-      review_request: 'Google Review kérés',
-      complaint_reply: 'reklamáció válasz',
-      followup: 'utánkövetés',
+    if (mode === 'compose') {
+      const { messageType, language, customerName, vehiclePlate, details } = context
+      userPrompt = `Írj egy ${messageType} típusú üzenetet ${language} nyelven.
+Ügyfél: ${customerName || 'Tisztelt Ügyfelünk'}
+Rendszám: ${vehiclePlate || '–'}
+Részletek: ${details || 'Nincs megadva'}
+Formátum: csak a kész üzenet szövege, bevezetés nélkül.`
+    } else if (mode === 'technician') {
+      const { technical } = context
+      userPrompt = `Fordítsd le ezt a műszaki szöveget ügyfélbarát, közérthető magyar nyelvre:
+"${technical}"
+Ne használj szakkifejezéseket. Max 3 mondat.`
+    } else if (mode === 'followup') {
+      const { customerName, lastVisit, vehicle, services } = context
+      userPrompt = `Írj egy barátságos utókövetési üzenetet WhatsApp-ra.
+Ügyfél: ${customerName}
+Utolsó látogatás: ${lastVisit}
+Jármű: ${vehicle}
+Elvégzett munkák: ${services}
+Legyen személyes, max 5 sor.`
+    } else {
+      userPrompt = context?.prompt || 'Szia!'
     }
-    const langLabels: Record<string, string> = { de: 'németül', hu: 'magyarul', en: 'angolul' }
 
-    userPrompt = `Írj egy ${typeLabels[msgType] || msgType} üzenetet ${langLabels[lang] || lang}.
-${context ? `\nKontextus / részletek:\n${context}` : '\nNincs extra kontextus, írj általánosan.'}
+    const stream = await client.messages.create({
+      model: 'claude-haiku-4-5-20251001',
+      max_tokens: 600,
+      system: SYSTEM_PROMPT,
+      messages: [{ role: 'user', content: userPrompt }],
+      stream: true,
+    })
 
-Az üzenet stílusa legyen professzionális, ${msgType === 'whatsapp_reply' ? 'közvetlen és barátságos (WhatsApp)' : 'formális'}.`
-  } else if (mode === 'technician') {
-    userPrompt = `Alakítsd át ezt a technikus megjegyzést ügyfélbarát, érthető szöveggé magyarul.
-A szöveg legyen: rövid (2-3 mondat), érthető (nem szakmai), bizalomkeltő, és indokolja a szükséges munkát.
-
-Technikus megjegyzés: "${techInput}"`
-  } else if (mode === 'followup') {
-    userPrompt = `Írj egy rövid, személyes utánkövetés üzenetet ${lang === 'de' ? 'németül' : lang === 'en' ? 'angolul' : 'magyarul'}.
-Kontextus: ${context}
-Stílus: barátságos, nem tolakodó, egy konkrét cselekvésre ösztönző.`
-  }
-
-  const encoder = new TextEncoder()
-
-  const stream = new ReadableStream({
-    async start(controller) {
-      try {
-        const response = await client.messages.create({
-          model: 'claude-haiku-4-5-20251001',
-          max_tokens: 600,
-          system: SYSTEM_PROMPT,
-          messages: [{ role: 'user', content: userPrompt }],
-          stream: true,
-        })
-
-        for await (const event of response) {
-          if (event.type === 'content_block_delta' && event.delta.type === 'text_delta') {
-            controller.enqueue(encoder.encode(event.delta.text))
+    const encoder = new TextEncoder()
+    const readable = new ReadableStream({
+      async start(controller) {
+        for await (const chunk of stream) {
+          if (chunk.type === 'content_block_delta' && chunk.delta.type === 'text_delta') {
+            controller.enqueue(encoder.encode(chunk.delta.text))
           }
         }
-      } catch (err: any) {
-        controller.enqueue(encoder.encode(`\n[Hiba: ${err.message}]`))
-      } finally {
         controller.close()
-      }
-    },
-  })
+      },
+    })
 
-  return new Response(stream, {
-    headers: {
-      'Content-Type': 'text/plain; charset=utf-8',
-      'Transfer-Encoding': 'chunked',
-      'Cache-Control': 'no-cache',
-    },
-  })
+    return new Response(readable, {
+      headers: { 'Content-Type': 'text/plain; charset=utf-8' },
+    })
+  } catch (err: any) {
+    return new Response(JSON.stringify({ error: err.message }), {
+      status: 500,
+      headers: { 'Content-Type': 'application/json' },
+    })
+  }
 }

@@ -35,7 +35,7 @@ import { CEODashboardPage } from '@/components/dashboard/CEODashboardPage'
 import { RegistrationScanPage } from '@/components/registration/RegistrationScanPage'
 import { InventoryPage } from '@/components/inventory/InventoryPage'
 import { QualityControlPage } from '@/components/quality-control/QualityControlPage'
-import AIAssistantPage from '@/components/ai-assistant/AIAssistantPage'
+import { AIAssistantPage } from '@/components/ai-assistant/AIAssistantPage'
 import { MobileBottomNav } from '@/components/layout/MobileBottomNav'
 import { WorkOrderDetail } from '@/components/workorders/WorkOrderDetail'
 import { CalendarPage } from '@/components/calendar/CalendarPage'
@@ -170,7 +170,8 @@ function AdminApp() {
       case 'workorders':  return <WorkOrdersPage {...props} profile={profile} onNewQuote={navigateToNewQuote} />
       case 'bookings':    return <BookingsPage {...props} />
       case 'quotes':      return <QuotesPage {...props} autoOpenNew={openNewQuote} onAutoOpenConsumed={() => setOpenNewQuote(false)} />
-      case 'communication': return <CommunicationPage {...props} />
+      case 'communication':
+      case 'reviews':       return <CommunicationPage {...props} />
       case 'services':    return <ServicesPage {...props} />
       case 'reports':     return <ReportsPage {...props} />
       case 'checkin':     return <CheckInPage {...props} />

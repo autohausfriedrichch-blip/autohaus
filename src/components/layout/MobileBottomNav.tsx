@@ -1,5 +1,5 @@
 'use client'
-import { Hammer, MapPin, Package, Camera, LayoutDashboard } from 'lucide-react'
+import { Hammer, MapPin, Package, Camera, LayoutDashboard, ClipboardList, CheckSquare } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 interface MobileBottomNavProps {
@@ -11,18 +11,18 @@ interface MobileBottomNavProps {
 
 // Karl's mechanic bottom nav
 const MECHANIC_TABS = [
-  { id: 'technician', label: 'Munkáim', icon: Hammer },
-  { id: 'route_planner', label: 'Útvonal', icon: MapPin },
-  { id: 'photos', label: 'Fotók', icon: Camera },
-  { id: 'parts', label: 'Alkatrész', icon: Package, badge: 'parts' },
+  { id: 'technician',   label: 'Munkáim',   icon: Hammer },
+  { id: 'workorders',   label: 'Munkalapok', icon: ClipboardList, badge: 'open' },
+  { id: 'checkin',      label: 'Check-In',  icon: CheckSquare },
+  { id: 'parts',        label: 'Alkatrész', icon: Package, badge: 'parts' },
 ]
 
 // Admin/Barbara tabs
 const ADMIN_TABS = [
-  { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
-  { id: 'workorders', label: 'Munkák', icon: Hammer, badge: 'open' },
-  { id: 'checkin', label: 'Check-In', icon: Camera },
-  { id: 'customers', label: 'Ügyfelek', icon: Package },
+  { id: 'dashboard',   label: 'Dashboard', icon: LayoutDashboard },
+  { id: 'workorders',  label: 'Munkák',    icon: Hammer, badge: 'open' },
+  { id: 'checkin',     label: 'Check-In',  icon: Camera },
+  { id: 'customers',   label: 'Ügyfelek',  icon: Package },
 ]
 
 export function MobileBottomNav({ activePage, onNavigate, role, badges = {} }: MobileBottomNavProps) {

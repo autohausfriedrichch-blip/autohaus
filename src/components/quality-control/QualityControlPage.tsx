@@ -1,534 +1,254 @@
 'use client'
-import { useState, useEffect, useCallback } from 'react'
-import { CheckCircle, Clock, AlertTriangle, XCircle, ClipboardList, LayoutDashboard, FileText, Settings, X, ChevronRight, RefreshCw } from 'lucide-react'
+import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
+import { Button } from '@/components/ui/button'
+import { useToast } from '@/components/ui/toast'
+import { CheckSquare, Circle, AlertCircle, CheckCircle, Save, ThumbsUp, ChevronDown, ChevronRight } from 'lucide-react'
+import type { Profile } from '@/lib/types'
 
-type QCStatus = 'pending' | 'in_progress' | 'needs_fix' | 'approved' | 'ready'
-
-interface ChecklistItem {
-  id: string
-  label: string
-  required: boolean
-  type: 'check' | 'toggle'
+interface Props {
+  profile?: Profile | null
+  refreshKey?: number
+  onRefresh?: () => void
 }
 
-interface WorkOrderQC {
-  id: string
-  order_number: string
-  plate: string
-  customer: string
-  service_type: string
-  status: QCStatus
-  technician: string
-  wo_status: string
-  checkedItems: string[]
-  toggleValues: Record<string, boolean>
-  notes: string
-  qc_id?: string
-  approved_by?: string
-  approved_at?: string
-  updated_at?: string
-}
-
-const UNIVERSAL_CHECKLIST: ChecklistItem[] = [
-  { id: 'work_verified',   label: 'Elvégzett munka ellenőrizve',           required: true,  type: 'check' },
-  { id: 'torque',          label: 'Minden csavar / kerékcsavar nyomatékolva', required: true, type: 'check' },
-  { id: 'fluids',          label: 'Folyadékszintek ellenőrizve',            required: true,  type: 'check' },
-  { id: 'fault_codes',     label: 'Hibakódok ellenőrizve',                  required: true,  type: 'check' },
-  { id: 'test_drive_needed', label: 'Próbaút szükséges?',                   required: false, type: 'toggle' },
-  { id: 'test_drive_done', label: 'Próbaút elvégezve',                      required: false, type: 'check' },
-  { id: 'photos_uploaded', label: 'Fotók feltöltve',                        required: true,  type: 'check' },
-  { id: 'checkout_photos', label: 'Check-out fotók elkészültek',            required: true,  type: 'check' },
-  { id: 'customer_note',   label: 'Ügyfélnek látható megjegyzés megírva',   required: true,  type: 'check' },
-  { id: 'invoice_ok',      label: 'Számla / árajánlat rendben',             required: true,  type: 'check' },
-  { id: 'payment_status',  label: 'Fizetési státusz ellenőrizve',           required: true,  type: 'check' },
-  { id: 'next_service',    label: 'Következő ajánlott szerviz rögzítve',    required: true,  type: 'check' },
-  { id: 'google_review',   label: 'Google review kérés előkészítve',        required: false, type: 'check' },
+const QC_ITEMS = [
+  { id: 'oil_level', label: 'Motorolaj szint', group: 'Motorterér' },
+  { id: 'coolant', label: 'Hűtővíz szint', group: 'Motorterér' },
+  { id: 'brake_fluid', label: 'Fékfolyadék szint', group: 'Motorterér' },
+  { id: 'washer_fluid', label: 'Szélvédőmosó folyadék', group: 'Motorterér' },
+  { id: 'brake_pads', label: 'Fékbetétek állapota', group: 'Fék & Gumi' },
+  { id: 'brake_discs', label: 'Féktárcsák állapota', group: 'Fék & Gumi' },
+  { id: 'tire_pressure', label: 'Gumiabroncs nyomás', group: 'Fék & Gumi' },
+  { id: 'tire_tread', label: 'Gumiabroncs profil', group: 'Fék & Gumi' },
+  { id: 'lights_front', label: 'Első lámpák', group: 'Elektromos' },
+  { id: 'lights_rear', label: 'Hátsó lámpák', group: 'Elektromos' },
+  { id: 'battery', label: 'Akkumulátor feszültség', group: 'Elektromos' },
+  { id: 'wipers', label: 'Ablaktörlők', group: 'Elektromos' },
+  { id: 'exterior', label: 'Karosszéria állapot', group: 'Esztétika' },
+  { id: 'interior', label: 'Belső tér tisztasága', group: 'Esztétika' },
+  { id: 'documents', label: 'Forgalmi engedély megvan', group: 'Adminisztráció' },
+  { id: 'customer_items', label: 'Ügyfél holmija visszarakva', group: 'Adminisztráció' },
 ]
 
-const STATUS_CONFIG: Record<QCStatus, { label: string; color: string; bg: string; icon: React.ReactNode }> = {
-  pending:     { label: 'Várakozik',          color: 'text-gray-600',    bg: 'bg-gray-100',    icon: <Clock className="w-3.5 h-3.5" /> },
-  in_progress: { label: 'Folyamatban',        color: 'text-blue-600',    bg: 'bg-blue-50',     icon: <ClipboardList className="w-3.5 h-3.5" /> },
-  needs_fix:   { label: 'Javítás szükséges',  color: 'text-[#C9384C]',   bg: 'bg-red-50',      icon: <XCircle className="w-3.5 h-3.5" /> },
-  approved:    { label: 'Jóváhagyva',         color: 'text-emerald-600', bg: 'bg-emerald-50',  icon: <CheckCircle className="w-3.5 h-3.5" /> },
-  ready:       { label: 'Átadásra kész',      color: 'text-[#C9A84C]',   bg: 'bg-amber-50',    icon: <AlertTriangle className="w-3.5 h-3.5" /> },
-}
+const GROUPS = [...new Set(QC_ITEMS.map(i => i.group))]
 
-function StatusBadge({ status }: { status: QCStatus }) {
-  const cfg = STATUS_CONFIG[status]
-  return (
-    <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium ${cfg.color} ${cfg.bg}`}>
-      {cfg.icon}{cfg.label}
-    </span>
-  )
-}
-
-const SERVICE_TEMPLATES: Record<string, string[]> = {
-  'Mobil gumiszerviz': ['torque', 'photos_uploaded', 'checkout_photos', 'customer_note', 'next_service'],
-  'Autószerviz':       ['work_verified', 'torque', 'fluids', 'fault_codes', 'photos_uploaded', 'customer_note', 'invoice_ok', 'next_service'],
-  'Detailing':         ['photos_uploaded', 'checkout_photos', 'customer_note', 'invoice_ok'],
-  'Pickup & Delivery': ['checkout_photos', 'customer_note', 'invoice_ok', 'payment_status'],
-}
-
-export function QualityControlPage({ refreshKey, onRefresh }: { refreshKey: number; onRefresh: () => void }) {
+export function QualityControlPage({ profile }: Props) {
   const supabase = createClient()
-  const [activeTab, setActiveTab] = useState<'overview' | 'checks' | 'templates' | 'settings'>('overview')
-  const [orders, setOrders] = useState<WorkOrderQC[]>([])
-  const [loading, setLoading] = useState(true)
-  const [selectedOrder, setSelectedOrder] = useState<WorkOrderQC | null>(null)
-  const [panelOpen, setPanelOpen] = useState(false)
+  const { toast } = useToast()
+  const [workOrders, setWorkOrders] = useState<any[]>([])
+  const [selectedWO, setSelectedWO] = useState<any>(null)
+  const [qcData, setQcData] = useState<Record<string, 'ok' | 'nok' | 'na'>>({})
+  const [notes, setNotes] = useState('')
   const [saving, setSaving] = useState(false)
-  const [settingsNotify, setSettingsNotify] = useState(true)
-  const [settingsAutoReady, setSettingsAutoReady] = useState(false)
-  const [settingsRequirePhoto, setSettingsRequirePhoto] = useState(true)
+  const [expandedGroups, setExpandedGroups] = useState<Set<string>>(new Set(GROUPS))
+  const [loading, setLoading] = useState(true)
 
-  const loadOrders = useCallback(async () => {
-    setLoading(true)
-    const { data: wos } = await supabase
+  useEffect(() => { loadWorkOrders() }, [])
+
+  async function loadWorkOrders() {
+    const { data } = await supabase
       .from('work_orders')
-      .select(`
-        id, order_number, status, service_type,
-        customers(full_name),
-        vehicles(plate),
-        profiles(full_name)
-      `)
-      .not('status', 'in', '(delivered,closed,new_booking)')
+      .select(`id, order_number, status, vehicle:vehicles(make, model, license_plate), mechanic:profiles!work_orders_mechanic_id_fkey(full_name)`)
+      .in('status', ['in_progress', 'waiting_parts', 'ready'])
       .order('created_at', { ascending: false })
-      .limit(50)
-
-    if (!wos) { setLoading(false); return }
-
-    const ids = wos.map(w => w.id)
-    const { data: qcs } = ids.length > 0
-      ? await supabase.from('qc_checks').select('*').in('work_order_id', ids)
-      : { data: [] }
-
-    const qcMap: Record<string, any> = {}
-    for (const q of (qcs || [])) qcMap[q.work_order_id] = q
-
-    const mapped: WorkOrderQC[] = wos.map(w => {
-      const qc = qcMap[w.id]
-      return {
-        id: w.id,
-        order_number: w.order_number || w.id.slice(0, 8),
-        plate: (w.vehicles as any)?.plate || '—',
-        customer: (w.customers as any)?.full_name || '—',
-        service_type: w.service_type || 'Autószerviz',
-        wo_status: w.status,
-        technician: (w.profiles as any)?.full_name || '—',
-        status: qc?.status || 'pending',
-        checkedItems: qc?.checked_items || [],
-        toggleValues: qc?.toggle_values || {},
-        notes: qc?.notes || '',
-        qc_id: qc?.id,
-        approved_by: qc?.approved_by,
-        approved_at: qc?.approved_at,
-        updated_at: qc?.updated_at,
-      }
-    })
-
-    setOrders(mapped)
+    setWorkOrders(data || [])
     setLoading(false)
-  }, [refreshKey])
-
-  useEffect(() => { loadOrders() }, [loadOrders])
-
-  const stats = {
-    pending:     orders.filter(o => o.status === 'pending').length,
-    in_progress: orders.filter(o => o.status === 'in_progress').length,
-    needs_fix:   orders.filter(o => o.status === 'needs_fix').length,
-    approved:    orders.filter(o => o.status === 'approved' || o.status === 'ready').length,
-  }
-  const total = orders.length
-  const passRate = total > 0 ? Math.round(stats.approved / total * 100) : 0
-
-  const recentActivity = [...orders]
-    .filter(o => o.updated_at && o.status !== 'pending')
-    .sort((a, b) => (b.updated_at || '').localeCompare(a.updated_at || ''))
-    .slice(0, 5)
-
-  function openPanel(order: WorkOrderQC) {
-    setSelectedOrder({ ...order })
-    setPanelOpen(true)
   }
 
-  function closePanel() {
-    setPanelOpen(false)
-    setSelectedOrder(null)
-  }
-
-  function toggleItem(itemId: string) {
-    if (!selectedOrder) return
-    const checked = selectedOrder.checkedItems.includes(itemId)
-    setSelectedOrder({
-      ...selectedOrder,
-      checkedItems: checked
-        ? selectedOrder.checkedItems.filter(i => i !== itemId)
-        : [...selectedOrder.checkedItems, itemId],
-      status: 'in_progress',
-    })
-  }
-
-  function toggleSwitch(itemId: string) {
-    if (!selectedOrder) return
-    setSelectedOrder({
-      ...selectedOrder,
-      toggleValues: { ...selectedOrder.toggleValues, [itemId]: !selectedOrder.toggleValues[itemId] },
-    })
-  }
-
-  async function saveQC(status: QCStatus) {
-    if (!selectedOrder) return
-    setSaving(true)
-
-    const payload = {
-      work_order_id: selectedOrder.id,
-      status,
-      checked_items: selectedOrder.checkedItems,
-      toggle_values: selectedOrder.toggleValues,
-      notes: selectedOrder.notes,
-      approved_by: status === 'approved' || status === 'ready' ? 'Barbara' : null,
-      approved_at: status === 'approved' || status === 'ready' ? new Date().toISOString() : null,
-    }
-
-    if (selectedOrder.qc_id) {
-      await supabase.from('qc_checks').update(payload).eq('id', selectedOrder.qc_id)
+  async function selectWO(wo: any) {
+    setSelectedWO(wo)
+    const { data } = await supabase.from('qc_checks').select('*').eq('work_order_id', wo.id).single()
+    if (data) {
+      setQcData(data.toggle_values || {})
+      setNotes(data.notes || '')
     } else {
-      await supabase.from('qc_checks').insert(payload)
-    }
-
-    // If approved, also update work_order status to quality_check or ready
-    if (status === 'approved' || status === 'ready') {
-      await supabase.from('work_orders').update({ status: 'ready' }).eq('id', selectedOrder.id)
-    }
-
-    setSaving(false)
-    await loadOrders()
-    if (status === 'approved' || status === 'needs_fix' || status === 'ready') closePanel()
-    else {
-      // Re-open with fresh data
-      const fresh = orders.find(o => o.id === selectedOrder.id)
-      if (fresh) setSelectedOrder({ ...fresh, status, checkedItems: selectedOrder.checkedItems, toggleValues: selectedOrder.toggleValues })
+      setQcData({})
+      setNotes('')
     }
   }
 
-  const requiredItems = UNIVERSAL_CHECKLIST.filter(i => i.required)
-  const checkedRequired = selectedOrder ? requiredItems.filter(i => selectedOrder.checkedItems.includes(i.id)).length : 0
-  const totalChecked = selectedOrder ? selectedOrder.checkedItems.length : 0
-  const allRequiredDone = checkedRequired === requiredItems.length
-  const progress = Math.round(totalChecked / UNIVERSAL_CHECKLIST.length * 100)
+  function setCheck(id: string, val: 'ok' | 'nok' | 'na') {
+    setQcData(prev => ({ ...prev, [id]: val }))
+  }
 
-  const tabs = [
-    { id: 'overview',  label: 'Áttekintés',   icon: <LayoutDashboard className="w-4 h-4" /> },
-    { id: 'checks',    label: 'Ellenőrzések', icon: <ClipboardList className="w-4 h-4" /> },
-    { id: 'templates', label: 'Sablonok',     icon: <FileText className="w-4 h-4" /> },
-    { id: 'settings',  label: 'Beállítások',  icon: <Settings className="w-4 h-4" /> },
-  ] as const
+  async function save(approve = false) {
+    if (!selectedWO) return
+    setSaving(true)
+    const checkedItems = Object.entries(qcData).filter(([, v]) => v === 'ok').map(([k]) => k)
+    const payload: any = {
+      work_order_id: selectedWO.id,
+      toggle_values: qcData,
+      checked_items: checkedItems,
+      notes,
+      status: approve ? 'approved' : 'in_progress',
+      updated_at: new Date().toISOString(),
+    }
+    if (approve) {
+      payload.approved_by = profile?.full_name || 'QC'
+      payload.approved_at = new Date().toISOString()
+    }
+
+    const { error } = await supabase.from('qc_checks').upsert(payload, { onConflict: 'work_order_id' })
+    if (error) { toast(`Hiba: ${error.message}`, 'error'); setSaving(false); return }
+
+    if (approve) {
+      await supabase.from('work_orders').update({ status: 'ready' }).eq('id', selectedWO.id)
+      toast('QC jóváhagyva – státusz: Kész')
+      loadWorkOrders()
+    } else {
+      toast('QC mentve')
+    }
+    setSaving(false)
+  }
+
+  const totalChecked = Object.keys(qcData).length
+  const okCount = Object.values(qcData).filter(v => v === 'ok').length
+  const nokCount = Object.values(qcData).filter(v => v === 'nok').length
+  const progress = QC_ITEMS.length > 0 ? Math.round((totalChecked / QC_ITEMS.length) * 100) : 0
 
   return (
-    <div className="space-y-5">
-      <div className="flex items-center justify-between">
+    <div className="p-6">
+      <div className="flex items-center gap-3 mb-6">
+        <CheckSquare size={22} className="text-[#C9A84C]" />
         <div>
-          <h1 className="text-xl font-bold text-[#0B1E3D]">Minőségellenőrzés</h1>
-          <p className="text-sm text-gray-500 mt-0.5">Munkák QC státuszának kezelése és jóváhagyása</p>
+          <h1 className="text-xl font-semibold text-[#1a2942]">Minőségellenőrzés</h1>
+          <p className="text-sm text-[#5a6a80]">QC ellenőrzés átadás előtt</p>
         </div>
-        <button onClick={() => { loadOrders(); onRefresh() }} className="p-2 text-[#5a6a80] hover:text-[#0B1E3D] rounded-lg hover:bg-gray-100">
-          <RefreshCw size={16} className={loading ? 'animate-spin' : ''} />
-        </button>
       </div>
 
-      <div className="flex gap-1 bg-gray-100 p-1 rounded-xl w-fit overflow-x-auto">
-        {tabs.map(tab => (
-          <button
-            key={tab.id}
-            onClick={() => setActiveTab(tab.id)}
-            className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${
-              activeTab === tab.id ? 'bg-white text-[#0B1E3D] shadow-sm' : 'text-gray-500 hover:text-gray-700'
-            }`}
-          >
-            {tab.icon}{tab.label}
-          </button>
-        ))}
-      </div>
-
-      {/* ── Overview ── */}
-      {activeTab === 'overview' && (
-        <div className="space-y-5">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {[
-              { label: 'Várakozik',          value: stats.pending,     color: 'text-gray-600',    icon: <Clock className="w-5 h-5 text-gray-400" /> },
-              { label: 'Folyamatban',         value: stats.in_progress, color: 'text-blue-600',    icon: <ClipboardList className="w-5 h-5 text-blue-400" /> },
-              { label: 'Javítás szükséges',   value: stats.needs_fix,   color: 'text-[#C9384C]',   icon: <XCircle className="w-5 h-5 text-[#C9384C]" /> },
-              { label: 'Jóváhagyva / Kész',  value: stats.approved,    color: 'text-emerald-600', icon: <CheckCircle className="w-5 h-5 text-emerald-400" /> },
-            ].map(s => (
-              <div key={s.label} className="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
-                <div className="flex items-start justify-between">
-                  <div>
-                    <p className="text-sm text-gray-500">{s.label}</p>
-                    <p className={`text-3xl font-bold mt-1 ${s.color}`}>{s.value}</p>
-                  </div>
-                  <div className="p-2.5 rounded-lg bg-gray-50">{s.icon}</div>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          <div className="grid md:grid-cols-2 gap-5">
-            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
-              <h2 className="text-base font-semibold text-[#0B1E3D] mb-4">QC Átmenési arány</h2>
-              <div className="flex items-end gap-4">
-                <span className="text-5xl font-bold text-[#C9A84C]">{passRate}%</span>
-                <span className="text-sm text-gray-500 mb-2">az összes QC jóváhagyva / kész</span>
-              </div>
-              <div className="mt-4 bg-gray-100 rounded-full h-2.5">
-                <div className="bg-[#C9A84C] h-2.5 rounded-full transition-all" style={{ width: `${passRate}%` }} />
-              </div>
-              <p className="text-xs text-gray-400 mt-2">{total} aktív munkalap összesen</p>
-            </div>
-
-            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
-              <h2 className="text-base font-semibold text-[#0B1E3D] mb-4">Legutóbbi aktivitás</h2>
-              {loading ? (
-                <div className="flex items-center justify-center h-24 text-gray-400 text-sm">Betöltés...</div>
-              ) : recentActivity.length === 0 ? (
-                <div className="flex items-center justify-center h-24 text-gray-400 text-sm">Nincs aktivitás</div>
-              ) : (
-                <div className="space-y-3">
-                  {recentActivity.map(item => (
-                    <div key={item.id} className="flex items-center justify-between">
-                      <div>
-                        <span className="text-sm font-medium text-[#0B1E3D]">{item.plate}</span>
-                        <span className="text-sm text-gray-400 ml-2">— {item.customer}</span>
-                      </div>
-                      <div className="flex items-center gap-3">
-                        <StatusBadge status={item.status} />
-                        {item.updated_at && (
-                          <span className="text-xs text-gray-400">
-                            {new Date(item.updated_at).toLocaleTimeString('hu-HU', { hour: '2-digit', minute: '2-digit' })}
-                          </span>
-                        )}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* ── Checks ── */}
-      {activeTab === 'checks' && (
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-          <div className="px-5 py-4 border-b border-gray-100 flex items-center justify-between">
-            <h2 className="text-base font-semibold text-[#0B1E3D]">Aktív ellenőrzések</h2>
-            <span className="text-sm text-gray-400">{orders.length} munkamegrendelés</span>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Work order list */}
+        <div className="bg-white rounded-xl border border-[#e8ecf0] overflow-hidden">
+          <div className="px-4 py-3 border-b border-[#e8ecf0] bg-[#f8f9fb]">
+            <h2 className="text-sm font-semibold text-[#1a2942]">Aktív munkalapok</h2>
           </div>
           {loading ? (
-            <div className="flex items-center justify-center h-32 text-gray-400 text-sm">Betöltés...</div>
-          ) : orders.length === 0 ? (
-            <div className="flex flex-col items-center justify-center h-32 text-gray-400 gap-2">
-              <CheckCircle className="w-8 h-8 text-gray-200" />
-              <p className="text-sm">Nincs aktív QC ellenőrzés</p>
-            </div>
+            <div className="p-4 text-sm text-[#9aabb8]">Betöltés...</div>
+          ) : workOrders.length === 0 ? (
+            <div className="p-4 text-sm text-[#9aabb8]">Nincs aktív munkalap</div>
           ) : (
-            <div className="divide-y divide-gray-50">
-              {orders.map(order => (
-                <div key={order.id} className="px-5 py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-gray-50 transition-colors">
-                  <div className="flex items-center gap-4">
-                    <div className="w-10 h-10 rounded-lg bg-[#0B1E3D] text-white flex items-center justify-center text-xs font-bold shrink-0">
-                      {order.plate.split(' ')[0]}
-                    </div>
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <span className="font-semibold text-[#0B1E3D] text-sm">{order.plate}</span>
-                        <span className="text-sm text-gray-400">— {order.customer}</span>
-                      </div>
-                      <div className="flex items-center gap-2 mt-0.5">
-                        <span className="text-xs text-gray-400">{order.service_type}</span>
-                        <span className="text-gray-200">·</span>
-                        <span className="text-xs text-gray-400">{order.technician}</span>
-                        <span className="text-gray-200">·</span>
-                        <span className="text-xs text-gray-400">{order.order_number}</span>
-                      </div>
-                    </div>
+            <div className="divide-y divide-[#f0f2f5]">
+              {workOrders.map(wo => (
+                <button key={wo.id} onClick={() => selectWO(wo)}
+                  className={`w-full text-left px-4 py-3 hover:bg-[#f8f9fb] transition-colors ${selectedWO?.id === wo.id ? 'bg-[rgba(201,168,76,0.08)] border-l-2 border-l-[#C9A84C]' : ''}`}>
+                  <div className="text-[13px] font-medium text-[#1a2942]">{wo.order_number}</div>
+                  <div className="text-[11px] text-[#5a6a80] mt-0.5">
+                    {wo.vehicle?.make} {wo.vehicle?.model} · {wo.vehicle?.license_plate}
                   </div>
-                  <div className="flex items-center gap-3">
-                    <StatusBadge status={order.status} />
-                    <button
-                      onClick={() => openPanel(order)}
-                      className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg transition-colors ${
-                        order.status === 'approved' || order.status === 'ready'
-                          ? 'bg-gray-100 hover:bg-gray-200 text-gray-600'
-                          : 'bg-[#C9A84C] hover:bg-[#b8963e] text-white'
-                      }`}
-                    >
-                      {order.status === 'approved' || order.status === 'ready' ? 'Megtekintés' : 'QC indítása'}
-                      <ChevronRight className="w-3.5 h-3.5" />
-                    </button>
-                  </div>
-                </div>
+                  <span className={`inline-block mt-1 text-[10px] px-2 py-0.5 rounded-full font-medium ${
+                    wo.status === 'ready' ? 'bg-green-100 text-green-700' :
+                    wo.status === 'in_progress' ? 'bg-blue-100 text-blue-700' :
+                    'bg-amber-100 text-amber-700'
+                  }`}>{wo.status}</span>
+                </button>
               ))}
             </div>
           )}
         </div>
-      )}
 
-      {/* ── Templates ── */}
-      {activeTab === 'templates' && (
-        <div className="grid md:grid-cols-2 gap-5">
-          {Object.entries(SERVICE_TEMPLATES).map(([service, items]) => (
-            <div key={service} className="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
-              <h3 className="text-base font-semibold text-[#0B1E3D] mb-3">{service}</h3>
-              <ul className="space-y-2">
-                {items.map(item => {
-                  const found = UNIVERSAL_CHECKLIST.find(c => c.id === item)
-                  const label = found ? found.label : item.replace(/_/g, ' ')
-                  return (
-                    <li key={item} className="flex items-center gap-2 text-sm text-gray-600">
-                      <CheckCircle className="w-4 h-4 text-[#C9A84C] shrink-0" />
-                      {label}
-                    </li>
-                  )
-                })}
-              </ul>
-              <div className="mt-4 pt-3 border-t border-gray-100">
-                <span className="text-xs text-gray-400">{items.length} ellenőrzési pont</span>
-              </div>
+        {/* QC checklist */}
+        <div className="lg:col-span-2">
+          {!selectedWO ? (
+            <div className="bg-white rounded-xl border border-[#e8ecf0] flex items-center justify-center h-64 text-[#9aabb8] text-sm">
+              Válassz ki egy munkalapot a bal oldali listából
             </div>
-          ))}
-        </div>
-      )}
+          ) : (
+            <div className="space-y-4">
+              {/* Header */}
+              <div className="bg-white rounded-xl border border-[#e8ecf0] p-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h3 className="font-semibold text-[#1a2942]">{selectedWO.order_number}</h3>
+                    <p className="text-sm text-[#5a6a80]">
+                      {selectedWO.vehicle?.make} {selectedWO.vehicle?.model} – {selectedWO.vehicle?.license_plate}
+                    </p>
+                  </div>
+                  <div className="text-right">
+                    <div className="text-[22px] font-bold text-[#1a2942]">{progress}%</div>
+                    <div className="text-[11px] text-[#5a6a80]">{okCount} OK / {nokCount} NOK</div>
+                  </div>
+                </div>
+                <div className="mt-3 bg-[#f0f2f5] rounded-full h-2">
+                  <div className="bg-[#C9A84C] h-2 rounded-full transition-all" style={{ width: `${progress}%` }} />
+                </div>
+              </div>
 
-      {/* ── Settings ── */}
-      {activeTab === 'settings' && (
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 max-w-lg space-y-6">
-          <h2 className="text-base font-semibold text-[#0B1E3D]">QC Beállítások</h2>
-          {[
-            { label: 'QC értesítések küldése', sub: 'Értesítés küldése a szerelőnek QC indításakor', value: settingsNotify, set: setSettingsNotify },
-            { label: 'Automatikus "Átadásra kész" státusz', sub: 'Minden elem jóváhagyása után automatikus státuszváltás', value: settingsAutoReady, set: setSettingsAutoReady },
-            { label: 'Fotók kötelezők', sub: 'QC nem zárható le fotók feltöltése nélkül', value: settingsRequirePhoto, set: setSettingsRequirePhoto },
-          ].map(({ label, sub, value, set }) => (
-            <div key={label} className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-[#0B1E3D]">{label}</p>
-                <p className="text-xs text-gray-400 mt-0.5">{sub}</p>
-              </div>
-              <button
-                onClick={() => set(!value)}
-                className={`relative w-11 h-6 rounded-full transition-colors ${value ? 'bg-[#C9A84C]' : 'bg-gray-200'}`}
-              >
-                <span className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform ${value ? 'translate-x-5' : 'translate-x-0'}`} />
-              </button>
-            </div>
-          ))}
-        </div>
-      )}
-
-      {/* ── Panel ── */}
-      {panelOpen && selectedOrder && (
-        <div className="fixed inset-0 z-50 flex">
-          <div className="flex-1 bg-black/40 backdrop-blur-sm" onClick={closePanel} />
-          <div className="w-full max-w-md bg-white shadow-2xl flex flex-col overflow-hidden">
-            <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100 bg-[#0B1E3D]">
-              <div>
-                <h2 className="text-base font-semibold text-white">{selectedOrder.plate}</h2>
-                <p className="text-xs text-gray-300 mt-0.5">{selectedOrder.customer} — {selectedOrder.service_type}</p>
-              </div>
-              <button onClick={closePanel} className="p-1.5 rounded-lg hover:bg-white/10 text-white transition-colors">
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-
-            <div className="px-5 py-3 border-b border-gray-100 bg-gray-50">
-              <div className="flex items-center justify-between mb-1.5">
-                <span className="text-xs text-gray-500">{totalChecked} / {UNIVERSAL_CHECKLIST.length} elvégezve</span>
-                <span className="text-xs font-semibold text-[#0B1E3D]">{progress}%</span>
-              </div>
-              <div className="bg-gray-200 rounded-full h-2">
-                <div className="bg-[#C9A84C] h-2 rounded-full transition-all" style={{ width: `${progress}%` }} />
-              </div>
-              <div className="flex items-center gap-2 mt-2">
-                <StatusBadge status={selectedOrder.status} />
-                {selectedOrder.approved_by && (
-                  <span className="text-xs text-gray-400">· {selectedOrder.approved_by}</span>
-                )}
-              </div>
-            </div>
-
-            <div className="flex-1 overflow-y-auto px-5 py-4 space-y-2">
-              {UNIVERSAL_CHECKLIST.map(item => {
-                const isChecked = selectedOrder.checkedItems.includes(item.id)
-                const toggleVal = selectedOrder.toggleValues[item.id]
-                if (item.type === 'toggle') {
-                  return (
-                    <div key={item.id} className="flex items-center justify-between p-3 rounded-lg border border-gray-100 bg-white hover:border-[#C9A84C]/40">
-                      <span className="text-sm text-gray-700">{item.label}</span>
-                      <button
-                        onClick={() => toggleSwitch(item.id)}
-                        className={`relative w-10 h-5 rounded-full transition-colors shrink-0 ${toggleVal ? 'bg-[#C9A84C]' : 'bg-gray-200'}`}
-                      >
-                        <span className={`absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full shadow transition-transform ${toggleVal ? 'translate-x-5' : 'translate-x-0'}`} />
-                      </button>
-                    </div>
-                  )
-                }
+              {/* Checklist by group */}
+              {GROUPS.map(group => {
+                const items = QC_ITEMS.filter(i => i.group === group)
+                const isExpanded = expandedGroups.has(group)
                 return (
-                  <label key={item.id} className={`flex items-center gap-3 p-3 rounded-lg border cursor-pointer transition-colors ${isChecked ? 'border-emerald-200 bg-emerald-50' : 'border-gray-100 bg-white hover:border-[#C9A84C]/40'}`}>
-                    <input type="checkbox" checked={isChecked} onChange={() => toggleItem(item.id)} className="w-4 h-4 accent-[#C9A84C] rounded shrink-0" />
-                    <span className={`text-sm flex-1 ${isChecked ? 'text-emerald-700 line-through' : 'text-gray-700'}`}>{item.label}</span>
-                    {item.required && !isChecked && <span className="text-[10px] text-gray-300 font-medium uppercase tracking-wide">kötelező</span>}
-                  </label>
+                  <div key={group} className="bg-white rounded-xl border border-[#e8ecf0] overflow-hidden">
+                    <button
+                      onClick={() => setExpandedGroups(prev => {
+                        const next = new Set(prev)
+                        next.has(group) ? next.delete(group) : next.add(group)
+                        return next
+                      })}
+                      className="w-full flex items-center justify-between px-4 py-3 bg-[#f8f9fb] text-sm font-medium text-[#1a2942] hover:bg-[#f0f2f5]"
+                    >
+                      <span>{group}</span>
+                      {isExpanded ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
+                    </button>
+                    {isExpanded && (
+                      <div className="divide-y divide-[#f0f2f5]">
+                        {items.map(item => {
+                          const val = qcData[item.id]
+                          return (
+                            <div key={item.id} className="flex items-center px-4 py-2.5 gap-3">
+                              <span className="flex-1 text-[13px] text-[#1a2942]">{item.label}</span>
+                              <div className="flex gap-1.5">
+                                {(['ok', 'nok', 'na'] as const).map(v => (
+                                  <button key={v} onClick={() => setCheck(item.id, v)}
+                                    className={`px-2.5 py-1 rounded-lg text-[11px] font-semibold border transition-all ${
+                                      val === v
+                                        ? v === 'ok' ? 'bg-green-500 text-white border-green-500'
+                                          : v === 'nok' ? 'bg-red-500 text-white border-red-500'
+                                          : 'bg-gray-400 text-white border-gray-400'
+                                        : 'border-[#e0e4e8] text-[#9aabb8] hover:border-[#1a2942]'
+                                    }`}>
+                                    {v.toUpperCase()}
+                                  </button>
+                                ))}
+                              </div>
+                            </div>
+                          )
+                        })}
+                      </div>
+                    )}
+                  </div>
                 )
               })}
 
-              <div className="pt-2">
-                <label className="block text-xs font-semibold text-[#5a6a80] uppercase tracking-wide mb-1.5">Megjegyzés (opcionális)</label>
-                <textarea
-                  value={selectedOrder.notes}
-                  onChange={e => setSelectedOrder({ ...selectedOrder, notes: e.target.value })}
-                  placeholder="QC megjegyzés a munkalaphoz..."
-                  rows={3}
-                  className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm text-[#0B1E3D] resize-none focus:outline-none focus:border-[#0B1E3D]"
-                />
+              {/* Notes */}
+              <div className="bg-white rounded-xl border border-[#e8ecf0] p-4">
+                <label className="text-[11px] font-medium text-[#5a6a80] uppercase tracking-wide mb-2 block">Megjegyzések</label>
+                <textarea value={notes} onChange={e => setNotes(e.target.value)}
+                  placeholder="QC megjegyzések, javítandó dolgok..."
+                  className="w-full border border-[#e0e4e8] rounded-lg px-3 py-2 text-[13px] text-[#1a2942] min-h-[80px] resize-none outline-none focus:border-[#C9A84C]" />
               </div>
-            </div>
 
-            <div className="px-5 py-4 border-t border-gray-100 space-y-2">
-              <div className="flex gap-2">
-                <button
-                  onClick={() => saveQC('approved')}
-                  disabled={!allRequiredDone || saving}
-                  className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-emerald-500 hover:bg-emerald-600 disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed text-white text-sm font-semibold rounded-lg transition-colors"
-                >
-                  {saving ? <RefreshCw className="w-4 h-4 animate-spin" /> : <CheckCircle className="w-4 h-4" />}
-                  Jóváhagyás
-                </button>
-                <button
-                  onClick={() => saveQC('needs_fix')}
-                  disabled={saving}
-                  className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-[#C9384C] hover:bg-[#b12f41] text-white text-sm font-semibold rounded-lg transition-colors disabled:opacity-60"
-                >
-                  <XCircle className="w-4 h-4" />
-                  Javítás szükséges
-                </button>
+              {/* Actions */}
+              <div className="flex gap-3">
+                <Button variant="secondary" onClick={() => save(false)} disabled={saving} className="flex-1">
+                  <Save size={14} /> Mentés folytatásra
+                </Button>
+                <Button variant="primary" onClick={() => save(true)} disabled={saving || nokCount > 0} className="flex-1">
+                  <ThumbsUp size={14} />
+                  {nokCount > 0 ? `${nokCount} NOK van` : 'QC Jóváhagyás'}
+                </Button>
               </div>
-              <button
-                onClick={() => saveQC('in_progress')}
-                disabled={saving}
-                className="w-full py-2 border border-gray-200 rounded-lg text-sm text-gray-500 hover:border-[#0B1E3D] hover:text-[#0B1E3D] transition-colors disabled:opacity-50"
-              >
-                Mentés folytatásra
-              </button>
-              {!allRequiredDone && (
-                <p className="text-xs text-center text-gray-400">
-                  Jóváhagyáshoz {requiredItems.length - checkedRequired} kötelező elem hiányzik
+              {nokCount > 0 && (
+                <p className="text-[11px] text-amber-600 text-center">
+                  <AlertCircle size={12} className="inline mr-1" />
+                  Jóváhagyáshoz javítsd ki a NOK tételeket, vagy állítsd N/A-ra
                 </p>
               )}
             </div>
-          </div>
+          )}
         </div>
-      )}
+      </div>
     </div>
   )
 }
