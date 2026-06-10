@@ -5,7 +5,8 @@ import { KpiCard } from './KpiCard'
 import { Card, CardTitle } from '@/components/ui/card'
 import { StatusBadge } from '@/components/ui/badge'
 import { formatCurrency, formatDate } from '@/lib/utils'
-import { Calendar, ClipboardList, Users, TrendingUp, Truck, FileText, AlertTriangle, Clock } from 'lucide-react'
+import { Calendar, ClipboardList, Users, TrendingUp, Truck, FileText, AlertTriangle, Clock, Shield } from 'lucide-react'
+import { SystemHealthWidget } from '@/components/system-health/SystemHealthWidget'
 import type { WorkOrder, Booking } from '@/lib/types'
 
 interface DashboardPageProps {
@@ -14,6 +15,11 @@ interface DashboardPageProps {
 }
 
 export function DashboardPage({ refreshKey, onNavigate }: DashboardPageProps) {
+  const [healthScore, setHealthScore] = useState<number | null>(null)
+  const [healthCheckedAt, setHealthCheckedAt] = useState<Date | null>(null)
+  const [healthErrors, setHealthErrors] = useState(0)
+  const [healthWarnings, setHealthWarnings] = useState(0)
+
   const [stats, setStats] = useState({
     todayBookings: 0,
     openWorkOrders: 0,
@@ -81,6 +87,26 @@ export function DashboardPage({ refreshKey, onNavigate }: DashboardPageProps) {
 
   return (
     <div className="animate-fade-in">
+      {/* System Health + Quick Actions */}
+      <div className="flex items-center gap-3 mb-4">
+        <div className="flex-1">
+          <SystemHealthWidget
+            score={healthScore}
+            checkedAt={healthCheckedAt}
+            errorCount={healthErrors}
+            warnCount={healthWarnings}
+            onRunCheck={() => onNavigate('system_health')}
+          />
+        </div>
+        <button
+          onClick={() => onNavigate('system_health')}
+          className="flex items-center gap-2 bg-[#0B1E3D] hover:bg-[#0d2347] text-white px-4 py-3 rounded-xl text-[13px] font-semibold transition-colors shrink-0 shadow-sm"
+        >
+          <Shield size={16} className="text-[#C9A84C]" />
+          🔍 Rendszer Ellenőrzés
+        </button>
+      </div>
+
       {/* KPIs */}
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 mb-4">
         <KpiCard label="Mai időpontok" value={stats.todayBookings} accent="gold" />

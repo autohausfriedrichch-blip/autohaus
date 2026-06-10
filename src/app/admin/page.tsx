@@ -42,10 +42,12 @@ import { CalendarPage } from '@/components/calendar/CalendarPage'
 import { DocumentsPage } from '@/components/documents/DocumentsPage'
 import { FamilyFleetPage } from '@/components/fleet/FamilyFleetPage'
 import { NotificationsPage } from '@/components/notifications/NotificationsPage'
+import { SystemHealthCheck } from '@/components/system-health/SystemHealthCheck'
 import type { Profile } from '@/lib/types'
 import { useRouter } from 'next/navigation'
 
 const PAGE_TITLES: Record<string, string> = {
+  system_health: '🔍 Rendszer Ellenőrzés',
   ceo_dashboard: 'CEO Operations Dashboard',
   registration_scan: 'Forgalmi beolvasás – OCR',
   vehicle_lifecycle: 'Jármű élettörténet',
@@ -202,6 +204,7 @@ function AdminApp() {
       case 'documents':          return <DocumentsPage {...props} />
       case 'family_fleet':       return <FamilyFleetPage {...props} />
       case 'notifications':      return <NotificationsPage {...props} onNavigate={(page, id) => { if (id) setOpenWorkOrderId(id); setActivePage(page) }} />
+      case 'system_health':      return <SystemHealthCheck profile={profile} onClose={() => setActivePage('dashboard')} />
       default: return (
         <div className="flex flex-col items-center justify-center h-64 text-[#5a6a80]">
           <p className="text-lg font-medium">{pageTitle}</p>
