@@ -36,6 +36,7 @@ import {
 import { TechnicianFlagModal } from '@/components/services/ServiceCalculator'
 import { WorkflowModal, type WFWorkOrder } from './WorkflowModal'
 import { uploadPhoto } from '@/lib/uploadPhoto'
+import { useKarlTracker } from '@/hooks/useKarlTracker'
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -749,6 +750,9 @@ export default function TechnicianPage({
   const supabase = createClient()
   const { toast } = useToast()
 
+  // GPS tracking – Karl pozíciója automatikusan megjelenik Barbara térképén
+  const { sharing: gpsSharingActive } = useKarlTracker(profile?.id, !!profile?.id)
+
   const [userId, setUserId] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
 
@@ -1090,6 +1094,11 @@ export default function TechnicianPage({
           <div className="flex items-center gap-1.5 bg-white/10 rounded-full px-3 py-1.5">
             <span className="text-[#C9A84C] font-bold text-[13px]">{allMyOrders.length}</span>
             <span className="text-white/70 text-[11px]">összes munkalap</span>
+          </div>
+          {/* GPS státusz */}
+          <div className={`flex items-center gap-1.5 rounded-full px-3 py-1.5 ${gpsSharingActive ? 'bg-green-500/20' : 'bg-white/10'}`}>
+            <span className={`w-2 h-2 rounded-full ${gpsSharingActive ? 'bg-green-400 animate-pulse' : 'bg-white/30'}`} />
+            <span className="text-white/70 text-[11px]">{gpsSharingActive ? 'GPS aktív' : 'GPS kikapcs.'}</span>
           </div>
           <div className={`flex items-center gap-1.5 rounded-full px-3 py-1.5 ${garageOrders.length > 0 ? 'bg-[#C9A84C]/20' : 'bg-white/10'}`}>
             <span className="font-bold text-[13px] text-[#C9A84C]">{garageOrders.length}</span>

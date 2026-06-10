@@ -7,9 +7,11 @@ import { Input, FormGroup, FormLabel, Select } from '@/components/ui/form'
 import { useToast } from '@/components/ui/toast'
 import {
   MapPin, ChevronUp, ChevronDown, Settings, Navigation,
-  Clock, TrendingUp, DollarSign, Download, RefreshCw, X,
+  Clock, TrendingUp, DollarSign, Download, RefreshCw, X, Map, Navigation2,
 } from 'lucide-react'
 import { formatCurrency } from '@/lib/utils'
+import { GoogleMap, type MapMarker } from '@/components/map/GoogleMap'
+import { useKarlPositionWatcher } from '@/hooks/useKarlTracker'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -85,6 +87,8 @@ export function RoutePlannerPage({
 }) {
   const supabase = createClient()
   const { toast } = useToast()
+  const karlPositions = useKarlPositionWatcher()
+  const [showMap, setShowMap] = useState(true)
 
   const todayStr = new Date().toISOString().split('T')[0]
   const [selectedDate, setSelectedDate] = useState(todayStr)
@@ -313,6 +317,61 @@ export function RoutePlannerPage({
             </div>
           </Card>
         ))}
+      </div>
+
+      {/* Google Maps Panel */}
+      <div className="bg-white rounded-xl border border-[#e8ecf0] overflow-hidden">
+        <div className="flex items-center justify-between px-4 py-3 border-b border-[#e8ecf0]">
+          <div className="flex items-center gap-2">
+            <Map size={15} className="text-[#C9A84C]" />
+            <span className="text-[13px] font-semibold text-[#1a2942]">Élő térkép</span>
+            {Object.keys(karlPositions).length > 0 && (
+              <span className="flex items-center gap-1 text-[11px] text-green-600 bg-green-50 px-2 py-0.5 rounded-full">
+                <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse inline-block" />
+                Karl aktív
+              </span>
+            )}
+          </div>
+          <button onClick={() => setShowMap(v => !v)} className="text-[11px] text-[#5a6a80] hover:text-[#1a2942]">
+            {showMap ? 'Elrejt' : 'Megjelenít'}
+          </button>
+        </div>
+        {showMap && (
+          <div className="p-3">
+            <GoogleMap
+              className="h-[420px]"
+              markers={[
+                // Autohaus bázis
+                { id: 'base', lat: 47.3769, lng: 8.5417, title: 'Autohaus Friedrich', type: 'base', info: 'Bázis' },
+                // Karl pozíciója
+                ...Object.entries(karlPositions).map(([id, pos]) => ({
+                  id: `karl-${id}`,
+                  lat: pos.lat,
+                  lng: pos.lng,
+                  title: pos.name || 'Karl',
+                  type: 'karl' as const,
+                  info: `${pos.name} • ${pos.speed ? Math.round(pos.speed * 3.6) + ' km/h' : 'álló'} • ${new Date(pos.updatedAt).toLocaleTimeString('hu-HU', { hour: '2-digit', minute: '2-digit' })}`,
+                })),
+                // Megállók
+                ...stops.filter(s => s.address).map((s, i) => ({
+                  id: s.id,
+                  lat: 47.3769 + (i * 0.02 - 0.04),
+                  lng: 8.5417 + (i * 0.015 - 0.03),
+                  title: s.customer_name,
+                  type: 'stop' as const,
+                  label: String(i + 1),
+                  info: `${s.customer_name}<br/>${s.address}${s.city ? ', ' + s.city : ''}<br/>${s.scheduled_time || ''}`,
+                })),
+              ]}
+              showRoute={stops.length > 1}
+            />
+            {Object.keys(karlPositions).length === 0 && (
+              <p className="text-[11px] text-[#9aabb8] text-center mt-2">
+                Karl GPS-e még nem aktív — amikor Karl a Technikus nézetbe lép, automatikusan bekapcsol a követés
+              </p>
+            )}
+          </div>
+        )}
       </div>
 
       {/* Travel cost settings panel */}
