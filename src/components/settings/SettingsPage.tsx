@@ -25,6 +25,7 @@ const TABS = [
   { id: 'review',        label: 'Google Review',     icon: Globe },
   { id: 'security',      label: 'Biztonság',         icon: Shield },
   { id: 'backup',        label: 'Backup & Export',   icon: Database },
+  { id: 'email',         label: 'Email / Gmail',     icon: Mail },
   { id: 'apis',          label: 'API kulcsok',        icon: Zap },
   { id: 'future',        label: 'Jövőbeni modulok',  icon: Database },
 ]
@@ -682,6 +683,10 @@ export function SettingsPage({ refreshKey }: { refreshKey: number; onRefresh: ()
           )}
 
           {/* ── API KEYS ── */}
+          {activeTab === 'email' && (
+            <EmailSettingsTab />
+          )}
+
           {activeTab === 'apis' && (
             <ApiKeysTab />
           )}
@@ -797,6 +802,114 @@ function ApiKeysTab() {
       <Button variant="primary" onClick={save} disabled={saving}>
         {saving ? 'Mentés...' : 'API kulcsok mentése'}
       </Button>
+    </div>
+  )
+}
+
+function EmailSettingsTab() {
+  const supabase = createClient()
+  const [account, setAccount] = useState<any>(null)
+  const [loading, setLoading] = useState(true)
+  const { toast } = useToast()
+
+  useEffect(() => {
+    supabase.from('email_accounts').select('*').eq('is_active', true).limit(1).single()
+      .then(({ data }: any) => { setAccount(data || null); setLoading(false) })
+  }, [])
+
+  const disconnect = async () => {
+    if (!account || !confirm('Lecsatlakoztatod a Gmail fiókot?')) return
+    await supabase.from('email_accounts').update({ is_active: false }).eq('id', account.id)
+    setAccount(null)
+    toast('Gmail fiók lecsatlakoztatva')
+  }
+
+  if (loading) return <div className="py-8 text-center text-[12px] text-[#5a6a80]">Betöltés...</div>
+
+  return (
+    <div className="space-y-6">
+      <SectionTitle>Gmail / Google Workspace kapcsolat</SectionTitle>
+
+      {account ? (
+        <div className="bg-green-50 border border-green-200 rounded-xl p-4">
+          <div className="flex items-start justify-between">
+            <div>
+              <div className="flex items-center gap-2 mb-1">
+                <div className="w-2.5 h-2.5 bg-green-500 rounded-full" />
+                <span className="text-[13px] font-semibold text-green-800">Csatlakoztatva</span>
+              </div>
+              <p className="text-[12px] text-green-700 font-medium">{account.email}</p>
+              <p className="text-[11px] text-green-600 mt-0.5">
+                Csatlakoztatva: {new Date(account.connected_at).toLocaleDateString('hu-HU')}
+              </p>
+            </div>
+            <button onClick={disconnect}
+              className="text-[11px] text-red-500 hover:text-red-700 border border-red-200 rounded-lg px-2 py-1">
+              Lecsatlakoztatás
+            </button>
+          </div>
+          <div className="mt-3 grid grid-cols-2 gap-2 text-[11px]">
+            {['Email küldés', 'Email fogadás', 'Gmail szinkron', 'OAuth2 biztonság'].map(f => (
+              <div key={f} className="flex items-center gap-1.5 text-green-700">
+                <div className="w-1.5 h-1.5 bg-green-500 rounded-full" />
+                {f}
+              </div>
+            ))}
+          </div>
+        </div>
+      ) : (
+        <div className="space-y-4">
+          <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 text-[12px] text-blue-800 space-y-1">
+            <p className="font-semibold">Gmail OAuth csatlakoztatás</p>
+            <p>Biztonságos OAuth 2.0 kapcsolat – nincs szükség jelszóra.</p>
+            <p>A rendszer olvasni és küldeni tudja az emaileket Barbara nevében.</p>
+          </div>
+
+          <a href="/api/auth/gmail"
+            className="flex items-center gap-3 bg-white border-2 border-[#e0e4e8] hover:border-[#C9A84C] rounded-xl px-4 py-3 w-fit transition-colors cursor-pointer">
+            <svg viewBox="0 0 24 24" width="20" height="20">
+              <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+              <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+              <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+              <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+            </svg>
+            <div>
+              <p className="text-[13px] font-semibold text-[#0B1E3D]">Gmail fiók csatlakoztatása</p>
+              <p className="text-[11px] text-[#5a6a80]">Biztonságos Google OAuth 2.0 bejelentkezés</p>
+            </div>
+          </a>
+
+          <div className="bg-amber-50 border border-amber-200 rounded-xl p-3 text-[11px] text-amber-700">
+            <p className="font-semibold mb-1">⚙️ Szükséges Vercel env változók:</p>
+            <code className="block bg-amber-100 rounded p-2 font-mono">
+              GOOGLE_CLIENT_ID=...<br/>
+              GOOGLE_CLIENT_SECRET=...<br/>
+              NEXT_PUBLIC_APP_URL=https://your-app.vercel.app
+            </code>
+            <p className="mt-1">Google Cloud Console → APIs → OAuth 2.0 Client → Web Application típus</p>
+          </div>
+        </div>
+      )}
+
+      <SectionTitle>Email beállítások</SectionTitle>
+      <div className="grid grid-cols-1 gap-3">
+        {[
+          { label: 'Automatikus ügyfél összekapcsolás', desc: 'Email cím alapján automatikusan köti az ügyfélhez', defaultOn: true },
+          { label: 'Inbox szinkronizálás', desc: 'Beérkező levelek szinkronizálása (30 perces ciklus)', defaultOn: true },
+          { label: 'Értesítés új emailnél', desc: 'Barbara értesítést kap új beérkező emailnél', defaultOn: true },
+          { label: 'PDF automatikus csatolás', desc: 'Árajánlat/számla küldésnél automatikus PDF melléklet', defaultOn: true },
+        ].map(opt => (
+          <div key={opt.label} className="flex items-center justify-between p-3 bg-[#f8fafc] border border-[#e0e4e8] rounded-xl">
+            <div>
+              <p className="text-[12px] font-medium text-[#0B1E3D]">{opt.label}</p>
+              <p className="text-[11px] text-[#5a6a80]">{opt.desc}</p>
+            </div>
+            <div className={`w-10 h-5 rounded-full ${opt.defaultOn ? 'bg-[#C9A84C]' : 'bg-gray-200'} relative`}>
+              <div className={`absolute top-0.5 w-4 h-4 bg-white rounded-full shadow transition-transform ${opt.defaultOn ? 'translate-x-5' : 'left-0.5'}`} />
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   )
 }

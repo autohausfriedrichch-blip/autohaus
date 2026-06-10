@@ -99,6 +99,7 @@ const ADMIN_NAV: NavGroup[] = [
     icon: MessageCircle,
     roles: ['super_admin', 'admin'],
     children: [
+      { id: 'email',         label: '📧 Email' },
       { id: 'communication', label: 'Üzenetek' },
       { id: 'reminders',     label: 'Emlékeztetők' },
       { id: 'reviews',       label: 'Review kérések' },
