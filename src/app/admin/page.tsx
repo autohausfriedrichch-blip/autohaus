@@ -44,6 +44,7 @@ import { FamilyFleetPage } from '@/components/fleet/FamilyFleetPage'
 import { NotificationsPage } from '@/components/notifications/NotificationsPage'
 import { SystemHealthCheck } from '@/components/system-health/SystemHealthCheck'
 import { EmailPage } from '@/components/email/EmailPage'
+import { MarketingPage } from '@/components/marketing/MarketingPage'
 import type { Profile } from '@/lib/types'
 import { useRouter } from 'next/navigation'
 
@@ -89,6 +90,7 @@ const PAGE_TITLES: Record<string, string> = {
   signatures: 'Digitális aláírások',
   notifications: 'Értesítések',
   email: '📧 Email',
+  marketing: '📣 Marketing',
 }
 
 function AdminApp() {
@@ -168,7 +170,7 @@ function AdminApp() {
   const renderPage = () => {
     const props = { refreshKey, onRefresh: () => setRefreshKey(k => k + 1), onNewQuote: navigateToNewQuote }
     switch (activePage) {
-      case 'dashboard':   return <DashboardPage {...props} onNavigate={(page, id) => { if (id) setOpenWorkOrderId(id); setActivePage(page) }} />
+      case 'dashboard':   return <DashboardPage {...props} onNavigate={(page: any, id: any) => { if (id) setOpenWorkOrderId(id); setActivePage(page) }} />
       case 'customers':   return <CustomersPage {...props} onNavigate={setActivePage} />
       case 'vehicles':    return <VehiclesPage {...props} />
       case 'workorders':  return <WorkOrdersPage {...props} profile={profile} onNewQuote={navigateToNewQuote} />
@@ -205,9 +207,10 @@ function AdminApp() {
       case 'calendar':           return <CalendarPage refreshKey={refreshKey} onRefresh={() => setRefreshKey(k => k + 1)} profile={profile} />
       case 'documents':          return <DocumentsPage {...props} />
       case 'family_fleet':       return <FamilyFleetPage {...props} />
-      case 'notifications':      return <NotificationsPage {...props} onNavigate={(page, id) => { if (id) setOpenWorkOrderId(id); setActivePage(page) }} />
+      case 'notifications':      return <NotificationsPage {...props} onNavigate={(page: any, id: any) => { if (id) setOpenWorkOrderId(id); setActivePage(page) }} />
       case 'system_health':      return <SystemHealthCheck profile={profile} onClose={() => setActivePage('dashboard')} />
       case 'email':              return <EmailPage profile={profile} refreshKey={refreshKey} />
+      case 'marketing':          return <MarketingPage profile={profile} refreshKey={refreshKey} onRefresh={() => setRefreshKey(k => k + 1)} />
       default: return (
         <div className="flex flex-col items-center justify-center h-64 text-[#5a6a80]">
           <p className="text-lg font-medium">{pageTitle}</p>
