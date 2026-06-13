@@ -144,7 +144,8 @@ export function TasksPage({ refreshKey, onRefresh, profile }: {
       case 'monthly':
       case 'procurement':
       case 'qc':
-        return (t.task_type || 'general') === filterKey
+        if (t.task_type === undefined || t.task_type === null) return filterKey === 'general'
+        return t.task_type === filterKey
       default: {
         const p = profiles.find(p => p.id === t.assigned_to)
         return (p?.full_name || '').toLowerCase().includes(filterKey)
@@ -248,7 +249,10 @@ export function TasksPage({ refreshKey, onRefresh, profile }: {
       {/* Type quick links */}
       <div className="grid grid-cols-4 sm:grid-cols-7 gap-2">
         {Object.entries(TASK_TYPES).map(([key, cfg]) => {
-          const count = activeTasks.filter(t => (t.task_type || 'general') === key).length
+          const count = activeTasks.filter(t => {
+            if (t.task_type === undefined || t.task_type === null) return key === 'general'
+            return t.task_type === key
+          }).length
           return (
             <button key={key} onClick={() => setFilterKey(key)}
               className={`${filterKey === key ? 'ring-2 ring-[#333333]' : ''} ${cfg.bg} rounded-lg p-2 text-center hover:opacity-80 transition-all`}>
