@@ -38,7 +38,7 @@ interface NavGroup {
 
 // ─── Admin navigation ─────────────────────────────────────────────────────────
 
-const ADMIN_SECTIONS: { label?: string; items: NavItem[]; groups?: NavGroup[] }[] = [
+const ADMIN_SECTIONS: { label?: string; roles?: string[]; items: NavItem[]; groups?: NavGroup[] }[] = [
   {
     items: [
       { id: 'dashboard',    label: 'Dashboard',   icon: LayoutDashboard },
