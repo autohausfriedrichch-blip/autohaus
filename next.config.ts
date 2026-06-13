@@ -12,9 +12,8 @@ const nextConfig: NextConfig = {
 export default withSentryConfig(nextConfig, {
   org: process.env.SENTRY_ORG,
   project: process.env.SENTRY_PROJECT,
-  silent: true,           // suppress CLI output during build
-  widenClientFileUpload: true,
-  hideSourceMaps: true,   // don't expose source maps to the browser
-  disableLogger: true,
-  automaticVercelMonitors: false,
+  silent: true,
+  sourcemaps: {
+    disable: true,
+  },
 })
