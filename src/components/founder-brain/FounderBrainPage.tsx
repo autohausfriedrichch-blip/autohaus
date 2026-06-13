@@ -345,16 +345,29 @@ export function FounderBrainPage({ profile, refreshKey, onRefresh }: Props) {
   const load = useCallback(async () => {
     if (!profile?.id) return
     setLoading(true)
+    const { data, error } = await supabase
+      .from('founder_ideas')
+      .select('*')
+      .eq('user_id', profile.id)
+      .order('created_at', { ascending: false })
+    if (error) {
+      showToast('Hiba: ' + error.message)
+    }
+    setIdeas(data || [])
+    setLoading(false)
+  }, [profile?.id])
+
+  useEffect(() => { load() }, [load, refreshKey])
+
+  const reload = async () => {
+    if (!profile?.id) return
     const { data } = await supabase
       .from('founder_ideas')
       .select('*')
       .eq('user_id', profile.id)
       .order('created_at', { ascending: false })
     setIdeas(data || [])
-    setLoading(false)
-  }, [profile?.id])
-
-  useEffect(() => { load() }, [load, refreshKey])
+  }
 
   const visible = ideas.filter(i => {
     if (i.archived !== showArchived) return false
@@ -381,12 +394,17 @@ export function FounderBrainPage({ profile, refreshKey, onRefresh }: Props) {
   const quickSave = async () => {
     if (!quickTitle.trim() || !profile?.id) return
     setQuickSaving(true)
-    await supabase.from('founder_ideas').insert({
+    const { error } = await supabase.from('founder_ideas').insert({
       user_id: profile.id, title: quickTitle.trim(),
       category: 'Egyéb', priority: 'Közepes', status: 'Ötlet',
     })
+    if (error) {
+      showToast('Hiba: ' + error.message)
+      setQuickSaving(false)
+      return
+    }
     setQuickTitle('')
-    await load()
+    await reload()
     showToast('Ötlet rögzítve!')
     setQuickSaving(false)
   }
@@ -394,14 +412,16 @@ export function FounderBrainPage({ profile, refreshKey, onRefresh }: Props) {
   const saveIdea = async (form: any) => {
     if (!profile?.id) return
     setSaving(true)
+    let error: any
     if (modalIdea?.id) {
-      await supabase.from('founder_ideas').update(form).eq('id', modalIdea.id)
+      ;({ error } = await supabase.from('founder_ideas').update(form).eq('id', modalIdea.id))
     } else {
-      await supabase.from('founder_ideas').insert({ ...form, user_id: profile.id })
+      ;({ error } = await supabase.from('founder_ideas').insert({ ...form, user_id: profile.id }))
     }
     setSaving(false)
+    if (error) { showToast('Hiba: ' + error.message); return }
     setModalIdea(null)
-    await load()
+    await reload()
     showToast(modalIdea?.id ? 'Ötlet frissítve' : 'Ötlet mentve!')
   }
 
@@ -409,14 +429,14 @@ export function FounderBrainPage({ profile, refreshKey, onRefresh }: Props) {
     if (!confirm('Biztosan törlöd ezt az ötletet?')) return
     await supabase.from('founder_ideas').delete().eq('id', id)
     setDetailIdea(null)
-    await load()
+    await reload()
     showToast('Ötlet törölve')
   }
 
   const archiveIdea = async (idea: any) => {
     await supabase.from('founder_ideas').update({ archived: !idea.archived }).eq('id', idea.id)
     setDetailIdea(null)
-    await load()
+    await reload()
     showToast(idea.archived ? 'Visszaállítva' : 'Archiválva')
   }
 
@@ -436,9 +456,8 @@ export function FounderBrainPage({ profile, refreshKey, onRefresh }: Props) {
         task_id: data.id,
         status: idea.status === 'Ötlet' ? 'Tervezett' : idea.status,
       }).eq('id', idea.id)
-      await load()
-      const updated = ideas.find(i => i.id === idea.id)
-      if (updated) setDetailIdea({ ...updated, task_id: data.id })
+      await reload()
+      setDetailIdea({ ...idea, task_id: data.id })
       showToast('Feladat sikeresen létrehozva!')
     }
     setConverting(false)
