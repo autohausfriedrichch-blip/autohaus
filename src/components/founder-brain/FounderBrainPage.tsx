@@ -443,15 +443,20 @@ export function FounderBrainPage({ profile, refreshKey, onRefresh }: Props) {
   const convertToTask = async (idea: any) => {
     if (!profile?.id) return
     setConverting(true)
+    const { data: { user } } = await supabase.auth.getUser()
     const { data, error } = await supabase.from('tasks').insert({
       title: idea.title,
       description: idea.description || idea.short_desc || null,
       priority: TASK_PRIORITY_MAP[idea.priority] || 'normal',
       status: 'open',
       task_type: 'general',
+      created_by: user?.id || null,
+      is_template: false,
     }).select('id').single()
 
-    if (!error && data) {
+    if (error) {
+      showToast('Hiba a feladat létrehozásakor: ' + error.message)
+    } else if (data) {
       await supabase.from('founder_ideas').update({
         task_id: data.id,
         status: idea.status === 'Ötlet' ? 'Tervezett' : idea.status,
