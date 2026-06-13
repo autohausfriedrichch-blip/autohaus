@@ -95,7 +95,7 @@ export function TasksPage({ refreshKey, onRefresh, profile }: {
       woTaskQuery,
     ])
     if (error?.code === '42P01') { setTableExists(false); setLoading(false); return }
-    const nonTemplates = (t || []).filter((task: any) => !task.is_template)
+    const nonTemplates = (t || []).filter((task: any) => task.is_template !== true)
     setTasks(nonTemplates)
     setWoTasks((wot || []).filter((t: any) => t.work_order !== null))
     setProfiles(p || [])
@@ -166,14 +166,6 @@ export function TasksPage({ refreshKey, onRefresh, profile }: {
       customer_id: form.customer_id || null,
       work_order_id: form.work_order_id || null,
     }
-    // Only set optional columns if schema_tasks_v2 was run
-    try {
-      if (form.waiting_reason) payload.waiting_reason = form.waiting_reason
-      if (form.recurrence_type && form.recurrence_type !== 'none') {
-        payload.recurrence_type = form.recurrence_type
-        payload.recurrence_days = form.recurrence_days?.length ? form.recurrence_days : null
-      }
-    } catch {}
     if (form.status === 'done' && editItem?.status !== 'done') payload.completed_at = new Date().toISOString()
     const { error } = editItem
       ? await supabase.from('tasks').update(payload).eq('id', editItem.id)
