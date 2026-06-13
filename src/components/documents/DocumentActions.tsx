@@ -6,7 +6,8 @@ import { Input, FormGroup, FormLabel, Textarea } from '@/components/ui/form'
 import { useToast } from '@/components/ui/toast'
 import { createClient } from '@/lib/supabase/client'
 import { generateQuotePDF, generateWorkOrderPDF, generateCheckInPDF, generateCheckOutPDF, generateInvoicePDF } from '@/lib/pdf'
-import { Download, Printer, Mail, MessageCircle, Send } from 'lucide-react'
+import { type PdfLang, LANG_OPTIONS } from '@/lib/pdf-i18n'
+import { Download, Printer, Mail, MessageCircle, Send, Globe } from 'lucide-react'
 
 type DocType = 'quote' | 'workorder' | 'checkin' | 'checkout' | 'invoice'
 
@@ -20,6 +21,7 @@ interface DocumentActionsProps {
 }
 
 export function DocumentActions({ type, data, customerId, workOrderId, quoteId, small }: DocumentActionsProps) {
+  const [lang, setLang] = useState<PdfLang>('de')
   const [sendModal, setSendModal] = useState<'email' | 'whatsapp' | null>(null)
   const [emailTo, setEmailTo] = useState(data?.customer?.email || '')
   const [emailSubject, setEmailSubject] = useState(getDefaultSubject(type, data))
@@ -32,21 +34,24 @@ export function DocumentActions({ type, data, customerId, workOrderId, quoteId, 
 
   function getPDF() {
     switch (type) {
-      case 'quote': return generateQuotePDF(data)
-      case 'workorder': return generateWorkOrderPDF(data)
-      case 'checkin': return generateCheckInPDF(data)
-      case 'checkout': return generateCheckOutPDF(data)
-      case 'invoice': return generateInvoicePDF(data)
+      case 'quote':     return generateQuotePDF(data)
+      case 'workorder': return generateWorkOrderPDF(data, lang)
+      case 'checkin':   return generateCheckInPDF(data)
+      case 'checkout':  return generateCheckOutPDF(data)
+      case 'invoice':   return generateInvoicePDF(data)
     }
   }
 
   function getFileName() {
+    const num = data?.order_number || data?.id?.slice(0, 8) || 'doc'
     switch (type) {
-      case 'quote': return `Arajanlat_${data?.id?.slice(0, 8) || 'doc'}.pdf`
-      case 'workorder': return `Munkalap_${data?.order_number || 'doc'}.pdf`
-      case 'checkin': return `CheckIn_${data?.order_number || 'doc'}.pdf`
-      case 'checkout': return `CheckOut_${data?.order_number || 'doc'}.pdf`
-      case 'invoice': return `Szamla_${data?.order_number || 'doc'}.pdf`
+      case 'workorder': return lang === 'de'
+        ? `Arbeitsauftrag_${num}.pdf`
+        : `Work_Order_${num}.pdf`
+      case 'checkin':  return lang === 'de' ? `Eingangsprotokoll_${num}.pdf` : `Check_In_${num}.pdf`
+      case 'checkout': return lang === 'de' ? `Ausgangsprotokoll_${num}.pdf` : `Check_Out_${num}.pdf`
+      case 'quote':    return lang === 'de' ? `Angebot_${num}.pdf` : `Quotation_${num}.pdf`
+      case 'invoice':  return lang === 'de' ? `Rechnung_${num}.pdf` : `Invoice_${num}.pdf`
     }
   }
 
@@ -79,11 +84,6 @@ export function DocumentActions({ type, data, customerId, workOrderId, quoteId, 
 
   const handleEmailSend = async () => {
     setSending(true)
-    // Generate PDF and convert to blob for email
-    const doc = getPDF()
-    const pdfBase64 = doc.output('datauristring')
-
-    // Log to communication
     await logCommunication('email', `Email elküldve: ${emailSubject}\nCímzett: ${emailTo}`)
     toast('Email naplózva – valódi küldéshez SMTP szerver szükséges')
     setSendModal(null)
@@ -100,22 +100,53 @@ export function DocumentActions({ type, data, customerId, workOrderId, quoteId, 
   }
 
   const btnSize = small ? 'sm' : 'sm'
+  const selectedLang = LANG_OPTIONS.find(l => l.value === lang)!
 
   return (
     <>
-      <div className="flex items-center gap-1.5 flex-wrap">
-        <Button variant="secondary" size={btnSize} onClick={handleDownload}>
-          <Download size={13} /> PDF
-        </Button>
-        <Button variant="secondary" size={btnSize} onClick={handlePrint}>
-          <Printer size={13} /> Nyomtatás
-        </Button>
-        <Button variant="secondary" size={btnSize} onClick={() => setSendModal('email')}>
-          <Mail size={13} /> E-mail
-        </Button>
-        <Button variant="gold" size={btnSize} onClick={() => setSendModal('whatsapp')}>
-          <MessageCircle size={13} /> WhatsApp
-        </Button>
+      <div className="flex flex-col gap-2">
+        {/* Language selector — shown for workorder, can extend to all types */}
+        {type === 'workorder' && (
+          <div className="flex items-center gap-2">
+            <Globe size={13} className="text-[#5a6a80] shrink-0" />
+            <span className="text-[11px] text-[#5a6a80] font-medium">Dokumentum nyelve / Document Language:</span>
+            <div className="flex gap-1">
+              {LANG_OPTIONS.map(opt => (
+                <button
+                  key={opt.value}
+                  onClick={() => setLang(opt.value)}
+                  className={`flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-semibold border transition-all ${
+                    lang === opt.value
+                      ? 'bg-[#0B1E3D] text-white border-[#0B1E3D]'
+                      : 'bg-white text-[#5a6a80] border-gray-200 hover:border-[#C9A84C]'
+                  }`}
+                >
+                  <span>{opt.flag}</span>
+                  <span>{opt.label}</span>
+                </button>
+              ))}
+            </div>
+            <span className="text-[10px] text-[#8fa0b5] ml-1">
+              → {selectedLang.flag} {getFileName()}
+            </span>
+          </div>
+        )}
+
+        {/* Action buttons */}
+        <div className="flex items-center gap-1.5 flex-wrap">
+          <Button variant="secondary" size={btnSize} onClick={handleDownload}>
+            <Download size={13} /> PDF
+          </Button>
+          <Button variant="secondary" size={btnSize} onClick={handlePrint}>
+            <Printer size={13} /> Nyomtatás
+          </Button>
+          <Button variant="secondary" size={btnSize} onClick={() => setSendModal('email')}>
+            <Mail size={13} /> E-mail
+          </Button>
+          <Button variant="gold" size={btnSize} onClick={() => setSendModal('whatsapp')}>
+            <MessageCircle size={13} /> WhatsApp
+          </Button>
+        </div>
       </div>
 
       {/* Email Modal */}
@@ -181,12 +212,12 @@ export function DocumentActions({ type, data, customerId, workOrderId, quoteId, 
 
 function getDefaultSubject(type: DocType, data: any): string {
   switch (type) {
-    case 'quote': return `Autohaus Friedrich – Árajánlat ${data?.customer?.full_name || ''}`
-    case 'workorder': return `Autohaus Friedrich – Munkalap ${data?.order_number || ''}`
-    case 'checkin': return `Autohaus Friedrich – Check-In visszaigazolás`
-    case 'checkout': return `Autohaus Friedrich – Check-Out ${data?.order_number || ''}`
-    case 'invoice': return `Autohaus Friedrich – Számla / Rechnung ${data?.order_number || ''}`
-    default: return 'Autohaus Friedrich – Dokumentum'
+    case 'quote':     return `Autohaus Friedrich – Árajánlat ${data?.customer?.full_name || ''}`
+    case 'workorder': return `Autohaus Friedrich – Arbeitsauftrag / Work Order ${data?.order_number || ''}`
+    case 'checkin':   return `Autohaus Friedrich – Check-In visszaigazolás`
+    case 'checkout':  return `Autohaus Friedrich – Check-Out ${data?.order_number || ''}`
+    case 'invoice':   return `Autohaus Friedrich – Rechnung / Invoice ${data?.order_number || ''}`
+    default:          return 'Autohaus Friedrich – Dokumentum'
   }
 }
 
@@ -196,31 +227,31 @@ function getDefaultEmailBody(type: DocType, data: any): string {
     case 'quote':
       return `Tisztelt ${name}!\n\nMellékletben megküldjük az Ön járművére vonatkozó árajánlatunkat.\n\nKérjük, tekintse meg és jelezze visszaigazolását.\n\nÜdvözlettel,\nAutohaus Friedrich`
     case 'workorder':
-      return `Tisztelt ${name}!\n\nMellékletben megküldjük a(z) ${data?.order_number || ''} számú munklap összefoglalóját.\n\nÜdvözlettel,\nAutohaus Friedrich`
+      return `Sehr geehrte/r ${name},\n\nim Anhang finden Sie den Arbeitsauftrag Nr. ${data?.order_number || ''}.\n\nFür Rückfragen stehen wir gerne zur Verfügung.\n\nMit freundlichen Grüßen,\nAutohaus Friedrich`
     case 'checkin':
-      return `Tisztelt ${name}!\n\nMegerősítjük járművének átvételét. A check-in dokumentumot mellékelten küldjük.\n\nÜdvözlettel,\nAutohaus Friedrich`
+      return `Sehr geehrte/r ${name},\n\nwir bestätigen die Übernahme Ihres Fahrzeugs. Das Eingangsprotokoll finden Sie im Anhang.\n\nMit freundlichen Grüßen,\nAutohaus Friedrich`
     case 'checkout':
-      return `Tisztelt ${name}!\n\nJárműve elkészült és átvehető. A check-out dokumentumot mellékelten küldjük.\n\nÜdvözlettel,\nAutohaus Friedrich`
+      return `Sehr geehrte/r ${name},\n\nIhr Fahrzeug ist fertig und kann abgeholt werden. Das Ausgangsprotokoll finden Sie im Anhang.\n\nMit freundlichen Grüßen,\nAutohaus Friedrich`
     case 'invoice':
-      return `Tisztelt ${name}!\n\nMellékletben megküldjük a(z) ${data?.order_number || ''} számú számlát.\n\nKérjük, 30 napon belül szíveskedjen kiegyenlíteni.\n\nÜdvözlettel,\nAutohaus Friedrich`
+      return `Sehr geehrte/r ${name},\n\nim Anhang finden Sie die Rechnung Nr. ${data?.order_number || ''}.\n\nBitte begleichen Sie den Betrag innerhalb von 30 Tagen.\n\nMit freundlichen Grüßen,\nAutohaus Friedrich`
     default: return ''
   }
 }
 
 function getDefaultWhatsApp(type: DocType, data: any): string {
-  const name = data?.customer?.full_name || 'Kedves Ügyfél'
+  const name = data?.customer?.full_name || 'Kunde'
   const plate = data?.vehicle?.license_plate || ''
   switch (type) {
     case 'quote':
-      return `Kedves ${name}! 🚗\n\nElkészítettük az árajánlatot a(z) *${plate}* rendszámú járművére.\n\nVégösszeg: *${data?.total_amount ? data.total_amount.toFixed(2) + ' CHF' : '–'}*\n\nKérjük, jelezze visszaigazolását! 🇨🇭\n\n– Autohaus Friedrich`
+      return `Guten Tag ${name} 🚗\n\nIhr Angebot für *${plate}* ist bereit.\n\nGesamtbetrag: *${data?.total_amount ? data.total_amount.toFixed(2) + ' CHF' : '–'}*\n\nBitte bestätigen Sie uns Ihre Rückmeldung.\n\n– Autohaus Friedrich 🇨🇭`
     case 'workorder':
-      return `Kedves ${name}! 🔧\n\nA(z) *${data?.order_number || ''}* számú munkájáról küldünk összefoglalót.\n\nJárműve: *${plate}*\n\nKérdés esetén állunk rendelkezésére!\n\n– Autohaus Friedrich`
+      return `Guten Tag ${name} 🔧\n\nIhr Arbeitsauftrag *${data?.order_number || ''}* wurde erstellt.\n\nFahrzeug: *${plate}*\n\nBei Fragen stehen wir gerne zur Verfügung.\n\n– Autohaus Friedrich`
     case 'checkin':
-      return `Kedves ${name}! ✅\n\nMegerősítjük, hogy *${plate}* rendszámú járművét átvettük.\n\nAmint elkészül az átnézés, értesítjük!\n\n– Autohaus Friedrich`
+      return `Guten Tag ${name} ✅\n\nWir bestätigen die Übernahme Ihres Fahrzeugs *${plate}*.\n\nSobald die Inspektion abgeschlossen ist, melden wir uns.\n\n– Autohaus Friedrich`
     case 'checkout':
-      return `Kedves ${name}! 🎉\n\n*${plate}* rendszámú járműve elkészült és átvehető!\n\nNyitvatartás: H-P 8:00-18:00, Sz 9:00-13:00\n\n– Autohaus Friedrich`
+      return `Guten Tag ${name} 🎉\n\nIhr Fahrzeug *${plate}* ist fertig und kann abgeholt werden!\n\nÖffnungszeiten: Mo-Fr 8:00-18:00, Sa 9:00-13:00\n\n– Autohaus Friedrich`
     case 'invoice':
-      return `Kedves ${name}! 📄\n\nA(z) *${data?.order_number || ''}* sz. számlát megküldjük.\n\nÖsszeg: *${data?.total_amount ? data.total_amount.toFixed(2) + ' CHF' : '–'}*\n\nKöszönjük a bizalmat! 🇨🇭\n\n– Autohaus Friedrich`
+      return `Guten Tag ${name} 📄\n\nRechnung Nr. *${data?.order_number || ''}*\n\nBetrag: *${data?.total_amount ? data.total_amount.toFixed(2) + ' CHF' : '–'}*\n\nVielen Dank für Ihr Vertrauen! 🇨🇭\n\n– Autohaus Friedrich`
     default: return ''
   }
 }

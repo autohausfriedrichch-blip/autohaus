@@ -1,6 +1,7 @@
 import jsPDF from 'jspdf'
 import autoTable from 'jspdf-autotable'
 import { formatCurrency, formatDate } from './utils'
+import { type PdfLang, t } from './pdf-i18n'
 
 const NAVY = [11, 30, 61] as [number, number, number]
 const GOLD = [201, 168, 76] as [number, number, number]
@@ -183,22 +184,23 @@ export function generateQuotePDF(quote: any): jsPDF {
 }
 
 // =================== WORK ORDER PDF ===================
-export function generateWorkOrderPDF(wo: any): jsPDF {
+export function generateWorkOrderPDF(wo: any, lang: PdfLang = 'de'): jsPDF {
+  const tr = t(lang)
   const doc = new jsPDF()
   const pageW = doc.internal.pageSize.width
 
-  let y = addHeader(doc, 'MUNKALAP', wo.order_number || 'WO-0001', formatDate(wo.created_at || new Date()))
+  let y = addHeader(doc, tr.workOrder, wo.order_number || 'WO-0001', formatDate(wo.created_at || new Date()))
 
   const customer = wo.customer || {}
   const vehicle = wo.vehicle || {}
 
-  infoBox(doc, 15, y, 55, 'Ügyfél', [customer.full_name || '–', customer.phone || ''])
-  infoBox(doc, 75, y, 65, 'Jármű', [
+  infoBox(doc, 15, y, 55, tr.customer, [customer.full_name || '–', customer.phone || ''])
+  infoBox(doc, 75, y, 65, tr.vehicle, [
     `${vehicle.make || ''} ${vehicle.model || ''}`.trim() || '–',
-    vehicle.license_plate || '',
-    wo.checkin_mileage ? `KM: ${wo.checkin_mileage.toLocaleString()}` : '',
+    `${tr.licensePlate}: ${vehicle.license_plate || '–'}`,
+    wo.checkin_mileage ? `${tr.mileage}: ${wo.checkin_mileage.toLocaleString()} km` : '',
   ])
-  infoBox(doc, 145, y, 50, 'Státusz / Szerelő', [
+  infoBox(doc, 145, y, 50, `${tr.status} / ${tr.mechanic}`, [
     wo.status || '',
     wo.mechanic?.full_name || '–',
     wo.scheduled_date ? formatDate(wo.scheduled_date) : '',
@@ -206,11 +208,10 @@ export function generateWorkOrderPDF(wo: any): jsPDF {
 
   y += 42
 
-  // Details
   const sections = [
-    { title: 'Hibaleírás', content: wo.fault_description },
-    { title: 'Elvégzendő munka', content: wo.work_to_do },
-    { title: 'Elvégzett munka', content: wo.work_done },
+    { title: tr.faultDescription, content: wo.fault_description },
+    { title: tr.scopeOfWork,      content: wo.work_to_do },
+    { title: tr.workCompleted,    content: wo.work_done },
   ]
 
   sections.forEach(s => {
@@ -233,14 +234,13 @@ export function generateWorkOrderPDF(wo: any): jsPDF {
     }
   })
 
-  // Costs table
   autoTable(doc, {
     startY: y,
-    head: [['Tétel', 'Összeg']],
+    head: [[tr.item, tr.amount]],
     body: [
-      ['Munkadíj', formatCurrency(wo.labor_cost || 0)],
-      ['Alkatrészek', formatCurrency(wo.parts_cost || 0)],
-      ['VÉGÖSSZEG', formatCurrency(wo.total_amount || 0)],
+      [tr.laborCost,  formatCurrency(wo.labor_cost  || 0)],
+      [tr.partsCost,  formatCurrency(wo.parts_cost  || 0)],
+      [tr.total,      formatCurrency(wo.total_amount || 0)],
     ],
     headStyles: { fillColor: NAVY, textColor: [255, 255, 255], fontSize: 8 },
     bodyStyles: { fontSize: 9, textColor: NAVY },
@@ -256,20 +256,19 @@ export function generateWorkOrderPDF(wo: any): jsPDF {
     },
   })
 
-  // Signature box
   const sigY = (doc as any).lastAutoTable.finalY + 15
   doc.setDrawColor(...GRAY)
   doc.line(15, sigY + 15, 90, sigY + 15)
   doc.line(120, sigY + 15, pageW - 15, sigY + 15)
   doc.setFontSize(7)
   doc.setTextColor(...GRAY)
-  doc.text('Ügyfél aláírása', 15, sigY + 19)
-  doc.text('Szerelő aláírása', 120, sigY + 19)
+  doc.text(tr.customerSignature, 15, sigY + 19)
+  doc.text(tr.mechanicSignature, 120, sigY + 19)
 
   if (wo.customer_notes) {
     doc.setFontSize(7)
     doc.setTextColor(...GRAY)
-    doc.text(`Megjegyzés: ${wo.customer_notes}`, 15, sigY + 28)
+    doc.text(`${tr.notes}: ${wo.customer_notes}`, 15, sigY + 28)
   }
 
   addFooter(doc)
