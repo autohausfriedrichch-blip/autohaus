@@ -159,19 +159,17 @@ export function TasksPage({ refreshKey, onRefresh, profile }: {
     const payload: any = {
       title: form.title.trim(),
       description: form.description || null,
-      task_type: form.task_type || 'general',
       priority: form.priority || 'normal',
       status: form.status || 'open',
       due_date: form.due_date || null,
       assigned_to: form.assigned_to || null,
       customer_id: form.customer_id || null,
       work_order_id: form.work_order_id || null,
-      waiting_reason: form.waiting_reason || null,
-      created_by: user?.id,
-      is_template: false,
     }
-    // Only set recurrence if schema_tasks_v2 was run
+    // Only set optional columns if schema_tasks_v2 was run
     try {
+      if (form.task_type) payload.task_type = form.task_type
+      if (form.waiting_reason) payload.waiting_reason = form.waiting_reason
       if (form.recurrence_type && form.recurrence_type !== 'none') {
         payload.recurrence_type = form.recurrence_type
         payload.recurrence_days = form.recurrence_days?.length ? form.recurrence_days : null
