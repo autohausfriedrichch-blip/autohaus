@@ -451,7 +451,6 @@ export function FounderBrainPage({ profile, refreshKey, onRefresh }: Props) {
       status: 'open',
       task_type: 'general',
       created_by: user?.id || null,
-      is_template: false,
     }).select('id').single()
 
     if (error) {
