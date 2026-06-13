@@ -7,7 +7,7 @@ import { Input, FormGroup, FormLabel, Select, Textarea } from '@/components/ui/f
 import { StatusBadge } from '@/components/ui/badge'
 import { useToast } from '@/components/ui/toast'
 import { DocumentActions } from '@/components/documents/DocumentActions'
-import { Plus, Search, ExternalLink, CheckSquare, Square, Edit2 } from 'lucide-react'
+import { Plus, Search, ExternalLink, CheckSquare, Square, Edit2, Car, Wrench, Calendar, CreditCard, User } from 'lucide-react'
 import type { WorkOrder } from '@/lib/types'
 import { formatCurrency, formatDate, STATUS_LABELS } from '@/lib/utils'
 import { WorkOrderDetail } from '@/components/workorders/WorkOrderDetail'
@@ -227,89 +227,189 @@ export function WorkOrdersPage({ refreshKey, onRefresh, profile, onNewQuote }: {
 
   return (
     <div className="animate-fade-in">
-      <div className="flex flex-wrap gap-2.5 mb-4">
+
+      {/* ── Toolbar ── */}
+      <div className="flex flex-wrap gap-2.5 mb-5">
         <div className="relative flex-1 min-w-[200px]">
-          <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#8fa0b5]" />
-          <input type="text" value={search} onChange={e => setSearch(e.target.value)} placeholder="Munkalapszám, ügyfél, rendszám..."
-            className="w-full pl-9 pr-3 py-2 border border-[rgba(11,30,61,0.18)] rounded-lg text-[13px] bg-white outline-none focus:border-[#0B1E3D]" />
+          <Search size={14} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#999]" />
+          <input
+            type="text"
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+            placeholder="Munkalapszám, ügyfél, rendszám..."
+            className="w-full pl-9 pr-3 py-2.5 border border-[rgba(0,0,0,0.12)] rounded-xl text-[13px] bg-white outline-none focus:border-[#C8102E] transition-colors"
+          />
         </div>
-        <select value={statusFilter} onChange={e => setStatusFilter(e.target.value)}
-          className="px-3 py-2 border border-[rgba(11,30,61,0.18)] rounded-lg text-[13px] bg-white outline-none focus:border-[#0B1E3D]">
+        <select
+          value={statusFilter}
+          onChange={e => setStatusFilter(e.target.value)}
+          className="px-3 py-2.5 border border-[rgba(0,0,0,0.12)] rounded-xl text-[13px] bg-white outline-none focus:border-[#C8102E] transition-colors cursor-pointer"
+        >
           <option value="">Minden státusz</option>
           {STATUSES.map(s => <option key={s} value={s}>{STATUS_LABELS[s]}</option>)}
         </select>
         <Button variant="primary" onClick={openNew}><Plus size={14} /> Új munkalap</Button>
       </div>
 
+      {/* ── List ── */}
       {loading ? (
-        <div className="text-center py-12 text-[#5a6a80] text-sm">Betöltés...</div>
+        <div className="text-center py-16 text-[#999] text-sm">Betöltés...</div>
+      ) : filtered.length === 0 ? (
+        <div className="text-center py-16 text-[#999] text-sm">Nincs találat</div>
       ) : (
-        <div>
-          {filtered.map(o => (
-            <div key={o.id} className="bg-white border border-[rgba(11,30,61,0.10)] rounded-[14px] overflow-hidden mb-3">
-              <div className="flex flex-wrap items-center gap-2 px-3 sm:px-4 py-3 border-b border-[rgba(11,30,61,0.08)]">
-                <HealthDot health={(o as any).health} />
-                <span className="text-[11px] font-bold text-[#185FA5] bg-[#E6F1FB] px-2 py-0.5 rounded">{o.order_number || `#${o.id.slice(0,8)}`}</span>
-                <span className="font-semibold text-[13px] flex-1 min-w-0 truncate">{(o as any).customer?.full_name}</span>
-                {(o as any).vehicle && (
-                  <span className="bg-[#0B1E3D] text-white text-[11px] font-bold px-2 py-1 rounded hidden sm:inline">
-                    {(o as any).vehicle.license_plate}
-                  </span>
-                )}
-                <StatusBadge status={o.status} />
-                {o.is_mobile && <span className="text-[10px] bg-purple-100 text-purple-700 px-2 py-0.5 rounded-full font-semibold hidden sm:inline">MOBIL</span>}
-                <div className="flex items-center gap-1.5 ml-auto">
-                  {!isMechanic && (
-                    <button onClick={() => openEdit(o)}
-                      className="flex items-center gap-1 text-[11px] font-semibold text-[#5a6a80] hover:text-[#0B1E3D] px-2.5 py-1.5 border border-[rgba(11,30,61,0.18)] rounded-lg hover:border-[#0B1E3D] transition-colors"
-                      style={{ minHeight: 36 }}>
-                      <Edit2 size={12} /> <span className="hidden sm:inline">Szerkesztés</span>
-                    </button>
-                  )}
-                  <button onClick={() => setDetailOrderId(o.id)}
-                    className="flex items-center gap-1 text-[11px] font-semibold text-[#C9A84C] hover:text-[#0B1E3D] px-2.5 py-1.5 border border-[#C9A84C] rounded-lg hover:border-[#0B1E3D] transition-colors"
-                    style={{ minHeight: 36 }}>
-                    <ExternalLink size={12} /> <span className="hidden xs:inline sm:inline">Megnyitás</span>
-                  </button>
-                </div>
-              </div>
+        <div className="space-y-2.5">
+          {filtered.map(o => {
+            const vehicle = (o as any).vehicle
+            const customer = (o as any).customer
+            const mechanic = (o as any).mechanic
+            const assignedMechanic = mechanics.find(m => m.id === (o as any).mechanic_id)
+            const isReady = ['ready','checkout_ready','delivered'].includes(o.status)
+            const docType = ['ready','checkout_ready','delivered','closed'].includes(o.status) ? 'invoice' : 'workorder'
 
-              <div className="px-3 sm:px-4 py-2 flex flex-wrap gap-2 sm:gap-3 text-[12px] text-[#5a6a80] items-center">
-                {(o as any).vehicle && <span>{(o as any).vehicle.make} {(o as any).vehicle.model}</span>}
-                {o.service_type && <span>· {o.service_type}</span>}
-                {o.scheduled_date && <span>· {formatDate(o.scheduled_date)}</span>}
-                {o.total_amount > 0 && <span className="font-semibold text-[#0B1E3D]">{formatCurrency(o.total_amount)}</span>}
-                {!isMechanic && mechanics.map(m => (
-                  <button key={m.id} onClick={() => assignMechanic(o.id, m.id)}
-                    className={`text-[11px] px-2 py-0.5 rounded-full border transition-colors ${
-                      (o as any).mechanic_id === m.id
-                        ? 'bg-blue-100 text-blue-700 border-blue-200 font-semibold'
-                        : 'bg-amber-50 text-amber-700 border-amber-200 hover:bg-amber-100'
-                    }`}>
-                    {(o as any).mechanic_id === m.id ? `👤 ${m.full_name}` : `⚡ ${m.full_name}`}
-                  </button>
-                ))}
-                <div className="ml-auto flex items-center gap-2 flex-wrap">
-                  {o.payment_status === 'paid' && (
-                    <span className="text-[10px] bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full font-semibold">✓ Fizetve</span>
+            return (
+              <div
+                key={o.id}
+                className="bg-white rounded-2xl border border-[rgba(0,0,0,0.08)] overflow-hidden hover:shadow-md transition-shadow"
+              >
+                {/* ── Top row: identity + actions ── */}
+                <div className="flex items-center gap-3 px-4 py-3.5 border-b border-[rgba(0,0,0,0.06)]">
+                  <HealthDot health={(o as any).health} />
+
+                  {/* Order number */}
+                  <span className="font-mono text-[11px] font-bold text-[#888] bg-[#F5F5F5] px-2 py-0.5 rounded-lg shrink-0">
+                    {o.order_number || `#${o.id.slice(0,8)}`}
+                  </span>
+
+                  {/* Customer */}
+                  <span className="font-semibold text-[14px] text-[#0D0D0D] flex-1 min-w-0 truncate">
+                    {customer?.full_name}
+                  </span>
+
+                  {/* License plate */}
+                  {vehicle && (
+                    <span className="bg-[#0D0D0D] text-white text-[11px] font-bold px-2.5 py-1 rounded-lg tracking-wider shrink-0 hidden sm:inline">
+                      {vehicle.license_plate}
+                    </span>
                   )}
-                  {['ready','checkout_ready','delivered'].includes(o.status) && o.payment_status !== 'paid' && !isMechanic && (
-                    <div className="flex gap-1">
-                      <button onClick={() => recordPayment(o.id, 'cash')} className="text-[10px] bg-emerald-600 text-white px-2 py-1 rounded font-semibold hover:bg-emerald-700">Készpénz</button>
-                      <button onClick={() => recordPayment(o.id, 'card')} className="text-[10px] bg-[#2563eb] text-white px-2 py-1 rounded font-semibold hover:bg-blue-700">Kártya</button>
-                      <button onClick={() => recordPayment(o.id, 'invoice')} className="text-[10px] bg-[#0B1E3D] text-white px-2 py-1 rounded font-semibold">Számla</button>
+
+                  {/* Status */}
+                  <StatusBadge status={o.status} />
+
+                  {o.is_mobile && (
+                    <span className="text-[10px] bg-purple-100 text-purple-700 px-2 py-0.5 rounded-full font-bold hidden md:inline">MOBIL</span>
+                  )}
+
+                  {/* Actions */}
+                  <div className="flex items-center gap-1.5 ml-auto shrink-0">
+                    {!isMechanic && (
+                      <button
+                        onClick={() => openEdit(o)}
+                        className="flex items-center gap-1.5 text-[11.5px] font-semibold text-[#666] hover:text-[#0D0D0D] px-3 py-1.5 border border-[rgba(0,0,0,0.12)] rounded-xl hover:border-[#0D0D0D] transition-all"
+                        style={{ minHeight: 36 }}
+                      >
+                        <Edit2 size={12} />
+                        <span className="hidden sm:inline">Szerkesztés</span>
+                      </button>
+                    )}
+                    <button
+                      onClick={() => setDetailOrderId(o.id)}
+                      className="flex items-center gap-1.5 text-[11.5px] font-semibold text-white bg-[#C8102E] hover:bg-[#a50d24] px-3 py-1.5 rounded-xl transition-all"
+                      style={{ minHeight: 36 }}
+                    >
+                      <ExternalLink size={12} />
+                      <span className="hidden sm:inline">Megnyitás</span>
+                    </button>
+                  </div>
+                </div>
+
+                {/* ── Bottom row: details + document actions ── */}
+                <div className="px-4 py-3 flex flex-wrap items-center gap-x-5 gap-y-2">
+
+                  {/* Vehicle info */}
+                  {vehicle && (
+                    <div className="flex items-center gap-1.5 text-[12px] text-[#555]">
+                      <Car size={12} className="text-[#999] shrink-0" />
+                      <span>{vehicle.make} {vehicle.model}</span>
                     </div>
                   )}
-                  <select value={o.status} onChange={e => updateStatus(o.id, e.target.value)}
-                    className="text-[11px] border border-[rgba(11,30,61,0.18)] rounded px-2 py-1 bg-white outline-none cursor-pointer">
-                    {STATUSES.map(s => <option key={s} value={s}>{STATUS_LABELS[s]}</option>)}
-                  </select>
-                  <DocumentActions type={['ready','checkout_ready','delivered','closed'].includes(o.status) ? 'invoice' : 'workorder'} data={o} customerId={(o as any).customer_id} workOrderId={o.id} />
+
+                  {/* Service */}
+                  {o.service_type && (
+                    <div className="flex items-center gap-1.5 text-[12px] text-[#555] max-w-[220px]">
+                      <Wrench size={12} className="text-[#999] shrink-0" />
+                      <span className="truncate">{o.service_type}</span>
+                    </div>
+                  )}
+
+                  {/* Date */}
+                  {o.scheduled_date && (
+                    <div className="flex items-center gap-1.5 text-[12px] text-[#555]">
+                      <Calendar size={12} className="text-[#999] shrink-0" />
+                      <span>{formatDate(o.scheduled_date)}</span>
+                    </div>
+                  )}
+
+                  {/* Amount */}
+                  {o.total_amount > 0 && (
+                    <div className="flex items-center gap-1.5 text-[12px] font-semibold text-[#0D0D0D]">
+                      <CreditCard size={12} className="text-[#999] shrink-0" />
+                      <span>{formatCurrency(o.total_amount)}</span>
+                    </div>
+                  )}
+
+                  {/* Mechanic assignment */}
+                  {!isMechanic && mechanics.length > 0 && (
+                    <div className="flex items-center gap-1.5 flex-wrap">
+                      {mechanics.map(m => (
+                        <button
+                          key={m.id}
+                          onClick={() => assignMechanic(o.id, m.id)}
+                          className={`flex items-center gap-1 text-[11px] px-2.5 py-1 rounded-full border font-semibold transition-all ${
+                            (o as any).mechanic_id === m.id
+                              ? 'bg-[#0D0D0D] text-white border-[#0D0D0D]'
+                              : 'bg-white text-[#666] border-[rgba(0,0,0,0.15)] hover:border-[#C8102E] hover:text-[#C8102E]'
+                          }`}
+                        >
+                          <User size={10} />
+                          {m.full_name}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+
+                  {/* Right side: payment + status selector + doc actions */}
+                  <div className="ml-auto flex items-center gap-2 flex-wrap justify-end">
+                    {o.payment_status === 'paid' && (
+                      <span className="text-[10px] bg-emerald-100 text-emerald-700 px-2.5 py-1 rounded-full font-bold">✓ Fizetve</span>
+                    )}
+
+                    {isReady && o.payment_status !== 'paid' && !isMechanic && (
+                      <div className="flex gap-1">
+                        <button onClick={() => recordPayment(o.id, 'cash')} className="text-[10.5px] bg-emerald-600 text-white px-2.5 py-1 rounded-lg font-semibold hover:bg-emerald-700 transition-colors">Készpénz</button>
+                        <button onClick={() => recordPayment(o.id, 'card')} className="text-[10.5px] bg-[#2563eb] text-white px-2.5 py-1 rounded-lg font-semibold hover:bg-blue-700 transition-colors">Kártya</button>
+                        <button onClick={() => recordPayment(o.id, 'invoice')} className="text-[10.5px] bg-[#0D0D0D] text-white px-2.5 py-1 rounded-lg font-semibold hover:bg-[#333] transition-colors">Számla</button>
+                      </div>
+                    )}
+
+                    <select
+                      value={o.status}
+                      onChange={e => updateStatus(o.id, e.target.value)}
+                      className="text-[11.5px] border border-[rgba(0,0,0,0.12)] rounded-xl px-2.5 py-1.5 bg-white outline-none cursor-pointer hover:border-[#C8102E] transition-colors"
+                    >
+                      {STATUSES.map(s => <option key={s} value={s}>{STATUS_LABELS[s]}</option>)}
+                    </select>
+
+                    <DocumentActions
+                      type={docType}
+                      data={o}
+                      customerId={(o as any).customer_id}
+                      workOrderId={o.id}
+                    />
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
-          {filtered.length === 0 && <div className="text-center py-10 text-[#8fa0b5] text-sm">Nincs munkalap</div>}
+            )
+          })}
         </div>
       )}
 
