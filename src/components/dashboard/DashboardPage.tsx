@@ -2,10 +2,12 @@
 import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { KpiCard } from './KpiCard'
-import { Card, CardTitle } from '@/components/ui/card'
 import { StatusBadge } from '@/components/ui/badge'
-import { formatCurrency, formatDate } from '@/lib/utils'
-import { Calendar, ClipboardList, Users, TrendingUp, Truck, FileText, AlertTriangle, Clock, Shield } from 'lucide-react'
+import { formatCurrency } from '@/lib/utils'
+import {
+  CalendarDays, ClipboardList, FileText, TrendingUp, Truck,
+  AlertTriangle, Shield, ArrowRight, Plus, Clock
+} from 'lucide-react'
 import { SystemHealthWidget } from '@/components/system-health/SystemHealthWidget'
 import type { WorkOrder, Booking } from '@/lib/types'
 
@@ -33,6 +35,10 @@ export function DashboardPage({ refreshKey, onNavigate }: DashboardPageProps) {
   const [urgentTasks, setUrgentTasks] = useState<WorkOrder[]>([])
   const [loading, setLoading] = useState(true)
 
+  const now = new Date()
+  const greeting = now.getHours() < 12 ? 'Good morning' : now.getHours() < 17 ? 'Good afternoon' : 'Good evening'
+  const todayLabel = now.toLocaleDateString('de-CH', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })
+
   useEffect(() => {
     const supabase = createClient()
     const today = new Date().toISOString().split('T')[0]
@@ -58,7 +64,7 @@ export function DashboardPage({ refreshKey, onNavigate }: DashboardPageProps) {
         supabase.from('customers').select('*', { count: 'exact', head: true }).gte('created_at', monthStart),
         supabase.from('work_orders').select('*', { count: 'exact', head: true }).eq('is_mobile', true).not('status', 'in', '(delivered,closed)'),
         supabase.from('bookings').select('*, customer:customers(full_name,phone), vehicle:vehicles(make,model,license_plate)').eq('scheduled_date', today).order('scheduled_time').limit(8),
-        supabase.from('work_orders').select('*, customer:customers(full_name), vehicle:vehicles(make,model,license_plate,year)').not('status', 'in', '(delivered,closed)').order('updated_at', { ascending: false }).limit(5),
+        supabase.from('work_orders').select('*, customer:customers(full_name), vehicle:vehicles(make,model,license_plate,year)').not('status', 'in', '(delivered,closed)').order('updated_at', { ascending: false }).limit(6),
         supabase.from('work_orders').select('*, customer:customers(full_name), vehicle:vehicles(make,model,license_plate)').in('status', ['waiting_approval', 'waiting_parts']).order('created_at').limit(5),
       ])
 
@@ -80,16 +86,21 @@ export function DashboardPage({ refreshKey, onNavigate }: DashboardPageProps) {
   }, [refreshKey])
 
   if (loading) return (
-    <div className="flex items-center justify-center h-48">
-      <div className="text-[#5a6a80] text-sm">Dashboard betöltése...</div>
+    <div className="flex items-center justify-center h-64">
+      <div className="text-[#8fa0b5] text-sm">Loading dashboard...</div>
     </div>
   )
 
   return (
-    <div className="animate-fade-in">
-      {/* System Health + Quick Actions */}
-      <div className="flex items-center gap-3 mb-4">
-        <div className="flex-1">
+    <div className="animate-fade-in space-y-5">
+
+      {/* ── Welcome header ── */}
+      <div className="flex items-start justify-between">
+        <div>
+          <h1 className="text-[22px] font-bold text-[#0B1E3D] tracking-tight">{greeting} 👋</h1>
+          <p className="text-[13px] text-[#8fa0b5] mt-0.5">{todayLabel} · Swiss Garage Operations</p>
+        </div>
+        <div className="flex items-center gap-2 shrink-0">
           <SystemHealthWidget
             score={healthScore}
             checkedAt={healthCheckedAt}
@@ -97,46 +108,94 @@ export function DashboardPage({ refreshKey, onNavigate }: DashboardPageProps) {
             warnCount={healthWarnings}
             onRunCheck={() => onNavigate('system_health')}
           />
+          <button
+            onClick={() => onNavigate('workorders')}
+            className="flex items-center gap-2 bg-[#0B1E3D] hover:bg-[#0d2347] text-white px-3.5 py-2 rounded-xl text-[12.5px] font-semibold transition-colors shadow-sm"
+          >
+            <Plus size={14} className="text-[#C9A84C]" />
+            New Work Order
+          </button>
         </div>
-        <button
-          onClick={() => onNavigate('system_health')}
-          className="flex items-center gap-2 bg-[#0B1E3D] hover:bg-[#0d2347] text-white px-4 py-3 rounded-xl text-[13px] font-semibold transition-colors shrink-0 shadow-sm"
-        >
-          <Shield size={16} className="text-[#C9A84C]" />
-          🔍 Rendszer Ellenőrzés
-        </button>
       </div>
 
-      {/* KPIs */}
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 mb-4">
-        <KpiCard label="Mai időpontok" value={stats.todayBookings} accent="gold" />
-        <KpiCard label="Nyitott munkalapok" value={stats.openWorkOrders} accent="navy" />
-        <KpiCard label="Függő árajánlatok" value={stats.pendingQuotes} accent="red" />
-        <KpiCard label="Havi bevétel" value={formatCurrency(stats.monthRevenue)} accent="green" />
-        <KpiCard label="Új ügyfelek" value={stats.newCustomers} accent="navy" />
-        <KpiCard label="Mobil munkák" value={stats.mobileJobs} accent="gold" />
+      {/* ── KPI cards ── */}
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+        <KpiCard
+          label="Today's Appointments"
+          value={stats.todayBookings}
+          accent="gold"
+          icon={<CalendarDays size={18} />}
+          onClick={() => onNavigate('bookings')}
+        />
+        <KpiCard
+          label="Open Work Orders"
+          value={stats.openWorkOrders}
+          accent="navy"
+          icon={<ClipboardList size={18} />}
+          onClick={() => onNavigate('workorders')}
+        />
+        <KpiCard
+          label="Pending Quotes"
+          value={stats.pendingQuotes}
+          accent="red"
+          icon={<FileText size={18} />}
+          onClick={() => onNavigate('quotes')}
+        />
+        <KpiCard
+          label="Monthly Revenue"
+          value={formatCurrency(stats.monthRevenue)}
+          accent="green"
+          icon={<TrendingUp size={18} />}
+          onClick={() => onNavigate('finance')}
+        />
+        <KpiCard
+          label="New Customers"
+          value={stats.newCustomers}
+          accent="navy"
+          onClick={() => onNavigate('customers')}
+        />
+        <KpiCard
+          label="Mobile Jobs"
+          value={stats.mobileJobs}
+          accent="gold"
+          icon={<Truck size={18} />}
+          onClick={() => onNavigate('mobile_service')}
+        />
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4">
-        {/* Today's bookings */}
-        <Card>
-          <div className="flex items-center justify-between mb-3.5">
-            <CardTitle icon={<Calendar size={16} />}>Mai időpontok</CardTitle>
-            <button onClick={() => onNavigate('bookings')} className="text-[11px] text-[#5a6a80] hover:text-[#0B1E3D]">Mind →</button>
+      {/* ── Two-col section ── */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+
+        {/* Today's schedule */}
+        <div className="bg-white border border-[rgba(11,30,61,0.08)] rounded-2xl p-5">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-2">
+              <CalendarDays size={15} className="text-[#C9A84C]" />
+              <span className="text-[11px] font-semibold text-[#5a6a80] uppercase tracking-[0.8px]">Today's Schedule</span>
+            </div>
+            <button
+              onClick={() => onNavigate('bookings')}
+              className="text-[11px] text-[#8fa0b5] hover:text-[#0B1E3D] flex items-center gap-1 transition-colors"
+            >
+              View all <ArrowRight size={11} />
+            </button>
           </div>
+
           {todayBookings.length === 0 ? (
-            <p className="text-[12px] text-[#8fa0b5] py-4 text-center">Ma nincs időpont</p>
+            <div className="text-center py-8 text-[13px] text-[#8fa0b5]">No appointments today</div>
           ) : (
-            <div>
+            <div className="space-y-0">
               {todayBookings.map((b: any) => (
-                <div key={b.id} className="flex items-center gap-2.5 py-2.5 border-b border-[rgba(11,30,61,0.07)] last:border-0">
-                  <div className="text-[11px] font-semibold text-[#0B1E3D] min-w-[38px]">{b.scheduled_time?.slice(0,5)}</div>
+                <div key={b.id} className="flex items-center gap-3 py-2.5 border-b border-[rgba(11,30,61,0.05)] last:border-0">
+                  <div className="text-[11px] font-bold text-[#C9A84C] min-w-[36px] font-mono">
+                    {b.scheduled_time?.slice(0,5) || '--:--'}
+                  </div>
                   <div className="flex-1 min-w-0">
-                    <div className="font-semibold text-[13px] truncate">{b.customer?.full_name}</div>
-                    <div className="text-[11px] text-[#5a6a80]">{b.service_type}</div>
+                    <div className="font-semibold text-[13px] text-[#0B1E3D] truncate">{b.customer?.full_name}</div>
+                    <div className="text-[11px] text-[#8fa0b5] truncate">{b.service_type}</div>
                   </div>
                   {b.vehicle && (
-                    <div className="bg-[#0B1E3D] text-white text-[11px] font-bold px-2 py-1 rounded min-w-[70px] text-center">
+                    <div className="bg-[#0B1E3D] text-white text-[10.5px] font-bold px-2 py-1 rounded-lg min-w-[64px] text-center shrink-0">
                       {b.vehicle.license_plate}
                     </div>
                   )}
@@ -144,70 +203,99 @@ export function DashboardPage({ refreshKey, onNavigate }: DashboardPageProps) {
               ))}
             </div>
           )}
-        </Card>
+        </div>
 
-        {/* Urgent tasks */}
-        <Card>
-          <CardTitle icon={<AlertTriangle size={16} />}>Sürgős feladatok</CardTitle>
+        {/* Urgent items */}
+        <div className="bg-white border border-[rgba(11,30,61,0.08)] rounded-2xl p-5">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-2">
+              <AlertTriangle size={15} className="text-[#C9384C]" />
+              <span className="text-[11px] font-semibold text-[#5a6a80] uppercase tracking-[0.8px]">Requires Attention</span>
+            </div>
+            <button
+              onClick={() => onNavigate('workorders')}
+              className="text-[11px] text-[#8fa0b5] hover:text-[#0B1E3D] flex items-center gap-1 transition-colors"
+            >
+              View all <ArrowRight size={11} />
+            </button>
+          </div>
+
           {urgentTasks.length === 0 ? (
-            <p className="text-[12px] text-[#8fa0b5] py-4 text-center">Nincs sürgős feladat</p>
+            <div className="text-center py-8 text-[13px] text-[#8fa0b5]">No urgent items</div>
           ) : (
-            <div>
+            <div className="space-y-0">
               {urgentTasks.map((wo: any) => (
-                <div key={wo.id} className="flex items-center gap-2.5 py-2.5 border-b border-[rgba(11,30,61,0.07)] last:border-0">
+                <div
+                  key={wo.id}
+                  className="flex items-center gap-3 py-2.5 border-b border-[rgba(11,30,61,0.05)] last:border-0 cursor-pointer hover:bg-[#F8F9FB] -mx-5 px-5 transition-colors rounded-xl"
+                  onClick={() => onNavigate('workorders', wo.id)}
+                >
                   <div className={`w-2 h-2 rounded-full shrink-0 ${wo.status === 'waiting_approval' ? 'bg-[#C9384C]' : 'bg-[#C9A84C]'}`} />
                   <div className="flex-1 min-w-0">
-                    <div className="font-semibold text-[13px] truncate">{wo.customer?.full_name}</div>
-                    <div className="text-[11px] text-[#5a6a80]">{wo.vehicle?.license_plate} – {wo.order_number}</div>
+                    <div className="font-semibold text-[13px] text-[#0B1E3D] truncate">{wo.customer?.full_name}</div>
+                    <div className="text-[11px] text-[#8fa0b5]">{wo.vehicle?.license_plate} · {wo.order_number}</div>
                   </div>
                   <StatusBadge status={wo.status} />
                 </div>
               ))}
             </div>
           )}
-        </Card>
+        </div>
       </div>
 
-      {/* Active work orders */}
-      <Card>
-        <div className="flex items-center justify-between mb-3.5">
-          <CardTitle icon={<ClipboardList size={16} />}>Aktív munkalapok</CardTitle>
-          <button onClick={() => onNavigate('workorders')} className="text-[11px] text-[#5a6a80] hover:text-[#0B1E3D]">Mind →</button>
+      {/* ── Active work orders ── */}
+      <div className="bg-white border border-[rgba(11,30,61,0.08)] rounded-2xl p-5">
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-2">
+            <ClipboardList size={15} className="text-[#C9A84C]" />
+            <span className="text-[11px] font-semibold text-[#5a6a80] uppercase tracking-[0.8px]">Active Work Orders</span>
+          </div>
+          <button
+            onClick={() => onNavigate('workorders')}
+            className="text-[11px] text-[#8fa0b5] hover:text-[#0B1E3D] flex items-center gap-1 transition-colors"
+          >
+            View all <ArrowRight size={11} />
+          </button>
         </div>
-        <div className="overflow-x-auto">
-          <table className="w-full text-[12px]">
-            <thead>
-              <tr className="border-b border-[rgba(11,30,61,0.10)]">
-                <th className="text-left py-2 text-[#5a6a80] font-semibold">Szám</th>
-                <th className="text-left py-2 text-[#5a6a80] font-semibold">Ügyfél</th>
-                <th className="text-left py-2 text-[#5a6a80] font-semibold hidden md:table-cell">Jármű</th>
-                <th className="text-left py-2 text-[#5a6a80] font-semibold">Státusz</th>
-                <th className="text-right py-2 text-[#5a6a80] font-semibold hidden sm:table-cell">Összeg</th>
-              </tr>
-            </thead>
-            <tbody>
-              {activeWorkOrders.map((wo: any) => (
-                <tr key={wo.id} onClick={() => onNavigate('workorders', wo.id)} className="border-b border-[rgba(11,30,61,0.05)] hover:bg-[#F4F5F7] cursor-pointer active:bg-[#eef2f7]">
-                  <td className="py-2.5">
-                    <span className="text-[11px] font-bold text-[#185FA5] bg-[#E6F1FB] px-2 py-0.5 rounded">{wo.order_number}</span>
-                  </td>
-                  <td className="py-2.5 font-medium">{wo.customer?.full_name}</td>
-                  <td className="py-2.5 hidden md:table-cell text-[#5a6a80]">
-                    {wo.vehicle ? `${wo.vehicle.make} ${wo.vehicle.model} (${wo.vehicle.license_plate})` : '–'}
-                  </td>
-                  <td className="py-2.5"><StatusBadge status={wo.status} /></td>
-                  <td className="py-2.5 text-right hidden sm:table-cell font-semibold text-[#0B1E3D]">
-                    {wo.total_amount ? formatCurrency(wo.total_amount) : '–'}
-                  </td>
+
+        {activeWorkOrders.length === 0 ? (
+          <div className="text-center py-8 text-[13px] text-[#8fa0b5]">No active work orders</div>
+        ) : (
+          <div className="overflow-x-auto -mx-1">
+            <table className="premium-table w-full">
+              <thead>
+                <tr>
+                  <th>Order #</th>
+                  <th>Customer</th>
+                  <th className="hidden md:table-cell">Vehicle</th>
+                  <th>Status</th>
+                  <th className="text-right hidden sm:table-cell">Amount</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-          {activeWorkOrders.length === 0 && (
-            <p className="text-[12px] text-[#8fa0b5] py-6 text-center">Nincs aktív munkalap</p>
-          )}
-        </div>
-      </Card>
+              </thead>
+              <tbody>
+                {activeWorkOrders.map((wo: any) => (
+                  <tr key={wo.id} onClick={() => onNavigate('workorders', wo.id)}>
+                    <td>
+                      <span className="text-[11px] font-bold text-[#185FA5] bg-[#E6F1FB] px-2 py-1 rounded-lg">
+                        {wo.order_number}
+                      </span>
+                    </td>
+                    <td className="font-medium text-[#0B1E3D]">{wo.customer?.full_name}</td>
+                    <td className="hidden md:table-cell text-[#5a6a80] text-[12px]">
+                      {wo.vehicle ? `${wo.vehicle.make} ${wo.vehicle.model} · ${wo.vehicle.license_plate}` : '–'}
+                    </td>
+                    <td><StatusBadge status={wo.status} /></td>
+                    <td className="text-right hidden sm:table-cell font-semibold text-[#0B1E3D]">
+                      {wo.total_amount ? formatCurrency(wo.total_amount) : '–'}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
+
     </div>
   )
 }

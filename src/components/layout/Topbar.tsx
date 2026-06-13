@@ -101,7 +101,7 @@ export function Topbar({ title, onMenuClick, onRefresh, onNewItem, newItemLabel,
         <Menu size={22} />
       </button>
 
-      <h1 className="font-['DM_Serif_Display'] text-[17px] md:text-[18px] text-[#0B1E3D] flex-1 truncate">
+      <h1 className="text-[16px] md:text-[17px] font-semibold text-[#0B1E3D] flex-1 truncate tracking-[-0.2px]">
         {title}
       </h1>
 

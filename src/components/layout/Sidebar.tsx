@@ -2,20 +2,29 @@
 import { useState, useEffect } from 'react'
 import { cn } from '@/lib/utils'
 import {
-  LayoutDashboard, Users, Car, ClipboardList, CheckSquare,
-  Wrench, Route, MessageCircle, BarChart2, Settings,
-  Camera, FileText, Package, LogOut, Building2, ListTodo,
-  Cog, Hammer, Star, TrendingUp, MapPin, History, ScanLine,
-  Truck, ChevronRight, Crown, Bell, BarChart, Calendar, FolderOpen, PenLine
+  LayoutDashboard, Users, Car, ClipboardList, CalendarDays,
+  FileText, Receipt, Building2, FolderOpen, Truck, Star,
+  Crown, BarChart2, TrendingUp, Settings, LogOut, Wrench,
+  ChevronRight, Camera, CheckSquare, Package, ListTodo, Bell,
+  MapPin, Hammer, Cog, Route, MessageSquare, Sparkles
 } from 'lucide-react'
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
-interface NavChild {
+interface NavItem {
   id: string
   label: string
+  icon: any
   badge?: string
   roles?: string[]
+}
+
+interface NavSection {
+  label?: string       // section header label (undefined = no label)
+  roles?: string[]     // hide whole section from these roles
+  items: NavItem[]
+  // items with children (grouped)
+  groups?: NavGroup[]
 }
 
 interface NavGroup {
@@ -23,191 +32,116 @@ interface NavGroup {
   label: string
   icon: any
   roles?: string[]
-  // direct navigation (no children)
-  direct?: boolean
   badge?: string
-  children?: NavChild[]
+  children: { id: string; label: string; badge?: string; roles?: string[] }[]
 }
 
-// ─── Admin / Barbara navigation ──────────────────────────────────────────────
+// ─── Admin navigation ─────────────────────────────────────────────────────────
 
-const ADMIN_NAV: NavGroup[] = [
+const ADMIN_SECTIONS: { label?: string; items: NavItem[]; groups?: NavGroup[] }[] = [
   {
-    id: 'dashboard',
-    label: 'Dashboard',
-    icon: LayoutDashboard,
-    direct: true,
-  },
-  {
-    id: 'calendar',
-    label: 'Naptár',
-    icon: Calendar,
-    direct: true,
-  },
-  {
-    id: 'customers_group',
-    label: 'Ügyfelek & Járművek',
-    icon: Users,
-    roles: ['super_admin', 'admin'],
-    children: [
-      { id: 'customers',          label: 'Ügyfelek' },
-      { id: 'customer_value',     label: 'Ügyfélerték' },
-      { id: 'vehicles',           label: 'Járművek' },
-      { id: 'vehicle_lifecycle',  label: 'Jármű élettörténet' },
-      { id: 'registration_scan',  label: 'Forgalmi OCR' },
-      { id: 'fleet',              label: 'Flotta / Cégek' },
+    items: [
+      { id: 'dashboard',    label: 'Dashboard',   icon: LayoutDashboard },
+      { id: 'calendar',     label: 'Calendar',    icon: CalendarDays },
     ],
   },
   {
-    id: 'workshop_group',
-    label: 'Műhely & Munkalapok',
-    icon: Wrench,
-    children: [
-      { id: 'workorders',       label: 'Munkalapok',        badge: 'open' },
-      { id: 'checkin',          label: 'Check-In / Out' },
-      { id: 'garage',           label: 'Garázs / Műhely' },
-      { id: 'parts_admin',      label: 'Alkatrészek',       badge: 'parts' },
-      { id: 'parts_inventory',  label: 'Alkatrész raktár' },
-      { id: 'photos',           label: 'Fotók' },
+    label: 'Operations',
+    groups: [
+      {
+        id: 'wo_group',
+        label: 'Work Orders',
+        icon: ClipboardList,
+        badge: 'open',
+        children: [
+          { id: 'workorders', label: 'All Work Orders', badge: 'open' },
+          { id: 'checkin',    label: 'Check-In / Out' },
+          { id: 'garage',     label: 'Workshop / Garage' },
+          { id: 'photos',     label: 'Photo Documentation' },
+        ],
+      },
+    ],
+    items: [
+      { id: 'customers', label: 'Customers',    icon: Users },
+      { id: 'vehicles',  label: 'Vehicles',     icon: Car },
+      { id: 'bookings',  label: 'Appointments', icon: CalendarDays, badge: 'today' },
     ],
   },
   {
-    id: 'bookings_group',
-    label: 'Foglalások & Ütemezés',
-    icon: Calendar,
-    roles: ['super_admin', 'admin'],
-    children: [
-      { id: 'bookings',       label: 'Foglalások',      badge: 'today' },
-      { id: 'mobile_service', label: 'Mobile Service' },
-      { id: 'pickup',         label: 'Hozom-Viszem' },
-      { id: 'route_planner',  label: 'Útvonaltervező' },
+    label: 'Business',
+    items: [
+      { id: 'quotes',   label: 'Quotes',      icon: FileText,  badge: 'quotes', roles: ['super_admin', 'admin'] },
+      { id: 'finance',  label: 'Invoices',    icon: Receipt,   roles: ['super_admin', 'admin'] },
+      { id: 'fleet',    label: 'Fleet',       icon: Building2, roles: ['super_admin', 'admin'] },
     ],
   },
   {
-    id: 'docs_group',
-    label: 'Ajánlatok & Dokumentumok',
-    icon: FileText,
-    roles: ['super_admin', 'admin'],
-    children: [
-      { id: 'quotes',   label: 'Árajánlatok', badge: 'quotes' },
-      { id: 'reports',  label: 'KPI / Riportok' },
+    label: 'Documents',
+    items: [
+      { id: 'documents', label: 'Document Center', icon: FolderOpen, roles: ['super_admin', 'admin'] },
     ],
   },
   {
-    id: 'communication_group',
-    label: 'Kommunikáció',
-    icon: MessageCircle,
-    roles: ['super_admin', 'admin'],
-    children: [
-      { id: 'email',         label: '📧 Email' },
-      { id: 'marketing',     label: '📣 Marketing' },
-      { id: 'communication', label: 'Üzenetek' },
-      { id: 'reminders',     label: 'Emlékeztetők' },
-      { id: 'reviews',       label: 'Review kérések' },
+    label: 'Customer Experience',
+    items: [
+      { id: 'pickup',         label: 'Pickup & Delivery', icon: Truck,         roles: ['super_admin', 'admin'] },
+      { id: 'mobile_service', label: 'Mobile Service',    icon: Wrench,        roles: ['super_admin', 'admin'] },
     ],
   },
   {
-    id: 'finance_group',
-    label: 'Pénzügy & Elemzés',
-    icon: BarChart,
-    roles: ['super_admin', 'admin'],
-    children: [
-      { id: 'finance',       label: 'Pénzügy & Számlázás' },
-      { id: 'profit',        label: 'Profit & Költség' },
-      { id: 'ceo_dashboard', label: 'CEO Dashboard' },
+    label: 'Tools',
+    items: [
+      { id: 'ai_assistant', label: 'AI Assistant', icon: Sparkles },
+      { id: 'tasks',        label: 'Tasks',         icon: ListTodo,  badge: 'tasks' },
     ],
   },
   {
-    id: 'services_group',
-    label: 'Szolgáltatások & Készlet',
-    icon: Package,
+    label: 'Management',
     roles: ['super_admin', 'admin'],
-    children: [
-      { id: 'services',   label: 'Árlista' },
-      { id: 'inventory',  label: 'Készlet & Árlista' },
+    items: [
+      { id: 'reports',       label: 'Reports',       icon: BarChart2,  roles: ['super_admin', 'admin'] },
+      { id: 'ceo_dashboard', label: 'Analytics',     icon: TrendingUp, roles: ['super_admin', 'admin'] },
+      { id: 'founder_brain', label: 'Founder Brain', icon: Crown,      roles: ['super_admin'] },
     ],
   },
   {
-    id: 'documents_group',
-    label: 'Dokumentumok & Prémium',
-    icon: FolderOpen,
-    roles: ['super_admin', 'admin'],
-    children: [
-      { id: 'documents',    label: 'Dokumentumközpont' },
-      { id: 'family_fleet', label: 'Family Fleet' },
-      { id: 'signatures',   label: 'Aláírások' },
+    items: [
+      { id: 'settings', label: 'Settings', icon: Settings, roles: ['super_admin', 'admin'] },
     ],
-  },
-  {
-    id: 'quality_control',
-    label: 'Minőségellenőrzés',
-    icon: CheckSquare,
-    direct: true,
-    roles: ['super_admin', 'admin'],
-  },
-  {
-    id: 'ai_assistant',
-    label: 'AI Asszisztens',
-    icon: Star,
-    direct: true,
-    roles: ['super_admin', 'admin', 'mechanic'],
-  },
-  {
-    id: 'tasks',
-    label: 'Feladatok',
-    icon: ListTodo,
-    direct: true,
-    badge: 'tasks',
-  },
-  {
-    id: 'notifications',
-    label: 'Értesítések',
-    icon: Bell,
-    direct: true,
-    badge: 'notifs',
-  },
-  {
-    id: 'founder_brain',
-    label: 'Founder Brain',
-    icon: Crown,
-    direct: true,
-    roles: ['super_admin'],
-  },
-  {
-    id: 'settings',
-    label: 'Beállítások',
-    icon: Settings,
-    direct: true,
-    roles: ['super_admin', 'admin'],
   },
 ]
 
-// ─── Karl / Mechanic navigation (flat, no groups) ────────────────────────────
+// ─── Mechanic navigation (flat) ──────────────────────────────────────────────
 
-const MECHANIC_NAV: NavGroup[] = [
-  { id: 'technician',   label: 'Mai munkáim',         icon: Hammer,       direct: true },
-  { id: 'calendar',    label: 'Naptár',              icon: Calendar,     direct: true },
-  { id: 'workorders',   label: 'Aktív munkalapok',    icon: ClipboardList, direct: true, badge: 'open' },
-  { id: 'checkin',      label: 'Check-In / Out',      icon: CheckSquare,  direct: true },
-  { id: 'mobile_service', label: 'Mobile Service',   icon: Truck,        direct: true },
-  { id: 'route_planner', label: 'Útvonaltervező',    icon: MapPin,       direct: true },
-  { id: 'photos',       label: 'Fotók',               icon: Camera,       direct: true },
-  { id: 'tasks',        label: 'Feladatok',            icon: ListTodo,     direct: true, badge: 'tasks' },
-  { id: 'parts',        label: 'Alkatrész igénylés',  icon: Cog,          direct: true, badge: 'parts' },
-  { id: 'ai_assistant', label: 'AI Asszisztens',      icon: Star,         direct: true },
+const MECHANIC_ITEMS: NavItem[] = [
+  { id: 'technician',     label: 'My Work Today',     icon: Hammer },
+  { id: 'calendar',       label: 'Calendar',           icon: CalendarDays },
+  { id: 'workorders',     label: 'Active Work Orders', icon: ClipboardList, badge: 'open' },
+  { id: 'checkin',        label: 'Check-In / Out',     icon: CheckSquare },
+  { id: 'mobile_service', label: 'Mobile Service',     icon: Truck },
+  { id: 'route_planner',  label: 'Route Planner',      icon: Route },
+  { id: 'photos',         label: 'Photos',             icon: Camera },
+  { id: 'tasks',          label: 'Tasks',              icon: ListTodo,      badge: 'tasks' },
+  { id: 'parts',          label: 'Parts Request',      icon: Cog,           badge: 'parts' },
+  { id: 'ai_assistant',   label: 'AI Assistant',       icon: Sparkles },
 ]
 
-// ─── Helper: which pages belong to a group ───────────────────────────────────
+// ─── Helper ───────────────────────────────────────────────────────────────────
 
-function groupForPage(page: string, nav: NavGroup[]): string | null {
-  for (const group of nav) {
-    if (group.direct && group.id === page) return null
-    if (group.children?.some(c => c.id === page)) return group.id
+function groupContainsPage(group: NavGroup, page: string) {
+  return group.children.some(c => c.id === page)
+}
+
+function findGroupParent(page: string): string | null {
+  for (const section of ADMIN_SECTIONS) {
+    for (const group of section.groups || []) {
+      if (groupContainsPage(group, page)) return group.id
+    }
   }
   return null
 }
 
-// ─── Sidebar component ───────────────────────────────────────────────────────
+// ─── Sidebar ─────────────────────────────────────────────────────────────────
 
 interface SidebarProps {
   activePage: string
@@ -227,183 +161,216 @@ export function Sidebar({
   userInitials, badges = {}, isOpen, onClose
 }: SidebarProps) {
   const isMechanic = userRoleKey === 'mechanic'
-  const nav = isMechanic ? MECHANIC_NAV : ADMIN_NAV
 
-  // Auto-expand the group that contains the current active page
   const [expanded, setExpanded] = useState<Set<string>>(() => {
-    const parentId = groupForPage(activePage, ADMIN_NAV)
-    return parentId ? new Set([parentId]) : new Set()
+    const parent = findGroupParent(activePage)
+    return parent ? new Set([parent]) : new Set()
   })
 
   useEffect(() => {
-    const parentId = groupForPage(activePage, nav)
-    if (parentId) {
-      setExpanded(prev => {
-        if (prev.has(parentId)) return prev
-        return new Set([...prev, parentId])
-      })
-    }
+    const parent = findGroupParent(activePage)
+    if (parent) setExpanded(prev => prev.has(parent) ? prev : new Set([...prev, parent]))
   }, [activePage])
 
-  function toggleGroup(id: string) {
-    setExpanded(prev => {
-      const next = new Set(prev)
-      next.has(id) ? next.delete(id) : next.add(id)
-      return next
-    })
+  function toggle(id: string) {
+    setExpanded(prev => { const n = new Set(prev); n.has(id) ? n.delete(id) : n.add(id); return n })
   }
 
-  function navigate(page: string) {
-    onNavigate(page)
-    onClose?.()
-  }
+  function navigate(page: string) { onNavigate(page); onClose?.() }
 
-  function isRoleVisible(roles?: string[]) {
+  function b(key?: string) { return key ? (badges[key] || 0) : 0 }
+
+  function roleOk(roles?: string[]) {
     if (!roles) return true
     if (!userRoleKey) return true
     return roles.includes(userRoleKey)
   }
 
-  function getBadge(badge?: string) {
-    if (!badge) return 0
-    return badges[badge] || 0
-  }
-
   return (
     <>
-      {isOpen && (
-        <div className="fixed inset-0 bg-black/50 z-[39] md:hidden" onClick={onClose} />
-      )}
+      {isOpen && <div className="fixed inset-0 bg-black/50 z-[39] md:hidden" onClick={onClose} />}
       <aside className={cn(
-        'w-[220px] min-w-[220px] bg-[#0B1E3D] flex flex-col overflow-y-auto relative z-40',
-        'border-r border-r-[rgba(201,168,76,0.15)]',
+        'w-[240px] min-w-[240px] bg-[#0B1E3D] flex flex-col overflow-hidden relative z-40',
+        'border-r border-r-[rgba(201,168,76,0.12)]',
         'max-md:fixed max-md:top-0 max-md:left-0 max-md:h-full max-md:transition-transform max-md:duration-300',
         isOpen ? 'max-md:translate-x-0' : 'max-md:-translate-x-full'
       )}>
-        {/* Logo */}
-        <div className="px-4 pt-5 pb-4 border-b border-white/5 shrink-0">
-          <div className="w-9 h-9 bg-[#C9A84C] rounded-lg flex items-center justify-center mb-2.5">
-            <Wrench size={18} color="#0B1E3D" />
+
+        {/* ── Logo ── */}
+        <div className="px-5 pt-5 pb-4 border-b border-white/[0.06] shrink-0">
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 bg-[#C9A84C] rounded-lg flex items-center justify-center shrink-0">
+              <Wrench size={15} color="#0B1E3D" strokeWidth={2.5} />
+            </div>
+            <div>
+              <div className="font-['DM_Serif_Display'] text-[14px] text-white leading-tight">Autohaus Friedrich</div>
+              <div className="text-[9px] text-white/30 tracking-[2px] uppercase mt-0.5">Swiss Garage OS</div>
+            </div>
           </div>
-          <div className="font-['DM_Serif_Display'] text-[15px] text-white leading-tight">Autohaus Friedrich</div>
-          <div className="text-[9px] text-white/35 tracking-[2px] uppercase mt-0.5">Swiss Operations</div>
         </div>
 
-        {/* Navigation */}
-        <nav className="flex-1 py-2 overflow-y-auto">
-          {nav.map(group => {
-            if (!isRoleVisible(group.roles)) return null
+        {/* ── Navigation ── */}
+        <nav className="flex-1 py-2 overflow-y-auto scrollbar-hide">
 
-            const groupBadge = getBadge(group.badge)
-
-            // ── Direct navigation item ───────────────────────────────────
-            if (group.direct) {
-              const isActive = activePage === group.id
-              const Icon = group.icon
-              return (
-                <button
-                  key={group.id}
-                  onClick={() => navigate(group.id)}
-                  className={cn(
-                    'w-full flex items-center gap-2.5 px-4 py-[8px] text-[12.5px] transition-all border-l-2 text-left',
-                    isActive
-                      ? 'text-white bg-[rgba(201,168,76,0.12)] border-l-[#C9A84C]'
-                      : 'text-white/50 hover:text-white/85 hover:bg-white/5 border-l-transparent'
-                  )}
-                >
-                  <Icon size={15} className="shrink-0" />
-                  <span className="flex-1 truncate">{group.label}</span>
-                  {groupBadge > 0 && (
-                    <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded-xl bg-[#C9384C] text-white shrink-0">
-                      {groupBadge}
-                    </span>
-                  )}
-                </button>
-              )
-            }
-
-            // ── Expandable group ─────────────────────────────────────────
-            const Icon = group.icon
-            const isOpen2 = expanded.has(group.id)
-            const hasActiveChild = group.children?.some(c => c.id === activePage)
-
-            // Sum up badges from children
-            const childBadgeSum = group.children?.reduce((sum, c) => sum + getBadge(c.badge), 0) || 0
-
-            return (
-              <div key={group.id}>
-                <button
-                  onClick={() => toggleGroup(group.id)}
-                  className={cn(
-                    'w-full flex items-center gap-2.5 px-4 py-[8px] text-[12.5px] transition-all border-l-2 text-left',
-                    hasActiveChild
-                      ? 'text-white border-l-[#C9A84C] bg-[rgba(201,168,76,0.06)]'
-                      : 'text-white/50 hover:text-white/85 hover:bg-white/5 border-l-transparent'
-                  )}
-                >
-                  <Icon size={15} className="shrink-0" />
-                  <span className="flex-1 truncate">{group.label}</span>
-                  {!isOpen2 && childBadgeSum > 0 && (
-                    <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded-xl bg-[#C9384C] text-white shrink-0 mr-1">
-                      {childBadgeSum}
-                    </span>
-                  )}
-                  <ChevronRight
-                    size={13}
-                    className={cn('shrink-0 text-white/25 transition-transform duration-200', isOpen2 && 'rotate-90')}
+          {isMechanic ? (
+            // Mechanic flat nav
+            <>
+              <div className="section-label">Mechanic Menu</div>
+              {MECHANIC_ITEMS.map(item => {
+                const Icon = item.icon
+                const isActive = activePage === item.id
+                const badge = b(item.badge)
+                return (
+                  <SidebarItem
+                    key={item.id}
+                    icon={<Icon size={15} />}
+                    label={item.label}
+                    isActive={isActive}
+                    badge={badge}
+                    onClick={() => navigate(item.id)}
                   />
-                </button>
+                )
+              })}
+            </>
+          ) : (
+            // Admin sectioned nav
+            ADMIN_SECTIONS.map((section, si) => {
+              const items = (section.items || []).filter(i => roleOk(i.roles))
+              const groups = (section.groups || []).filter(g => roleOk(g.roles))
+              if (items.length === 0 && groups.length === 0) return null
+              return (
+                <div key={si}>
+                  {section.label && <div className="section-label">{section.label}</div>}
 
-                {/* Children */}
-                {isOpen2 && (
-                  <div className="pb-1">
-                    {group.children?.filter(c => isRoleVisible(c.roles)).map(child => {
-                      const isChildActive = activePage === child.id
-                      const childBadge = getBadge(child.badge)
-                      return (
+                  {/* Groups (expandable) */}
+                  {groups.map(group => {
+                    const GroupIcon = group.icon
+                    const isExpanded = expanded.has(group.id)
+                    const hasActive = group.children.some(c => c.id === activePage)
+                    const groupBadge = b(group.badge)
+                    const childBadgeSum = group.children.reduce((s, c) => s + b(c.badge), 0)
+
+                    return (
+                      <div key={group.id}>
                         <button
-                          key={child.id}
-                          onClick={() => navigate(child.id)}
+                          onClick={() => toggle(group.id)}
                           className={cn(
-                            'w-full flex items-center gap-2 pl-[38px] pr-4 py-[7px] text-[12px] transition-all border-l-2 text-left',
-                            isChildActive
-                              ? 'text-[#C9A84C] bg-[rgba(201,168,76,0.10)] border-l-[#C9A84C]'
-                              : 'text-white/40 hover:text-white/75 hover:bg-white/5 border-l-transparent'
+                            'w-full flex items-center gap-2.5 px-5 py-[8px] text-[12.5px] transition-all border-l-2 text-left',
+                            hasActive
+                              ? 'text-white border-l-[#C9A84C] bg-[rgba(201,168,76,0.07)]'
+                              : 'text-white/50 hover:text-white/80 hover:bg-white/[0.04] border-l-transparent'
                           )}
                         >
-                          <span className="w-1 h-1 rounded-full bg-current shrink-0 opacity-60" />
-                          <span className="flex-1 truncate">{child.label}</span>
-                          {childBadge > 0 && (
-                            <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded-xl bg-[#C9384C] text-white shrink-0">
-                              {childBadge}
+                          <GroupIcon size={14} className="shrink-0" />
+                          <span className="flex-1 truncate font-medium">{group.label}</span>
+                          {!isExpanded && childBadgeSum > 0 && (
+                            <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-[#C9384C] text-white shrink-0 mr-1">
+                              {childBadgeSum}
                             </span>
                           )}
+                          <ChevronRight size={12} className={cn('shrink-0 text-white/20 transition-transform duration-200', isExpanded && 'rotate-90')} />
                         </button>
-                      )
-                    })}
-                  </div>
-                )}
-              </div>
-            )
-          })}
+
+                        {isExpanded && (
+                          <div className="pb-1">
+                            {group.children.filter(c => roleOk(c.roles)).map(child => {
+                              const isActive = activePage === child.id
+                              const cb = b(child.badge)
+                              return (
+                                <button
+                                  key={child.id}
+                                  onClick={() => navigate(child.id)}
+                                  className={cn(
+                                    'w-full flex items-center gap-2 pl-[42px] pr-5 py-[7px] text-[12px] transition-all border-l-2 text-left',
+                                    isActive
+                                      ? 'text-[#C9A84C] bg-[rgba(201,168,76,0.09)] border-l-[#C9A84C]'
+                                      : 'text-white/35 hover:text-white/70 hover:bg-white/[0.03] border-l-transparent'
+                                  )}
+                                >
+                                  <span className="w-1 h-1 rounded-full bg-current shrink-0 opacity-50" />
+                                  <span className="flex-1 truncate">{child.label}</span>
+                                  {cb > 0 && (
+                                    <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-[#C9384C] text-white shrink-0">
+                                      {cb}
+                                    </span>
+                                  )}
+                                </button>
+                              )
+                            })}
+                          </div>
+                        )}
+                      </div>
+                    )
+                  })}
+
+                  {/* Direct items */}
+                  {items.map(item => {
+                    const Icon = item.icon
+                    const isActive = activePage === item.id
+                    const badge = b(item.badge)
+                    return (
+                      <SidebarItem
+                        key={item.id}
+                        icon={<Icon size={14} />}
+                        label={item.label}
+                        isActive={isActive}
+                        badge={badge}
+                        onClick={() => navigate(item.id)}
+                      />
+                    )
+                  })}
+                </div>
+              )
+            })
+          )}
         </nav>
 
-        {/* User footer */}
-        <div className="px-4 py-3 border-t border-white/5 mt-auto shrink-0">
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-full bg-[rgba(201,168,76,0.2)] border border-[rgba(201,168,76,0.4)] flex items-center justify-center text-[11px] font-semibold text-[#C9A84C] shrink-0">
+        {/* ── User footer ── */}
+        <div className="px-4 py-3.5 border-t border-white/[0.06] shrink-0">
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 rounded-full bg-[rgba(201,168,76,0.15)] border border-[rgba(201,168,76,0.35)] flex items-center justify-center text-[11px] font-bold text-[#C9A84C] shrink-0">
               {userInitials || '?'}
             </div>
             <div className="flex-1 min-w-0">
-              <div className="text-[12px] text-white font-medium truncate">{userName || 'Betöltés...'}</div>
-              <div className="text-[10px] text-white/35 truncate">{userRole}</div>
+              <div className="text-[12px] text-white font-medium truncate">{userName || 'Loading...'}</div>
+              <div className="text-[10px] text-white/30 truncate">{userRole}</div>
             </div>
-            <button onClick={onLogout} className="text-white/40 hover:text-white/80 transition-colors p-1" title="Kijelentkezés">
-              <LogOut size={15} />
+            <button onClick={onLogout} className="text-white/30 hover:text-white/70 transition-colors p-1.5 rounded-lg hover:bg-white/5" title="Sign out">
+              <LogOut size={14} />
             </button>
           </div>
         </div>
       </aside>
     </>
+  )
+}
+
+// ─── Reusable sidebar item ────────────────────────────────────────────────────
+
+function SidebarItem({ icon, label, isActive, badge, onClick }: {
+  icon: React.ReactNode
+  label: string
+  isActive: boolean
+  badge?: number
+  onClick: () => void
+}) {
+  return (
+    <button
+      onClick={onClick}
+      className={cn(
+        'w-full flex items-center gap-2.5 px-5 py-[8px] text-[12.5px] transition-all border-l-2 text-left font-medium',
+        isActive
+          ? 'text-white bg-[rgba(201,168,76,0.10)] border-l-[#C9A84C]'
+          : 'text-white/50 hover:text-white/80 hover:bg-white/[0.04] border-l-transparent'
+      )}
+    >
+      <span className="shrink-0">{icon}</span>
+      <span className="flex-1 truncate">{label}</span>
+      {(badge ?? 0) > 0 && (
+        <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-[#C9384C] text-white shrink-0">
+          {badge}
+        </span>
+      )}
+    </button>
   )
 }
