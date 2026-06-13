@@ -7,7 +7,8 @@ import { useToast } from '@/components/ui/toast'
 import { createClient } from '@/lib/supabase/client'
 import { generateQuotePDF, generateWorkOrderPDF, generateCheckInPDF, generateCheckOutPDF, generateInvoicePDF } from '@/lib/pdf'
 import { type PdfLang, LANG_OPTIONS } from '@/lib/pdf-i18n'
-import { Download, Printer, Mail, MessageCircle, Send, Globe } from 'lucide-react'
+import { autoSaveDocument, type DocSource } from '@/lib/document-auto'
+import { Download, Printer, Mail, MessageCircle, Send, Globe, FolderOpen } from 'lucide-react'
 
 type DocType = 'quote' | 'workorder' | 'checkin' | 'checkout' | 'invoice'
 
@@ -17,10 +18,11 @@ interface DocumentActionsProps {
   customerId?: string
   workOrderId?: string
   quoteId?: string
+  vehicleId?: string
   small?: boolean
 }
 
-export function DocumentActions({ type, data, customerId, workOrderId, quoteId, small }: DocumentActionsProps) {
+export function DocumentActions({ type, data, customerId, workOrderId, quoteId, vehicleId, small }: DocumentActionsProps) {
   const [lang, setLang] = useState<PdfLang>('de')
   const [sendModal, setSendModal] = useState<'email' | 'whatsapp' | null>(null)
   const [emailTo, setEmailTo] = useState(data?.customer?.email || '')
@@ -29,8 +31,43 @@ export function DocumentActions({ type, data, customerId, workOrderId, quoteId, 
   const [whatsappNum, setWhatsappNum] = useState(data?.customer?.whatsapp || data?.customer?.phone || '')
   const [whatsappMsg, setWhatsappMsg] = useState(getDefaultWhatsApp(type, data))
   const [sending, setSending] = useState(false)
+  const [saving, setSaving] = useState(false)
   const { toast } = useToast()
   const supabase = createClient()
+
+  // Auto-save PDF to Document Center
+  const handleSaveToDocCenter = async () => {
+    setSaving(true)
+    try {
+      const doc = getPDF()
+      const blob = doc.output('blob') as Blob
+      const filename = getFileName()
+      const source: DocSource = type === 'workorder' ? 'workorder'
+        : type === 'quote' ? 'quote'
+        : type === 'checkin' ? 'checkin'
+        : type === 'checkout' ? 'checkout'
+        : 'invoice'
+
+      const { docId, error } = await autoSaveDocument(supabase, blob, {
+        name: filename.replace('.pdf', ''),
+        source_module: source,
+        customer_id:   customerId  || data?.customer_id  || data?.customer?.id,
+        vehicle_id:    vehicleId   || data?.vehicle_id   || data?.vehicle?.id,
+        work_order_id: workOrderId || data?.work_order_id,
+        quote_id:      quoteId     || (type === 'quote' ? data?.id : undefined),
+        invoice_id:    type === 'invoice' ? data?.id : undefined,
+      })
+      if (error) {
+        toast('Hiba a mentéskor: ' + error)
+      } else {
+        toast(`Dokumentum mentve: ${docId || 'OK'} ✓`)
+      }
+    } catch (e: any) {
+      toast('Hiba: ' + e.message)
+    } finally {
+      setSaving(false)
+    }
+  }
 
   function getPDF() {
     switch (type) {
@@ -145,6 +182,9 @@ export function DocumentActions({ type, data, customerId, workOrderId, quoteId, 
           </Button>
           <Button variant="gold" size={btnSize} onClick={() => setSendModal('whatsapp')}>
             <MessageCircle size={13} /> WhatsApp
+          </Button>
+          <Button variant="secondary" size={btnSize} onClick={handleSaveToDocCenter} disabled={saving}>
+            <FolderOpen size={13} /> {saving ? '...' : 'Mentés'}
           </Button>
         </div>
       </div>
