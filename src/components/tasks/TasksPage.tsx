@@ -168,7 +168,6 @@ export function TasksPage({ refreshKey, onRefresh, profile }: {
     }
     // Only set optional columns if schema_tasks_v2 was run
     try {
-      if (form.task_type) payload.task_type = form.task_type
       if (form.waiting_reason) payload.waiting_reason = form.waiting_reason
       if (form.recurrence_type && form.recurrence_type !== 'none') {
         payload.recurrence_type = form.recurrence_type
