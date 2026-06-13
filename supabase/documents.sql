@@ -2,10 +2,7 @@ create sequence if not exists documents_seq start 1;
 
 create table if not exists documents (
   id              uuid primary key default gen_random_uuid(),
-  doc_id          text unique not null default (
-    'DOC-' || to_char(now(), 'YYYY') || '-' ||
-    lpad(nextval('documents_seq')::text, 6, '0')
-  ),
+  doc_id          text unique,
   name            text not null,
   doc_type        text not null default 'other',
   category        text not null default 'other',
@@ -32,6 +29,20 @@ create table if not exists documents (
   created_at      timestamptz default now(),
   updated_at      timestamptz default now()
 );
+
+create or replace function set_documents_doc_id()
+returns trigger language plpgsql as $$
+begin
+  if new.doc_id is null then
+    new.doc_id := 'DOC-' || to_char(now(), 'YYYY') || '-' || lpad(nextval('documents_seq')::text, 6, '0');
+  end if;
+  return new;
+end; $$;
+
+drop trigger if exists documents_doc_id_trigger on documents;
+create trigger documents_doc_id_trigger
+  before insert on documents
+  for each row execute function set_documents_doc_id();
 
 create or replace function set_documents_updated_at()
 returns trigger language plpgsql as $$
