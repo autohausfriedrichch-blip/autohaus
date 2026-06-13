@@ -167,6 +167,13 @@ const ADMIN_NAV: NavGroup[] = [
     badge: 'notifs',
   },
   {
+    id: 'founder_brain',
+    label: 'Founder Brain',
+    icon: Crown,
+    direct: true,
+    roles: ['super_admin'],
+  },
+  {
     id: 'settings',
     label: 'Beállítások',
     icon: Settings,

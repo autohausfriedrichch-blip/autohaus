@@ -45,6 +45,7 @@ import { NotificationsPage } from '@/components/notifications/NotificationsPage'
 import { SystemHealthCheck } from '@/components/system-health/SystemHealthCheck'
 import { EmailPage } from '@/components/email/EmailPage'
 import { MarketingPage } from '@/components/marketing/MarketingPage'
+import { FounderBrainPage } from '@/components/founder-brain/FounderBrainPage'
 import type { Profile } from '@/lib/types'
 import { useRouter } from 'next/navigation'
 
@@ -91,6 +92,7 @@ const PAGE_TITLES: Record<string, string> = {
   notifications: 'Értesítések',
   email: '📧 Email',
   marketing: '📣 Marketing',
+  founder_brain: '🧠 Founder Brain',
 }
 
 function AdminApp() {
@@ -211,6 +213,7 @@ function AdminApp() {
       case 'system_health':      return <SystemHealthCheck profile={profile} onClose={() => setActivePage('dashboard')} />
       case 'email':              return <EmailPage profile={profile} refreshKey={refreshKey} />
       case 'marketing':          return <MarketingPage profile={profile} refreshKey={refreshKey} onRefresh={() => setRefreshKey(k => k + 1)} />
+      case 'founder_brain':      return <FounderBrainPage profile={profile} refreshKey={refreshKey} onRefresh={() => setRefreshKey(k => k + 1)} />
       default: return (
         <div className="flex flex-col items-center justify-center h-64 text-[#5a6a80]">
           <p className="text-lg font-medium">{pageTitle}</p>
