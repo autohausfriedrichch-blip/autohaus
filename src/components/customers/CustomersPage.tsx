@@ -127,65 +127,65 @@ export function CustomersPage({ refreshKey, onNavigate }: { refreshKey: number; 
     <div className="animate-fade-in">
       <div className="flex gap-2.5 mb-4">
         <div className="relative flex-1">
-          <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#8fa0b5]" />
+          <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#888888]" />
           <input
             type="text"
             value={search}
             onChange={e => setSearch(e.target.value)}
             placeholder="Keresés név, telefon, e-mail, ügyfélszám szerint..."
-            className="w-full pl-9 pr-3 py-2 border border-[rgba(11,30,61,0.18)] rounded-lg text-[13px] bg-white outline-none focus:border-[#0B1E3D]"
+            className="w-full pl-9 pr-3 py-2 border border-[rgba(0,0,0,0.18)] rounded-lg text-[13px] bg-white outline-none focus:border-[#0D0D0D]"
           />
         </div>
         <Button variant="primary" onClick={openNew}><Plus size={14} /> Új ügyfél</Button>
       </div>
 
       {loading ? (
-        <div className="text-center py-12 text-[#5a6a80] text-sm">Ügyfelek betöltése...</div>
+        <div className="text-center py-12 text-[#4a4a4a] text-sm">Ügyfelek betöltése...</div>
       ) : (
         <Card className="p-0 overflow-hidden">
           <table className="w-full text-[13px]">
             <thead>
-              <tr className="bg-[#F4F5F7] border-b border-[rgba(11,30,61,0.10)]">
-                <th className="text-left px-4 py-3 text-[11px] font-semibold text-[#5a6a80] uppercase tracking-wider">Név</th>
-                <th className="text-left px-4 py-3 text-[11px] font-semibold text-[#5a6a80] uppercase tracking-wider hidden md:table-cell">Kapcsolat</th>
-                <th className="text-left px-4 py-3 text-[11px] font-semibold text-[#5a6a80] uppercase tracking-wider hidden lg:table-cell">Cím</th>
-                <th className="text-center px-4 py-3 text-[11px] font-semibold text-[#5a6a80] uppercase tracking-wider hidden sm:table-cell">Járművek</th>
-                <th className="text-left px-4 py-3 text-[11px] font-semibold text-[#5a6a80] uppercase tracking-wider hidden lg:table-cell">Regisztrált</th>
+              <tr className="bg-[#F4F5F7] border-b border-[rgba(0,0,0,0.10)]">
+                <th className="text-left px-4 py-3 text-[11px] font-semibold text-[#4a4a4a] uppercase tracking-wider">Név</th>
+                <th className="text-left px-4 py-3 text-[11px] font-semibold text-[#4a4a4a] uppercase tracking-wider hidden md:table-cell">Kapcsolat</th>
+                <th className="text-left px-4 py-3 text-[11px] font-semibold text-[#4a4a4a] uppercase tracking-wider hidden lg:table-cell">Cím</th>
+                <th className="text-center px-4 py-3 text-[11px] font-semibold text-[#4a4a4a] uppercase tracking-wider hidden sm:table-cell">Járművek</th>
+                <th className="text-left px-4 py-3 text-[11px] font-semibold text-[#4a4a4a] uppercase tracking-wider hidden lg:table-cell">Regisztrált</th>
                 <th className="px-4 py-3" />
               </tr>
             </thead>
             <tbody>
               {filtered.map(c => (
-                <tr key={c.id} className="border-b border-[rgba(11,30,61,0.06)] hover:bg-[#fafbfc] transition-colors">
+                <tr key={c.id} className="border-b border-[rgba(0,0,0,0.06)] hover:bg-[#fafbfc] transition-colors">
                   <td className="px-4 py-3">
-                    <div className="font-semibold text-[#0B1E3D] flex items-center gap-2">
+                    <div className="font-semibold text-[#0D0D0D] flex items-center gap-2">
                       {c.full_name}
-                      {c.customer_number && <span className="text-[10px] font-bold text-[#185FA5] bg-[#E6F1FB] px-1.5 py-0.5 rounded font-mono">{c.customer_number}</span>}
+                      {c.customer_number && <span className="text-[10px] font-bold text-[#333333] bg-[#F0F0F0] px-1.5 py-0.5 rounded font-mono">{c.customer_number}</span>}
                     </div>
-                    <div className="text-[11px] text-[#5a6a80] flex items-center gap-1 mt-0.5 md:hidden">
+                    <div className="text-[11px] text-[#4a4a4a] flex items-center gap-1 mt-0.5 md:hidden">
                       <Phone size={10} /> {c.phone}
                     </div>
                   </td>
                   <td className="px-4 py-3 hidden md:table-cell">
-                    <div className="flex items-center gap-1.5 text-[12px] text-[#5a6a80]"><Phone size={12} /> {c.phone}</div>
-                    {c.email && <div className="flex items-center gap-1.5 text-[12px] text-[#5a6a80] mt-0.5"><Mail size={12} /> {c.email}</div>}
+                    <div className="flex items-center gap-1.5 text-[12px] text-[#4a4a4a]"><Phone size={12} /> {c.phone}</div>
+                    {c.email && <div className="flex items-center gap-1.5 text-[12px] text-[#4a4a4a] mt-0.5"><Mail size={12} /> {c.email}</div>}
                   </td>
-                  <td className="px-4 py-3 hidden lg:table-cell text-[12px] text-[#5a6a80]">
+                  <td className="px-4 py-3 hidden lg:table-cell text-[12px] text-[#4a4a4a]">
                     {c.address ? <div className="flex items-center gap-1"><MapPin size={12} /> {c.city || c.address}</div> : '–'}
                   </td>
                   <td className="px-4 py-3 text-center hidden sm:table-cell">
-                    <div className="inline-flex items-center gap-1 text-[12px] font-medium text-[#0B1E3D]">
-                      <Car size={13} className="text-[#C9A84C]" />
+                    <div className="inline-flex items-center gap-1 text-[12px] font-medium text-[#0D0D0D]">
+                      <Car size={13} className="text-[#C8102E]" />
                       {(c.vehicles as any)?.length || 0}
                     </div>
                   </td>
-                  <td className="px-4 py-3 hidden lg:table-cell text-[12px] text-[#8fa0b5]">{formatDate(c.created_at)}</td>
+                  <td className="px-4 py-3 hidden lg:table-cell text-[12px] text-[#888888]">{formatDate(c.created_at)}</td>
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-1 justify-end">
                       <button onClick={() => setWizardCustomer({ id: c.id, name: c.full_name })} title="Árajánlat / Munkalap indítása"
-                        className="p-1.5 text-[#5a6a80] hover:text-[#C9A84C] transition-colors"><ClipboardList size={14} /></button>
-                      <button onClick={() => openEdit(c)} className="p-1.5 text-[#5a6a80] hover:text-[#0B1E3D] transition-colors"><Edit2 size={14} /></button>
-                      <button onClick={() => handleDelete(c.id)} className="p-1.5 text-[#5a6a80] hover:text-[#C9384C] transition-colors"><Trash2 size={14} /></button>
+                        className="p-1.5 text-[#4a4a4a] hover:text-[#C8102E] transition-colors"><ClipboardList size={14} /></button>
+                      <button onClick={() => openEdit(c)} className="p-1.5 text-[#4a4a4a] hover:text-[#0D0D0D] transition-colors"><Edit2 size={14} /></button>
+                      <button onClick={() => handleDelete(c.id)} className="p-1.5 text-[#4a4a4a] hover:text-[#C8102E] transition-colors"><Trash2 size={14} /></button>
                     </div>
                   </td>
                 </tr>
@@ -193,7 +193,7 @@ export function CustomersPage({ refreshKey, onNavigate }: { refreshKey: number; 
             </tbody>
           </table>
           {filtered.length === 0 && (
-            <div className="text-center py-10 text-[#8fa0b5] text-sm">
+            <div className="text-center py-10 text-[#888888] text-sm">
               {search ? 'Nem található ügyfél' : 'Még nincs ügyfél'}
             </div>
           )}
@@ -238,9 +238,9 @@ export function CustomersPage({ refreshKey, onNavigate }: { refreshKey: number; 
                     setWhatsappSame(e.target.checked)
                     if (e.target.checked) setForm(f => ({ ...f, whatsapp: f.phone }))
                   }}
-                  className="w-3.5 h-3.5 accent-[#C9A84C]"
+                  className="w-3.5 h-3.5 accent-[#C8102E]"
                 />
-                <span className="text-[11px] text-[#5a6a80]">Ugyanaz mint a telefon</span>
+                <span className="text-[11px] text-[#4a4a4a]">Ugyanaz mint a telefon</span>
               </label>
             </div>
             <Input

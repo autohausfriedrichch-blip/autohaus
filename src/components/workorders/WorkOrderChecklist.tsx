@@ -274,11 +274,11 @@ export function WorkOrderChecklist({ wo, tasks, photos, parts, events, notes, pr
         <div className="flex items-center gap-4">
           <div className="text-center shrink-0">
             <div className={`text-[36px] font-bold leading-none ${scoreColor}`}>{score}%</div>
-            <div className="text-[10px] text-[#5a6a80] mt-0.5 font-medium uppercase tracking-wider">teljesítés</div>
+            <div className="text-[10px] text-[#4a4a4a] mt-0.5 font-medium uppercase tracking-wider">teljesítés</div>
           </div>
           <div className="flex-1">
             <div className="flex items-center justify-between mb-1.5">
-              <span className="text-[12px] font-semibold text-[#0B1E3D]">Lezárási állapot</span>
+              <span className="text-[12px] font-semibold text-[#0D0D0D]">Lezárási állapot</span>
               {canClose
                 ? <span className="flex items-center gap-1 text-[11px] font-semibold text-emerald-600"><Unlock size={12}/> Lezárható</span>
                 : <span className="flex items-center gap-1 text-[11px] font-semibold text-red-600"><Lock size={12}/> Nem lezárható</span>
@@ -287,7 +287,7 @@ export function WorkOrderChecklist({ wo, tasks, photos, parts, events, notes, pr
             <div className="w-full bg-white/60 rounded-full h-2.5 overflow-hidden">
               <div className={`h-full rounded-full transition-all duration-500 ${scoreBar}`} style={{ width: `${score}%` }} />
             </div>
-            <div className="text-[11px] text-[#5a6a80] mt-1.5">
+            <div className="text-[11px] text-[#4a4a4a] mt-1.5">
               {totalPassed}/{totalRequired} kötelező elem teljesítve
               {missingItems.length > 0 && <span className="text-red-600 ml-2">· {missingItems.length} hiányzik</span>}
             </div>
@@ -326,7 +326,7 @@ export function WorkOrderChecklist({ wo, tasks, photos, parts, events, notes, pr
                 className="w-full flex items-center gap-3 px-4 py-3 text-left"
               >
                 <Icon size={15} className={allOk ? 'text-emerald-600' : 'text-red-500'} />
-                <span className="flex-1 text-[13px] font-medium text-[#0B1E3D]">{section.label}</span>
+                <span className="flex-1 text-[13px] font-medium text-[#0D0D0D]">{section.label}</span>
                 <span className={`text-[11px] font-semibold mr-2 ${allOk ? 'text-emerald-600' : 'text-red-600'}`}>
                   {sectionPassed}/{sectionRequired}
                 </span>
@@ -334,7 +334,7 @@ export function WorkOrderChecklist({ wo, tasks, photos, parts, events, notes, pr
                   ? <CheckCircle2 size={16} className="text-emerald-500 shrink-0" />
                   : <XCircle size={16} className="text-red-400 shrink-0" />
                 }
-                {isOpen ? <ChevronUp size={13} className="text-[#8fa0b5] shrink-0 ml-1" /> : <ChevronDown size={13} className="text-[#8fa0b5] shrink-0 ml-1" />}
+                {isOpen ? <ChevronUp size={13} className="text-[#888888] shrink-0 ml-1" /> : <ChevronDown size={13} className="text-[#888888] shrink-0 ml-1" />}
               </button>
 
               {isOpen && (
@@ -350,7 +350,7 @@ export function WorkOrderChecklist({ wo, tasks, photos, parts, events, notes, pr
                       <span className={`text-[12px] flex-1 ${item.passed ? 'text-emerald-700' : item.optional ? 'text-amber-600' : 'text-red-600'}`}>
                         {item.label}
                         {item.optional && !item.passed && <span className="text-[10px] text-amber-400 ml-1">(opcionális)</span>}
-                        {item.skipReason && <span className="text-[10px] text-[#8fa0b5] ml-1">– {item.skipReason}</span>}
+                        {item.skipReason && <span className="text-[10px] text-[#888888] ml-1">– {item.skipReason}</span>}
                       </span>
                     </div>
                   ))}
@@ -358,14 +358,14 @@ export function WorkOrderChecklist({ wo, tasks, photos, parts, events, notes, pr
                   {/* Skip options */}
                   {section.id === 'vehicle' && (
                     <label className="flex items-center gap-2 mt-2 cursor-pointer">
-                      <input type="checkbox" checked={vinSkipped} onChange={e => setVinSkipped(e.target.checked)} className="w-3.5 h-3.5 accent-[#C9A84C]" />
-                      <span className="text-[11px] text-[#5a6a80]">VIN nem elérhető / kihagyás indokolva</span>
+                      <input type="checkbox" checked={vinSkipped} onChange={e => setVinSkipped(e.target.checked)} className="w-3.5 h-3.5 accent-[#C8102E]" />
+                      <span className="text-[11px] text-[#4a4a4a]">VIN nem elérhető / kihagyás indokolva</span>
                     </label>
                   )}
                   {section.id === 'parts' && (
                     <label className="flex items-center gap-2 mt-2 cursor-pointer">
-                      <input type="checkbox" checked={noPartsSkipped} onChange={e => setNoPartsSkipped(e.target.checked)} className="w-3.5 h-3.5 accent-[#C9A84C]" />
-                      <span className="text-[11px] text-[#5a6a80]">Alkatrész nem volt szükséges (megerősítés)</span>
+                      <input type="checkbox" checked={noPartsSkipped} onChange={e => setNoPartsSkipped(e.target.checked)} className="w-3.5 h-3.5 accent-[#C8102E]" />
+                      <span className="text-[11px] text-[#4a4a4a]">Alkatrész nem volt szükséges (megerősítés)</span>
                     </label>
                   )}
                 </div>
@@ -377,14 +377,14 @@ export function WorkOrderChecklist({ wo, tasks, photos, parts, events, notes, pr
 
       {/* ── Final confirm / Close button ─────────────────────────────── */}
       {isAdmin && (
-        <div className="sticky bottom-0 bg-white border-t border-[rgba(11,30,61,0.10)] pt-4 pb-2 -mx-1 px-1">
+        <div className="sticky bottom-0 bg-white border-t border-[rgba(0,0,0,0.10)] pt-4 pb-2 -mx-1 px-1">
           {!showFinalConfirm ? (
             <button
               onClick={() => canClose ? setShowFinalConfirm(true) : undefined}
               disabled={!canClose}
               className={`w-full py-3.5 rounded-xl text-[14px] font-bold transition-all ${
                 canClose
-                  ? 'bg-[#0B1E3D] text-white hover:bg-[#142a50] active:scale-98 shadow-lg'
+                  ? 'bg-[#0D0D0D] text-white hover:bg-[#1A1A1A] active:scale-98 shadow-lg'
                   : 'bg-gray-100 text-gray-400 cursor-not-allowed'
               }`}
             >
@@ -394,7 +394,7 @@ export function WorkOrderChecklist({ wo, tasks, photos, parts, events, notes, pr
               }
             </button>
           ) : (
-            <div className="bg-[#0B1E3D] rounded-xl p-4 space-y-3">
+            <div className="bg-[#0D0D0D] rounded-xl p-4 space-y-3">
               <p className="text-white text-[13px] font-semibold text-center">Végső megerősítés</p>
               <div className="grid grid-cols-2 gap-2 text-[11px]">
                 {sections.slice(0, 6).map(s => {
@@ -420,7 +420,7 @@ export function WorkOrderChecklist({ wo, tasks, photos, parts, events, notes, pr
                 <button
                   onClick={handleClose}
                   disabled={closing}
-                  className="flex-1 py-2.5 bg-[#C9A84C] text-[#0B1E3D] rounded-lg text-[13px] font-bold hover:bg-[#b8963e] transition-colors disabled:opacity-60"
+                  className="flex-1 py-2.5 bg-[#C8102E] text-[#0D0D0D] rounded-lg text-[13px] font-bold hover:bg-[#b8963e] transition-colors disabled:opacity-60"
                 >
                   {closing ? 'Lezárás...' : '✓ Végleges lezárás'}
                 </button>
@@ -433,9 +433,9 @@ export function WorkOrderChecklist({ wo, tasks, photos, parts, events, notes, pr
       )}
 
       {isMechanic && missingItems.length > 0 && (
-        <div className="bg-[#0B1E3D] rounded-xl p-4">
+        <div className="bg-[#0D0D0D] rounded-xl p-4">
           <p className="text-[12px] font-semibold text-white mb-3 flex items-center gap-2">
-            <AlertTriangle size={14} className="text-[#C9A84C]" /> Hiányzó elemek (az Ön feladatai)
+            <AlertTriangle size={14} className="text-[#C8102E]" /> Hiányzó elemek (az Ön feladatai)
           </p>
           <div className="space-y-2">
             {missingItems.filter(m =>

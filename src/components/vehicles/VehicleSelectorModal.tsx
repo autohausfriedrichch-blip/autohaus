@@ -86,7 +86,7 @@ const BRAND_COLORS: Record<string, string> = {
 }
 
 function brandColor(make: string): string {
-  return BRAND_COLORS[make] || '#0B1E3D'
+  return BRAND_COLORS[make] || '#0D0D0D'
 }
 
 function initials(make: string): string {
@@ -132,17 +132,17 @@ function StepIndicator({ current }: { current: Step }) {
             <div
               className={`w-7 h-7 rounded-full flex items-center justify-center text-[11px] font-bold border-2 transition-all ${
                 n < current
-                  ? 'bg-[#C9A84C] border-[#C9A84C] text-[#0B1E3D]'
+                  ? 'bg-[#C8102E] border-[#C8102E] text-[#0D0D0D]'
                   : n === current
-                  ? 'bg-[#0B1E3D] border-[#0B1E3D] text-white'
-                  : 'bg-white border-[rgba(11,30,61,0.2)] text-[#5a6a80]'
+                  ? 'bg-[#0D0D0D] border-[#0D0D0D] text-white'
+                  : 'bg-white border-[rgba(0,0,0,0.2)] text-[#4a4a4a]'
               }`}
             >
               {n < current ? '✓' : n}
             </div>
             <span
               className={`text-[9px] mt-1 font-semibold uppercase tracking-[0.5px] ${
-                n === current ? 'text-[#0B1E3D]' : 'text-[#5a6a80]'
+                n === current ? 'text-[#0D0D0D]' : 'text-[#4a4a4a]'
               }`}
             >
               {label}
@@ -151,7 +151,7 @@ function StepIndicator({ current }: { current: Step }) {
           {idx < steps.length - 1 && (
             <div
               className={`h-[2px] flex-1 mx-1 mb-3 rounded-full ${
-                n < current ? 'bg-[#C9A84C]' : 'bg-[rgba(11,30,61,0.12)]'
+                n < current ? 'bg-[#C8102E]' : 'bg-[rgba(0,0,0,0.12)]'
               }`}
             />
           )}
@@ -346,19 +346,19 @@ export function VehicleSelectorModal({ open, onClose, onSelect }: VehicleSelecto
     return (
       <div>
         <div className="mb-4 relative">
-          <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#5a6a80]" />
+          <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#4a4a4a]" />
           <input
             type="text"
             placeholder="Márka keresése…"
             value={makeSearch}
             onChange={(e) => setMakeSearch(e.target.value)}
-            className="w-full pl-8 pr-3 py-2 border border-[rgba(11,30,61,0.18)] rounded-lg text-[13px] bg-[#F4F5F7] text-[#0B1E3D] outline-none focus:border-[#0B1E3D] placeholder:text-[#8fa0b5]"
+            className="w-full pl-8 pr-3 py-2 border border-[rgba(0,0,0,0.18)] rounded-lg text-[13px] bg-[#F4F5F7] text-[#0D0D0D] outline-none focus:border-[#0D0D0D] placeholder:text-[#888888]"
           />
         </div>
         {makesLoading ? (
-          <div className="flex justify-center py-10 text-[#5a6a80] text-[13px]">Betöltés…</div>
+          <div className="flex justify-center py-10 text-[#4a4a4a] text-[13px]">Betöltés…</div>
         ) : filteredMakes.length === 0 ? (
-          <div className="text-center py-10 text-[#5a6a80] text-[13px]">Nincs találat</div>
+          <div className="text-center py-10 text-[#4a4a4a] text-[13px]">Nincs találat</div>
         ) : (
           <div className="grid grid-cols-3 gap-2.5 max-h-[360px] overflow-y-auto pr-1">
             {filteredMakes.map((make) => {
@@ -368,7 +368,7 @@ export function VehicleSelectorModal({ open, onClose, onSelect }: VehicleSelecto
                 <button
                   key={make}
                   onClick={() => handleMakeSelect(make)}
-                  className="flex flex-col items-center gap-2 p-3 rounded-xl border border-[rgba(11,30,61,0.10)] bg-white hover:border-[#C9A84C] hover:shadow-md transition-all group"
+                  className="flex flex-col items-center gap-2 p-3 rounded-xl border border-[rgba(0,0,0,0.10)] bg-white hover:border-[#C8102E] hover:shadow-md transition-all group"
                 >
                   <div
                     className="w-10 h-10 rounded-full flex items-center justify-center text-[13px] font-bold text-white shrink-0"
@@ -376,7 +376,7 @@ export function VehicleSelectorModal({ open, onClose, onSelect }: VehicleSelecto
                   >
                     {init}
                   </div>
-                  <span className="text-[11px] font-semibold text-[#0B1E3D] text-center leading-tight group-hover:text-[#C9A84C] transition-colors">
+                  <span className="text-[11px] font-semibold text-[#0D0D0D] text-center leading-tight group-hover:text-[#C8102E] transition-colors">
                     {make}
                   </span>
                 </button>
@@ -393,12 +393,12 @@ export function VehicleSelectorModal({ open, onClose, onSelect }: VehicleSelecto
       <div>
         <button
           onClick={() => setStep(1)}
-          className="flex items-center gap-1.5 text-[12px] text-[#5a6a80] hover:text-[#0B1E3D] mb-4 transition-colors"
+          className="flex items-center gap-1.5 text-[12px] text-[#4a4a4a] hover:text-[#0D0D0D] mb-4 transition-colors"
         >
           <ChevronLeft size={14} />
           Vissza
         </button>
-        <div className="mb-4 px-3 py-2 bg-[#F4F5F7] rounded-lg text-[12px] text-[#0B1E3D] font-semibold">
+        <div className="mb-4 px-3 py-2 bg-[#F4F5F7] rounded-lg text-[12px] text-[#0D0D0D] font-semibold">
           Márka:{' '}
           <span
             className="inline-block px-2 py-0.5 rounded-full text-white text-[11px] ml-1"
@@ -408,29 +408,29 @@ export function VehicleSelectorModal({ open, onClose, onSelect }: VehicleSelecto
           </span>
         </div>
         <div className="mb-4 relative">
-          <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#5a6a80]" />
+          <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#4a4a4a]" />
           <input
             type="text"
             placeholder="Modell keresése…"
             value={modelSearch}
             onChange={(e) => setModelSearch(e.target.value)}
-            className="w-full pl-8 pr-3 py-2 border border-[rgba(11,30,61,0.18)] rounded-lg text-[13px] bg-[#F4F5F7] text-[#0B1E3D] outline-none focus:border-[#0B1E3D] placeholder:text-[#8fa0b5]"
+            className="w-full pl-8 pr-3 py-2 border border-[rgba(0,0,0,0.18)] rounded-lg text-[13px] bg-[#F4F5F7] text-[#0D0D0D] outline-none focus:border-[#0D0D0D] placeholder:text-[#888888]"
           />
         </div>
         {modelsLoading ? (
-          <div className="flex justify-center py-10 text-[#5a6a80] text-[13px]">Betöltés…</div>
+          <div className="flex justify-center py-10 text-[#4a4a4a] text-[13px]">Betöltés…</div>
         ) : filteredModels.length === 0 ? (
-          <div className="text-center py-10 text-[#5a6a80] text-[13px]">Nincs találat</div>
+          <div className="text-center py-10 text-[#4a4a4a] text-[13px]">Nincs találat</div>
         ) : (
           <div className="flex flex-col gap-1.5 max-h-[380px] overflow-y-auto pr-1">
             {filteredModels.map((model) => (
               <button
                 key={model}
                 onClick={() => handleModelSelect(model)}
-                className="flex items-center justify-between px-4 py-2.5 rounded-lg border border-[rgba(11,30,61,0.10)] bg-white hover:border-[#C9A84C] hover:bg-[#FFFBF0] transition-all text-[13px] font-medium text-[#0B1E3D] text-left group"
+                className="flex items-center justify-between px-4 py-2.5 rounded-lg border border-[rgba(0,0,0,0.10)] bg-white hover:border-[#C8102E] hover:bg-[#FFFBF0] transition-all text-[13px] font-medium text-[#0D0D0D] text-left group"
               >
                 {model}
-                <ChevronRight size={14} className="text-[#5a6a80] group-hover:text-[#C9A84C] transition-colors" />
+                <ChevronRight size={14} className="text-[#4a4a4a] group-hover:text-[#C8102E] transition-colors" />
               </button>
             ))}
           </div>
@@ -444,13 +444,13 @@ export function VehicleSelectorModal({ open, onClose, onSelect }: VehicleSelecto
       <div>
         <button
           onClick={() => setStep(2)}
-          className="flex items-center gap-1.5 text-[12px] text-[#5a6a80] hover:text-[#0B1E3D] mb-4 transition-colors"
+          className="flex items-center gap-1.5 text-[12px] text-[#4a4a4a] hover:text-[#0D0D0D] mb-4 transition-colors"
         >
           <ChevronLeft size={14} />
           Vissza
         </button>
 
-        <div className="mb-4 px-3 py-2 bg-[#F4F5F7] rounded-lg text-[12px] text-[#0B1E3D] font-semibold flex gap-2 flex-wrap">
+        <div className="mb-4 px-3 py-2 bg-[#F4F5F7] rounded-lg text-[12px] text-[#0D0D0D] font-semibold flex gap-2 flex-wrap">
           <span>
             Márka:{' '}
             <span
@@ -460,14 +460,14 @@ export function VehicleSelectorModal({ open, onClose, onSelect }: VehicleSelecto
               {selectedMake}
             </span>
           </span>
-          <span className="text-[#5a6a80]">|</span>
+          <span className="text-[#4a4a4a]">|</span>
           <span>
-            Modell: <span className="text-[#C9A84C]">{selectedModel}</span>
+            Modell: <span className="text-[#C8102E]">{selectedModel}</span>
           </span>
         </div>
 
         {variantsLoading ? (
-          <div className="flex justify-center py-10 text-[#5a6a80] text-[13px]">Betöltés…</div>
+          <div className="flex justify-center py-10 text-[#4a4a4a] text-[13px]">Betöltés…</div>
         ) : (
           <>
             {variants.length > 0 && !manualEntry && (
@@ -476,19 +476,19 @@ export function VehicleSelectorModal({ open, onClose, onSelect }: VehicleSelecto
                   <button
                     key={v.id ?? idx}
                     onClick={() => handleVariantSelect(v)}
-                    className="flex items-start gap-3 p-3 rounded-xl border border-[rgba(11,30,61,0.10)] bg-white hover:border-[#C9A84C] hover:bg-[#FFFBF0] transition-all text-left group"
+                    className="flex items-start gap-3 p-3 rounded-xl border border-[rgba(0,0,0,0.10)] bg-white hover:border-[#C8102E] hover:bg-[#FFFBF0] transition-all text-left group"
                   >
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 flex-wrap mb-1">
                         {(v.year_from || v.year_to) && (
-                          <span className="flex items-center gap-1 text-[11px] text-[#5a6a80]">
+                          <span className="flex items-center gap-1 text-[11px] text-[#4a4a4a]">
                             <Clock size={11} />
                             {v.year_from ?? '?'}
                             {v.year_to ? `–${v.year_to}` : '+'}
                           </span>
                         )}
                         {v.fuel_type && (
-                          <span className="px-2 py-0.5 rounded-full bg-[#F4F5F7] text-[10px] font-semibold text-[#0B1E3D] uppercase tracking-[0.3px]">
+                          <span className="px-2 py-0.5 rounded-full bg-[#F4F5F7] text-[10px] font-semibold text-[#0D0D0D] uppercase tracking-[0.3px]">
                             {fuelLabel(v.fuel_type)}
                           </span>
                         )}
@@ -498,27 +498,27 @@ export function VehicleSelectorModal({ open, onClose, onSelect }: VehicleSelecto
                           </span>
                         )}
                       </div>
-                      <div className="flex items-center gap-3 text-[12px] text-[#5a6a80]">
+                      <div className="flex items-center gap-3 text-[12px] text-[#4a4a4a]">
                         {v.power_kw && (
                           <span className="flex items-center gap-1">
-                            <Zap size={11} className="text-[#C9A84C]" />
+                            <Zap size={11} className="text-[#C8102E]" />
                             {v.power_kw} kW
                           </span>
                         )}
                         {v.displacement_cc && (
                           <span className="flex items-center gap-1">
-                            <Gauge size={11} className="text-[#C9A84C]" />
+                            <Gauge size={11} className="text-[#C8102E]" />
                             {v.displacement_cc} cc
                           </span>
                         )}
                         {v.engine_code && (
-                          <span className="font-mono text-[10px] text-[#8fa0b5]">{v.engine_code}</span>
+                          <span className="font-mono text-[10px] text-[#888888]">{v.engine_code}</span>
                         )}
                       </div>
                     </div>
                     <ChevronRight
                       size={14}
-                      className="text-[#5a6a80] group-hover:text-[#C9A84C] transition-colors mt-1 shrink-0"
+                      className="text-[#4a4a4a] group-hover:text-[#C8102E] transition-colors mt-1 shrink-0"
                     />
                   </button>
                 ))}
@@ -526,7 +526,7 @@ export function VehicleSelectorModal({ open, onClose, onSelect }: VehicleSelecto
             )}
 
             {variants.length === 0 && !manualEntry && (
-              <div className="text-center py-6 text-[#5a6a80] text-[13px] mb-3">
+              <div className="text-center py-6 text-[#4a4a4a] text-[13px] mb-3">
                 Nem találtunk rögzített motorváltozatot ehhez a modellhez.
               </div>
             )}
@@ -535,7 +535,7 @@ export function VehicleSelectorModal({ open, onClose, onSelect }: VehicleSelecto
             {!manualEntry ? (
               <button
                 onClick={() => setManualEntry(true)}
-                className="w-full py-2.5 border border-dashed border-[rgba(11,30,61,0.25)] rounded-xl text-[12px] text-[#5a6a80] hover:border-[#C9A84C] hover:text-[#C9A84C] transition-all"
+                className="w-full py-2.5 border border-dashed border-[rgba(0,0,0,0.25)] rounded-xl text-[12px] text-[#4a4a4a] hover:border-[#C8102E] hover:text-[#C8102E] transition-all"
               >
                 + Egyéni adatok megadása
               </button>
@@ -551,7 +551,7 @@ export function VehicleSelectorModal({ open, onClose, onSelect }: VehicleSelecto
                     placeholder="pl. 2019"
                     value={manualYear}
                     onChange={(e) => setManualYear(e.target.value)}
-                    className="w-full px-3 py-2 border border-[rgba(11,30,61,0.18)] rounded-lg text-[13px] bg-white text-[#0B1E3D] outline-none focus:border-[#0B1E3D]"
+                    className="w-full px-3 py-2 border border-[rgba(0,0,0,0.18)] rounded-lg text-[13px] bg-white text-[#0D0D0D] outline-none focus:border-[#0D0D0D]"
                   />
                 </FormGroup>
                 <FormGroup className="mb-3">
@@ -559,7 +559,7 @@ export function VehicleSelectorModal({ open, onClose, onSelect }: VehicleSelecto
                   <select
                     value={manualFuel}
                     onChange={(e) => setManualFuel(e.target.value)}
-                    className="w-full px-3 py-2 border border-[rgba(11,30,61,0.18)] rounded-lg text-[13px] bg-white text-[#0B1E3D] outline-none focus:border-[#0B1E3D]"
+                    className="w-full px-3 py-2 border border-[rgba(0,0,0,0.18)] rounded-lg text-[13px] bg-white text-[#0D0D0D] outline-none focus:border-[#0D0D0D]"
                   >
                     <option value="">Válassz…</option>
                     <option value="benzin">Benzin</option>
@@ -603,14 +603,14 @@ export function VehicleSelectorModal({ open, onClose, onSelect }: VehicleSelecto
       <div>
         <button
           onClick={() => setStep(3)}
-          className="flex items-center gap-1.5 text-[12px] text-[#5a6a80] hover:text-[#0B1E3D] mb-4 transition-colors"
+          className="flex items-center gap-1.5 text-[12px] text-[#4a4a4a] hover:text-[#0D0D0D] mb-4 transition-colors"
         >
           <ChevronLeft size={14} />
           Módosítás
         </button>
 
-        <Card className="mb-4 bg-[#F4F5F7] border-[rgba(11,30,61,0.08)]">
-          <p className="text-[10px] font-bold text-[#5a6a80] uppercase tracking-[0.8px] mb-3">
+        <Card className="mb-4 bg-[#F4F5F7] border-[rgba(0,0,0,0.08)]">
+          <p className="text-[10px] font-bold text-[#4a4a4a] uppercase tracking-[0.8px] mb-3">
             Kiválasztott jármű — ellenőrzés
           </p>
           <div className="grid grid-cols-2 gap-3">
@@ -695,9 +695,9 @@ export function VehicleSelectorModal({ open, onClose, onSelect }: VehicleSelecto
         </Card>
 
         {/* VIN decoder — coming soon */}
-        <div className="rounded-xl border border-dashed border-[rgba(11,30,61,0.18)] p-4 bg-[#F4F5F7]">
+        <div className="rounded-xl border border-dashed border-[rgba(0,0,0,0.18)] p-4 bg-[#F4F5F7]">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-[11px] font-semibold text-[#5a6a80] uppercase tracking-[0.5px]">
+            <span className="text-[11px] font-semibold text-[#4a4a4a] uppercase tracking-[0.5px]">
               VIN azonosítás
             </span>
             <span className="px-2 py-0.5 rounded-full bg-[rgba(201,168,76,0.18)] text-[#8a6a20] text-[10px] font-bold uppercase tracking-[0.5px]">
@@ -707,9 +707,9 @@ export function VehicleSelectorModal({ open, onClose, onSelect }: VehicleSelecto
           <input
             disabled
             placeholder="VIN szám alapú felismerés (hamarosan)"
-            className="w-full px-3 py-2 border border-[rgba(11,30,61,0.12)] rounded-lg text-[12px] bg-white/60 text-[#8fa0b5] cursor-not-allowed mb-2"
+            className="w-full px-3 py-2 border border-[rgba(0,0,0,0.12)] rounded-lg text-[12px] bg-white/60 text-[#888888] cursor-not-allowed mb-2"
           />
-          <p className="text-[11px] text-[#8fa0b5]">
+          <p className="text-[11px] text-[#888888]">
             VIN API integrációval automatikusan kitölthetők az adatok
           </p>
         </div>

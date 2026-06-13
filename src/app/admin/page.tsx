@@ -213,7 +213,7 @@ function AdminApp() {
       case 'marketing':          return <MarketingPage profile={profile} refreshKey={refreshKey} onRefresh={() => setRefreshKey(k => k + 1)} />
       case 'founder_brain':      return <FounderBrainPage profile={profile} refreshKey={refreshKey} onRefresh={() => setRefreshKey(k => k + 1)} />
       default: return (
-        <div className="flex flex-col items-center justify-center h-64 text-[#5a6a80]">
+        <div className="flex flex-col items-center justify-center h-64 text-[#4a4a4a]">
           <p className="text-lg font-medium">{pageTitle}</p>
           <p className="text-sm mt-1">Oldal hamarosan elérhető</p>
         </div>

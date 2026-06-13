@@ -45,11 +45,11 @@ function Toggle({ checked, onChange, label }: { checked: boolean; onChange: (v: 
     <label className="flex items-center gap-2 cursor-pointer">
       <div
         onClick={() => onChange(!checked)}
-        className={`relative w-10 h-5 rounded-full transition-colors ${checked ? 'bg-[#C9A84C]' : 'bg-gray-200'}`}
+        className={`relative w-10 h-5 rounded-full transition-colors ${checked ? 'bg-[#C8102E]' : 'bg-gray-200'}`}
       >
         <div className={`absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full shadow transition-transform ${checked ? 'translate-x-5' : ''}`} />
       </div>
-      {label && <span className="text-[12px] text-[#5a6a80]">{label}</span>}
+      {label && <span className="text-[12px] text-[#4a4a4a]">{label}</span>}
     </label>
   )
 }
@@ -57,9 +57,9 @@ function Toggle({ checked, onChange, label }: { checked: boolean; onChange: (v: 
 function SectionTitle({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex items-center gap-2 mb-4 mt-6 first:mt-0">
-      <div className="h-px flex-1 bg-[rgba(11,30,61,0.08)]" />
-      <span className="text-[10px] font-bold text-[#5a6a80] uppercase tracking-[2px] px-2">{children}</span>
-      <div className="h-px flex-1 bg-[rgba(11,30,61,0.08)]" />
+      <div className="h-px flex-1 bg-[rgba(0,0,0,0.08)]" />
+      <span className="text-[10px] font-bold text-[#4a4a4a] uppercase tracking-[2px] px-2">{children}</span>
+      <div className="h-px flex-1 bg-[rgba(0,0,0,0.08)]" />
     </div>
   )
 }
@@ -177,14 +177,14 @@ export function SettingsPage({ refreshKey }: { refreshKey: number; onRefresh: ()
   }
 
   const SaveButton = ({ category }: { category: string }) => (
-    <div className="flex justify-end mt-6 pt-4 border-t border-[rgba(11,30,61,0.08)]">
+    <div className="flex justify-end mt-6 pt-4 border-t border-[rgba(0,0,0,0.08)]">
       <Button variant="primary" onClick={() => saveAll(category)} disabled={saving}>
         <Check size={14} /> {saving ? 'Mentés...' : 'Beállítások mentése'}
       </Button>
     </div>
   )
 
-  if (loading) return <div className="text-center py-12 text-[#5a6a80]">Betöltés...</div>
+  if (loading) return <div className="text-center py-12 text-[#4a4a4a]">Betöltés...</div>
 
   return (
     <div className="animate-fade-in flex gap-5 min-h-0">
@@ -199,8 +199,8 @@ export function SettingsPage({ refreshKey }: { refreshKey: number; onRefresh: ()
                 onClick={() => setActiveTab(tab.id)}
                 className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-[12px] transition-colors text-left ${
                   activeTab === tab.id
-                    ? 'bg-[#0B1E3D] text-white'
-                    : 'text-[#5a6a80] hover:bg-[#F4F5F7] hover:text-[#0B1E3D]'
+                    ? 'bg-[#0D0D0D] text-white'
+                    : 'text-[#4a4a4a] hover:bg-[#F4F5F7] hover:text-[#0D0D0D]'
                 }`}
               >
                 <Icon size={14} className="shrink-0" />
@@ -325,12 +325,12 @@ export function SettingsPage({ refreshKey }: { refreshKey: number; onRefresh: ()
               <div className="space-y-2 mb-6">
                 {users.map(u => (
                   <div key={u.id} className="flex items-center gap-3 p-3 bg-[#F4F5F7] rounded-lg">
-                    <div className="w-8 h-8 rounded-full bg-[#0B1E3D] text-white text-[11px] font-bold flex items-center justify-center shrink-0">
+                    <div className="w-8 h-8 rounded-full bg-[#0D0D0D] text-white text-[11px] font-bold flex items-center justify-center shrink-0">
                       {(u.full_name || u.email || '?').slice(0,2).toUpperCase()}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <div className="text-[13px] font-semibold text-[#0B1E3D] truncate">{u.full_name || u.email}</div>
-                      <div className="text-[11px] text-[#8fa0b5]">{u.email}</div>
+                      <div className="text-[13px] font-semibold text-[#0D0D0D] truncate">{u.full_name || u.email}</div>
+                      <div className="text-[11px] text-[#888888]">{u.email}</div>
                     </div>
                     <Select
                       value={u.role || 'admin'}
@@ -355,8 +355,8 @@ export function SettingsPage({ refreshKey }: { refreshKey: number; onRefresh: ()
                   { role: 'customer', label: 'Ügyfél', desc: 'Saját autók, dokumentumok, kommunikáció', color: 'bg-green-50 border-green-200' },
                 ].map(r => (
                   <div key={r.role} className={`p-3 rounded-lg border ${r.color}`}>
-                    <div className="font-semibold text-[12px] text-[#0B1E3D] mb-1">{r.label}</div>
-                    <div className="text-[11px] text-[#5a6a80]">{r.desc}</div>
+                    <div className="font-semibold text-[12px] text-[#0D0D0D] mb-1">{r.label}</div>
+                    <div className="text-[11px] text-[#4a4a4a]">{r.desc}</div>
                   </div>
                 ))}
               </div>
@@ -372,7 +372,7 @@ export function SettingsPage({ refreshKey }: { refreshKey: number; onRefresh: ()
             <div>
               <SectionTitle>Szolgáltatások</SectionTitle>
               <div className="space-y-1">
-                <div className="grid grid-cols-12 gap-2 px-2 py-1 text-[10px] font-semibold text-[#8fa0b5] uppercase">
+                <div className="grid grid-cols-12 gap-2 px-2 py-1 text-[10px] font-semibold text-[#888888] uppercase">
                   <div className="col-span-4">Név</div>
                   <div className="col-span-2">Kategória</div>
                   <div className="col-span-2 text-right">Ár (CHF)</div>
@@ -383,11 +383,11 @@ export function SettingsPage({ refreshKey }: { refreshKey: number; onRefresh: ()
                 </div>
                 {services.map(svc => (
                   <div key={svc.id} className="grid grid-cols-12 gap-2 items-center px-2 py-1.5 hover:bg-[#fafbfc] rounded-lg">
-                    <div className="col-span-4 text-[12px] font-medium text-[#0B1E3D]">{svc.name}</div>
-                    <div className="col-span-2 text-[11px] text-[#8fa0b5]">{svc.category}</div>
+                    <div className="col-span-4 text-[12px] font-medium text-[#0D0D0D]">{svc.name}</div>
+                    <div className="col-span-2 text-[11px] text-[#888888]">{svc.category}</div>
                     <div className="col-span-2">
                       <input type="number" defaultValue={svc.base_price || 0} onBlur={e => updateService(svc.id, 'base_price', parseFloat(e.target.value))}
-                        className="w-full text-right text-[12px] px-2 py-1 border border-transparent hover:border-[rgba(11,30,61,0.15)] rounded outline-none focus:border-[#C9A84C]" />
+                        className="w-full text-right text-[12px] px-2 py-1 border border-transparent hover:border-[rgba(0,0,0,0.15)] rounded outline-none focus:border-[#C8102E]" />
                     </div>
                     <div className="col-span-1 flex justify-center">
                       <Toggle checked={svc.is_active} onChange={v => updateService(svc.id, 'is_active', v)} />
@@ -400,12 +400,12 @@ export function SettingsPage({ refreshKey }: { refreshKey: number; onRefresh: ()
                     </div>
                     <div className="col-span-1">
                       <input type="number" defaultValue={svc.duration_minutes || 60} onBlur={e => updateService(svc.id, 'duration_minutes', parseInt(e.target.value))}
-                        className="w-full text-center text-[12px] px-1 py-1 border border-transparent hover:border-[rgba(11,30,61,0.15)] rounded outline-none focus:border-[#C9A84C]" />
+                        className="w-full text-center text-[12px] px-1 py-1 border border-transparent hover:border-[rgba(0,0,0,0.15)] rounded outline-none focus:border-[#C8102E]" />
                     </div>
                   </div>
                 ))}
                 {services.length === 0 && (
-                  <div className="text-center py-8 text-[#8fa0b5] text-sm">Még nincs szolgáltatás</div>
+                  <div className="text-center py-8 text-[#888888] text-sm">Még nincs szolgáltatás</div>
                 )}
               </div>
             </div>
@@ -439,17 +439,17 @@ export function SettingsPage({ refreshKey }: { refreshKey: number; onRefresh: ()
                       checked={openingHours[day.key]?.active ?? false}
                       onChange={v => setHours(day.key, 'active', v)}
                     />
-                    <span className="w-24 text-[12px] font-medium text-[#0B1E3D]">{day.label}</span>
+                    <span className="w-24 text-[12px] font-medium text-[#0D0D0D]">{day.label}</span>
                     <input type="time" value={openingHours[day.key]?.open || '08:00'}
                       onChange={e => setHours(day.key, 'open', e.target.value)}
                       disabled={!openingHours[day.key]?.active}
-                      className="px-2 py-1 border border-[rgba(11,30,61,0.15)] rounded text-[12px] outline-none focus:border-[#C9A84C] disabled:opacity-40" />
-                    <span className="text-[11px] text-[#8fa0b5]">–</span>
+                      className="px-2 py-1 border border-[rgba(0,0,0,0.15)] rounded text-[12px] outline-none focus:border-[#C8102E] disabled:opacity-40" />
+                    <span className="text-[11px] text-[#888888]">–</span>
                     <input type="time" value={openingHours[day.key]?.close || '18:00'}
                       onChange={e => setHours(day.key, 'close', e.target.value)}
                       disabled={!openingHours[day.key]?.active}
-                      className="px-2 py-1 border border-[rgba(11,30,61,0.15)] rounded text-[12px] outline-none focus:border-[#C9A84C] disabled:opacity-40" />
-                    {!openingHours[day.key]?.active && <span className="text-[11px] text-[#C9384C]">Zárva</span>}
+                      className="px-2 py-1 border border-[rgba(0,0,0,0.15)] rounded text-[12px] outline-none focus:border-[#C8102E] disabled:opacity-40" />
+                    {!openingHours[day.key]?.active && <span className="text-[11px] text-[#C8102E]">Zárva</span>}
                   </div>
                 ))}
               </div>
@@ -471,7 +471,7 @@ export function SettingsPage({ refreshKey }: { refreshKey: number; onRefresh: ()
                   <FormGroup key={f.key}>
                     <FormLabel>{f.label}</FormLabel>
                     <Input value={get('documents', f.key)} onChange={e => set('documents', f.key, e.target.value)} />
-                    <div className="text-[10px] text-[#8fa0b5] mt-1">{f.example}</div>
+                    <div className="text-[10px] text-[#888888] mt-1">{f.example}</div>
                   </FormGroup>
                 ))}
                 <FormGroup>
@@ -481,7 +481,7 @@ export function SettingsPage({ refreshKey }: { refreshKey: number; onRefresh: ()
               </div>
 
               <SectionTitle>PDF lábléc</SectionTitle>
-              <div className="bg-[#F4F5F7] rounded-lg p-3 text-[11px] text-[#5a6a80]">
+              <div className="bg-[#F4F5F7] rounded-lg p-3 text-[11px] text-[#4a4a4a]">
                 A PDF-eken automatikusan megjelenik: <strong>{get('company','name','Autohaus Friedrich')}</strong> · {get('company','address','')} · {get('company','phone','')} · {get('company','email','')} · UID: {get('company','uid','')} · IBAN: {get('company','iban','')}
                 <div className="mt-2 text-[10px]">A tartalom a Cégadatok menüpontban szerkeszthető.</div>
               </div>
@@ -531,7 +531,7 @@ export function SettingsPage({ refreshKey }: { refreshKey: number; onRefresh: ()
                   { key: 'require_damage_photo', label: 'Sérülések fotói' },
                 ].map(f => (
                   <div key={f.key} className="flex items-center justify-between p-3 bg-[#F4F5F7] rounded-lg">
-                    <span className="text-[13px] text-[#0B1E3D]">{f.label}</span>
+                    <span className="text-[13px] text-[#0D0D0D]">{f.label}</span>
                     <Toggle checked={get('checkin', f.key, true)} onChange={v => set('checkin', f.key, v)} />
                   </div>
                 ))}
@@ -545,12 +545,12 @@ export function SettingsPage({ refreshKey }: { refreshKey: number; onRefresh: ()
                   { key: 'send_review_request', label: 'Google review kérés küldése' },
                 ].map(f => (
                   <div key={f.key} className="flex items-center justify-between p-3 bg-[#F4F5F7] rounded-lg">
-                    <span className="text-[13px] text-[#0B1E3D]">{f.label}</span>
+                    <span className="text-[13px] text-[#0D0D0D]">{f.label}</span>
                     <Toggle checked={get('checkout', f.key, true)} onChange={v => set('checkout', f.key, v)} />
                   </div>
                 ))}
               </div>
-              <div className="flex justify-end mt-6 pt-4 border-t border-[rgba(11,30,61,0.08)] gap-2">
+              <div className="flex justify-end mt-6 pt-4 border-t border-[rgba(0,0,0,0.08)] gap-2">
                 <Button variant="primary" onClick={async () => { await saveAll('checkin'); await saveAll('checkout') }} disabled={saving}>
                   <Check size={14} /> {saving ? 'Mentés...' : 'Beállítások mentése'}
                 </Button>
@@ -572,7 +572,7 @@ export function SettingsPage({ refreshKey }: { refreshKey: number; onRefresh: ()
                   { key: 'car_ready', label: 'Autó elkészült' },
                 ].map(f => (
                   <div key={f.key} className="flex items-center justify-between p-3 bg-[#F4F5F7] rounded-lg">
-                    <span className="text-[13px] text-[#0B1E3D]">{f.label}</span>
+                    <span className="text-[13px] text-[#0D0D0D]">{f.label}</span>
                     <Toggle checked={get('notifications', f.key, true)} onChange={v => set('notifications', f.key, v)} />
                   </div>
                 ))}
@@ -586,11 +586,11 @@ export function SettingsPage({ refreshKey }: { refreshKey: number; onRefresh: ()
             <div>
               <SectionTitle>Mobil szerviz</SectionTitle>
               <div className="flex items-center justify-between p-3 bg-[#F4F5F7] rounded-lg mb-4">
-                <span className="text-[13px] font-medium text-[#0B1E3D]">Mobil szerviz engedélyezve</span>
+                <span className="text-[13px] font-medium text-[#0D0D0D]">Mobil szerviz engedélyezve</span>
                 <Toggle checked={get('mobile','enabled',true)} onChange={v => set('mobile','enabled',v)} />
               </div>
               <div className="flex items-center justify-between p-3 bg-[#F4F5F7] rounded-lg mb-4">
-                <span className="text-[13px] font-medium text-[#0B1E3D]">Hozom-Viszem engedélyezve</span>
+                <span className="text-[13px] font-medium text-[#0D0D0D]">Hozom-Viszem engedélyezve</span>
                 <Toggle checked={get('pickup','enabled',true)} onChange={v => set('pickup','enabled',v)} />
               </div>
 
@@ -598,8 +598,8 @@ export function SettingsPage({ refreshKey }: { refreshKey: number; onRefresh: ()
               <div className="space-y-2 mb-3">
                 {(get('mobile','regions',[]) as string[]).map(r => (
                   <div key={r} className="flex items-center justify-between p-2.5 bg-[#F4F5F7] rounded-lg">
-                    <span className="text-[13px] text-[#0B1E3D]">{r}</span>
-                    <button onClick={() => removeRegion(r)} className="text-[#8fa0b5] hover:text-red-500"><Trash2 size={14} /></button>
+                    <span className="text-[13px] text-[#0D0D0D]">{r}</span>
+                    <button onClick={() => removeRegion(r)} className="text-[#888888] hover:text-red-500"><Trash2 size={14} /></button>
                   </div>
                 ))}
               </div>
@@ -607,7 +607,7 @@ export function SettingsPage({ refreshKey }: { refreshKey: number; onRefresh: ()
                 <Input value={newRegion} onChange={e => setNewRegion(e.target.value)} onKeyDown={e => e.key === 'Enter' && addRegion()} placeholder="Új régió neve..." />
                 <Button variant="secondary" onClick={addRegion}><Plus size={14} /> Hozzáad</Button>
               </div>
-              <div className="flex justify-end mt-6 pt-4 border-t border-[rgba(11,30,61,0.08)] gap-2">
+              <div className="flex justify-end mt-6 pt-4 border-t border-[rgba(0,0,0,0.08)] gap-2">
                 <Button variant="primary" onClick={async () => { await saveAll('mobile'); await saveAll('pickup') }} disabled={saving}>
                   <Check size={14} /> Mentés
                 </Button>
@@ -644,12 +644,12 @@ export function SettingsPage({ refreshKey }: { refreshKey: number; onRefresh: ()
               <SectionTitle>Biztonság</SectionTitle>
               <div className="space-y-3 mb-4">
                 <div className="p-3 bg-[#F4F5F7] rounded-lg">
-                  <div className="text-[13px] font-semibold text-[#0B1E3D] mb-1">Jelszó reset</div>
-                  <div className="text-[12px] text-[#5a6a80] mb-2">Felhasználó jelszavát a Supabase Dashboard-on lehet resetelni: Authentication → Users → ⋯ → Send password reset</div>
+                  <div className="text-[13px] font-semibold text-[#0D0D0D] mb-1">Jelszó reset</div>
+                  <div className="text-[12px] text-[#4a4a4a] mb-2">Felhasználó jelszavát a Supabase Dashboard-on lehet resetelni: Authentication → Users → ⋯ → Send password reset</div>
                 </div>
                 <div className="p-3 bg-[#F4F5F7] rounded-lg">
-                  <div className="text-[13px] font-semibold text-[#0B1E3D] mb-1">2FA</div>
-                  <div className="text-[12px] text-[#5a6a80]">Kétfaktoros hitelesítés Supabase Auth beállításaiban engedélyezhető.</div>
+                  <div className="text-[13px] font-semibold text-[#0D0D0D] mb-1">2FA</div>
+                  <div className="text-[12px] text-[#4a4a4a]">Kétfaktoros hitelesítés Supabase Auth beállításaiban engedélyezhető.</div>
                 </div>
               </div>
 
@@ -711,7 +711,7 @@ export function SettingsPage({ refreshKey }: { refreshKey: number; onRefresh: ()
                   { label: 'Több telephely', status: 'Tervezett' },
                 ].map(m => (
                   <div key={m.label} className="flex items-center justify-between p-3 bg-[#F4F5F7] rounded-lg">
-                    <span className="text-[12px] text-[#0B1E3D]">{m.label}</span>
+                    <span className="text-[12px] text-[#0D0D0D]">{m.label}</span>
                     <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-gray-200 text-gray-500">{m.status}</span>
                   </div>
                 ))}
@@ -753,7 +753,7 @@ function ApiKeysTab() {
     toast('API kulcsok mentve')
   }
 
-  if (!loaded) return <div className="py-8 text-center text-sm text-[#5a6a80]">Betöltés...</div>
+  if (!loaded) return <div className="py-8 text-center text-sm text-[#4a4a4a]">Betöltés...</div>
 
   return (
     <div className="space-y-6">
@@ -776,11 +776,11 @@ function ApiKeysTab() {
           onChange={e => setGoogleKey(e.target.value)}
           placeholder="AIza..."
         />
-        <p className="text-[11px] text-[#5a6a80] mt-1">Szükséges API-k: Maps JavaScript API, Places API, Geocoding API</p>
+        <p className="text-[11px] text-[#4a4a4a] mt-1">Szükséges API-k: Maps JavaScript API, Places API, Geocoding API</p>
       </FormGroup>
       <div className="flex items-center gap-2">
         <div className={`w-2 h-2 rounded-full ${googleKey ? 'bg-emerald-500' : 'bg-gray-300'}`} />
-        <span className="text-[12px] text-[#5a6a80]">{googleKey ? 'API kulcs konfigurálva' : 'Nem konfigurálva – manuális cím bevitel aktív'}</span>
+        <span className="text-[12px] text-[#4a4a4a]">{googleKey ? 'API kulcs konfigurálva' : 'Nem konfigurálva – manuális cím bevitel aktív'}</span>
       </div>
 
       <SectionTitle>VIN Decoder API</SectionTitle>
@@ -824,7 +824,7 @@ function EmailSettingsTab() {
     toast('Gmail fiók lecsatlakoztatva')
   }
 
-  if (loading) return <div className="py-8 text-center text-[12px] text-[#5a6a80]">Betöltés...</div>
+  if (loading) return <div className="py-8 text-center text-[12px] text-[#4a4a4a]">Betöltés...</div>
 
   return (
     <div className="space-y-6">
@@ -866,7 +866,7 @@ function EmailSettingsTab() {
           </div>
 
           <a href="/api/auth/gmail"
-            className="flex items-center gap-3 bg-white border-2 border-[#e0e4e8] hover:border-[#C9A84C] rounded-xl px-4 py-3 w-fit transition-colors cursor-pointer">
+            className="flex items-center gap-3 bg-white border-2 border-[#e0e4e8] hover:border-[#C8102E] rounded-xl px-4 py-3 w-fit transition-colors cursor-pointer">
             <svg viewBox="0 0 24 24" width="20" height="20">
               <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
               <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
@@ -874,8 +874,8 @@ function EmailSettingsTab() {
               <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
             </svg>
             <div>
-              <p className="text-[13px] font-semibold text-[#0B1E3D]">Gmail fiók csatlakoztatása</p>
-              <p className="text-[11px] text-[#5a6a80]">Biztonságos Google OAuth 2.0 bejelentkezés</p>
+              <p className="text-[13px] font-semibold text-[#0D0D0D]">Gmail fiók csatlakoztatása</p>
+              <p className="text-[11px] text-[#4a4a4a]">Biztonságos Google OAuth 2.0 bejelentkezés</p>
             </div>
           </a>
 
@@ -901,10 +901,10 @@ function EmailSettingsTab() {
         ].map(opt => (
           <div key={opt.label} className="flex items-center justify-between p-3 bg-[#f8fafc] border border-[#e0e4e8] rounded-xl">
             <div>
-              <p className="text-[12px] font-medium text-[#0B1E3D]">{opt.label}</p>
-              <p className="text-[11px] text-[#5a6a80]">{opt.desc}</p>
+              <p className="text-[12px] font-medium text-[#0D0D0D]">{opt.label}</p>
+              <p className="text-[11px] text-[#4a4a4a]">{opt.desc}</p>
             </div>
-            <div className={`w-10 h-5 rounded-full ${opt.defaultOn ? 'bg-[#C9A84C]' : 'bg-gray-200'} relative`}>
+            <div className={`w-10 h-5 rounded-full ${opt.defaultOn ? 'bg-[#C8102E]' : 'bg-gray-200'} relative`}>
               <div className={`absolute top-0.5 w-4 h-4 bg-white rounded-full shadow transition-transform ${opt.defaultOn ? 'translate-x-5' : 'left-0.5'}`} />
             </div>
           </div>
@@ -920,14 +920,14 @@ function ActivityLog({ supabase }: { supabase: any }) {
     supabase.from('activity_log').select('*').order('created_at', { ascending: false }).limit(20)
       .then(({ data }: any) => setLogs(data || []))
   }, [])
-  if (logs.length === 0) return <div className="text-[12px] text-[#8fa0b5] p-3">Még nincs naplózott tevékenység.</div>
+  if (logs.length === 0) return <div className="text-[12px] text-[#888888] p-3">Még nincs naplózott tevékenység.</div>
   return (
     <div className="space-y-1">
       {logs.map(l => (
-        <div key={l.id} className="flex items-center gap-3 p-2 text-[11px] border-b border-[rgba(11,30,61,0.06)]">
-          <span className="text-[#8fa0b5] w-32 shrink-0">{new Date(l.created_at).toLocaleString('hu-HU')}</span>
-          <span className="font-medium text-[#0B1E3D]">{l.user_name || '–'}</span>
-          <span className="text-[#5a6a80] flex-1">{l.action}</span>
+        <div key={l.id} className="flex items-center gap-3 p-2 text-[11px] border-b border-[rgba(0,0,0,0.06)]">
+          <span className="text-[#888888] w-32 shrink-0">{new Date(l.created_at).toLocaleString('hu-HU')}</span>
+          <span className="font-medium text-[#0D0D0D]">{l.user_name || '–'}</span>
+          <span className="text-[#4a4a4a] flex-1">{l.action}</span>
         </div>
       ))}
     </div>
@@ -952,7 +952,7 @@ function ExportButton({ label, table, supabase, toast }: { label: string; table:
   }
   return (
     <button onClick={handleExport} disabled={loading}
-      className="flex items-center gap-2 p-3 bg-[#F4F5F7] hover:bg-[#0B1E3D] hover:text-white rounded-lg text-[12px] text-[#0B1E3D] transition-colors disabled:opacity-50">
+      className="flex items-center gap-2 p-3 bg-[#F4F5F7] hover:bg-[#0D0D0D] hover:text-white rounded-lg text-[12px] text-[#0D0D0D] transition-colors disabled:opacity-50">
       <Database size={14} />
       {loading ? 'Exportálás...' : `${label} (CSV)`}
     </button>

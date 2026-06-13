@@ -46,7 +46,7 @@ const CAT_COLORS: Record<string, string> = {
   maintenance: 'bg-orange-100 text-orange-700',
   legal: 'bg-purple-100 text-purple-700',
   safety: 'bg-red-100 text-red-700',
-  premium: 'bg-[#C9A84C]/10 text-[#a07d35]',
+  premium: 'bg-[#C8102E]/10 text-[#a07d35]',
   mobile: 'bg-teal-100 text-teal-700',
   fleet: 'bg-indigo-100 text-indigo-700',
   loyalty: 'bg-pink-100 text-pink-700',
@@ -167,8 +167,8 @@ function LaunchModal({ template, customers, onClose, onLaunched }: {
           <div className="flex items-center gap-2">
             <span className="text-xl">{template.icon}</span>
             <div>
-              <p className="font-semibold text-[#0B1E3D] text-[13px]">{template.name}</p>
-              <p className="text-[11px] text-[#5a6a80]">{selectedCustomers.length} ügyfél kiválasztva</p>
+              <p className="font-semibold text-[#0D0D0D] text-[13px]">{template.name}</p>
+              <p className="text-[11px] text-[#4a4a4a]">{selectedCustomers.length} ügyfél kiválasztva</p>
             </div>
           </div>
           <button onClick={onClose} className="p-1.5 rounded-full hover:bg-gray-100"><X size={15} /></button>
@@ -179,7 +179,7 @@ function LaunchModal({ template, customers, onClose, onLaunched }: {
           {(['message', 'recipients'] as const).map(t => (
             <button key={t} onClick={() => setActiveTab(t)}
               className={`flex-1 py-2.5 text-[12px] font-medium transition-colors ${
-                activeTab === t ? 'border-b-2 border-[#C9A84C] text-[#0B1E3D]' : 'text-[#5a6a80]'
+                activeTab === t ? 'border-b-2 border-[#C8102E] text-[#0D0D0D]' : 'text-[#4a4a4a]'
               }`}>
               {t === 'message' ? '✉️ Üzenet' : `👥 Ügyfelek (${selectedCustomers.length})`}
             </button>
@@ -191,12 +191,12 @@ function LaunchModal({ template, customers, onClose, onLaunched }: {
             <div className="space-y-3">
               {/* Channel */}
               <div>
-                <label className="text-[11px] text-[#5a6a80] mb-1 block">Csatorna</label>
+                <label className="text-[11px] text-[#4a4a4a] mb-1 block">Csatorna</label>
                 <div className="flex gap-2">
                   {(['whatsapp', 'email'] as const).map(ch => (
                     <button key={ch} onClick={() => { setChannel(ch); setMessage(ch === 'whatsapp' ? (template.whatsapp_text || '') : (template.email_body || '')) }}
                       className={`flex items-center gap-1.5 px-3 py-2 rounded-xl border text-[12px] transition-colors ${
-                        channel === ch ? 'border-[#C9A84C] bg-[#C9A84C]/5 text-[#0B1E3D]' : 'border-[#e0e4e8] text-[#5a6a80]'
+                        channel === ch ? 'border-[#C8102E] bg-[#C8102E]/5 text-[#0D0D0D]' : 'border-[#e0e4e8] text-[#4a4a4a]'
                       }`}>
                       {CHANNEL_ICONS[ch]}
                       {ch === 'whatsapp' ? 'WhatsApp' : 'Email'}
@@ -208,35 +208,35 @@ function LaunchModal({ template, customers, onClose, onLaunched }: {
               {/* Message */}
               <div>
                 <div className="flex items-center justify-between mb-1">
-                  <label className="text-[11px] text-[#5a6a80]">Üzenet szövege</label>
+                  <label className="text-[11px] text-[#4a4a4a]">Üzenet szövege</label>
                   <button onClick={generateAI} disabled={aiLoading}
-                    className="flex items-center gap-1 text-[11px] text-[#C9A84C] hover:text-[#a07d35]">
+                    className="flex items-center gap-1 text-[11px] text-[#C8102E] hover:text-[#a07d35]">
                     {aiLoading ? <Loader2 size={11} className="animate-spin" /> : <Wand2 size={11} />}
                     AI újraírás
                   </button>
                 </div>
                 <textarea value={message} onChange={e => setMessage(e.target.value)} rows={5}
-                  className="w-full border border-[#e0e4e8] rounded-xl px-3 py-2 text-[12px] outline-none focus:border-[#C9A84C] resize-none" />
-                <p className="text-[10px] text-[#5a6a80] mt-1">Változók: {'{{customer_name}}'} {'{{plate}}'}</p>
+                  className="w-full border border-[#e0e4e8] rounded-xl px-3 py-2 text-[12px] outline-none focus:border-[#C8102E] resize-none" />
+                <p className="text-[10px] text-[#4a4a4a] mt-1">Változók: {'{{customer_name}}'} {'{{plate}}'}</p>
               </div>
 
               {/* Schedule */}
               <div>
-                <label className="text-[11px] text-[#5a6a80] mb-1 block">Ütemezés (opcionális)</label>
+                <label className="text-[11px] text-[#4a4a4a] mb-1 block">Ütemezés (opcionális)</label>
                 <input type="datetime-local" value={scheduledAt} onChange={e => setScheduledAt(e.target.value)}
-                  className="w-full border border-[#e0e4e8] rounded-xl px-3 py-2 text-[12px] outline-none focus:border-[#C9A84C]" />
+                  className="w-full border border-[#e0e4e8] rounded-xl px-3 py-2 text-[12px] outline-none focus:border-[#C8102E]" />
               </div>
 
               {/* Social previews */}
               {(template.fb_post || template.ig_post) && (
                 <div>
-                  <label className="text-[11px] text-[#5a6a80] mb-2 block">Közösségi média szövegek</label>
+                  <label className="text-[11px] text-[#4a4a4a] mb-2 block">Közösségi média szövegek</label>
                   <div className="space-y-2">
                     {template.fb_post && (
                       <div className="bg-[#f8fafc] border border-[#e0e4e8] rounded-xl p-3">
                         <div className="flex items-center gap-1.5 mb-1.5">
                           <Share2 size={13} className="text-[#1877F2]" />
-                          <span className="text-[11px] font-medium text-[#5a6a80]">Facebook</span>
+                          <span className="text-[11px] font-medium text-[#4a4a4a]">Facebook</span>
                         </div>
                         <p className="text-[11px] text-[#3a4a5c]">{template.fb_post}</p>
                       </div>
@@ -245,7 +245,7 @@ function LaunchModal({ template, customers, onClose, onLaunched }: {
                       <div className="bg-[#f8fafc] border border-[#e0e4e8] rounded-xl p-3">
                         <div className="flex items-center gap-1.5 mb-1.5">
                           <Share2 size={13} className="text-[#E1306C]" />
-                          <span className="text-[11px] font-medium text-[#5a6a80]">Instagram</span>
+                          <span className="text-[11px] font-medium text-[#4a4a4a]">Instagram</span>
                         </div>
                         <p className="text-[11px] text-[#3a4a5c]">{template.ig_post}</p>
                       </div>
@@ -258,26 +258,26 @@ function LaunchModal({ template, customers, onClose, onLaunched }: {
             <div className="space-y-3">
               <div className="flex items-center justify-between">
                 <input value={search} onChange={e => setSearch(e.target.value)}
-                  placeholder="Keresés..." className="flex-1 border border-[#e0e4e8] rounded-xl px-3 py-1.5 text-[12px] outline-none focus:border-[#C9A84C]" />
+                  placeholder="Keresés..." className="flex-1 border border-[#e0e4e8] rounded-xl px-3 py-1.5 text-[12px] outline-none focus:border-[#C8102E]" />
                 <div className="flex gap-2 ml-2">
-                  <button onClick={() => setSelectedCustomers(filtered.map(c => c.id))} className="text-[11px] text-[#C9A84C]">Mind</button>
-                  <button onClick={() => setSelectedCustomers([])} className="text-[11px] text-[#5a6a80]">Töröl</button>
+                  <button onClick={() => setSelectedCustomers(filtered.map(c => c.id))} className="text-[11px] text-[#C8102E]">Mind</button>
+                  <button onClick={() => setSelectedCustomers([])} className="text-[11px] text-[#4a4a4a]">Töröl</button>
                 </div>
               </div>
               <div className="space-y-1 max-h-60 overflow-y-auto">
                 {filtered.map(c => (
                   <button key={c.id} onClick={() => toggleCustomer(c.id)}
                     className={`w-full flex items-center gap-3 px-3 py-2 rounded-xl border transition-colors text-left ${
-                      selectedCustomers.includes(c.id) ? 'border-[#C9A84C] bg-[#C9A84C]/5' : 'border-[#e0e4e8] hover:bg-[#f8fafc]'
+                      selectedCustomers.includes(c.id) ? 'border-[#C8102E] bg-[#C8102E]/5' : 'border-[#e0e4e8] hover:bg-[#f8fafc]'
                     }`}>
                     <div className={`w-4 h-4 rounded border flex items-center justify-center shrink-0 ${
-                      selectedCustomers.includes(c.id) ? 'bg-[#C9A84C] border-[#C9A84C]' : 'border-[#d0d4d8]'
+                      selectedCustomers.includes(c.id) ? 'bg-[#C8102E] border-[#C8102E]' : 'border-[#d0d4d8]'
                     }`}>
                       {selectedCustomers.includes(c.id) && <CheckCircle size={10} className="text-white" />}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-[12px] font-medium text-[#0B1E3D] truncate">{c.first_name} {c.last_name}</p>
-                      <p className="text-[10px] text-[#5a6a80] truncate">{c.phone || c.email}</p>
+                      <p className="text-[12px] font-medium text-[#0D0D0D] truncate">{c.first_name} {c.last_name}</p>
+                      <p className="text-[10px] text-[#4a4a4a] truncate">{c.phone || c.email}</p>
                     </div>
                   </button>
                 ))}
@@ -287,11 +287,11 @@ function LaunchModal({ template, customers, onClose, onLaunched }: {
         </div>
 
         <div className="flex items-center justify-between px-4 py-3 border-t border-[#e0e4e8]">
-          <p className="text-[11px] text-[#5a6a80]">{selectedCustomers.length} ügyfél • {channel}</p>
+          <p className="text-[11px] text-[#4a4a4a]">{selectedCustomers.length} ügyfél • {channel}</p>
           <div className="flex gap-2">
             <button onClick={onClose} className="px-3 py-1.5 text-[12px] border border-[#e0e4e8] rounded-xl hover:bg-gray-50">Mégse</button>
             <button onClick={launch} disabled={launching || selectedCustomers.length === 0}
-              className="flex items-center gap-1.5 px-4 py-1.5 bg-[#0B1E3D] text-white text-[12px] rounded-xl hover:bg-[#162d5a] disabled:opacity-50">
+              className="flex items-center gap-1.5 px-4 py-1.5 bg-[#0D0D0D] text-white text-[12px] rounded-xl hover:bg-[#162d5a] disabled:opacity-50">
               {launching ? <Loader2 size={12} className="animate-spin" /> : <Send size={12} />}
               {scheduledAt ? 'Ütemezés' : 'Küldés most'}
             </button>
@@ -347,9 +347,9 @@ function AIMarketingTab({ templates }: { templates: Template[] }) {
 
   return (
     <div className="space-y-4">
-      <div className="bg-gradient-to-r from-[#0B1E3D] to-[#1a3a6e] rounded-2xl p-4 text-white">
+      <div className="bg-gradient-to-r from-[#0D0D0D] to-[#1a3a6e] rounded-2xl p-4 text-white">
         <div className="flex items-center gap-2 mb-1">
-          <Wand2 size={16} className="text-[#C9A84C]" />
+          <Wand2 size={16} className="text-[#C8102E]" />
           <span className="font-bold text-[14px]">AI Marketing Asszisztens</span>
         </div>
         <p className="text-[12px] text-white/70">Generálj kampány szöveget bármely csatornára egy kattintással</p>
@@ -357,24 +357,24 @@ function AIMarketingTab({ templates }: { templates: Template[] }) {
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
         <div>
-          <label className="text-[11px] text-[#5a6a80] mb-1 block">Kampány sablon</label>
+          <label className="text-[11px] text-[#4a4a4a] mb-1 block">Kampány sablon</label>
           <select value={selectedTemplate} onChange={e => setSelectedTemplate(e.target.value)}
-            className="w-full border border-[#e0e4e8] rounded-xl px-3 py-2 text-[12px] outline-none focus:border-[#C9A84C]">
+            className="w-full border border-[#e0e4e8] rounded-xl px-3 py-2 text-[12px] outline-none focus:border-[#C8102E]">
             <option value="">— Válassz —</option>
             {templates.map(t => <option key={t.id} value={t.id}>{t.icon} {t.name}</option>)}
           </select>
         </div>
         <div>
-          <label className="text-[11px] text-[#5a6a80] mb-1 block">Csatorna</label>
+          <label className="text-[11px] text-[#4a4a4a] mb-1 block">Csatorna</label>
           <select value={channel} onChange={e => setChannel(e.target.value)}
-            className="w-full border border-[#e0e4e8] rounded-xl px-3 py-2 text-[12px] outline-none focus:border-[#C9A84C]">
+            className="w-full border border-[#e0e4e8] rounded-xl px-3 py-2 text-[12px] outline-none focus:border-[#C8102E]">
             {channels.map(c => <option key={c.id} value={c.id}>{c.label}</option>)}
           </select>
         </div>
         <div>
-          <label className="text-[11px] text-[#5a6a80] mb-1 block">Nyelv</label>
+          <label className="text-[11px] text-[#4a4a4a] mb-1 block">Nyelv</label>
           <select value={language} onChange={e => setLanguage(e.target.value)}
-            className="w-full border border-[#e0e4e8] rounded-xl px-3 py-2 text-[12px] outline-none focus:border-[#C9A84C]">
+            className="w-full border border-[#e0e4e8] rounded-xl px-3 py-2 text-[12px] outline-none focus:border-[#C8102E]">
             <option value="de">Deutsch</option>
             <option value="hu">Magyar</option>
             <option value="en">English</option>
@@ -384,7 +384,7 @@ function AIMarketingTab({ templates }: { templates: Template[] }) {
       </div>
 
       <button onClick={generate} disabled={!selectedTemplate || loading}
-        className="flex items-center gap-2 bg-[#C9A84C] text-white text-[13px] font-semibold px-4 py-2.5 rounded-xl hover:bg-[#a07d35] disabled:opacity-40">
+        className="flex items-center gap-2 bg-[#C8102E] text-white text-[13px] font-semibold px-4 py-2.5 rounded-xl hover:bg-[#a07d35] disabled:opacity-40">
         {loading ? <Loader2 size={14} className="animate-spin" /> : <Wand2 size={14} />}
         AI szöveg generálása
       </button>
@@ -394,10 +394,10 @@ function AIMarketingTab({ templates }: { templates: Template[] }) {
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-1.5">
               {CHANNEL_ICONS[channel]}
-              <span className="text-[12px] font-semibold text-[#0B1E3D]">Generált szöveg</span>
+              <span className="text-[12px] font-semibold text-[#0D0D0D]">Generált szöveg</span>
             </div>
             <button onClick={() => navigator.clipboard.writeText(output)}
-              className="flex items-center gap-1 text-[11px] text-[#5a6a80] hover:text-[#0B1E3D] border border-[#e0e4e8] rounded-lg px-2 py-1">
+              className="flex items-center gap-1 text-[11px] text-[#4a4a4a] hover:text-[#0D0D0D] border border-[#e0e4e8] rounded-lg px-2 py-1">
               <Copy size={11} /> Másolás
             </button>
           </div>
@@ -417,9 +417,9 @@ function MarketingCalendarTab({ templates, onLaunch }: { templates: Template[]; 
   return (
     <div className="space-y-4">
       <div className="flex items-center gap-2 mb-2">
-        <CalendarDays size={16} className="text-[#C9A84C]" />
-        <h3 className="font-bold text-[#0B1E3D] text-[14px]">Marketing Naptár</h3>
-        <span className="text-[11px] bg-[#C9A84C]/10 text-[#a07d35] px-2 py-0.5 rounded-full">Automatikus javaslatok</span>
+        <CalendarDays size={16} className="text-[#C8102E]" />
+        <h3 className="font-bold text-[#0D0D0D] text-[14px]">Marketing Naptár</h3>
+        <span className="text-[11px] bg-[#C8102E]/10 text-[#a07d35] px-2 py-0.5 rounded-full">Automatikus javaslatok</span>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
@@ -431,11 +431,11 @@ function MarketingCalendarTab({ templates, onLaunch }: { templates: Template[]; 
 
           return (
             <div key={mc.month} className={`border rounded-2xl p-4 ${
-              isCurrent ? 'border-[#C9A84C] bg-[#C9A84C]/5' : isPast ? 'border-[#e0e4e8] opacity-60' : 'border-[#e0e4e8]'
+              isCurrent ? 'border-[#C8102E] bg-[#C8102E]/5' : isPast ? 'border-[#e0e4e8] opacity-60' : 'border-[#e0e4e8]'
             }`}>
               <div className="flex items-center justify-between mb-2">
-                <span className={`font-bold text-[13px] ${isCurrent ? 'text-[#C9A84C]' : 'text-[#0B1E3D]'}`}>{mc.month}</span>
-                {isCurrent && <span className="text-[10px] bg-[#C9A84C] text-white px-2 py-0.5 rounded-full">Most</span>}
+                <span className={`font-bold text-[13px] ${isCurrent ? 'text-[#C8102E]' : 'text-[#0D0D0D]'}`}>{mc.month}</span>
+                {isCurrent && <span className="text-[10px] bg-[#C8102E] text-white px-2 py-0.5 rounded-full">Most</span>}
               </div>
               <div className="space-y-2">
                 {relevant.map(t => (
@@ -446,7 +446,7 @@ function MarketingCalendarTab({ templates, onLaunch }: { templates: Template[]; 
                     </div>
                     {!isPast && (
                       <button onClick={() => onLaunch(t)}
-                        className="flex items-center gap-1 text-[10px] bg-[#0B1E3D] text-white px-2 py-1 rounded-lg shrink-0 hover:bg-[#162d5a]">
+                        className="flex items-center gap-1 text-[10px] bg-[#0D0D0D] text-white px-2 py-1 rounded-lg shrink-0 hover:bg-[#162d5a]">
                         <Play size={9} /> Indítás
                       </button>
                     )}
@@ -473,9 +473,9 @@ function ReviewTab({ customers, templates, onLaunch }: {
       <div className="bg-gradient-to-r from-yellow-50 to-amber-50 border border-yellow-200 rounded-2xl p-4">
         <div className="flex items-center gap-2 mb-1">
           <Star size={16} className="text-yellow-500 fill-yellow-500" />
-          <span className="font-bold text-[#0B1E3D] text-[14px]">Review Kampány Központ</span>
+          <span className="font-bold text-[#0D0D0D] text-[14px]">Review Kampány Központ</span>
         </div>
-        <p className="text-[12px] text-[#5a6a80]">Automatikus review kérés küldés munkalap lezárása után 3 nappal</p>
+        <p className="text-[12px] text-[#4a4a4a]">Automatikus review kérés küldés munkalap lezárása után 3 nappal</p>
       </div>
 
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
@@ -486,15 +486,15 @@ function ReviewTab({ customers, templates, onLaunch }: {
           { label: 'Új review', value: '+12', sub: 'ez a hónap' },
         ].map(s => (
           <div key={s.label} className="bg-white border border-[#e0e4e8] rounded-xl p-3 text-center">
-            <p className="text-[20px] font-bold text-[#0B1E3D]">{s.value}</p>
-            <p className="text-[11px] text-[#5a6a80] mt-0.5">{s.sub}</p>
-            <p className="text-[10px] text-[#8fa0b5] mt-0.5">{s.label}</p>
+            <p className="text-[20px] font-bold text-[#0D0D0D]">{s.value}</p>
+            <p className="text-[11px] text-[#4a4a4a] mt-0.5">{s.sub}</p>
+            <p className="text-[10px] text-[#888888] mt-0.5">{s.label}</p>
           </div>
         ))}
       </div>
 
       <div className="bg-white border border-[#e0e4e8] rounded-2xl p-4">
-        <h4 className="font-semibold text-[13px] text-[#0B1E3D] mb-3">Automatikus review küldés</h4>
+        <h4 className="font-semibold text-[13px] text-[#0D0D0D] mb-3">Automatikus review küldés</h4>
         <div className="space-y-2">
           {[
             { label: 'Munkalap lezárás után 3 nappal', active: true },
@@ -504,12 +504,12 @@ function ReviewTab({ customers, templates, onLaunch }: {
           ].map(opt => (
             <div key={opt.label} className="flex items-center gap-2 text-[12px]">
               <CheckCircle size={14} className={opt.active ? 'text-green-500' : 'text-gray-300'} />
-              <span className={opt.active ? 'text-[#3a4a5c]' : 'text-[#8fa0b5]'}>{opt.label}</span>
+              <span className={opt.active ? 'text-[#3a4a5c]' : 'text-[#888888]'}>{opt.label}</span>
             </div>
           ))}
         </div>
         {reviewTemplate && (
-          <button onClick={() => onLaunch(reviewTemplate)} className="flex items-center gap-2 mt-3 bg-[#0B1E3D] text-white text-[12px] px-3 py-2 rounded-xl">
+          <button onClick={() => onLaunch(reviewTemplate)} className="flex items-center gap-2 mt-3 bg-[#0D0D0D] text-white text-[12px] px-3 py-2 rounded-xl">
             <Send size={13} /> Review kampány indítása
           </button>
         )}
@@ -530,9 +530,9 @@ function ReferralTab({ customers, templates, onLaunch }: {
       <div className="bg-gradient-to-r from-emerald-50 to-green-50 border border-emerald-200 rounded-2xl p-4">
         <div className="flex items-center gap-2 mb-1">
           <Gift size={16} className="text-emerald-600" />
-          <span className="font-bold text-[#0B1E3D] text-[14px]">Referral Program</span>
+          <span className="font-bold text-[#0D0D0D] text-[14px]">Referral Program</span>
         </div>
-        <p className="text-[12px] text-[#5a6a80]">Meglévő ügyfelek ajánlják az Autohaus Friedrichet és mindkét fél nyer</p>
+        <p className="text-[12px] text-[#4a4a4a]">Meglévő ügyfelek ajánlják az Autohaus Friedrichet és mindkét fél nyer</p>
       </div>
 
       <div className="grid grid-cols-3 gap-3">
@@ -543,8 +543,8 @@ function ReferralTab({ customers, templates, onLaunch }: {
         ].map(s => (
           <div key={s.label} className="bg-white border border-[#e0e4e8] rounded-xl p-3 text-center">
             <p className="text-xl mb-1">{s.icon}</p>
-            <p className="text-[18px] font-bold text-[#0B1E3D]">{s.value}</p>
-            <p className="text-[10px] text-[#5a6a80]">{s.label}</p>
+            <p className="text-[18px] font-bold text-[#0D0D0D]">{s.value}</p>
+            <p className="text-[10px] text-[#4a4a4a]">{s.label}</p>
           </div>
         ))}
       </div>
@@ -557,8 +557,8 @@ function ReferralTab({ customers, templates, onLaunch }: {
         ].map(r => (
           <div key={r.reward} className="bg-white border border-[#e0e4e8] rounded-xl p-3 text-center">
             <p className="text-2xl mb-1">{r.icon}</p>
-            <p className="text-[13px] font-bold text-[#0B1E3D]">{r.reward}</p>
-            <p className="text-[11px] text-[#5a6a80]">{r.desc}</p>
+            <p className="text-[13px] font-bold text-[#0D0D0D]">{r.reward}</p>
+            <p className="text-[11px] text-[#4a4a4a]">{r.desc}</p>
           </div>
         ))}
       </div>
@@ -590,9 +590,9 @@ function SegmentsTab({ customers }: { customers: Customer[] }) {
   return (
     <div className="space-y-4">
       <div className="flex items-center gap-2">
-        <Target size={16} className="text-[#C9A84C]" />
-        <h3 className="font-bold text-[#0B1E3D] text-[14px]">Ügyfélszegmensek</h3>
-        <span className="text-[11px] text-[#5a6a80]">Automatikusan számítva</span>
+        <Target size={16} className="text-[#C8102E]" />
+        <h3 className="font-bold text-[#0D0D0D] text-[14px]">Ügyfélszegmensek</h3>
+        <span className="text-[11px] text-[#4a4a4a]">Automatikusan számítva</span>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -601,13 +601,13 @@ function SegmentsTab({ customers }: { customers: Customer[] }) {
             <div className="flex items-center gap-3">
               <span className="text-2xl">{s.icon}</span>
               <div>
-                <p className="text-[13px] font-medium text-[#0B1E3D]">{s.label}</p>
+                <p className="text-[13px] font-medium text-[#0D0D0D]">{s.label}</p>
                 <span className={`text-[10px] px-2 py-0.5 rounded-full font-medium ${s.color}`}>{s.id}</span>
               </div>
             </div>
             <div className="text-right">
-              <p className="text-[20px] font-bold text-[#0B1E3D]">{s.count}</p>
-              <p className="text-[10px] text-[#5a6a80]">ügyfél</p>
+              <p className="text-[20px] font-bold text-[#0D0D0D]">{s.count}</p>
+              <p className="text-[10px] text-[#4a4a4a]">ügyfél</p>
             </div>
           </div>
         ))}
@@ -626,8 +626,8 @@ function ReportsTab({ campaigns }: { campaigns: Campaign[] }) {
 
   return (
     <div className="space-y-4">
-      <h3 className="font-bold text-[#0B1E3D] text-[14px] flex items-center gap-2">
-        <BarChart2 size={16} className="text-[#C9A84C]" /> Marketing Riportok
+      <h3 className="font-bold text-[#0D0D0D] text-[14px] flex items-center gap-2">
+        <BarChart2 size={16} className="text-[#C8102E]" /> Marketing Riportok
       </h3>
 
       <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
@@ -635,35 +635,35 @@ function ReportsTab({ campaigns }: { campaigns: Campaign[] }) {
           { label: 'Kiküldve', value: total, icon: Send, color: 'text-blue-600' },
           { label: 'Megnyitva', value: opened || Math.round(total * 0.52), icon: Eye, color: 'text-green-600' },
           { label: 'Válaszolt', value: replied || Math.round(total * 0.18), icon: MessageCircle, color: 'text-purple-600' },
-          { label: 'Foglalás', value: booked || Math.round(total * 0.08), icon: CheckCircle, color: 'text-[#C9A84C]' },
+          { label: 'Foglalás', value: booked || Math.round(total * 0.08), icon: CheckCircle, color: 'text-[#C8102E]' },
           { label: 'Becsült bevétel', value: `CHF ${(booked || Math.round(total * 0.08)) * 280}`, icon: TrendingUp, color: 'text-emerald-600' },
         ].map(s => (
           <div key={s.label} className="bg-white border border-[#e0e4e8] rounded-xl p-3 text-center">
             <s.icon size={16} className={`mx-auto mb-1 ${s.color}`} />
-            <p className="text-[17px] font-bold text-[#0B1E3D]">{s.value}</p>
-            <p className="text-[10px] text-[#5a6a80]">{s.label}</p>
+            <p className="text-[17px] font-bold text-[#0D0D0D]">{s.value}</p>
+            <p className="text-[10px] text-[#4a4a4a]">{s.label}</p>
           </div>
         ))}
       </div>
 
       <div className="bg-white border border-[#e0e4e8] rounded-2xl overflow-hidden">
         <div className="px-4 py-3 border-b border-[#e0e4e8]">
-          <p className="font-semibold text-[13px] text-[#0B1E3D]">Kampányok teljesítménye</p>
+          <p className="font-semibold text-[13px] text-[#0D0D0D]">Kampányok teljesítménye</p>
         </div>
         {campaigns.length === 0 ? (
-          <div className="py-8 text-center text-[12px] text-[#5a6a80]">Még nincs elküldött kampány</div>
+          <div className="py-8 text-center text-[12px] text-[#4a4a4a]">Még nincs elküldött kampány</div>
         ) : (
           <div className="divide-y divide-[#f0f4f8]">
             {campaigns.slice(0, 10).map(c => (
               <div key={c.id} className="px-4 py-3 flex items-center gap-4">
                 <div className="flex-1 min-w-0">
-                  <p className="text-[12px] font-medium text-[#0B1E3D] truncate">{c.name}</p>
-                  <p className="text-[10px] text-[#5a6a80]">{new Date(c.sent_at || c.created_at).toLocaleDateString('hu-HU')}</p>
+                  <p className="text-[12px] font-medium text-[#0D0D0D] truncate">{c.name}</p>
+                  <p className="text-[10px] text-[#4a4a4a]">{new Date(c.sent_at || c.created_at).toLocaleDateString('hu-HU')}</p>
                 </div>
                 <div className="flex gap-4 text-center text-[11px]">
-                  <div><p className="font-bold text-[#0B1E3D]">{c.sent_count}</p><p className="text-[#5a6a80]">küldve</p></div>
-                  <div><p className="font-bold text-green-600">{c.opened_count || Math.round(c.sent_count * 0.52)}</p><p className="text-[#5a6a80]">nyitva</p></div>
-                  <div><p className="font-bold text-[#C9A84C]">{c.booked_count || Math.round(c.sent_count * 0.08)}</p><p className="text-[#5a6a80]">foglalás</p></div>
+                  <div><p className="font-bold text-[#0D0D0D]">{c.sent_count}</p><p className="text-[#4a4a4a]">küldve</p></div>
+                  <div><p className="font-bold text-green-600">{c.opened_count || Math.round(c.sent_count * 0.52)}</p><p className="text-[#4a4a4a]">nyitva</p></div>
+                  <div><p className="font-bold text-[#C8102E]">{c.booked_count || Math.round(c.sent_count * 0.08)}</p><p className="text-[#4a4a4a]">foglalás</p></div>
                 </div>
                 <span className={`text-[10px] px-2 py-0.5 rounded-full ${c.status === 'sent' ? 'bg-green-100 text-green-700' : 'bg-blue-100 text-blue-700'}`}>
                   {c.status === 'sent' ? 'Elküldve' : 'Ütemezett'}
@@ -716,7 +716,7 @@ export function MarketingPage({ profile, refreshKey }: Props) {
 
   if (loading) return (
     <div className="flex items-center justify-center h-64">
-      <Loader2 className="animate-spin text-[#C9A84C]" size={24} />
+      <Loader2 className="animate-spin text-[#C8102E]" size={24} />
     </div>
   )
 
@@ -727,7 +727,7 @@ export function MarketingPage({ profile, refreshKey }: Props) {
         {TABS.map(t => (
           <button key={t.id} onClick={() => setActiveTab(t.id)}
             className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-[12px] font-medium whitespace-nowrap transition-colors shrink-0 ${
-              activeTab === t.id ? 'bg-[#0B1E3D] text-white' : 'bg-white border border-[#e0e4e8] text-[#5a6a80] hover:bg-[#f0f4f8]'
+              activeTab === t.id ? 'bg-[#0D0D0D] text-white' : 'bg-white border border-[#e0e4e8] text-[#4a4a4a] hover:bg-[#f0f4f8]'
             }`}>
             <t.icon size={13} />
             {t.label}
@@ -744,14 +744,14 @@ export function MarketingPage({ profile, refreshKey }: Props) {
               { label: 'Kampányok összesen', value: campaigns.length, icon: Megaphone, color: 'text-blue-600', bg: 'bg-blue-50' },
               { label: 'Ez a hónap', value: sentThisMonth, icon: Send, color: 'text-green-600', bg: 'bg-green-50' },
               { label: 'Sablonok', value: templates.length, icon: BookOpen, color: 'text-purple-600', bg: 'bg-purple-50' },
-              { label: 'Ügyfelek', value: customers.length, icon: Users, color: 'text-[#C9A84C]', bg: 'bg-[#C9A84C]/10' },
+              { label: 'Ügyfelek', value: customers.length, icon: Users, color: 'text-[#C8102E]', bg: 'bg-[#C8102E]/10' },
             ].map(s => (
               <div key={s.label} className="bg-white border border-[#e0e4e8] rounded-2xl p-4">
                 <div className={`w-9 h-9 ${s.bg} rounded-xl flex items-center justify-center mb-2`}>
                   <s.icon size={16} className={s.color} />
                 </div>
-                <p className="text-[22px] font-bold text-[#0B1E3D]">{s.value}</p>
-                <p className="text-[11px] text-[#5a6a80]">{s.label}</p>
+                <p className="text-[22px] font-bold text-[#0D0D0D]">{s.value}</p>
+                <p className="text-[11px] text-[#4a4a4a]">{s.label}</p>
               </div>
             ))}
           </div>
@@ -759,8 +759,8 @@ export function MarketingPage({ profile, refreshKey }: Props) {
           {/* Suggested campaigns */}
           <div className="bg-white border border-[#e0e4e8] rounded-2xl p-4">
             <div className="flex items-center gap-2 mb-3">
-              <Zap size={14} className="text-[#C9A84C]" />
-              <span className="font-semibold text-[13px] text-[#0B1E3D]">Javasolt kampányok most</span>
+              <Zap size={14} className="text-[#C8102E]" />
+              <span className="font-semibold text-[13px] text-[#0D0D0D]">Javasolt kampányok most</span>
             </div>
             <div className="space-y-2">
               {suggestions.map(t => (
@@ -768,12 +768,12 @@ export function MarketingPage({ profile, refreshKey }: Props) {
                   <div className="flex items-center gap-2.5">
                     <span className="text-xl">{t.icon}</span>
                     <div>
-                      <p className="text-[12px] font-medium text-[#0B1E3D]">{t.name}</p>
-                      <p className="text-[10px] text-[#5a6a80]">{CAT_LABELS[t.category] || t.category}</p>
+                      <p className="text-[12px] font-medium text-[#0D0D0D]">{t.name}</p>
+                      <p className="text-[10px] text-[#4a4a4a]">{CAT_LABELS[t.category] || t.category}</p>
                     </div>
                   </div>
                   <button onClick={() => setLaunchTemplate(t)}
-                    className="flex items-center gap-1.5 bg-[#C9A84C] text-white text-[11px] font-semibold px-3 py-1.5 rounded-lg hover:bg-[#a07d35] shrink-0">
+                    className="flex items-center gap-1.5 bg-[#C8102E] text-white text-[11px] font-semibold px-3 py-1.5 rounded-lg hover:bg-[#a07d35] shrink-0">
                     <Play size={11} /> Indítás
                   </button>
                 </div>
@@ -785,16 +785,16 @@ export function MarketingPage({ profile, refreshKey }: Props) {
           {campaigns.length > 0 && (
             <div className="bg-white border border-[#e0e4e8] rounded-2xl overflow-hidden">
               <div className="px-4 py-3 border-b border-[#e0e4e8] flex items-center justify-between">
-                <p className="font-semibold text-[13px] text-[#0B1E3D]">Legutóbbi kampányok</p>
-                <button onClick={() => setActiveTab('campaigns')} className="text-[11px] text-[#C9A84C] flex items-center gap-1">
+                <p className="font-semibold text-[13px] text-[#0D0D0D]">Legutóbbi kampányok</p>
+                <button onClick={() => setActiveTab('campaigns')} className="text-[11px] text-[#C8102E] flex items-center gap-1">
                   Mind <ChevronRight size={12} />
                 </button>
               </div>
               {campaigns.slice(0, 5).map(c => (
                 <div key={c.id} className="px-4 py-3 border-b border-[#f0f4f8] last:border-0 flex items-center gap-3">
                   <div className="flex-1 min-w-0">
-                    <p className="text-[12px] font-medium text-[#0B1E3D] truncate">{c.name}</p>
-                    <p className="text-[10px] text-[#5a6a80]">{c.sent_count} küldve • {new Date(c.sent_at || c.created_at).toLocaleDateString('hu-HU')}</p>
+                    <p className="text-[12px] font-medium text-[#0D0D0D] truncate">{c.name}</p>
+                    <p className="text-[10px] text-[#4a4a4a]">{c.sent_count} küldve • {new Date(c.sent_at || c.created_at).toLocaleDateString('hu-HU')}</p>
                   </div>
                   <span className={`text-[10px] px-2 py-0.5 rounded-full shrink-0 ${
                     c.status === 'sent' ? 'bg-green-100 text-green-700' :
@@ -814,32 +814,32 @@ export function MarketingPage({ profile, refreshKey }: Props) {
       {activeTab === 'campaigns' && (
         <div className="space-y-3">
           <div className="flex items-center justify-between">
-            <h3 className="font-bold text-[#0B1E3D] text-[14px]">Kampányok ({campaigns.length})</h3>
+            <h3 className="font-bold text-[#0D0D0D] text-[14px]">Kampányok ({campaigns.length})</h3>
             <button onClick={() => setActiveTab('templates')}
-              className="flex items-center gap-1.5 bg-[#C9A84C] text-white text-[12px] px-3 py-1.5 rounded-xl">
+              className="flex items-center gap-1.5 bg-[#C8102E] text-white text-[12px] px-3 py-1.5 rounded-xl">
               <Plus size={13} /> Új kampány
             </button>
           </div>
           {campaigns.length === 0 ? (
             <div className="bg-white border border-[#e0e4e8] rounded-2xl p-8 text-center">
-              <Megaphone size={32} className="mx-auto mb-2 text-[#5a6a80] opacity-30" />
-              <p className="text-[13px] text-[#5a6a80]">Még nincs kampány</p>
-              <button onClick={() => setActiveTab('templates')} className="mt-2 text-[12px] text-[#C9A84C]">Sablon könyvtár megnyitása →</button>
+              <Megaphone size={32} className="mx-auto mb-2 text-[#4a4a4a] opacity-30" />
+              <p className="text-[13px] text-[#4a4a4a]">Még nincs kampány</p>
+              <button onClick={() => setActiveTab('templates')} className="mt-2 text-[12px] text-[#C8102E]">Sablon könyvtár megnyitása →</button>
             </div>
           ) : (
             <div className="bg-white border border-[#e0e4e8] rounded-2xl overflow-hidden">
               {campaigns.map(c => (
                 <div key={c.id} className="px-4 py-3 border-b border-[#f0f4f8] last:border-0 flex items-center gap-3">
                   <div className="flex-1 min-w-0">
-                    <p className="text-[13px] font-medium text-[#0B1E3D] truncate">{c.name}</p>
+                    <p className="text-[13px] font-medium text-[#0D0D0D] truncate">{c.name}</p>
                     <div className="flex items-center gap-3 mt-0.5">
-                      <span className="text-[10px] text-[#5a6a80]">{new Date(c.sent_at || c.created_at).toLocaleDateString('hu-HU')}</span>
-                      <span className="text-[10px] text-[#5a6a80]">{c.channel}</span>
+                      <span className="text-[10px] text-[#4a4a4a]">{new Date(c.sent_at || c.created_at).toLocaleDateString('hu-HU')}</span>
+                      <span className="text-[10px] text-[#4a4a4a]">{c.channel}</span>
                     </div>
                   </div>
                   <div className="flex gap-4 text-[11px] text-center">
-                    <div><p className="font-bold text-[#0B1E3D]">{c.sent_count}</p><p className="text-[#5a6a80]">küldve</p></div>
-                    <div><p className="font-bold text-green-600">{c.opened_count || Math.round(c.sent_count * 0.52)}</p><p className="text-[#5a6a80]">nyitva</p></div>
+                    <div><p className="font-bold text-[#0D0D0D]">{c.sent_count}</p><p className="text-[#4a4a4a]">küldve</p></div>
+                    <div><p className="font-bold text-green-600">{c.opened_count || Math.round(c.sent_count * 0.52)}</p><p className="text-[#4a4a4a]">nyitva</p></div>
                   </div>
                   <span className={`text-[10px] px-2 py-0.5 rounded-full shrink-0 ${
                     c.status === 'sent' ? 'bg-green-100 text-green-700' : 'bg-blue-100 text-blue-700'
@@ -855,7 +855,7 @@ export function MarketingPage({ profile, refreshKey }: Props) {
       {activeTab === 'templates' && (
         <div className="space-y-4">
           <div className="flex items-center justify-between">
-            <h3 className="font-bold text-[#0B1E3D] text-[14px]">Sablon könyvtár ({templates.length})</h3>
+            <h3 className="font-bold text-[#0D0D0D] text-[14px]">Sablon könyvtár ({templates.length})</h3>
           </div>
 
           {/* Category filter */}
@@ -863,7 +863,7 @@ export function MarketingPage({ profile, refreshKey }: Props) {
             {cats.map(c => (
               <button key={c} onClick={() => setCatFilter(c)}
                 className={`px-3 py-1.5 rounded-xl text-[11px] font-medium whitespace-nowrap shrink-0 transition-colors ${
-                  catFilter === c ? 'bg-[#0B1E3D] text-white' : 'bg-white border border-[#e0e4e8] text-[#5a6a80]'
+                  catFilter === c ? 'bg-[#0D0D0D] text-white' : 'bg-white border border-[#e0e4e8] text-[#4a4a4a]'
                 }`}>
                 {c === 'all' ? 'Mind' : (CAT_LABELS[c] || c)}
               </button>
@@ -872,12 +872,12 @@ export function MarketingPage({ profile, refreshKey }: Props) {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
             {filteredTemplates.map(t => (
-              <div key={t.id} className="bg-white border border-[#e0e4e8] rounded-2xl p-4 flex flex-col gap-3 hover:border-[#C9A84C]/50 transition-colors">
+              <div key={t.id} className="bg-white border border-[#e0e4e8] rounded-2xl p-4 flex flex-col gap-3 hover:border-[#C8102E]/50 transition-colors">
                 <div className="flex items-start justify-between gap-2">
                   <div className="flex items-start gap-2.5">
                     <span className="text-2xl shrink-0">{t.icon}</span>
                     <div>
-                      <p className="text-[13px] font-semibold text-[#0B1E3D] leading-tight">{t.name}</p>
+                      <p className="text-[13px] font-semibold text-[#0D0D0D] leading-tight">{t.name}</p>
                       <span className={`text-[10px] px-2 py-0.5 rounded-full font-medium mt-1 inline-block ${CAT_COLORS[t.category] || CAT_COLORS.general}`}>
                         {CAT_LABELS[t.category] || t.category}
                       </span>
@@ -888,7 +888,7 @@ export function MarketingPage({ profile, refreshKey }: Props) {
                   )}
                 </div>
 
-                <p className="text-[11px] text-[#5a6a80] leading-relaxed line-clamp-2">
+                <p className="text-[11px] text-[#4a4a4a] leading-relaxed line-clamp-2">
                   {t.whatsapp_text?.slice(0, 100)}...
                 </p>
 
@@ -900,7 +900,7 @@ export function MarketingPage({ profile, refreshKey }: Props) {
                 </div>
 
                 <button onClick={() => setLaunchTemplate(t)}
-                  className="flex items-center justify-center gap-1.5 bg-[#0B1E3D] text-white text-[12px] font-semibold py-2 rounded-xl hover:bg-[#162d5a] w-full">
+                  className="flex items-center justify-center gap-1.5 bg-[#0D0D0D] text-white text-[12px] font-semibold py-2 rounded-xl hover:bg-[#162d5a] w-full">
                   <Play size={12} /> Kampány indítása
                 </button>
               </div>

@@ -81,7 +81,7 @@ export function GoogleMap({
         mapInstance.current = map
         routeRenderer.current = new google.maps.DirectionsRenderer({
           suppressMarkers: true,
-          polylineOptions: { strokeColor: '#C9A84C', strokeWeight: 4 },
+          polylineOptions: { strokeColor: '#C8102E', strokeWeight: 4 },
         })
         routeRenderer.current.setMap(map)
         setLoaded(true)
@@ -153,7 +153,7 @@ export function GoogleMap({
 
   if (error) {
     return (
-      <div className={`flex items-center justify-center bg-[#f0f2f5] rounded-xl text-[12px] text-[#5a6a80] ${className}`}>
+      <div className={`flex items-center justify-center bg-[#f0f2f5] rounded-xl text-[12px] text-[#4a4a4a] ${className}`}>
         Google Maps hiba: {error}
       </div>
     )
@@ -164,7 +164,7 @@ export function GoogleMap({
       <div ref={mapRef} className="w-full h-full rounded-xl overflow-hidden" />
       {!loaded && (
         <div className="absolute inset-0 flex items-center justify-center bg-[#f0f2f5] rounded-xl">
-          <div className="text-[12px] text-[#5a6a80]">Térkép betöltése...</div>
+          <div className="text-[12px] text-[#4a4a4a]">Térkép betöltése...</div>
         </div>
       )}
     </div>
@@ -210,7 +210,7 @@ export function AddressAutocomplete({ value, onChange, placeholder, className }:
       value={value}
       onChange={e => onChange(e.target.value)}
       placeholder={placeholder || 'Cím keresése...'}
-      className={`w-full border border-[#e0e4e8] rounded-lg px-3 py-2 text-sm outline-none focus:border-[#C9A84C] ${className || ''}`}
+      className={`w-full border border-[#e0e4e8] rounded-lg px-3 py-2 text-sm outline-none focus:border-[#C8102E] ${className || ''}`}
     />
   )
 }
@@ -222,8 +222,8 @@ function markerIcon(type: MapMarker['type'], label?: string): google.maps.Symbol
     return {
       url: `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(`
         <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40">
-          <circle cx="20" cy="20" r="18" fill="#0B1E3D" stroke="#C9A84C" stroke-width="3"/>
-          <text x="20" y="25" text-anchor="middle" font-size="16" fill="#C9A84C">🔧</text>
+          <circle cx="20" cy="20" r="18" fill="#0D0D0D" stroke="#C8102E" stroke-width="3"/>
+          <text x="20" y="25" text-anchor="middle" font-size="16" fill="#C8102E">🔧</text>
         </svg>
       `)}`,
       scaledSize: new google.maps.Size(40, 40),
@@ -234,8 +234,8 @@ function markerIcon(type: MapMarker['type'], label?: string): google.maps.Symbol
     return {
       url: `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(`
         <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 36 36">
-          <circle cx="18" cy="18" r="16" fill="#C9A84C" stroke="#0B1E3D" stroke-width="2"/>
-          <text x="18" y="23" text-anchor="middle" font-size="14" fill="#0B1E3D">🏠</text>
+          <circle cx="18" cy="18" r="16" fill="#C8102E" stroke="#0D0D0D" stroke-width="2"/>
+          <text x="18" y="23" text-anchor="middle" font-size="14" fill="#0D0D0D">🏠</text>
         </svg>
       `)}`,
       scaledSize: new google.maps.Size(36, 36),
@@ -248,7 +248,7 @@ function markerIcon(type: MapMarker['type'], label?: string): google.maps.Symbol
       <svg xmlns="http://www.w3.org/2000/svg" width="32" height="40" viewBox="0 0 32 40">
         <path d="M16 0C7.163 0 0 7.163 0 16c0 10 16 24 16 24s16-14 16-24C32 7.163 24.837 0 16 0z" fill="#1a3a6e"/>
         <circle cx="16" cy="16" r="10" fill="white"/>
-        <text x="16" y="21" text-anchor="middle" font-size="12" font-weight="bold" fill="#0B1E3D">${label || '●'}</text>
+        <text x="16" y="21" text-anchor="middle" font-size="12" font-weight="bold" fill="#0D0D0D">${label || '●'}</text>
       </svg>
     `)}`,
     scaledSize: new google.maps.Size(32, 40),

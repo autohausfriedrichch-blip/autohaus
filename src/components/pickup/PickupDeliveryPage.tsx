@@ -344,8 +344,8 @@ export default function PickupDeliveryPage({ refreshKey, onRefresh }: { refreshK
         <div className="w-14 h-14 rounded-full bg-amber-100 flex items-center justify-center mb-4">
           <AlertTriangle size={24} className="text-amber-600" />
         </div>
-        <h3 className="text-[16px] font-bold text-[#0B1E3D] mb-2">Adatbázis beállítás szükséges</h3>
-        <p className="text-[13px] text-[#5a6a80] max-w-sm">
+        <h3 className="text-[16px] font-bold text-[#0D0D0D] mb-2">Adatbázis beállítás szükséges</h3>
+        <p className="text-[13px] text-[#4a4a4a] max-w-sm">
           A <code className="bg-gray-100 px-1 rounded">pickup_deliveries</code> tábla nem található az adatbázisban. Kérjük, hozza létre a táblát a Supabase irányítópulton.
         </p>
       </div>
@@ -355,15 +355,15 @@ export default function PickupDeliveryPage({ refreshKey, onRefresh }: { refreshK
   return (
     <div className="relative min-h-[60vh]">
       {/* Tab navigation */}
-      <div className="flex gap-1 border-b border-[rgba(11,30,61,0.10)] mb-6 overflow-x-auto">
+      <div className="flex gap-1 border-b border-[rgba(0,0,0,0.10)] mb-6 overflow-x-auto">
         {tabs.map(t => (
           <button
             key={t.key}
             onClick={() => setActiveTab(t.key)}
             className={`px-4 py-2.5 text-[13px] font-semibold whitespace-nowrap border-b-2 transition-colors ${
               activeTab === t.key
-                ? 'border-[#C9A84C] text-[#0B1E3D]'
-                : 'border-transparent text-[#5a6a80] hover:text-[#0B1E3D]'
+                ? 'border-[#C8102E] text-[#0D0D0D]'
+                : 'border-transparent text-[#4a4a4a] hover:text-[#0D0D0D]'
             }`}
           >
             {t.label}
@@ -375,13 +375,13 @@ export default function PickupDeliveryPage({ refreshKey, onRefresh }: { refreshK
       {activeTab === 'active' && (
         <div>
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-[15px] font-bold text-[#0B1E3D]">Aktív feladatok</h2>
-            <span className="text-[12px] text-[#5a6a80]">{activeItems.length} feladat</span>
+            <h2 className="text-[15px] font-bold text-[#0D0D0D]">Aktív feladatok</h2>
+            <span className="text-[12px] text-[#4a4a4a]">{activeItems.length} feladat</span>
           </div>
           {loading ? (
-            <div className="text-center py-12 text-[#5a6a80]">Betöltés...</div>
+            <div className="text-center py-12 text-[#4a4a4a]">Betöltés...</div>
           ) : activeItems.length === 0 ? (
-            <div className="text-center py-12 text-[#5a6a80]">
+            <div className="text-center py-12 text-[#4a4a4a]">
               <Car size={40} className="mx-auto mb-3 opacity-30" />
               <p className="text-[14px]">Nincs aktív feladat</p>
             </div>
@@ -390,19 +390,19 @@ export default function PickupDeliveryPage({ refreshKey, onRefresh }: { refreshK
               {activeItems.map(item => {
                 const next = nextStatus(item.status)
                 return (
-                  <div key={item.id} className="bg-white border border-[rgba(11,30,61,0.08)] rounded-xl p-4 flex flex-col gap-3 hover:border-[rgba(11,30,61,0.18)] transition-colors">
+                  <div key={item.id} className="bg-white border border-[rgba(0,0,0,0.08)] rounded-xl p-4 flex flex-col gap-3 hover:border-[rgba(0,0,0,0.18)] transition-colors">
                     <div className="flex items-start justify-between gap-2">
                       <div>
-                        <span className="inline-block bg-[#0B1E3D] text-white text-[11px] font-bold px-2 py-0.5 rounded-lg font-mono">
+                        <span className="inline-block bg-[#0D0D0D] text-white text-[11px] font-bold px-2 py-0.5 rounded-lg font-mono">
                           {item.vehicle?.license_plate || '—'}
                         </span>
-                        <div className="text-[13px] font-semibold text-[#0B1E3D] mt-1">{item.customer?.full_name || '—'}</div>
+                        <div className="text-[13px] font-semibold text-[#0D0D0D] mt-1">{item.customer?.full_name || '—'}</div>
                       </div>
                       <UrgencyBadge urgency={item.urgency || 'normal'} />
                     </div>
 
                     {item.pickup_address && (
-                      <div className="flex items-start gap-1.5 text-[12px] text-[#5a6a80]">
+                      <div className="flex items-start gap-1.5 text-[12px] text-[#4a4a4a]">
                         <MapPin size={12} className="mt-0.5 flex-shrink-0" />
                         <span className="truncate">{item.pickup_address}</span>
                       </div>
@@ -410,13 +410,13 @@ export default function PickupDeliveryPage({ refreshKey, onRefresh }: { refreshK
 
                     <div className="flex items-center gap-2 flex-wrap">
                       {item.pickup_datetime && (
-                        <div className="flex items-center gap-1 text-[11px] text-[#5a6a80]">
+                        <div className="flex items-center gap-1 text-[11px] text-[#4a4a4a]">
                           <Clock size={11} />
                           {formatDateTimeShort(item.pickup_datetime)}
                         </div>
                       )}
                       {item.driver_name && (
-                        <div className="flex items-center gap-1 text-[11px] text-[#5a6a80]">
+                        <div className="flex items-center gap-1 text-[11px] text-[#4a4a4a]">
                           <User size={11} />
                           {item.driver_name}
                         </div>
@@ -436,7 +436,7 @@ export default function PickupDeliveryPage({ refreshKey, onRefresh }: { refreshK
                         </Button>
                       )}
                       {!next && (
-                        <span className="flex-1 text-center text-[11px] text-[#5a6a80]">Lezárva</span>
+                        <span className="flex-1 text-center text-[11px] text-[#4a4a4a]">Lezárva</span>
                       )}
                     </div>
                   </div>
@@ -452,25 +452,25 @@ export default function PickupDeliveryPage({ refreshKey, onRefresh }: { refreshK
         <div className="space-y-6">
           {/* Mai átvételek */}
           <div>
-            <h3 className="text-[13px] font-bold text-[#0B1E3D] mb-3 flex items-center gap-2">
-              <div className="w-2 h-2 rounded-full bg-[#C9A84C]" />
+            <h3 className="text-[13px] font-bold text-[#0D0D0D] mb-3 flex items-center gap-2">
+              <div className="w-2 h-2 rounded-full bg-[#C8102E]" />
               Mai átvételek
-              <span className="text-[11px] font-normal text-[#5a6a80]">({todayPickups.length})</span>
+              <span className="text-[11px] font-normal text-[#4a4a4a]">({todayPickups.length})</span>
             </h3>
             {loading ? (
-              <div className="text-[13px] text-[#5a6a80] py-4">Betöltés...</div>
+              <div className="text-[13px] text-[#4a4a4a] py-4">Betöltés...</div>
             ) : todayPickups.length === 0 ? (
-              <div className="text-[13px] text-[#5a6a80] py-4 pl-4 border-l-2 border-[rgba(11,30,61,0.08)]">Nincs mai átvétel</div>
+              <div className="text-[13px] text-[#4a4a4a] py-4 pl-4 border-l-2 border-[rgba(0,0,0,0.08)]">Nincs mai átvétel</div>
             ) : (
               <div className="space-y-2">
                 {todayPickups.map(item => (
-                  <div key={item.id} className="flex items-center gap-3 p-3 bg-white border border-[rgba(11,30,61,0.08)] rounded-xl">
-                    <div className="flex-shrink-0 text-[12px] font-bold text-[#0B1E3D] w-12 text-center">
+                  <div key={item.id} className="flex items-center gap-3 p-3 bg-white border border-[rgba(0,0,0,0.08)] rounded-xl">
+                    <div className="flex-shrink-0 text-[12px] font-bold text-[#0D0D0D] w-12 text-center">
                       {item.pickup_datetime ? new Date(item.pickup_datetime).toLocaleTimeString('hu-HU', { hour: '2-digit', minute: '2-digit' }) : '—'}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <div className="text-[13px] font-semibold text-[#0B1E3D]">{item.customer?.full_name || '—'}</div>
-                      <div className="text-[11px] text-[#5a6a80] truncate">{item.pickup_address || '—'}</div>
+                      <div className="text-[13px] font-semibold text-[#0D0D0D]">{item.customer?.full_name || '—'}</div>
+                      <div className="text-[11px] text-[#4a4a4a] truncate">{item.pickup_address || '—'}</div>
                     </div>
                     <StatusBadge status={item.status} />
                     <Button size="sm" variant="secondary" onClick={() => openWhatsApp(item)}>
@@ -484,25 +484,25 @@ export default function PickupDeliveryPage({ refreshKey, onRefresh }: { refreshK
 
           {/* Mai visszaszállítások */}
           <div>
-            <h3 className="text-[13px] font-bold text-[#0B1E3D] mb-3 flex items-center gap-2">
-              <div className="w-2 h-2 rounded-full bg-[#0B1E3D]" />
+            <h3 className="text-[13px] font-bold text-[#0D0D0D] mb-3 flex items-center gap-2">
+              <div className="w-2 h-2 rounded-full bg-[#0D0D0D]" />
               Mai visszaszállítások
-              <span className="text-[11px] font-normal text-[#5a6a80]">({todayDeliveries.length})</span>
+              <span className="text-[11px] font-normal text-[#4a4a4a]">({todayDeliveries.length})</span>
             </h3>
             {loading ? (
-              <div className="text-[13px] text-[#5a6a80] py-4">Betöltés...</div>
+              <div className="text-[13px] text-[#4a4a4a] py-4">Betöltés...</div>
             ) : todayDeliveries.length === 0 ? (
-              <div className="text-[13px] text-[#5a6a80] py-4 pl-4 border-l-2 border-[rgba(11,30,61,0.08)]">Nincs mai visszaszállítás</div>
+              <div className="text-[13px] text-[#4a4a4a] py-4 pl-4 border-l-2 border-[rgba(0,0,0,0.08)]">Nincs mai visszaszállítás</div>
             ) : (
               <div className="space-y-2">
                 {todayDeliveries.map(item => (
-                  <div key={item.id} className="flex items-center gap-3 p-3 bg-white border border-[rgba(11,30,61,0.08)] rounded-xl">
-                    <div className="flex-shrink-0 text-[12px] font-bold text-[#0B1E3D] w-12 text-center">
+                  <div key={item.id} className="flex items-center gap-3 p-3 bg-white border border-[rgba(0,0,0,0.08)] rounded-xl">
+                    <div className="flex-shrink-0 text-[12px] font-bold text-[#0D0D0D] w-12 text-center">
                       {item.delivery_datetime ? new Date(item.delivery_datetime).toLocaleTimeString('hu-HU', { hour: '2-digit', minute: '2-digit' }) : '—'}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <div className="text-[13px] font-semibold text-[#0B1E3D]">{item.customer?.full_name || '—'}</div>
-                      <div className="text-[11px] text-[#5a6a80] truncate">{item.delivery_address || item.pickup_address || '—'}</div>
+                      <div className="text-[13px] font-semibold text-[#0D0D0D]">{item.customer?.full_name || '—'}</div>
+                      <div className="text-[11px] text-[#4a4a4a] truncate">{item.delivery_address || item.pickup_address || '—'}</div>
                     </div>
                     <StatusBadge status={item.status} />
                     <Button size="sm" variant="secondary" onClick={() => openWhatsApp(item)}>
@@ -521,22 +521,22 @@ export default function PickupDeliveryPage({ refreshKey, onRefresh }: { refreshK
         <div>
           <div className="flex items-center gap-3 mb-4">
             <div className="relative flex-1 max-w-sm">
-              <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#5a6a80]" />
+              <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#4a4a4a]" />
               <input
                 type="text"
                 value={search}
                 onChange={e => setSearch(e.target.value)}
                 placeholder="Keresés..."
-                className="w-full pl-8 pr-3 py-2 border border-[rgba(11,30,61,0.18)] rounded-lg text-[13px] bg-white text-[#0B1E3D] outline-none focus:border-[#0B1E3D] placeholder:text-[#8fa0b5]"
+                className="w-full pl-8 pr-3 py-2 border border-[rgba(0,0,0,0.18)] rounded-lg text-[13px] bg-white text-[#0D0D0D] outline-none focus:border-[#0D0D0D] placeholder:text-[#888888]"
               />
             </div>
-            <span className="text-[12px] text-[#5a6a80]">{filteredAll.length} rekord</span>
+            <span className="text-[12px] text-[#4a4a4a]">{filteredAll.length} rekord</span>
           </div>
 
           {loading ? (
-            <div className="text-center py-12 text-[#5a6a80]">Betöltés...</div>
+            <div className="text-center py-12 text-[#4a4a4a]">Betöltés...</div>
           ) : filteredAll.length === 0 ? (
-            <div className="text-center py-12 text-[#5a6a80]">
+            <div className="text-center py-12 text-[#4a4a4a]">
               <Search size={40} className="mx-auto mb-3 opacity-30" />
               <p className="text-[14px]">Nincs találat</p>
             </div>
@@ -544,36 +544,36 @@ export default function PickupDeliveryPage({ refreshKey, onRefresh }: { refreshK
             <div className="overflow-x-auto">
               <table className="w-full text-[12px]">
                 <thead>
-                  <tr className="border-b border-[rgba(11,30,61,0.08)]">
+                  <tr className="border-b border-[rgba(0,0,0,0.08)]">
                     {['Dátum', 'Ügyfél', 'Jármű', 'Átvétel helye', 'Státusz', 'Ár', 'Műveletek'].map(h => (
-                      <th key={h} className="text-left py-2 px-3 text-[11px] font-semibold text-[#5a6a80] uppercase tracking-wide">{h}</th>
+                      <th key={h} className="text-left py-2 px-3 text-[11px] font-semibold text-[#4a4a4a] uppercase tracking-wide">{h}</th>
                     ))}
                   </tr>
                 </thead>
                 <tbody>
                   {filteredAll.map(item => (
-                    <tr key={item.id} className="border-b border-[rgba(11,30,61,0.05)] hover:bg-[#F4F5F7]/50">
-                      <td className="py-2.5 px-3 text-[#5a6a80]">{item.pickup_datetime ? formatDate(item.pickup_datetime) : '—'}</td>
-                      <td className="py-2.5 px-3 font-semibold text-[#0B1E3D]">{item.customer?.full_name || '—'}</td>
+                    <tr key={item.id} className="border-b border-[rgba(0,0,0,0.05)] hover:bg-[#F4F5F7]/50">
+                      <td className="py-2.5 px-3 text-[#4a4a4a]">{item.pickup_datetime ? formatDate(item.pickup_datetime) : '—'}</td>
+                      <td className="py-2.5 px-3 font-semibold text-[#0D0D0D]">{item.customer?.full_name || '—'}</td>
                       <td className="py-2.5 px-3">
-                        <span className="inline-block bg-[#0B1E3D] text-white text-[10px] font-bold px-1.5 py-0.5 rounded font-mono">
+                        <span className="inline-block bg-[#0D0D0D] text-white text-[10px] font-bold px-1.5 py-0.5 rounded font-mono">
                           {item.vehicle?.license_plate || '—'}
                         </span>
                       </td>
-                      <td className="py-2.5 px-3 text-[#5a6a80] max-w-[160px] truncate">{item.pickup_address || '—'}</td>
+                      <td className="py-2.5 px-3 text-[#4a4a4a] max-w-[160px] truncate">{item.pickup_address || '—'}</td>
                       <td className="py-2.5 px-3"><StatusBadge status={item.status} /></td>
                       <td className="py-2.5 px-3">
                         {item.price != null ? (
                           <div className="flex items-center gap-1">
-                            <span className="font-semibold text-[#0B1E3D]">{formatCurrency(item.price)}</span>
+                            <span className="font-semibold text-[#0D0D0D]">{formatCurrency(item.price)}</span>
                             {item.pricing_type && (
-                              <span className="text-[10px] text-[#5a6a80] bg-gray-100 px-1 rounded">
+                              <span className="text-[10px] text-[#4a4a4a] bg-gray-100 px-1 rounded">
                                 {PRICING_LABELS[item.pricing_type]}
                               </span>
                             )}
                           </div>
                         ) : (
-                          <span className="text-[#5a6a80]">—</span>
+                          <span className="text-[#4a4a4a]">—</span>
                         )}
                       </td>
                       <td className="py-2.5 px-3">
@@ -593,7 +593,7 @@ export default function PickupDeliveryPage({ refreshKey, onRefresh }: { refreshK
       {/* ÚJ FELADAT */}
       {activeTab === 'new' && (
         <div className="max-w-2xl">
-          <h2 className="text-[15px] font-bold text-[#0B1E3D] mb-5">Új Hozom-Viszem feladat</h2>
+          <h2 className="text-[15px] font-bold text-[#0D0D0D] mb-5">Új Hozom-Viszem feladat</h2>
           <form onSubmit={handleSubmit} className="space-y-1">
             <div className="grid grid-cols-2 gap-3">
               <FormGroup>
@@ -772,10 +772,10 @@ export default function PickupDeliveryPage({ refreshKey, onRefresh }: { refreshK
         {whatsAppItem && (
           <div className="p-5">
             <div className="flex items-center gap-2 mb-3">
-              <span className="inline-block bg-[#0B1E3D] text-white text-[11px] font-bold px-2 py-0.5 rounded font-mono">
+              <span className="inline-block bg-[#0D0D0D] text-white text-[11px] font-bold px-2 py-0.5 rounded font-mono">
                 {whatsAppItem.vehicle?.license_plate || '—'}
               </span>
-              <span className="text-[13px] font-semibold text-[#0B1E3D]">{whatsAppItem.customer?.full_name}</span>
+              <span className="text-[13px] font-semibold text-[#0D0D0D]">{whatsAppItem.customer?.full_name}</span>
               <StatusBadge status={whatsAppItem.status} />
             </div>
             <div className="bg-[#dcf8c6] rounded-xl p-4 mb-4 text-[13px] text-gray-800 whitespace-pre-wrap font-mono">

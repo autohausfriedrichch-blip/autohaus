@@ -226,31 +226,31 @@ export function QuotesPage({ refreshKey, autoOpenNew, onAutoOpenConsumed }: {
     <div className="animate-fade-in">
       <div className="flex gap-2.5 mb-4">
         <div className="relative flex-1">
-          <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#8fa0b5]" />
+          <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#888888]" />
           <input type="text" value={search} onChange={e => setSearch(e.target.value)} placeholder="Ügyfél, rendszám..."
-            className="w-full pl-9 pr-3 py-2 border border-[rgba(11,30,61,0.18)] rounded-lg text-[13px] bg-white outline-none focus:border-[#0B1E3D]" />
+            className="w-full pl-9 pr-3 py-2 border border-[rgba(0,0,0,0.18)] rounded-lg text-[13px] bg-white outline-none focus:border-[#0D0D0D]" />
         </div>
         <Button variant="primary" onClick={openModal}><Plus size={14} /> Új árajánlat</Button>
       </div>
 
-      {loading ? <div className="text-center py-12 text-[#5a6a80] text-sm">Betöltés...</div> : (
+      {loading ? <div className="text-center py-12 text-[#4a4a4a] text-sm">Betöltés...</div> : (
         <Card className="p-0 overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-[13px] min-w-[560px]">
               <thead>
-                <tr className="bg-[#F4F5F7] border-b border-[rgba(11,30,61,0.10)]">
-                  <th className="text-left px-4 py-3 text-[11px] font-semibold text-[#5a6a80] uppercase">Dátum</th>
-                  <th className="text-left px-4 py-3 text-[11px] font-semibold text-[#5a6a80] uppercase">Ügyfél</th>
-                  <th className="text-left px-4 py-3 text-[11px] font-semibold text-[#5a6a80] uppercase hidden md:table-cell">Jármű</th>
-                  <th className="text-right px-4 py-3 text-[11px] font-semibold text-[#5a6a80] uppercase">Összeg</th>
-                  <th className="text-left px-4 py-3 text-[11px] font-semibold text-[#5a6a80] uppercase">Státusz</th>
-                  <th className="px-4 py-3 text-[11px] font-semibold text-[#5a6a80] uppercase">Műveletek</th>
+                <tr className="bg-[#F4F5F7] border-b border-[rgba(0,0,0,0.10)]">
+                  <th className="text-left px-4 py-3 text-[11px] font-semibold text-[#4a4a4a] uppercase">Dátum</th>
+                  <th className="text-left px-4 py-3 text-[11px] font-semibold text-[#4a4a4a] uppercase">Ügyfél</th>
+                  <th className="text-left px-4 py-3 text-[11px] font-semibold text-[#4a4a4a] uppercase hidden md:table-cell">Jármű</th>
+                  <th className="text-right px-4 py-3 text-[11px] font-semibold text-[#4a4a4a] uppercase">Összeg</th>
+                  <th className="text-left px-4 py-3 text-[11px] font-semibold text-[#4a4a4a] uppercase">Státusz</th>
+                  <th className="px-4 py-3 text-[11px] font-semibold text-[#4a4a4a] uppercase">Műveletek</th>
                 </tr>
               </thead>
               <tbody>
                 {filtered.map(q => (
-                  <tr key={q.id} className="border-b border-[rgba(11,30,61,0.06)] hover:bg-[#fafbfc]">
-                    <td className="px-4 py-3 text-[12px] text-[#5a6a80]">{formatDate(q.created_at)}</td>
+                  <tr key={q.id} className="border-b border-[rgba(0,0,0,0.06)] hover:bg-[#fafbfc]">
+                    <td className="px-4 py-3 text-[12px] text-[#4a4a4a]">{formatDate(q.created_at)}</td>
                     <td className="px-4 py-3 font-medium">
                       {q.customer?.full_name}
                       {q.pricing_mode === 'estimate' && (
@@ -260,9 +260,9 @@ export function QuotesPage({ refreshKey, autoOpenNew, onAutoOpenConsumed }: {
                       )}
                     </td>
                     <td className="px-4 py-3 hidden md:table-cell">
-                      {q.vehicle && <span className="bg-[#0B1E3D] text-white text-[11px] font-bold px-2 py-0.5 rounded">{q.vehicle.license_plate}</span>}
+                      {q.vehicle && <span className="bg-[#0D0D0D] text-white text-[11px] font-bold px-2 py-0.5 rounded">{q.vehicle.license_plate}</span>}
                     </td>
-                    <td className="px-4 py-3 text-right font-semibold text-[#0B1E3D]">
+                    <td className="px-4 py-3 text-right font-semibold text-[#0D0D0D]">
                       {q.pricing_mode === 'estimate'
                         ? <span className="text-amber-700">{q.estimate_min_price ? `~${formatCurrency((q.estimate_min_price + q.estimate_max_price) / 2)}` : '–'}</span>
                         : formatCurrency(q.total_amount || 0)}
@@ -282,7 +282,7 @@ export function QuotesPage({ refreshKey, autoOpenNew, onAutoOpenConsumed }: {
                           <button onClick={() => updateStatus(q.id, 'approved')} className="p-1.5 text-emerald-600 hover:bg-emerald-50 rounded"><Check size={14} /></button>
                           <button onClick={() => updateStatus(q.id, 'rejected')} className="p-1.5 text-red-500 hover:bg-red-50 rounded"><X size={14} /></button>
                         </>}
-                        <button onClick={async () => { if (confirm('Törlés?')) { await supabase.from('quotes').delete().eq('id', q.id); load() } }} className="p-1.5 text-[#5a6a80] hover:text-red-500">
+                        <button onClick={async () => { if (confirm('Törlés?')) { await supabase.from('quotes').delete().eq('id', q.id); load() } }} className="p-1.5 text-[#4a4a4a] hover:text-red-500">
                           <Trash2 size={14} />
                         </button>
                       </div>
@@ -292,7 +292,7 @@ export function QuotesPage({ refreshKey, autoOpenNew, onAutoOpenConsumed }: {
               </tbody>
             </table>
           </div>
-          {filtered.length === 0 && <div className="text-center py-10 text-[#8fa0b5] text-sm">Nem található árajánlat</div>}
+          {filtered.length === 0 && <div className="text-center py-10 text-[#888888] text-sm">Nem található árajánlat</div>}
         </Card>
       )}
 
@@ -308,7 +308,7 @@ export function QuotesPage({ refreshKey, autoOpenNew, onAutoOpenConsumed }: {
             { mode: 'estimate' as PricingMode, icon: TrendingUp,  label: 'Becslés' },
           ]).map(({ mode, icon: Icon, label }) => (
             <button key={mode} onClick={() => setPricingMode(mode)}
-              className={`flex-1 flex items-center justify-center gap-1 py-2 rounded-md text-[11px] font-semibold transition-colors ${pricingMode === mode ? 'bg-[#0B1E3D] text-white' : 'text-[#5a6a80] hover:text-[#0B1E3D]'}`}>
+              className={`flex-1 flex items-center justify-center gap-1 py-2 rounded-md text-[11px] font-semibold transition-colors ${pricingMode === mode ? 'bg-[#0D0D0D] text-white' : 'text-[#4a4a4a] hover:text-[#0D0D0D]'}`}>
               <Icon size={12} /> {label}
             </button>
           ))}
@@ -349,7 +349,7 @@ export function QuotesPage({ refreshKey, autoOpenNew, onAutoOpenConsumed }: {
             {/* Quick fill from service */}
             {hourlyServices.length > 0 && (
               <div>
-                <p className="text-[11px] font-semibold text-[#5a6a80] uppercase mb-1.5">Gyors kitöltés szolgáltatásból</p>
+                <p className="text-[11px] font-semibold text-[#4a4a4a] uppercase mb-1.5">Gyors kitöltés szolgáltatásból</p>
                 <div className="flex flex-wrap gap-1.5">
                   {hourlyServices.map(s => (
                     <button key={s.id} onClick={() => {
@@ -389,7 +389,7 @@ export function QuotesPage({ refreshKey, autoOpenNew, onAutoOpenConsumed }: {
 
             {/* Szolgáltatások & Tételek */}
             <div>
-              <div className="text-[11px] font-semibold text-[#5a6a80] uppercase tracking-[0.5px] mb-2">Szolgáltatások & Tételek</div>
+              <div className="text-[11px] font-semibold text-[#4a4a4a] uppercase tracking-[0.5px] mb-2">Szolgáltatások & Tételek</div>
               <ServiceCalculator items={serviceItems} onChange={setServiceItems} hourlyRateDefault={form.hourly_rate || 125} showSummary={false} />
               {serviceItems.some(it => it.is_risky && !it.risk_acknowledged) && (
                 <div className="mt-2 flex items-center gap-2 text-[12px] text-orange-700 bg-orange-50 border border-orange-200 rounded-lg px-3 py-2">
@@ -399,8 +399,8 @@ export function QuotesPage({ refreshKey, autoOpenNew, onAutoOpenConsumed }: {
             </div>
 
             {/* Time range + quantity + rate */}
-            <div className="bg-[#0B1E3D] rounded-xl p-4 space-y-3">
-              <p className="text-[11px] font-semibold text-[#C9A84C] uppercase flex items-center gap-1"><Clock size={11} /> Időbecslés</p>
+            <div className="bg-[#0D0D0D] rounded-xl p-4 space-y-3">
+              <p className="text-[11px] font-semibold text-[#C8102E] uppercase flex items-center gap-1"><Clock size={11} /> Időbecslés</p>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                 <FormGroup className="mb-0">
                   <label className="block text-[10px] font-semibold text-white/60 uppercase tracking-wide mb-1">Min. óra / db</label>
@@ -413,7 +413,7 @@ export function QuotesPage({ refreshKey, autoOpenNew, onAutoOpenConsumed }: {
                       return { ...f, estimate_min_hours: minH, estimate_customer_text: text }
                     })}
                     placeholder="0.5"
-                    className="w-full px-2.5 py-1.5 rounded-lg text-[12px] bg-white/10 text-white placeholder:text-white/30 outline-none border border-white/10 focus:border-[#C9A84C] text-center" />
+                    className="w-full px-2.5 py-1.5 rounded-lg text-[12px] bg-white/10 text-white placeholder:text-white/30 outline-none border border-white/10 focus:border-[#C8102E] text-center" />
                 </FormGroup>
                 <FormGroup className="mb-0">
                   <label className="block text-[10px] font-semibold text-white/60 uppercase tracking-wide mb-1">Max. óra / db</label>
@@ -426,7 +426,7 @@ export function QuotesPage({ refreshKey, autoOpenNew, onAutoOpenConsumed }: {
                       return { ...f, estimate_max_hours: maxH, estimate_customer_text: text }
                     })}
                     placeholder="5.0"
-                    className="w-full px-2.5 py-1.5 rounded-lg text-[12px] bg-white/10 text-white placeholder:text-white/30 outline-none border border-white/10 focus:border-[#C9A84C] text-center" />
+                    className="w-full px-2.5 py-1.5 rounded-lg text-[12px] bg-white/10 text-white placeholder:text-white/30 outline-none border border-white/10 focus:border-[#C8102E] text-center" />
                 </FormGroup>
                 <FormGroup className="mb-0">
                   <label className="block text-[10px] font-semibold text-white/60 uppercase tracking-wide mb-1">Mennyiség (db)</label>
@@ -438,7 +438,7 @@ export function QuotesPage({ refreshKey, autoOpenNew, onAutoOpenConsumed }: {
                       const text = f.estimate_description && minP && maxP ? generateEstimateText(f.estimate_description, minP, maxP, f.estimate_risk_level, parseInt(qty) || 1, parseFloat(f.approval_limit) || undefined) : f.estimate_customer_text
                       return { ...f, estimate_quantity: qty, estimate_customer_text: text }
                     })}
-                    className="w-full px-2.5 py-1.5 rounded-lg text-[12px] bg-white/10 text-white outline-none border border-white/10 focus:border-[#C9A84C] text-center" />
+                    className="w-full px-2.5 py-1.5 rounded-lg text-[12px] bg-white/10 text-white outline-none border border-white/10 focus:border-[#C8102E] text-center" />
                 </FormGroup>
                 <FormGroup className="mb-0">
                   <label className="block text-[10px] font-semibold text-white/60 uppercase tracking-wide mb-1">Óradíj (CHF)</label>
@@ -450,7 +450,7 @@ export function QuotesPage({ refreshKey, autoOpenNew, onAutoOpenConsumed }: {
                       const text = f.estimate_description && minP && maxP ? generateEstimateText(f.estimate_description, minP, maxP, f.estimate_risk_level, parseInt(f.estimate_quantity) || 1, parseFloat(f.approval_limit) || undefined) : f.estimate_customer_text
                       return { ...f, estimate_hourly_rate: rate, estimate_customer_text: text }
                     })}
-                    className="w-full px-2.5 py-1.5 rounded-lg text-[12px] bg-white/10 text-white outline-none border border-white/10 focus:border-[#C9A84C] text-center" />
+                    className="w-full px-2.5 py-1.5 rounded-lg text-[12px] bg-white/10 text-white outline-none border border-white/10 focus:border-[#C8102E] text-center" />
                 </FormGroup>
               </div>
 
@@ -460,7 +460,7 @@ export function QuotesPage({ refreshKey, autoOpenNew, onAutoOpenConsumed }: {
                   <div className="text-white/70 text-[12px]">
                     {estMinH}–{estMaxH} h/db × {estQty} db × {estRate} CHF/h
                   </div>
-                  <div className="text-[#C9A84C] font-bold text-[15px]">
+                  <div className="text-[#C8102E] font-bold text-[15px]">
                     {formatCurrency(estMinPrice)} – {formatCurrency(estMaxPrice)}
                   </div>
                 </div>
@@ -469,14 +469,14 @@ export function QuotesPage({ refreshKey, autoOpenNew, onAutoOpenConsumed }: {
 
             {/* Risk level */}
             <div>
-              <p className="text-[11px] font-semibold text-[#5a6a80] uppercase mb-2">Kockázati szint</p>
+              <p className="text-[11px] font-semibold text-[#4a4a4a] uppercase mb-2">Kockázati szint</p>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                 {Object.entries(RISK_META).map(([key, meta]) => (
                   <button key={key} onClick={() => setForm((f: any) => {
                     const text = f.estimate_description && estMinPrice && estMaxPrice ? generateEstimateText(f.estimate_description, estMinPrice, estMaxPrice, key, estQty, parseFloat(f.approval_limit) || undefined) : f.estimate_customer_text
                     return { ...f, estimate_risk_level: key, estimate_customer_text: text }
                   })}
-                    className={`px-3 py-2.5 rounded-xl border text-[12px] font-medium text-left transition-all ${form.estimate_risk_level === key ? `${meta.bg} border-current ${meta.color} ring-2 ring-current ring-offset-1` : 'bg-white border-gray-200 text-[#5a6a80] hover:border-gray-300'}`}>
+                    className={`px-3 py-2.5 rounded-xl border text-[12px] font-medium text-left transition-all ${form.estimate_risk_level === key ? `${meta.bg} border-current ${meta.color} ring-2 ring-current ring-offset-1` : 'bg-white border-gray-200 text-[#4a4a4a] hover:border-gray-300'}`}>
                     <div className={`font-semibold ${form.estimate_risk_level === key ? meta.color : ''}`}>{meta.label}</div>
                     <div className="text-[10px] mt-0.5 opacity-70 leading-snug">{meta.desc.slice(0, 40)}…</div>
                   </button>
@@ -495,7 +495,7 @@ export function QuotesPage({ refreshKey, autoOpenNew, onAutoOpenConsumed }: {
                     return { ...f, approval_limit: limit, estimate_customer_text: text }
                   })}
                   placeholder="500" />
-                <p className="text-[10px] text-[#5a6a80] mt-1">Ha Karl munkája várhatóan meghaladja ezt, riasztás küldünk.</p>
+                <p className="text-[10px] text-[#4a4a4a] mt-1">Ha Karl munkája várhatóan meghaladja ezt, riasztás küldünk.</p>
               </FormGroup>
               {approvalWarning && (
                 <div className="flex items-start gap-2 p-3 bg-red-50 border border-red-200 rounded-xl text-[12px] text-red-800">
@@ -514,34 +514,34 @@ export function QuotesPage({ refreshKey, autoOpenNew, onAutoOpenConsumed }: {
                 rows={4}
                 placeholder="Automatikusan generálva, vagy írj egyedi szöveget..."
               />
-              <p className="text-[10px] text-[#5a6a80] mt-1">Ez jelenik meg az ügyfélnek küldött árajánlaton.</p>
+              <p className="text-[10px] text-[#4a4a4a] mt-1">Ez jelenik meg az ügyfélnek küldött árajánlaton.</p>
             </FormGroup>
           </div>
         )}
 
         {/* ── TIME MODE ── */}
         {(pricingMode === 'time' || pricingMode === 'combined') && (
-          <div className="bg-[#0B1E3D] rounded-lg p-3">
-            <div className="text-[11px] font-semibold text-[#C9A84C] uppercase mb-2 flex items-center gap-1"><Clock size={11} /> Időalapú munkadíj</div>
+          <div className="bg-[#0D0D0D] rounded-lg p-3">
+            <div className="text-[11px] font-semibold text-[#C8102E] uppercase mb-2 flex items-center gap-1"><Clock size={11} /> Időalapú munkadíj</div>
             <div className="grid grid-cols-3 gap-2">
               <FormGroup>
                 <FormLabel>Leírás</FormLabel>
                 <input value={form.time_label || ''} onChange={e => setForm((f: any) => ({ ...f, time_label: e.target.value }))} placeholder="pl. Diagnosztika"
-                  className="w-full px-2.5 py-1.5 rounded-lg text-[12px] bg-white/10 text-white placeholder:text-white/30 outline-none border border-white/10 focus:border-[#C9A84C]" />
+                  className="w-full px-2.5 py-1.5 rounded-lg text-[12px] bg-white/10 text-white placeholder:text-white/30 outline-none border border-white/10 focus:border-[#C8102E]" />
               </FormGroup>
               <FormGroup>
                 <FormLabel>Perc</FormLabel>
                 <input type="number" value={form.time_minutes || ''} onChange={e => setForm((f: any) => ({ ...f, time_minutes: parseInt(e.target.value) || 0 }))} placeholder="90"
-                  className="w-full px-2.5 py-1.5 rounded-lg text-[12px] bg-white/10 text-white placeholder:text-white/30 outline-none border border-white/10 focus:border-[#C9A84C] text-center" />
+                  className="w-full px-2.5 py-1.5 rounded-lg text-[12px] bg-white/10 text-white placeholder:text-white/30 outline-none border border-white/10 focus:border-[#C8102E] text-center" />
               </FormGroup>
               <FormGroup>
                 <FormLabel>Óradíj (CHF)</FormLabel>
                 <input type="number" value={form.hourly_rate || 125} onChange={e => setForm((f: any) => ({ ...f, hourly_rate: parseFloat(e.target.value) || 125 }))}
-                  className="w-full px-2.5 py-1.5 rounded-lg text-[12px] bg-white/10 text-white outline-none border border-white/10 focus:border-[#C9A84C] text-center" />
+                  className="w-full px-2.5 py-1.5 rounded-lg text-[12px] bg-white/10 text-white outline-none border border-white/10 focus:border-[#C8102E] text-center" />
               </FormGroup>
             </div>
             {form.time_minutes > 0 && (
-              <div className="mt-2 text-right text-[#C9A84C] font-bold text-[13px]">
+              <div className="mt-2 text-right text-[#C8102E] font-bold text-[13px]">
                 {form.time_minutes} perc × {form.hourly_rate} CHF/h = {formatCurrency(timeCost)}
               </div>
             )}
@@ -551,7 +551,7 @@ export function QuotesPage({ refreshKey, autoOpenNew, onAutoOpenConsumed }: {
         {/* ── FIXED MODE ── */}
         {pricingMode === 'fixed' && (
           <div>
-            <div className="text-[11px] font-semibold text-[#5a6a80] uppercase tracking-[0.5px] mb-2">Szolgáltatások & Tételek</div>
+            <div className="text-[11px] font-semibold text-[#4a4a4a] uppercase tracking-[0.5px] mb-2">Szolgáltatások & Tételek</div>
             <ServiceCalculator items={serviceItems} onChange={setServiceItems} hourlyRateDefault={form.hourly_rate || 125} showSummary={false} />
             {serviceItems.some(it => it.is_risky && !it.risk_acknowledged) && (
               <div className="mt-2 flex items-center gap-2 text-[12px] text-orange-700 bg-orange-50 border border-orange-200 rounded-lg px-3 py-2">
@@ -564,7 +564,7 @@ export function QuotesPage({ refreshKey, autoOpenNew, onAutoOpenConsumed }: {
         {/* ── COMBINED MODE ── */}
         {pricingMode === 'combined' && (
           <div className="mt-4">
-            <div className="text-[11px] font-semibold text-[#5a6a80] uppercase tracking-[0.5px] mb-2">Fix tételek</div>
+            <div className="text-[11px] font-semibold text-[#4a4a4a] uppercase tracking-[0.5px] mb-2">Fix tételek</div>
             <ServiceCalculator items={serviceItems} onChange={setServiceItems} hourlyRateDefault={form.hourly_rate || 125} showSummary={false} />
           </div>
         )}
@@ -573,14 +573,14 @@ export function QuotesPage({ refreshKey, autoOpenNew, onAutoOpenConsumed }: {
         {pricingMode !== 'estimate' && (
           <div className="mt-4 bg-[#F4F5F7] rounded-lg p-3 text-[12px]">
             {pricingMode !== 'time' && (
-              <div className="flex justify-between mb-1"><span className="text-[#5a6a80]">Alkatrészek:</span><span>{formatCurrency(parts)}</span></div>
+              <div className="flex justify-between mb-1"><span className="text-[#4a4a4a]">Alkatrészek:</span><span>{formatCurrency(parts)}</span></div>
             )}
-            <div className="flex justify-between mb-1"><span className="text-[#5a6a80]">Munkadíj:</span><span>{formatCurrency(labor)}</span></div>
+            <div className="flex justify-between mb-1"><span className="text-[#4a4a4a]">Munkadíj:</span><span>{formatCurrency(labor)}</span></div>
             <div className="flex justify-between mb-2 items-center">
-              <span className="text-[#5a6a80]">ÁFA (%):</span>
+              <span className="text-[#4a4a4a]">ÁFA (%):</span>
               <Input type="number" step="0.1" value={form.tax_rate || 7.7} onChange={e => setForm((f: any) => ({ ...f, tax_rate: parseFloat(e.target.value) }))} className="w-20 text-right" />
             </div>
-            <div className="flex justify-between font-bold text-[#0B1E3D] border-t border-[rgba(11,30,61,0.10)] pt-2">
+            <div className="flex justify-between font-bold text-[#0D0D0D] border-t border-[rgba(0,0,0,0.10)] pt-2">
               <span>Végösszeg:</span><span>{formatCurrency(total)}</span>
             </div>
           </div>
@@ -603,7 +603,7 @@ export function QuotesPage({ refreshKey, autoOpenNew, onAutoOpenConsumed }: {
               </div>
             )}
             <div className="flex justify-between mb-2 items-center mt-2">
-              <span className="text-[#5a6a80]">ÁFA (%):</span>
+              <span className="text-[#4a4a4a]">ÁFA (%):</span>
               <Input type="number" step="0.1" value={form.tax_rate || 7.7} onChange={e => setForm((f: any) => ({ ...f, tax_rate: parseFloat(e.target.value) }))} className="w-20 text-right" />
             </div>
           </div>

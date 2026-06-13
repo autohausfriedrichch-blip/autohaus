@@ -108,8 +108,8 @@ export function DocumentActions({ type, data, customerId, workOrderId, quoteId, 
         {/* Language selector — shown for workorder, can extend to all types */}
         {type === 'workorder' && (
           <div className="flex items-center gap-2">
-            <Globe size={13} className="text-[#5a6a80] shrink-0" />
-            <span className="text-[11px] text-[#5a6a80] font-medium">Dokumentum nyelve / Document Language:</span>
+            <Globe size={13} className="text-[#4a4a4a] shrink-0" />
+            <span className="text-[11px] text-[#4a4a4a] font-medium">Dokumentum nyelve / Document Language:</span>
             <div className="flex gap-1">
               {LANG_OPTIONS.map(opt => (
                 <button
@@ -117,8 +117,8 @@ export function DocumentActions({ type, data, customerId, workOrderId, quoteId, 
                   onClick={() => setLang(opt.value)}
                   className={`flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-semibold border transition-all ${
                     lang === opt.value
-                      ? 'bg-[#0B1E3D] text-white border-[#0B1E3D]'
-                      : 'bg-white text-[#5a6a80] border-gray-200 hover:border-[#C9A84C]'
+                      ? 'bg-[#0D0D0D] text-white border-[#0D0D0D]'
+                      : 'bg-white text-[#4a4a4a] border-gray-200 hover:border-[#C8102E]'
                   }`}
                 >
                   <span>{opt.flag}</span>
@@ -126,7 +126,7 @@ export function DocumentActions({ type, data, customerId, workOrderId, quoteId, 
                 </button>
               ))}
             </div>
-            <span className="text-[10px] text-[#8fa0b5] ml-1">
+            <span className="text-[10px] text-[#888888] ml-1">
               → {selectedLang.flag} {getFileName()}
             </span>
           </div>
@@ -175,7 +175,7 @@ export function DocumentActions({ type, data, customerId, workOrderId, quoteId, 
           <FormLabel>Üzenet</FormLabel>
           <Textarea value={emailBody} onChange={e => setEmailBody(e.target.value)} className="min-h-[120px]" />
         </FormGroup>
-        <div className="text-[11px] text-[#8fa0b5] bg-[#F4F5F7] rounded-lg p-3 mt-2">
+        <div className="text-[11px] text-[#888888] bg-[#F4F5F7] rounded-lg p-3 mt-2">
           📎 PDF dokumentum automatikusan csatolva • Kommunikáció naplózva
         </div>
       </Modal>
@@ -202,7 +202,7 @@ export function DocumentActions({ type, data, customerId, workOrderId, quoteId, 
           <FormLabel>Üzenet sablon</FormLabel>
           <Textarea value={whatsappMsg} onChange={e => setWhatsappMsg(e.target.value)} className="min-h-[140px]" />
         </FormGroup>
-        <div className="text-[11px] text-[#8fa0b5] bg-[#F4F5F7] rounded-lg p-3 mt-2">
+        <div className="text-[11px] text-[#888888] bg-[#F4F5F7] rounded-lg p-3 mt-2">
           WhatsApp Web megnyitódik az előre kitöltött üzenettel • Kommunikáció automatikusan naplózva
         </div>
       </Modal>

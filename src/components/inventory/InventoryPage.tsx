@@ -66,7 +66,7 @@ function Tab({ id, label, active, onClick }: { id: string; label: string; active
     <button
       onClick={onClick}
       className={`rounded-full px-4 py-1.5 text-[12px] font-medium transition-colors whitespace-nowrap ${
-        active ? 'bg-[#0B1E3D] text-white' : 'text-[#5a6a80] hover:bg-[#F4F5F7]'
+        active ? 'bg-[#0D0D0D] text-white' : 'text-[#4a4a4a] hover:bg-[#F4F5F7]'
       }`}
     >
       {label}
@@ -74,12 +74,12 @@ function Tab({ id, label, active, onClick }: { id: string; label: string; active
   )
 }
 
-function KpiCard({ label, value, sub, color = 'text-[#0B1E3D]' }: { label: string; value: number | string; sub?: string; color?: string }) {
+function KpiCard({ label, value, sub, color = 'text-[#0D0D0D]' }: { label: string; value: number | string; sub?: string; color?: string }) {
   return (
-    <div className="bg-white border border-[rgba(11,30,61,0.08)] rounded-xl p-4">
-      <p className="text-[11px] text-[#5a6a80] mb-1">{label}</p>
+    <div className="bg-white border border-[rgba(0,0,0,0.08)] rounded-xl p-4">
+      <p className="text-[11px] text-[#4a4a4a] mb-1">{label}</p>
       <p className={`text-[26px] font-bold ${color}`}>{value}</p>
-      {sub && <p className="text-[11px] text-[#8fa0b5] mt-0.5">{sub}</p>}
+      {sub && <p className="text-[11px] text-[#888888] mt-0.5">{sub}</p>}
     </div>
   )
 }
@@ -105,7 +105,7 @@ export function InventoryPage({ refreshKey, onRefresh }: { refreshKey: number; o
   return (
     <div className="animate-fade-in space-y-4">
       {/* Tab bar */}
-      <div className="flex gap-1 flex-wrap bg-white border border-[rgba(11,30,61,0.08)] rounded-2xl p-1.5">
+      <div className="flex gap-1 flex-wrap bg-white border border-[rgba(0,0,0,0.08)] rounded-2xl p-1.5">
         {tabs.map(t => <Tab key={t.id} id={t.id} label={t.label} active={tab === t.id} onClick={() => setTab(t.id)} />)}
       </div>
 
@@ -149,43 +149,43 @@ function DashboardTab({ refreshKey, supabase }: { refreshKey: number; supabase: 
     })()
   }, [refreshKey])
 
-  if (loading) return <div className="text-center py-12 text-[#5a6a80] text-sm">Betöltés...</div>
+  if (loading) return <div className="text-center py-12 text-[#4a4a4a] text-sm">Betöltés...</div>
 
   return (
     <div className="space-y-4">
-      <div className="bg-[#0B1E3D] rounded-2xl p-5 text-white">
+      <div className="bg-[#0D0D0D] rounded-2xl p-5 text-white">
         <h2 className="text-lg font-semibold">📦 Készlet & Árlista – Áttekintés</h2>
         <p className="text-white/50 text-[12px] mt-1">Raktárkészlet, árlista és gumi hotel összefoglaló</p>
       </div>
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         <KpiCard label="Aktív szolgáltatások" value={data.svcCount} />
         <KpiCard label="Alkatrészek (katalógus)" value={data.partCount} />
-        <KpiCard label="Alacsony készlet" value={data.lowStock.length} color={data.lowStock.length > 0 ? 'text-red-600' : 'text-[#0B1E3D]'} />
+        <KpiCard label="Alacsony készlet" value={data.lowStock.length} color={data.lowStock.length > 0 ? 'text-red-600' : 'text-[#0D0D0D]'} />
         <KpiCard label="Gumi Hotel (tárolt)" value={data.tireStored} color="text-blue-700" />
       </div>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {/* Top services */}
-        <div className="bg-white border border-[rgba(11,30,61,0.08)] rounded-xl p-4">
-          <h3 className="text-[13px] font-semibold text-[#0B1E3D] mb-3">Top szolgáltatások</h3>
-          {data.topSvcs.length === 0 ? <p className="text-[12px] text-[#8fa0b5]">Nincs adat</p> : (
+        <div className="bg-white border border-[rgba(0,0,0,0.08)] rounded-xl p-4">
+          <h3 className="text-[13px] font-semibold text-[#0D0D0D] mb-3">Top szolgáltatások</h3>
+          {data.topSvcs.length === 0 ? <p className="text-[12px] text-[#888888]">Nincs adat</p> : (
             <div className="space-y-2">
               {data.topSvcs.map(([name, count]: [string, number]) => (
                 <div key={name} className="flex justify-between items-center">
-                  <span className="text-[12px] text-[#0B1E3D] truncate flex-1">{name}</span>
-                  <span className="text-[11px] font-semibold text-[#C9A84C] ml-2">{count}×</span>
+                  <span className="text-[12px] text-[#0D0D0D] truncate flex-1">{name}</span>
+                  <span className="text-[11px] font-semibold text-[#C8102E] ml-2">{count}×</span>
                 </div>
               ))}
             </div>
           )}
         </div>
         {/* Low stock */}
-        <div className="bg-white border border-[rgba(11,30,61,0.08)] rounded-xl p-4">
-          <h3 className="text-[13px] font-semibold text-[#0B1E3D] mb-3">Alacsony készlet</h3>
+        <div className="bg-white border border-[rgba(0,0,0,0.08)] rounded-xl p-4">
+          <h3 className="text-[13px] font-semibold text-[#0D0D0D] mb-3">Alacsony készlet</h3>
           {data.lowStock.length === 0 ? <p className="text-[12px] text-emerald-600">✓ Minden készlet rendben</p> : (
             <div className="space-y-2">
               {data.lowStock.slice(0,6).map((p: PartCatalog) => (
                 <div key={p.id} className="flex justify-between items-center">
-                  <span className="text-[12px] text-[#0B1E3D] truncate flex-1">{p.name}</span>
+                  <span className="text-[12px] text-[#0D0D0D] truncate flex-1">{p.name}</span>
                   <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded-full bg-red-50 text-red-700 ml-2">{p.stock_qty}/{p.min_stock_qty}</span>
                 </div>
               ))}
@@ -193,14 +193,14 @@ function DashboardTab({ refreshKey, supabase }: { refreshKey: number; supabase: 
           )}
         </div>
         {/* Tire hotel status */}
-        <div className="bg-white border border-[rgba(11,30,61,0.08)] rounded-xl p-4">
-          <h3 className="text-[13px] font-semibold text-[#0B1E3D] mb-3">Gumi Hotel státusz</h3>
-          {Object.keys(data.tireStatus).length === 0 ? <p className="text-[12px] text-[#8fa0b5]">Nincs adat</p> : (
+        <div className="bg-white border border-[rgba(0,0,0,0.08)] rounded-xl p-4">
+          <h3 className="text-[13px] font-semibold text-[#0D0D0D] mb-3">Gumi Hotel státusz</h3>
+          {Object.keys(data.tireStatus).length === 0 ? <p className="text-[12px] text-[#888888]">Nincs adat</p> : (
             <div className="space-y-2">
               {Object.entries(data.tireStatus).map(([st, cnt]) => (
                 <div key={st} className="flex justify-between items-center">
                   <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${TIRE_STATUS_COLORS[st] || 'bg-gray-100 text-gray-600'}`}>{TIRE_STATUS_LABELS[st] || st}</span>
-                  <span className="text-[13px] font-bold text-[#0B1E3D]">{cnt as number}</span>
+                  <span className="text-[13px] font-bold text-[#0D0D0D]">{cnt as number}</span>
                 </div>
               ))}
             </div>
@@ -256,39 +256,39 @@ function ServicesTab({ refreshKey, supabase, toast }: any) {
       <div className="flex gap-2 flex-wrap">
         <Button variant="primary" onClick={openNew}><Plus size={14} /> Új szolgáltatás</Button>
         <select value={filterCat} onChange={e => setFilterCat(e.target.value)}
-          className="ml-auto px-3 py-1.5 border border-[rgba(11,30,61,0.18)] rounded-lg text-[12px] bg-white outline-none">
+          className="ml-auto px-3 py-1.5 border border-[rgba(0,0,0,0.18)] rounded-lg text-[12px] bg-white outline-none">
           <option value="all">Mind</option>
           {SVC_CATS.map(c => <option key={c} value={c}>{c}</option>)}
         </select>
       </div>
-      {loading ? <div className="text-center py-12 text-[#5a6a80] text-sm">Betöltés...</div> : (
+      {loading ? <div className="text-center py-12 text-[#4a4a4a] text-sm">Betöltés...</div> : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
           {filtered.map(s => (
-            <div key={s.id} className={`bg-white border border-[rgba(11,30,61,0.08)] rounded-xl p-4 ${!s.is_active ? 'opacity-50' : ''}`}>
+            <div key={s.id} className={`bg-white border border-[rgba(0,0,0,0.08)] rounded-xl p-4 ${!s.is_active ? 'opacity-50' : ''}`}>
               <div className="flex items-start justify-between gap-2 mb-2">
                 <div className="flex-1 min-w-0">
-                  <p className="font-semibold text-[13px] text-[#0B1E3D] truncate">{s.name}</p>
-                  <span className="text-[10px] bg-[#F4F5F7] text-[#5a6a80] px-2 py-0.5 rounded-full">{s.category}</span>
+                  <p className="font-semibold text-[13px] text-[#0D0D0D] truncate">{s.name}</p>
+                  <span className="text-[10px] bg-[#F4F5F7] text-[#4a4a4a] px-2 py-0.5 rounded-full">{s.category}</span>
                 </div>
                 <div className="flex gap-1 shrink-0">
-                  <button onClick={() => openEdit(s)} className="p-1 text-[#5a6a80] hover:text-[#0B1E3D]"><Edit2 size={13} /></button>
+                  <button onClick={() => openEdit(s)} className="p-1 text-[#4a4a4a] hover:text-[#0D0D0D]"><Edit2 size={13} /></button>
                   <button onClick={() => toggleActive(s)} className={`text-[11px] px-2 py-0.5 rounded-full font-medium ${s.is_active ? 'bg-emerald-50 text-emerald-700' : 'bg-gray-100 text-gray-500'}`}>
                     {s.is_active ? 'Aktív' : 'Inaktív'}
                   </button>
                 </div>
               </div>
-              <div className="text-[12px] text-[#5a6a80]">
-                {s.pricing_type === 'fixed' && s.base_price && <span className="font-semibold text-[#0B1E3D]">{formatCurrency(s.base_price)}</span>}
+              <div className="text-[12px] text-[#4a4a4a]">
+                {s.pricing_type === 'fixed' && s.base_price && <span className="font-semibold text-[#0D0D0D]">{formatCurrency(s.base_price)}</span>}
                 {s.pricing_type === 'hourly' && s.hourly_rate && <span>{formatCurrency(s.hourly_rate)}/óra</span>}
                 {s.pricing_type === 'per_unit' && s.unit_price && <span>{formatCurrency(s.unit_price)}/{s.unit_label || 'db'}</span>}
                 {s.pricing_type === 'custom' && <span>Egyedi</span>}
                 {s.duration_minutes && <span className="ml-2 text-[11px]">⏱ {s.duration_minutes} p</span>}
                 {s.is_mobile && <span className="ml-2 text-[10px] bg-purple-100 text-purple-700 px-1.5 py-0.5 rounded-full">Mobil</span>}
               </div>
-              {s.description && <p className="text-[11px] text-[#8fa0b5] mt-1 truncate">{s.description}</p>}
+              {s.description && <p className="text-[11px] text-[#888888] mt-1 truncate">{s.description}</p>}
             </div>
           ))}
-          {filtered.length === 0 && <p className="text-[#8fa0b5] text-sm col-span-3 text-center py-8">Nincs találat</p>}
+          {filtered.length === 0 && <p className="text-[#888888] text-sm col-span-3 text-center py-8">Nincs találat</p>}
         </div>
       )}
       <Modal open={modalOpen} onClose={() => setModalOpen(false)} title={editItem ? 'Szolgáltatás szerkesztése' : 'Új szolgáltatás'}
@@ -377,40 +377,40 @@ function TemplatesTab({ refreshKey, supabase, toast }: any) {
           <Plus size={14} /> Új sablon
         </Button>
       </div>
-      {loading ? <div className="text-center py-12 text-[#5a6a80] text-sm">Betöltés...</div> : (
+      {loading ? <div className="text-center py-12 text-[#4a4a4a] text-sm">Betöltés...</div> : (
         <div className="space-y-3">
           {templates.map(t => (
-            <div key={t.id} className="bg-white border border-[rgba(11,30,61,0.08)] rounded-xl overflow-hidden">
+            <div key={t.id} className="bg-white border border-[rgba(0,0,0,0.08)] rounded-xl overflow-hidden">
               <div className="flex items-center gap-3 p-4">
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 flex-wrap">
-                    <span className="font-semibold text-[13px] text-[#0B1E3D]">{t.name}</span>
-                    <span className="text-[10px] bg-[#F4F5F7] text-[#5a6a80] px-2 py-0.5 rounded-full">{t.category}</span>
+                    <span className="font-semibold text-[13px] text-[#0D0D0D]">{t.name}</span>
+                    <span className="text-[10px] bg-[#F4F5F7] text-[#4a4a4a] px-2 py-0.5 rounded-full">{t.category}</span>
                     {t.is_mobile && <span className="text-[10px] bg-purple-100 text-purple-700 px-2 py-0.5 rounded-full">Mobil</span>}
                   </div>
-                  {t.description && <p className="text-[12px] text-[#5a6a80] mt-0.5">{t.description}</p>}
-                  <p className="text-[11px] text-[#8fa0b5] mt-1">⏱ {t.estimated_minutes} perc · {(t.items || []).length} elem</p>
+                  {t.description && <p className="text-[12px] text-[#4a4a4a] mt-0.5">{t.description}</p>}
+                  <p className="text-[11px] text-[#888888] mt-1">⏱ {t.estimated_minutes} perc · {(t.items || []).length} elem</p>
                 </div>
                 <div className="flex gap-2 items-center shrink-0">
                   <button onClick={() => toast('Sablon alkalmazva munkalapra (hamarosan)', 'success')}
-                    className="text-[11px] px-3 py-1 bg-[#0B1E3D] text-white rounded-lg hover:bg-[#1a3260]">
+                    className="text-[11px] px-3 py-1 bg-[#0D0D0D] text-white rounded-lg hover:bg-[#1a3260]">
                     Alkalmazás
                   </button>
-                  <button onClick={() => toggleExpand(t.id)} className="p-1.5 text-[#5a6a80] hover:text-[#0B1E3D]">
+                  <button onClick={() => toggleExpand(t.id)} className="p-1.5 text-[#4a4a4a] hover:text-[#0D0D0D]">
                     {expanded.has(t.id) ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
                   </button>
                 </div>
               </div>
               {expanded.has(t.id) && (
-                <div className="border-t border-[rgba(11,30,61,0.06)] bg-[#F4F5F7] p-3">
+                <div className="border-t border-[rgba(0,0,0,0.06)] bg-[#F4F5F7] p-3">
                   {(t.items || []).length === 0 ? (
-                    <p className="text-[12px] text-[#8fa0b5] text-center py-2">Nincsenek elemek</p>
+                    <p className="text-[12px] text-[#888888] text-center py-2">Nincsenek elemek</p>
                   ) : (
                     <div className="space-y-1">
                       {(t.items || []).map((item: ServiceTemplateItem) => (
                         <div key={item.id} className="flex justify-between text-[12px]">
-                          <span className="text-[#0B1E3D]">{item.name}</span>
-                          <span className="text-[#5a6a80]">{item.quantity} × {formatCurrency(item.unit_price)}</span>
+                          <span className="text-[#0D0D0D]">{item.name}</span>
+                          <span className="text-[#4a4a4a]">{item.quantity} × {formatCurrency(item.unit_price)}</span>
                         </div>
                       ))}
                     </div>
@@ -491,23 +491,23 @@ function PartsTab({ refreshKey, supabase, toast }: any) {
     <div className="space-y-4">
       <div className="flex gap-2 flex-wrap">
         <div className="relative flex-1 min-w-[160px]">
-          <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#8fa0b5]" />
+          <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#888888]" />
           <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Keresés..."
-            className="w-full pl-9 pr-3 py-2 border border-[rgba(11,30,61,0.18)] rounded-lg text-[13px] bg-white outline-none" />
+            className="w-full pl-9 pr-3 py-2 border border-[rgba(0,0,0,0.18)] rounded-lg text-[13px] bg-white outline-none" />
         </div>
         <select value={filterCat} onChange={e => setFilterCat(e.target.value)}
-          className="px-3 py-2 border border-[rgba(11,30,61,0.18)] rounded-lg text-[12px] bg-white outline-none">
+          className="px-3 py-2 border border-[rgba(0,0,0,0.18)] rounded-lg text-[12px] bg-white outline-none">
           <option value="all">Mind</option>{PART_CATS.map(c => <option key={c} value={c}>{c}</option>)}
         </select>
         <Button variant="primary" onClick={openNew}><Plus size={14} /> Új alkatrész</Button>
       </div>
-      {loading ? <div className="text-center py-12 text-[#5a6a80] text-sm">Betöltés...</div> : (
-        <div className="bg-white border border-[rgba(11,30,61,0.08)] rounded-xl overflow-hidden">
+      {loading ? <div className="text-center py-12 text-[#4a4a4a] text-sm">Betöltés...</div> : (
+        <div className="bg-white border border-[rgba(0,0,0,0.08)] rounded-xl overflow-hidden">
           <table className="w-full text-[12px]">
             <thead>
-              <tr className="bg-[#F4F5F7] border-b border-[rgba(11,30,61,0.10)]">
+              <tr className="bg-[#F4F5F7] border-b border-[rgba(0,0,0,0.10)]">
                 {['Cikkszám','Név','Gyártó','Kategória','Készlet','Min','Besz.ár','Elad.ár','Profit%',''].map(h => (
-                  <th key={h} className="text-left px-3 py-2.5 text-[10px] font-semibold text-[#5a6a80] uppercase">{h}</th>
+                  <th key={h} className="text-left px-3 py-2.5 text-[10px] font-semibold text-[#4a4a4a] uppercase">{h}</th>
                 ))}
               </tr>
             </thead>
@@ -516,23 +516,23 @@ function PartsTab({ refreshKey, supabase, toast }: any) {
                 const isLow = p.stock_qty <= p.min_stock_qty
                 const pct = profitPct(p)
                 return (
-                  <tr key={p.id} className={`border-b border-[rgba(11,30,61,0.06)] hover:bg-[#fafbfc] ${isLow ? 'bg-red-50/40' : ''}`}>
+                  <tr key={p.id} className={`border-b border-[rgba(0,0,0,0.06)] hover:bg-[#fafbfc] ${isLow ? 'bg-red-50/40' : ''}`}>
                     <td className="px-3 py-2 font-mono text-[11px]">{p.article_number || '–'}</td>
-                    <td className="px-3 py-2 font-medium text-[#0B1E3D] max-w-[160px] truncate">{p.name}</td>
-                    <td className="px-3 py-2 text-[#5a6a80]">{p.manufacturer || '–'}</td>
-                    <td className="px-3 py-2"><span className="text-[10px] bg-[#F4F5F7] text-[#5a6a80] px-1.5 py-0.5 rounded-full">{p.category}</span></td>
+                    <td className="px-3 py-2 font-medium text-[#0D0D0D] max-w-[160px] truncate">{p.name}</td>
+                    <td className="px-3 py-2 text-[#4a4a4a]">{p.manufacturer || '–'}</td>
+                    <td className="px-3 py-2"><span className="text-[10px] bg-[#F4F5F7] text-[#4a4a4a] px-1.5 py-0.5 rounded-full">{p.category}</span></td>
                     <td className={`px-3 py-2 font-semibold ${isLow ? 'text-red-700' : ''}`}>{p.stock_qty} {p.unit}</td>
-                    <td className="px-3 py-2 text-[#5a6a80]">{p.min_stock_qty}</td>
+                    <td className="px-3 py-2 text-[#4a4a4a]">{p.min_stock_qty}</td>
                     <td className="px-3 py-2">{formatCurrency(p.purchase_price)}</td>
                     <td className="px-3 py-2 font-semibold">{formatCurrency(p.sale_price)}</td>
                     <td className={`px-3 py-2 font-semibold ${profitColor(pct)}`}>{pct.toFixed(0)}%</td>
-                    <td className="px-3 py-2"><button onClick={() => openEdit(p)} className="p-1 text-[#5a6a80] hover:text-[#0B1E3D]"><Edit2 size={13} /></button></td>
+                    <td className="px-3 py-2"><button onClick={() => openEdit(p)} className="p-1 text-[#4a4a4a] hover:text-[#0D0D0D]"><Edit2 size={13} /></button></td>
                   </tr>
                 )
               })}
             </tbody>
           </table>
-          {filtered.length === 0 && <div className="text-center py-10 text-[#8fa0b5] text-sm">Nincs találat</div>}
+          {filtered.length === 0 && <div className="text-center py-10 text-[#888888] text-sm">Nincs találat</div>}
         </div>
       )}
       <Modal open={modalOpen} onClose={() => setModalOpen(false)} title={editItem ? 'Alkatrész szerkesztése' : 'Új alkatrész'}
@@ -609,8 +609,8 @@ function StockTab({ refreshKey, supabase, toast }: any) {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
       {/* Form */}
-      <div className="bg-white border border-[rgba(11,30,61,0.08)] rounded-xl p-4">
-        <h3 className="font-semibold text-[13px] text-[#0B1E3D] mb-4">Készletmozgás rögzítése</h3>
+      <div className="bg-white border border-[rgba(0,0,0,0.08)] rounded-xl p-4">
+        <h3 className="font-semibold text-[13px] text-[#0D0D0D] mb-4">Készletmozgás rögzítése</h3>
         <div className="space-y-3">
           <FormGroup><FormLabel>Alkatrész *</FormLabel>
             <Select value={form.part_id || ''} onChange={e => setForm((f: any) => ({ ...f, part_id: e.target.value }))}>
@@ -633,25 +633,25 @@ function StockTab({ refreshKey, supabase, toast }: any) {
         </div>
       </div>
       {/* Movements */}
-      <div className="bg-white border border-[rgba(11,30,61,0.08)] rounded-xl overflow-hidden">
-        <div className="p-4 border-b border-[rgba(11,30,61,0.06)]">
-          <h3 className="font-semibold text-[13px] text-[#0B1E3D]">Legutóbbi mozgások</h3>
+      <div className="bg-white border border-[rgba(0,0,0,0.08)] rounded-xl overflow-hidden">
+        <div className="p-4 border-b border-[rgba(0,0,0,0.06)]">
+          <h3 className="font-semibold text-[13px] text-[#0D0D0D]">Legutóbbi mozgások</h3>
         </div>
-        {loading ? <div className="text-center py-8 text-[#5a6a80] text-sm">Betöltés...</div> : (
-          <div className="divide-y divide-[rgba(11,30,61,0.06)]">
+        {loading ? <div className="text-center py-8 text-[#4a4a4a] text-sm">Betöltés...</div> : (
+          <div className="divide-y divide-[rgba(0,0,0,0.06)]">
             {movements.map(m => (
               <div key={m.id} className="px-4 py-2.5 flex items-center gap-3">
                 <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${MOV_COLORS[m.movement_type] || ''}`}>
                   {MOV_LABELS[m.movement_type] || m.movement_type}
                 </span>
                 <div className="flex-1 min-w-0">
-                  <p className="text-[12px] font-medium text-[#0B1E3D] truncate">{(m as any).part?.name || '–'}</p>
-                  {m.notes && <p className="text-[11px] text-[#8fa0b5] truncate">{m.notes}</p>}
+                  <p className="text-[12px] font-medium text-[#0D0D0D] truncate">{(m as any).part?.name || '–'}</p>
+                  {m.notes && <p className="text-[11px] text-[#888888] truncate">{m.notes}</p>}
                 </div>
-                <span className="text-[13px] font-bold text-[#0B1E3D] shrink-0">{m.quantity}</span>
+                <span className="text-[13px] font-bold text-[#0D0D0D] shrink-0">{m.quantity}</span>
               </div>
             ))}
-            {movements.length === 0 && <div className="text-center py-8 text-[#8fa0b5] text-sm">Nincs mozgás</div>}
+            {movements.length === 0 && <div className="text-center py-8 text-[#888888] text-sm">Nincs mozgás</div>}
           </div>
         )}
       </div>
@@ -699,28 +699,28 @@ function SuppliersTab({ refreshKey, supabase, toast }: any) {
       <div className="flex gap-2">
         <Button variant="primary" onClick={openNew}><Plus size={14} /> Új beszállító</Button>
         <select value={filterCat} onChange={e => setFilterCat(e.target.value)}
-          className="ml-auto px-3 py-1.5 border border-[rgba(11,30,61,0.18)] rounded-lg text-[12px] bg-white outline-none">
+          className="ml-auto px-3 py-1.5 border border-[rgba(0,0,0,0.18)] rounded-lg text-[12px] bg-white outline-none">
           <option value="all">Mind</option>{SUP_CATS.map(c => <option key={c} value={c}>{c}</option>)}
         </select>
       </div>
-      {loading ? <div className="text-center py-12 text-[#5a6a80] text-sm">Betöltés...</div> : (
+      {loading ? <div className="text-center py-12 text-[#4a4a4a] text-sm">Betöltés...</div> : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
           {filtered.map(s => (
-            <div key={s.id} className={`bg-white border border-[rgba(11,30,61,0.08)] rounded-xl p-4 ${!s.is_active ? 'opacity-60' : ''}`}>
+            <div key={s.id} className={`bg-white border border-[rgba(0,0,0,0.08)] rounded-xl p-4 ${!s.is_active ? 'opacity-60' : ''}`}>
               <div className="flex items-start justify-between gap-2 mb-2">
                 <div>
-                  <p className="font-semibold text-[13px] text-[#0B1E3D]">{s.company_name}</p>
-                  <span className="text-[10px] bg-[#F4F5F7] text-[#5a6a80] px-2 py-0.5 rounded-full">{s.category}</span>
+                  <p className="font-semibold text-[13px] text-[#0D0D0D]">{s.company_name}</p>
+                  <span className="text-[10px] bg-[#F4F5F7] text-[#4a4a4a] px-2 py-0.5 rounded-full">{s.category}</span>
                 </div>
-                <button onClick={() => openEdit(s)} className="p-1 text-[#5a6a80] hover:text-[#0B1E3D]"><Edit2 size={13} /></button>
+                <button onClick={() => openEdit(s)} className="p-1 text-[#4a4a4a] hover:text-[#0D0D0D]"><Edit2 size={13} /></button>
               </div>
-              {s.contact_name && <p className="text-[12px] text-[#5a6a80]">👤 {s.contact_name}</p>}
-              {s.phone && <p className="text-[12px] text-[#5a6a80]">📞 {s.phone}</p>}
-              {s.email && <p className="text-[12px] text-[#5a6a80]">✉️ {s.email}</p>}
-              {s.last_order_at && <p className="text-[11px] text-[#8fa0b5] mt-1">Utolsó rendelés: {new Date(s.last_order_at).toLocaleDateString('hu-HU')}</p>}
+              {s.contact_name && <p className="text-[12px] text-[#4a4a4a]">👤 {s.contact_name}</p>}
+              {s.phone && <p className="text-[12px] text-[#4a4a4a]">📞 {s.phone}</p>}
+              {s.email && <p className="text-[12px] text-[#4a4a4a]">✉️ {s.email}</p>}
+              {s.last_order_at && <p className="text-[11px] text-[#888888] mt-1">Utolsó rendelés: {new Date(s.last_order_at).toLocaleDateString('hu-HU')}</p>}
             </div>
           ))}
-          {filtered.length === 0 && <p className="text-[#8fa0b5] text-sm col-span-3 text-center py-8">Nincs találat</p>}
+          {filtered.length === 0 && <p className="text-[#888888] text-sm col-span-3 text-center py-8">Nincs találat</p>}
         </div>
       )}
       <Modal open={modalOpen} onClose={() => setModalOpen(false)} title={editItem ? 'Beszállító szerkesztése' : 'Új beszállító'}
@@ -804,19 +804,19 @@ function TireHotelTab({ refreshKey, supabase, toast }: any) {
         <div className="flex gap-1 ml-auto">
           {['all','stored','issued','mounted'].map(s => (
             <button key={s} onClick={() => setFilterStatus(s)}
-              className={`px-3 py-1.5 rounded-full text-[12px] font-medium transition-colors ${filterStatus === s ? 'bg-[#0B1E3D] text-white' : 'text-[#5a6a80] hover:bg-[#F4F5F7]'}`}>
+              className={`px-3 py-1.5 rounded-full text-[12px] font-medium transition-colors ${filterStatus === s ? 'bg-[#0D0D0D] text-white' : 'text-[#4a4a4a] hover:bg-[#F4F5F7]'}`}>
               {s === 'all' ? 'Mind' : TIRE_STATUS_LABELS[s]}
             </button>
           ))}
         </div>
       </div>
-      {loading ? <div className="text-center py-12 text-[#5a6a80] text-sm">Betöltés...</div> : (
-        <div className="bg-white border border-[rgba(11,30,61,0.08)] rounded-xl overflow-hidden">
+      {loading ? <div className="text-center py-12 text-[#4a4a4a] text-sm">Betöltés...</div> : (
+        <div className="bg-white border border-[rgba(0,0,0,0.08)] rounded-xl overflow-hidden">
           <table className="w-full text-[12px]">
             <thead>
-              <tr className="bg-[#F4F5F7] border-b border-[rgba(11,30,61,0.10)]">
+              <tr className="bg-[#F4F5F7] border-b border-[rgba(0,0,0,0.10)]">
                 {['Ügyfél','Rendszám','Szezon','Méret','DOT','Profil (min)','Státusz',''].map(h => (
-                  <th key={h} className="text-left px-3 py-2.5 text-[10px] font-semibold text-[#5a6a80] uppercase">{h}</th>
+                  <th key={h} className="text-left px-3 py-2.5 text-[10px] font-semibold text-[#4a4a4a] uppercase">{h}</th>
                 ))}
               </tr>
             </thead>
@@ -824,8 +824,8 @@ function TireHotelTab({ refreshKey, supabase, toast }: any) {
               {filtered.map(t => {
                 const mt = minTread(t)
                 return (
-                  <tr key={t.id} className="border-b border-[rgba(11,30,61,0.06)] hover:bg-[#fafbfc]">
-                    <td className="px-3 py-2.5 font-medium text-[#0B1E3D]">{(t as any).customer?.full_name || '–'}</td>
+                  <tr key={t.id} className="border-b border-[rgba(0,0,0,0.06)] hover:bg-[#fafbfc]">
+                    <td className="px-3 py-2.5 font-medium text-[#0D0D0D]">{(t as any).customer?.full_name || '–'}</td>
                     <td className="px-3 py-2.5 font-mono text-[11px]">{(t as any).vehicle?.license_plate || '–'}</td>
                     <td className="px-3 py-2.5"><span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${SEASON_COLORS[t.season] || 'bg-gray-100 text-gray-600'}`}>{SEASON_LABELS[t.season] || t.season}</span></td>
                     <td className="px-3 py-2.5">{t.tire_size || '–'}</td>
@@ -834,7 +834,7 @@ function TireHotelTab({ refreshKey, supabase, toast }: any) {
                     <td className="px-3 py-2.5"><span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${TIRE_STATUS_COLORS[t.status] || ''}`}>{TIRE_STATUS_LABELS[t.status] || t.status}</span></td>
                     <td className="px-3 py-2.5">
                       <select value={t.status} onChange={e => updateStatus(t.id, e.target.value)}
-                        className="text-[11px] px-2 py-1 border border-[rgba(11,30,61,0.15)] rounded-lg bg-white outline-none">
+                        className="text-[11px] px-2 py-1 border border-[rgba(0,0,0,0.15)] rounded-lg bg-white outline-none">
                         {Object.entries(TIRE_STATUS_LABELS).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
                       </select>
                     </td>
@@ -843,7 +843,7 @@ function TireHotelTab({ refreshKey, supabase, toast }: any) {
               })}
             </tbody>
           </table>
-          {filtered.length === 0 && <div className="text-center py-10 text-[#8fa0b5] text-sm">Nincs találat</div>}
+          {filtered.length === 0 && <div className="text-center py-10 text-[#888888] text-sm">Nincs találat</div>}
         </div>
       )}
       <Modal open={modalOpen} onClose={() => setModalOpen(false)} title="Új gumiszett"
@@ -871,11 +871,11 @@ function TireHotelTab({ refreshKey, supabase, toast }: any) {
           <FormGroup><FormLabel>Tároló helye</FormLabel><Input value={form.storage_location || ''} onChange={e => setForm((f: any) => ({ ...f, storage_location: e.target.value }))} /></FormGroup>
           <FormGroup><FormLabel>Polc</FormLabel><Input value={form.storage_shelf || ''} onChange={e => setForm((f: any) => ({ ...f, storage_shelf: e.target.value }))} /></FormGroup>
           <FormGroup><FormLabel>Sor</FormLabel><Input value={form.storage_row || ''} onChange={e => setForm((f: any) => ({ ...f, storage_row: e.target.value }))} /></FormGroup>
-          <p className="col-span-2 text-[11px] font-semibold text-[#5a6a80] uppercase tracking-wide">Profilmélység (mm)</p>
+          <p className="col-span-2 text-[11px] font-semibold text-[#4a4a4a] uppercase tracking-wide">Profilmélység (mm)</p>
           {[['tread_depth_fl','BJ'],['tread_depth_fr','JJ'],['tread_depth_rl','BH'],['tread_depth_rr','JH']].map(([field, label]) => (
             <FormGroup key={field}><FormLabel>{label}</FormLabel><Input type="number" step="0.1" value={(form as any)[field] || ''} onChange={e => setForm((f: any) => ({ ...f, [field]: parseFloat(e.target.value) || null }))} /></FormGroup>
           ))}
-          <p className="col-span-2 text-[11px] font-semibold text-[#5a6a80] uppercase tracking-wide">Nyomás (bar)</p>
+          <p className="col-span-2 text-[11px] font-semibold text-[#4a4a4a] uppercase tracking-wide">Nyomás (bar)</p>
           {[['pressure_fl','BJ'],['pressure_fr','JJ'],['pressure_rl','BH'],['pressure_rr','JH']].map(([field, label]) => (
             <FormGroup key={field}><FormLabel>{label}</FormLabel><Input type="number" step="0.1" value={(form as any)[field] || ''} onChange={e => setForm((f: any) => ({ ...f, [field]: parseFloat(e.target.value) || null }))} /></FormGroup>
           ))}
@@ -930,8 +930,8 @@ function ProfitTab({ supabase }: any) {
     <div className="space-y-4">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {/* Inputs */}
-        <div className="bg-white border border-[rgba(11,30,61,0.08)] rounded-xl p-4 space-y-3">
-          <h3 className="font-semibold text-[13px] text-[#0B1E3D]">Kalkulátor</h3>
+        <div className="bg-white border border-[rgba(0,0,0,0.08)] rounded-xl p-4 space-y-3">
+          <h3 className="font-semibold text-[13px] text-[#0D0D0D]">Kalkulátor</h3>
           <FormGroup><FormLabel>Szolgáltatás</FormLabel>
             <Select value={calc.service_id} onChange={e => setCalc(c => ({ ...c, service_id: e.target.value }))}>
               <option value="">– Válasszon –</option>
@@ -992,9 +992,9 @@ function ProfitTab({ supabase }: any) {
             </div>
           </div>
           {/* Profit card */}
-          <div className="bg-[#0B1E3D] rounded-xl p-4 text-center">
+          <div className="bg-[#0D0D0D] rounded-xl p-4 text-center">
             <p className="text-white/50 text-[11px] uppercase tracking-wide mb-1">Profit</p>
-            <p className={`text-[36px] font-bold ${profit >= 0 ? 'text-[#C9A84C]' : 'text-[#C9384C]'}`}>{formatCurrency(profit)}</p>
+            <p className={`text-[36px] font-bold ${profit >= 0 ? 'text-[#C8102E]' : 'text-[#C8102E]'}`}>{formatCurrency(profit)}</p>
             <p className={`text-[16px] font-semibold mt-1 ${profitColor}`}>{profitPct.toFixed(1)}%</p>
             <p className="text-white/30 text-[11px] mt-1">125 CHF/h munkadíj · 65 CHF/h technikus ktg.</p>
           </div>
@@ -1003,24 +1003,24 @@ function ProfitTab({ supabase }: any) {
 
       {/* Top profit services */}
       {topSvcs.length > 0 && (
-        <div className="bg-white border border-[rgba(11,30,61,0.08)] rounded-xl overflow-hidden">
-          <div className="p-4 border-b border-[rgba(11,30,61,0.06)]">
-            <h3 className="font-semibold text-[13px] text-[#0B1E3D] flex items-center gap-2"><TrendingUp size={15} /> Top profitot termelő szolgáltatások</h3>
+        <div className="bg-white border border-[rgba(0,0,0,0.08)] rounded-xl overflow-hidden">
+          <div className="p-4 border-b border-[rgba(0,0,0,0.06)]">
+            <h3 className="font-semibold text-[13px] text-[#0D0D0D] flex items-center gap-2"><TrendingUp size={15} /> Top profitot termelő szolgáltatások</h3>
           </div>
           <table className="w-full text-[12px]">
             <thead>
-              <tr className="bg-[#F4F5F7] border-b border-[rgba(11,30,61,0.08)]">
-                <th className="text-left px-4 py-2.5 text-[10px] font-semibold text-[#5a6a80] uppercase">Szolgáltatás</th>
-                <th className="text-right px-4 py-2.5 text-[10px] font-semibold text-[#5a6a80] uppercase">Átl. bevétel</th>
-                <th className="text-right px-4 py-2.5 text-[10px] font-semibold text-[#5a6a80] uppercase">Darab</th>
+              <tr className="bg-[#F4F5F7] border-b border-[rgba(0,0,0,0.08)]">
+                <th className="text-left px-4 py-2.5 text-[10px] font-semibold text-[#4a4a4a] uppercase">Szolgáltatás</th>
+                <th className="text-right px-4 py-2.5 text-[10px] font-semibold text-[#4a4a4a] uppercase">Átl. bevétel</th>
+                <th className="text-right px-4 py-2.5 text-[10px] font-semibold text-[#4a4a4a] uppercase">Darab</th>
               </tr>
             </thead>
             <tbody>
               {topSvcs.map(s => (
-                <tr key={s.name} className="border-b border-[rgba(11,30,61,0.06)] hover:bg-[#fafbfc]">
-                  <td className="px-4 py-2.5 font-medium text-[#0B1E3D]">{s.name}</td>
-                  <td className="px-4 py-2.5 text-right font-semibold text-[#C9A84C]">{formatCurrency(s.avg)}</td>
-                  <td className="px-4 py-2.5 text-right text-[#5a6a80]">{s.count}×</td>
+                <tr key={s.name} className="border-b border-[rgba(0,0,0,0.06)] hover:bg-[#fafbfc]">
+                  <td className="px-4 py-2.5 font-medium text-[#0D0D0D]">{s.name}</td>
+                  <td className="px-4 py-2.5 text-right font-semibold text-[#C8102E]">{formatCurrency(s.avg)}</td>
+                  <td className="px-4 py-2.5 text-right text-[#4a4a4a]">{s.count}×</td>
                 </tr>
               ))}
             </tbody>

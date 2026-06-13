@@ -33,12 +33,12 @@ export function ToastProvider({ children }: { children: ReactNode }) {
             key={t.id}
             className={cn(
               'flex items-center gap-3 px-4 py-3 rounded-xl shadow-lg text-[13px] text-white max-w-[320px] animate-fade-in',
-              t.type === 'success' && 'bg-[#0B1E3D]',
-              t.type === 'error' && 'bg-[#C9384C]',
-              t.type === 'info' && 'bg-[#142a50]'
+              t.type === 'success' && 'bg-[#0D0D0D]',
+              t.type === 'error' && 'bg-[#C8102E]',
+              t.type === 'info' && 'bg-[#1A1A1A]'
             )}
           >
-            {t.type === 'success' && <CheckCircle size={16} className="text-[#C9A84C] shrink-0" />}
+            {t.type === 'success' && <CheckCircle size={16} className="text-[#C8102E] shrink-0" />}
             {t.type === 'error' && <AlertCircle size={16} className="text-white shrink-0" />}
             <span className="flex-1">{t.message}</span>
             <button onClick={() => setToasts(prev => prev.filter(x => x.id !== t.id))} className="text-white/60 hover:text-white">

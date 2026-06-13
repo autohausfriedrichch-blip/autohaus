@@ -98,7 +98,7 @@ export default function CustomerDashboard() {
 
   if (loading) return (
     <div className="min-h-screen bg-[#F4F5F7] flex items-center justify-center">
-      <div className="text-[#5a6a80]">Betöltés...</div>
+      <div className="text-[#4a4a4a]">Betöltés...</div>
     </div>
   )
 
@@ -116,9 +116,9 @@ export default function CustomerDashboard() {
   return (
     <div className="min-h-screen bg-[#F4F5F7]">
       {/* Header */}
-      <header className="bg-[#0B1E3D] text-white px-4 py-3 flex items-center gap-3">
-        <div className="w-8 h-8 bg-[#C9A84C] rounded-lg flex items-center justify-center shrink-0">
-          <Wrench size={16} color="#0B1E3D" />
+      <header className="bg-[#0D0D0D] text-white px-4 py-3 flex items-center gap-3">
+        <div className="w-8 h-8 bg-[#C8102E] rounded-lg flex items-center justify-center shrink-0">
+          <Wrench size={16} color="#0D0D0D" />
         </div>
         <div className="flex-1">
           <div className="text-[13px] font-semibold">Autohaus Friedrich</div>
@@ -130,13 +130,13 @@ export default function CustomerDashboard() {
       </header>
 
       {/* Welcome */}
-      <div className="bg-white border-b border-[rgba(11,30,61,0.08)] px-4 py-3">
-        <p className="text-[13px] font-semibold text-[#0B1E3D]">Üdvözöljük, {customer?.full_name || profile?.full_name}!</p>
-        <p className="text-[11px] text-[#5a6a80]">{customer?.phone} · {customer?.email}</p>
+      <div className="bg-white border-b border-[rgba(0,0,0,0.08)] px-4 py-3">
+        <p className="text-[13px] font-semibold text-[#0D0D0D]">Üdvözöljük, {customer?.full_name || profile?.full_name}!</p>
+        <p className="text-[11px] text-[#4a4a4a]">{customer?.phone} · {customer?.email}</p>
       </div>
 
       {/* Tabs */}
-      <div className="bg-white border-b border-[rgba(11,30,61,0.08)] overflow-x-auto scrollbar-hide">
+      <div className="bg-white border-b border-[rgba(0,0,0,0.08)] overflow-x-auto scrollbar-hide">
         <div className="flex gap-0 min-w-max px-2">
           {tabs.map(t => {
             const Icon = t.icon
@@ -146,8 +146,8 @@ export default function CustomerDashboard() {
                 onClick={() => setTab(t.id)}
                 className={`flex items-center gap-1.5 px-3 py-3 text-[12px] font-medium border-b-2 transition-colors whitespace-nowrap ${
                   tab === t.id
-                    ? 'border-[#C9A84C] text-[#0B1E3D]'
-                    : 'border-transparent text-[#5a6a80] hover:text-[#0B1E3D]'
+                    ? 'border-[#C8102E] text-[#0D0D0D]'
+                    : 'border-transparent text-[#4a4a4a] hover:text-[#0D0D0D]'
                 }`}
               >
                 <Icon size={13} />
@@ -164,21 +164,21 @@ export default function CustomerDashboard() {
         {tab === 'overview' && (
           <div className="space-y-3">
             <div className="grid grid-cols-2 gap-3">
-              <div className="bg-white rounded-xl p-4 text-center border border-[rgba(11,30,61,0.08)]">
-                <div className="text-[22px] font-bold text-[#0B1E3D]">{vehicles.length}</div>
-                <div className="text-[11px] text-[#5a6a80]">Regisztrált jármű</div>
+              <div className="bg-white rounded-xl p-4 text-center border border-[rgba(0,0,0,0.08)]">
+                <div className="text-[22px] font-bold text-[#0D0D0D]">{vehicles.length}</div>
+                <div className="text-[11px] text-[#4a4a4a]">Regisztrált jármű</div>
               </div>
-              <div className="bg-white rounded-xl p-4 text-center border border-[rgba(11,30,61,0.08)]">
-                <div className="text-[22px] font-bold text-[#0B1E3D]">{workOrders.length}</div>
-                <div className="text-[11px] text-[#5a6a80]">Szerviz alkalom</div>
+              <div className="bg-white rounded-xl p-4 text-center border border-[rgba(0,0,0,0.08)]">
+                <div className="text-[22px] font-bold text-[#0D0D0D]">{workOrders.length}</div>
+                <div className="text-[11px] text-[#4a4a4a]">Szerviz alkalom</div>
               </div>
-              <div className="bg-white rounded-xl p-4 text-center border border-[rgba(11,30,61,0.08)]">
-                <div className="text-[22px] font-bold text-[#C9A84C]">{quotes.filter(q => q.status === 'sent').length}</div>
-                <div className="text-[11px] text-[#5a6a80]">Nyitott árajánlat</div>
+              <div className="bg-white rounded-xl p-4 text-center border border-[rgba(0,0,0,0.08)]">
+                <div className="text-[22px] font-bold text-[#C8102E]">{quotes.filter(q => q.status === 'sent').length}</div>
+                <div className="text-[11px] text-[#4a4a4a]">Nyitott árajánlat</div>
               </div>
-              <div className="bg-white rounded-xl p-4 text-center border border-[rgba(11,30,61,0.08)]">
+              <div className="bg-white rounded-xl p-4 text-center border border-[rgba(0,0,0,0.08)]">
                 <div className="text-[22px] font-bold text-emerald-600">{workOrders.filter(w => w.status === 'delivered').length}</div>
-                <div className="text-[11px] text-[#5a6a80]">Lezárt munkalap</div>
+                <div className="text-[11px] text-[#4a4a4a]">Lezárt munkalap</div>
               </div>
             </div>
 
@@ -191,8 +191,8 @@ export default function CustomerDashboard() {
                 {workOrders.filter(w => !['delivered','closed'].includes(w.status)).map(wo => (
                   <div key={wo.id} className="flex items-center justify-between py-1.5 border-b border-amber-100 last:border-0">
                     <div>
-                      <span className="text-[11px] font-bold text-[#185FA5]">{wo.order_number}</span>
-                      <span className="text-[11px] text-[#5a6a80] ml-2">{wo.vehicle?.make} {wo.vehicle?.model}</span>
+                      <span className="text-[11px] font-bold text-[#333333]">{wo.order_number}</span>
+                      <span className="text-[11px] text-[#4a4a4a] ml-2">{wo.vehicle?.make} {wo.vehicle?.model}</span>
                     </div>
                     <span className={`text-[10px] px-2 py-0.5 rounded-full font-medium ${STATUS_LABELS[wo.status]?.color || 'bg-gray-100 text-gray-600'}`}>
                       {STATUS_LABELS[wo.status]?.label || wo.status}
@@ -204,14 +204,14 @@ export default function CustomerDashboard() {
 
             {/* Upcoming reminders */}
             {reminders.filter(r => r.status !== 'completed').length > 0 && (
-              <div className="bg-white rounded-xl border border-[rgba(11,30,61,0.08)] p-4">
-                <p className="text-[12px] font-semibold text-[#0B1E3D] mb-2 flex items-center gap-1.5">
+              <div className="bg-white rounded-xl border border-[rgba(0,0,0,0.08)] p-4">
+                <p className="text-[12px] font-semibold text-[#0D0D0D] mb-2 flex items-center gap-1.5">
                   <Clock size={13} /> Közelgő szervizek
                 </p>
                 {reminders.filter(r => r.status !== 'completed').slice(0, 3).map(r => (
-                  <div key={r.id} className="flex items-center justify-between py-1.5 border-b border-[rgba(11,30,61,0.06)] last:border-0">
-                    <span className="text-[12px] text-[#0B1E3D]">{r.title}</span>
-                    <span className="text-[11px] text-[#8fa0b5]">{r.due_date}</span>
+                  <div key={r.id} className="flex items-center justify-between py-1.5 border-b border-[rgba(0,0,0,0.06)] last:border-0">
+                    <span className="text-[12px] text-[#0D0D0D]">{r.title}</span>
+                    <span className="text-[11px] text-[#888888]">{r.due_date}</span>
                   </div>
                 ))}
               </div>
@@ -220,14 +220,14 @@ export default function CustomerDashboard() {
             {/* Google review */}
             <button
               onClick={() => window.open('https://g.page/r/review', '_blank')}
-              className="w-full flex items-center gap-3 bg-white border border-[rgba(11,30,61,0.08)] rounded-xl p-4 text-left hover:bg-gray-50 transition-colors"
+              className="w-full flex items-center gap-3 bg-white border border-[rgba(0,0,0,0.08)] rounded-xl p-4 text-left hover:bg-gray-50 transition-colors"
             >
-              <Star size={20} className="text-[#C9A84C]" />
+              <Star size={20} className="text-[#C8102E]" />
               <div className="flex-1">
-                <div className="text-[13px] font-semibold text-[#0B1E3D]">Google értékelés</div>
-                <div className="text-[11px] text-[#5a6a80]">Mondja el véleményét szervizünkről</div>
+                <div className="text-[13px] font-semibold text-[#0D0D0D]">Google értékelés</div>
+                <div className="text-[11px] text-[#4a4a4a]">Mondja el véleményét szervizünkről</div>
               </div>
-              <ChevronRight size={15} className="text-[#8fa0b5]" />
+              <ChevronRight size={15} className="text-[#888888]" />
             </button>
           </div>
         )}
@@ -235,61 +235,61 @@ export default function CustomerDashboard() {
         {tab === 'vehicles' && (
           <div className="space-y-3">
             {vehicles.map(v => (
-              <div key={v.id} className="bg-white rounded-xl border border-[rgba(11,30,61,0.08)] p-4">
+              <div key={v.id} className="bg-white rounded-xl border border-[rgba(0,0,0,0.08)] p-4">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 bg-[#F4F5F7] rounded-xl flex items-center justify-center">
-                    <Car size={18} className="text-[#5a6a80]" />
+                    <Car size={18} className="text-[#4a4a4a]" />
                   </div>
                   <div>
-                    <div className="font-semibold text-[14px] text-[#0B1E3D]">{v.make} {v.model} {v.year}</div>
-                    <div className="text-[11px] text-[#5a6a80]">{v.license_plate} · {v.color}</div>
-                    {v.vin && <div className="text-[10px] text-[#8fa0b5]">VIN: {v.vin}</div>}
+                    <div className="font-semibold text-[14px] text-[#0D0D0D]">{v.make} {v.model} {v.year}</div>
+                    <div className="text-[11px] text-[#4a4a4a]">{v.license_plate} · {v.color}</div>
+                    {v.vin && <div className="text-[10px] text-[#888888]">VIN: {v.vin}</div>}
                   </div>
                 </div>
                 {v.next_service_date && (
-                  <div className="mt-3 pt-3 border-t border-[rgba(11,30,61,0.06)] flex items-center gap-2 text-[12px] text-[#5a6a80]">
+                  <div className="mt-3 pt-3 border-t border-[rgba(0,0,0,0.06)] flex items-center gap-2 text-[12px] text-[#4a4a4a]">
                     <Clock size={12} />
-                    Következő ajánlott szerviz: <span className="font-medium text-[#0B1E3D]">{v.next_service_date}</span>
+                    Következő ajánlott szerviz: <span className="font-medium text-[#0D0D0D]">{v.next_service_date}</span>
                   </div>
                 )}
               </div>
             ))}
-            {vehicles.length === 0 && <p className="text-center text-[13px] text-[#8fa0b5] py-8">Nincs regisztrált jármű</p>}
+            {vehicles.length === 0 && <p className="text-center text-[13px] text-[#888888] py-8">Nincs regisztrált jármű</p>}
           </div>
         )}
 
         {tab === 'workorders' && (
           <div className="space-y-3">
             {workOrders.map(wo => (
-              <div key={wo.id} className="bg-white rounded-xl border border-[rgba(11,30,61,0.08)] p-4">
+              <div key={wo.id} className="bg-white rounded-xl border border-[rgba(0,0,0,0.08)] p-4">
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-[11px] font-bold text-[#185FA5] bg-[#E6F1FB] px-2 py-0.5 rounded">{wo.order_number}</span>
+                  <span className="text-[11px] font-bold text-[#333333] bg-[#F0F0F0] px-2 py-0.5 rounded">{wo.order_number}</span>
                   <span className={`text-[10px] px-2 py-0.5 rounded-full font-medium ${STATUS_LABELS[wo.status]?.color || 'bg-gray-100 text-gray-600'}`}>
                     {STATUS_LABELS[wo.status]?.label || wo.status}
                   </span>
                 </div>
-                <div className="text-[12px] text-[#5a6a80]">{wo.vehicle?.make} {wo.vehicle?.model} · {wo.vehicle?.license_plate}</div>
-                {wo.description && <div className="text-[12px] text-[#0B1E3D] mt-1">{wo.description}</div>}
-                <div className="text-[11px] text-[#8fa0b5] mt-1">{wo.scheduled_date}</div>
+                <div className="text-[12px] text-[#4a4a4a]">{wo.vehicle?.make} {wo.vehicle?.model} · {wo.vehicle?.license_plate}</div>
+                {wo.description && <div className="text-[12px] text-[#0D0D0D] mt-1">{wo.description}</div>}
+                <div className="text-[11px] text-[#888888] mt-1">{wo.scheduled_date}</div>
               </div>
             ))}
-            {workOrders.length === 0 && <p className="text-center text-[13px] text-[#8fa0b5] py-8">Nincs munkalap</p>}
+            {workOrders.length === 0 && <p className="text-center text-[13px] text-[#888888] py-8">Nincs munkalap</p>}
           </div>
         )}
 
         {tab === 'quotes' && (
           <div className="space-y-3">
             {quotes.map(q => (
-              <div key={q.id} className="bg-white rounded-xl border border-[rgba(11,30,61,0.08)] p-4">
+              <div key={q.id} className="bg-white rounded-xl border border-[rgba(0,0,0,0.08)] p-4">
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-[13px] font-semibold text-[#0B1E3D]">Árajánlat #{q.id.slice(0, 8)}</span>
+                  <span className="text-[13px] font-semibold text-[#0D0D0D]">Árajánlat #{q.id.slice(0, 8)}</span>
                   <span className={`text-[10px] px-2 py-0.5 rounded-full font-medium ${STATUS_LABELS[q.status]?.color || 'bg-gray-100 text-gray-600'}`}>
                     {STATUS_LABELS[q.status]?.label || q.status}
                   </span>
                 </div>
-                <div className="text-[13px] font-semibold text-[#0B1E3D]">CHF {(q.total_amount || 0).toFixed(2)}</div>
-                {q.valid_until && <div className="text-[11px] text-[#8fa0b5] mt-1">Érvényes: {q.valid_until}</div>}
-                {q.notes && <div className="text-[12px] text-[#5a6a80] mt-1">{q.notes}</div>}
+                <div className="text-[13px] font-semibold text-[#0D0D0D]">CHF {(q.total_amount || 0).toFixed(2)}</div>
+                {q.valid_until && <div className="text-[11px] text-[#888888] mt-1">Érvényes: {q.valid_until}</div>}
+                {q.notes && <div className="text-[12px] text-[#4a4a4a] mt-1">{q.notes}</div>}
                 {q.status === 'sent' && (
                   <div className="flex gap-2 mt-3">
                     <button
@@ -308,25 +308,25 @@ export default function CustomerDashboard() {
                 )}
               </div>
             ))}
-            {quotes.length === 0 && <p className="text-center text-[13px] text-[#8fa0b5] py-8">Nincs árajánlat</p>}
+            {quotes.length === 0 && <p className="text-center text-[13px] text-[#888888] py-8">Nincs árajánlat</p>}
           </div>
         )}
 
         {tab === 'bookings' && (
           <div className="space-y-3">
             {bookings.map(b => (
-              <div key={b.id} className="bg-white rounded-xl border border-[rgba(11,30,61,0.08)] p-4">
+              <div key={b.id} className="bg-white rounded-xl border border-[rgba(0,0,0,0.08)] p-4">
                 <div className="flex items-center justify-between mb-1">
-                  <span className="text-[13px] font-semibold text-[#0B1E3D]">{b.scheduled_date} {b.scheduled_time}</span>
+                  <span className="text-[13px] font-semibold text-[#0D0D0D]">{b.scheduled_date} {b.scheduled_time}</span>
                   <span className={`text-[10px] px-2 py-0.5 rounded-full font-medium ${STATUS_LABELS[b.status]?.color || 'bg-gray-100 text-gray-600'}`}>
                     {b.status}
                   </span>
                 </div>
-                <div className="text-[12px] text-[#5a6a80]">{b.vehicle?.make} {b.vehicle?.model} · {b.vehicle?.license_plate}</div>
-                {b.service_type && <div className="text-[12px] text-[#0B1E3D] mt-1">{b.service_type}</div>}
+                <div className="text-[12px] text-[#4a4a4a]">{b.vehicle?.make} {b.vehicle?.model} · {b.vehicle?.license_plate}</div>
+                {b.service_type && <div className="text-[12px] text-[#0D0D0D] mt-1">{b.service_type}</div>}
               </div>
             ))}
-            {bookings.length === 0 && <p className="text-center text-[13px] text-[#8fa0b5] py-8">Nincs foglalás</p>}
+            {bookings.length === 0 && <p className="text-center text-[13px] text-[#888888] py-8">Nincs foglalás</p>}
           </div>
         )}
 
@@ -341,7 +341,7 @@ export default function CustomerDashboard() {
                 ))}
               </div>
             ) : (
-              <p className="text-center text-[13px] text-[#8fa0b5] py-8">Nincs fotó</p>
+              <p className="text-center text-[13px] text-[#888888] py-8">Nincs fotó</p>
             )}
           </div>
         )}
@@ -349,33 +349,33 @@ export default function CustomerDashboard() {
         {tab === 'reminders' && (
           <div className="space-y-3">
             {reminders.map(r => (
-              <div key={r.id} className="bg-white rounded-xl border border-[rgba(11,30,61,0.08)] p-4">
+              <div key={r.id} className="bg-white rounded-xl border border-[rgba(0,0,0,0.08)] p-4">
                 <div className="flex items-center justify-between mb-1">
-                  <span className="text-[13px] font-semibold text-[#0B1E3D]">{r.title}</span>
+                  <span className="text-[13px] font-semibold text-[#0D0D0D]">{r.title}</span>
                   <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-100 text-amber-700 font-medium">{r.status}</span>
                 </div>
-                {r.due_date && <div className="text-[12px] text-[#5a6a80]">Esedékes: {r.due_date}</div>}
-                {r.notes && <div className="text-[12px] text-[#8fa0b5] mt-1">{r.notes}</div>}
+                {r.due_date && <div className="text-[12px] text-[#4a4a4a]">Esedékes: {r.due_date}</div>}
+                {r.notes && <div className="text-[12px] text-[#888888] mt-1">{r.notes}</div>}
               </div>
             ))}
-            {reminders.length === 0 && <p className="text-center text-[13px] text-[#8fa0b5] py-8">Nincs emlékeztető</p>}
+            {reminders.length === 0 && <p className="text-center text-[13px] text-[#888888] py-8">Nincs emlékeztető</p>}
           </div>
         )}
 
         {tab === 'message' && (
-          <div className="bg-white rounded-xl border border-[rgba(11,30,61,0.08)] p-4">
-            <h3 className="text-[14px] font-semibold text-[#0B1E3D] mb-3">Üzenet küldése</h3>
+          <div className="bg-white rounded-xl border border-[rgba(0,0,0,0.08)] p-4">
+            <h3 className="text-[14px] font-semibold text-[#0D0D0D] mb-3">Üzenet küldése</h3>
             <textarea
               value={message}
               onChange={e => setMessage(e.target.value)}
               rows={5}
               placeholder="Írja ide üzenetét..."
-              className="w-full border border-[rgba(11,30,61,0.18)] rounded-lg p-3 text-[13px] outline-none focus:border-[#0B1E3D] resize-none"
+              className="w-full border border-[rgba(0,0,0,0.18)] rounded-lg p-3 text-[13px] outline-none focus:border-[#0D0D0D] resize-none"
             />
             <button
               onClick={sendMessage}
               disabled={!message.trim()}
-              className="mt-3 w-full py-2.5 bg-[#0B1E3D] text-white text-[13px] font-medium rounded-lg hover:bg-[#142a50] transition-colors disabled:opacity-50"
+              className="mt-3 w-full py-2.5 bg-[#0D0D0D] text-white text-[13px] font-medium rounded-lg hover:bg-[#1A1A1A] transition-colors disabled:opacity-50"
             >
               <MessageCircle size={14} className="inline mr-2" /> Küldés
             </button>

@@ -93,7 +93,7 @@ function StepSidebar({ currentStep }: StepSidebarProps) {
       style={{
         width: 220,
         minWidth: 180,
-        background: '#0B1E3D',
+        background: '#0D0D0D',
         borderRadius: 12,
         padding: '24px 16px',
         display: 'flex',
@@ -102,7 +102,7 @@ function StepSidebar({ currentStep }: StepSidebarProps) {
         alignSelf: 'flex-start',
       }}
     >
-      <div style={{ color: '#C9A84C', fontWeight: 700, fontSize: 13, letterSpacing: 1, marginBottom: 12 }}>
+      <div style={{ color: '#C8102E', fontWeight: 700, fontSize: 13, letterSpacing: 1, marginBottom: 12 }}>
         FELDOLGOZÁS LÉPÉSEI
       </div>
       {STEPS.map((s, i) => {
@@ -119,7 +119,7 @@ function StepSidebar({ currentStep }: StepSidebarProps) {
               padding: '10px 12px',
               borderRadius: 8,
               background: active ? 'rgba(201,168,76,0.15)' : 'transparent',
-              borderLeft: active ? '3px solid #C9A84C' : '3px solid transparent',
+              borderLeft: active ? '3px solid #C8102E' : '3px solid transparent',
               transition: 'all 0.2s',
             }}
           >
@@ -131,8 +131,8 @@ function StepSidebar({ currentStep }: StepSidebarProps) {
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                background: done ? '#16a34a' : active ? '#C9A84C' : 'rgba(255,255,255,0.1)',
-                color: done || active ? '#fff' : '#5a6a80',
+                background: done ? '#16a34a' : active ? '#C8102E' : 'rgba(255,255,255,0.1)',
+                color: done || active ? '#fff' : '#4a4a4a',
                 fontWeight: 700,
                 fontSize: 13,
                 flexShrink: 0,
@@ -141,10 +141,10 @@ function StepSidebar({ currentStep }: StepSidebarProps) {
               {done ? <Check size={14} /> : n}
             </div>
             <div>
-              <div style={{ color: active ? '#C9A84C' : done ? '#fff' : '#5a6a80', fontWeight: active ? 600 : 400, fontSize: 14 }}>
+              <div style={{ color: active ? '#C8102E' : done ? '#fff' : '#4a4a4a', fontWeight: active ? 600 : 400, fontSize: 14 }}>
                 {s.label}
               </div>
-              <div style={{ color: '#5a6a80', fontSize: 11 }}>{s.sublabel}</div>
+              <div style={{ color: '#4a4a4a', fontSize: 11 }}>{s.sublabel}</div>
             </div>
           </div>
         )
@@ -186,9 +186,9 @@ function UploadZone({ label, image, onImage, onClear, required }: UploadZoneProp
 
   return (
     <div style={{ flex: 1 }}>
-      <div style={{ fontWeight: 600, fontSize: 14, color: '#0B1E3D', marginBottom: 8 }}>
+      <div style={{ fontWeight: 600, fontSize: 14, color: '#0D0D0D', marginBottom: 8 }}>
         {label}
-        {required && <span style={{ color: '#C9384C', marginLeft: 4 }}>*</span>}
+        {required && <span style={{ color: '#C8102E', marginLeft: 4 }}>*</span>}
       </div>
 
       {image ? (
@@ -207,7 +207,7 @@ function UploadZone({ label, image, onImage, onClear, required }: UploadZoneProp
             <button
               onClick={() => fileRef.current?.click()}
               style={{
-                background: '#0B1E3D',
+                background: '#0D0D0D',
                 color: '#fff',
                 border: 'none',
                 borderRadius: 6,
@@ -224,7 +224,7 @@ function UploadZone({ label, image, onImage, onClear, required }: UploadZoneProp
             <button
               onClick={onClear}
               style={{
-                background: '#C9384C',
+                background: '#C8102E',
                 color: '#fff',
                 border: 'none',
                 borderRadius: 6,
@@ -246,7 +246,7 @@ function UploadZone({ label, image, onImage, onClear, required }: UploadZoneProp
           onDragLeave={() => setDragging(false)}
           onDrop={onDrop}
           style={{
-            border: `2px dashed ${dragging ? '#C9A84C' : '#d1d5db'}`,
+            border: `2px dashed ${dragging ? '#C8102E' : '#d1d5db'}`,
             borderRadius: 10,
             padding: 24,
             textAlign: 'center',
@@ -256,8 +256,8 @@ function UploadZone({ label, image, onImage, onClear, required }: UploadZoneProp
           }}
           onClick={() => fileRef.current?.click()}
         >
-          <Upload size={28} color="#5a6a80" style={{ marginBottom: 8 }} />
-          <div style={{ color: '#5a6a80', fontSize: 13, marginBottom: 12 }}>
+          <Upload size={28} color="#4a4a4a" style={{ marginBottom: 8 }} />
+          <div style={{ color: '#4a4a4a', fontSize: 13, marginBottom: 12 }}>
             Húzd ide vagy kattints a feltöltéshez
           </div>
           <div style={{ display: 'flex', gap: 8, justifyContent: 'center', flexWrap: 'wrap' }}>
@@ -265,7 +265,7 @@ function UploadZone({ label, image, onImage, onClear, required }: UploadZoneProp
               type="button"
               onClick={(e) => { e.stopPropagation(); fileRef.current?.click() }}
               style={{
-                background: '#0B1E3D',
+                background: '#0D0D0D',
                 color: '#fff',
                 border: 'none',
                 borderRadius: 7,
@@ -283,7 +283,7 @@ function UploadZone({ label, image, onImage, onClear, required }: UploadZoneProp
               type="button"
               onClick={(e) => { e.stopPropagation(); cameraRef.current?.click() }}
               style={{
-                background: '#C9A84C',
+                background: '#C8102E',
                 color: '#fff',
                 border: 'none',
                 borderRadius: 7,
@@ -348,7 +348,7 @@ function FieldRow({ label, fieldKey, value, confidence, onChange, type = 'text',
         <FormLabel>{label}</FormLabel>
         {lowConf && (
           <span title={`Bizonytalanság: ${Math.round((confidence ?? 0) * 100)}%`}>
-            <AlertTriangle size={13} color="#C9A84C" />
+            <AlertTriangle size={13} color="#C8102E" />
           </span>
         )}
       </div>
@@ -367,7 +367,7 @@ function FieldRow({ label, fieldKey, value, confidence, onChange, type = 'text',
           type={type}
           value={value}
           onChange={(e: React.ChangeEvent<HTMLInputElement>) => onChange(fieldKey, e.target.value)}
-          style={lowConf ? { borderColor: '#C9A84C', background: 'rgba(201,168,76,0.05)' } : undefined}
+          style={lowConf ? { borderColor: '#C8102E', background: 'rgba(201,168,76,0.05)' } : undefined}
         />
       )}
     </FormGroup>
@@ -704,10 +704,10 @@ export function RegistrationScanPage({
         {step === 1 && (
           <Card className="p-8">
             <div style={{ marginBottom: 24 }}>
-              <h2 style={{ color: '#0B1E3D', fontWeight: 700, fontSize: 22, margin: 0 }}>
+              <h2 style={{ color: '#0D0D0D', fontWeight: 700, fontSize: 22, margin: 0 }}>
                 Forgalmi engedély beolvasása
               </h2>
-              <p style={{ color: '#5a6a80', fontSize: 14, marginTop: 6 }}>
+              <p style={{ color: '#4a4a4a', fontSize: 14, marginTop: 6 }}>
                 Töltsd fel a forgalmi engedély oldalait az automatikus adatkinyeréshez.
               </p>
             </div>
@@ -732,7 +732,7 @@ export function RegistrationScanPage({
               <div
                 style={{
                   background: 'rgba(201,168,76,0.1)',
-                  border: '1px solid #C9A84C',
+                  border: '1px solid #C8102E',
                   borderRadius: 8,
                   padding: '10px 16px',
                   color: '#7a5c00',
@@ -743,7 +743,7 @@ export function RegistrationScanPage({
                   gap: 8,
                 }}
               >
-                <AlertTriangle size={15} color="#C9A84C" />
+                <AlertTriangle size={15} color="#C8102E" />
                 Az első oldal feltöltése kötelező a feldolgozáshoz.
               </div>
             )}
@@ -753,7 +753,7 @@ export function RegistrationScanPage({
                 onClick={handleOcr}
                 disabled={!frontImage || processing}
                 style={{
-                  background: frontImage ? '#0B1E3D' : '#d1d5db',
+                  background: frontImage ? '#0D0D0D' : '#d1d5db',
                   color: '#fff',
                   padding: '10px 28px',
                   fontSize: 15,
@@ -783,17 +783,17 @@ export function RegistrationScanPage({
         {step === 2 && (
           <Card className="p-8">
             <div style={{ marginBottom: 20 }}>
-              <h2 style={{ color: '#0B1E3D', fontWeight: 700, fontSize: 22, margin: 0 }}>
+              <h2 style={{ color: '#0D0D0D', fontWeight: 700, fontSize: 22, margin: 0 }}>
                 Kinyert adatok ellenőrzése
               </h2>
               {isDemoMode && (
                 <div
                   style={{
                     background: 'rgba(201,56,76,0.08)',
-                    border: '1px solid #C9384C',
+                    border: '1px solid #C8102E',
                     borderRadius: 8,
                     padding: '8px 14px',
-                    color: '#C9384C',
+                    color: '#C8102E',
                     fontSize: 13,
                     marginTop: 10,
                     display: 'flex',
@@ -808,7 +808,7 @@ export function RegistrationScanPage({
                 <div
                   style={{
                     background: 'rgba(201,168,76,0.1)',
-                    border: '1px solid #C9A84C',
+                    border: '1px solid #C8102E',
                     borderRadius: 8,
                     padding: '8px 14px',
                     color: '#7a5c00',
@@ -819,7 +819,7 @@ export function RegistrationScanPage({
                     gap: 8,
                   }}
                 >
-                  <AlertTriangle size={14} color="#C9A84C" />
+                  <AlertTriangle size={14} color="#C8102E" />
                   {lowConfCount} mező bizonytalan – ellenőrizd!
                 </div>
               )}
@@ -830,7 +830,7 @@ export function RegistrationScanPage({
               <div style={{ width: '38%', minWidth: 220, flexShrink: 0 }}>
                 {frontImage && (
                   <div style={{ marginBottom: 10 }}>
-                    <div style={{ fontSize: 12, color: '#5a6a80', marginBottom: 4 }}>1. oldal</div>
+                    <div style={{ fontSize: 12, color: '#4a4a4a', marginBottom: 4 }}>1. oldal</div>
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src={frontImage}
@@ -841,7 +841,7 @@ export function RegistrationScanPage({
                 )}
                 {backImage && (
                   <div>
-                    <div style={{ fontSize: 12, color: '#5a6a80', marginBottom: 4 }}>2. oldal</div>
+                    <div style={{ fontSize: 12, color: '#4a4a4a', marginBottom: 4 }}>2. oldal</div>
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src={backImage}
@@ -857,7 +857,7 @@ export function RegistrationScanPage({
                 <div
                   style={{
                     fontWeight: 700,
-                    color: '#0B1E3D',
+                    color: '#0D0D0D',
                     fontSize: 14,
                     marginBottom: 12,
                     display: 'flex',
@@ -865,7 +865,7 @@ export function RegistrationScanPage({
                     gap: 8,
                   }}
                 >
-                  <Car size={16} color="#C9A84C" /> Jármű adatok
+                  <Car size={16} color="#C8102E" /> Jármű adatok
                 </div>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0 16px' }}>
                   <FieldRow label="Rendszám" fieldKey="license_plate" value={extractedData.license_plate || ''} confidence={confidenceScores.license_plate} onChange={handleFieldChange} />
@@ -887,7 +887,7 @@ export function RegistrationScanPage({
                 <div
                   style={{
                     fontWeight: 700,
-                    color: '#0B1E3D',
+                    color: '#0D0D0D',
                     fontSize: 14,
                     margin: '20px 0 12px',
                     display: 'flex',
@@ -895,7 +895,7 @@ export function RegistrationScanPage({
                     gap: 8,
                   }}
                 >
-                  <UserPlus size={16} color="#C9A84C" /> Tulajdonos adatok
+                  <UserPlus size={16} color="#C8102E" /> Tulajdonos adatok
                 </div>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0 16px' }}>
                   <FieldRow label="Teljes név" fieldKey="owner_name" value={extractedData.owner_name || ''} confidence={confidenceScores.owner_name} onChange={handleFieldChange} />
@@ -912,7 +912,7 @@ export function RegistrationScanPage({
                 onClick={() => setStep(1)}
                 style={{
                   background: '#F4F5F7',
-                  color: '#0B1E3D',
+                  color: '#0D0D0D',
                   border: '1px solid #d1d5db',
                   display: 'flex',
                   alignItems: 'center',
@@ -924,7 +924,7 @@ export function RegistrationScanPage({
               <Button
                 onClick={runDuplicateCheck}
                 style={{
-                  background: '#0B1E3D',
+                  background: '#0D0D0D',
                   color: '#fff',
                   display: 'flex',
                   alignItems: 'center',
@@ -941,10 +941,10 @@ export function RegistrationScanPage({
         {step === 3 && (
           <Card className="p-8">
             <div style={{ marginBottom: 24 }}>
-              <h2 style={{ color: '#0B1E3D', fontWeight: 700, fontSize: 22, margin: 0, display: 'flex', alignItems: 'center', gap: 10 }}>
-                <Search size={22} color="#C9A84C" /> Egyezés keresés
+              <h2 style={{ color: '#0D0D0D', fontWeight: 700, fontSize: 22, margin: 0, display: 'flex', alignItems: 'center', gap: 10 }}>
+                <Search size={22} color="#C8102E" /> Egyezés keresés
               </h2>
-              <p style={{ color: '#5a6a80', fontSize: 14, marginTop: 6 }}>
+              <p style={{ color: '#4a4a4a', fontSize: 14, marginTop: 6 }}>
                 Válassz, hogyan mentse a rendszer az adatokat.
               </p>
             </div>
@@ -954,7 +954,7 @@ export function RegistrationScanPage({
               <div
                 style={{
                   background: 'rgba(201,168,76,0.1)',
-                  border: '1px solid #C9A84C',
+                  border: '1px solid #C8102E',
                   borderRadius: 10,
                   padding: '12px 16px',
                   marginBottom: 20,
@@ -963,16 +963,16 @@ export function RegistrationScanPage({
                   gap: 10,
                 }}
               >
-                <AlertTriangle size={18} color="#C9A84C" style={{ flexShrink: 0, marginTop: 2 }} />
+                <AlertTriangle size={18} color="#C8102E" style={{ flexShrink: 0, marginTop: 2 }} />
                 <div>
                   <div style={{ fontWeight: 600, color: '#7a5c00', fontSize: 14 }}>
                     ⚠ Rendszám már létezik a rendszerben:
                   </div>
                   {existingVehicles.map((v) => (
-                    <div key={v.id} style={{ color: '#5a6a80', fontSize: 13, marginTop: 4 }}>
+                    <div key={v.id} style={{ color: '#4a4a4a', fontSize: 13, marginTop: 4 }}>
                       {v.make} {v.model} – {v.license_plate}
                       {v.customer && (
-                        <span style={{ marginLeft: 8, color: '#0B1E3D' }}>
+                        <span style={{ marginLeft: 8, color: '#0D0D0D' }}>
                           (Tulajdonos: {v.customer.full_name})
                         </span>
                       )}
@@ -1001,10 +1001,10 @@ export function RegistrationScanPage({
                 id="existing_customer"
                 selected={selectedAction === 'existing_customer'}
                 onSelect={() => setSelectedAction('existing_customer')}
-                icon={<Car size={20} color="#0B1E3D" />}
+                icon={<Car size={20} color="#0D0D0D" />}
                 title="Meglévő ügyfélhez kapcsolás + új jármű"
                 description="Válassz egy meglévő ügyfelet, és adj hozzá új járművet."
-                color="#0B1E3D"
+                color="#0D0D0D"
               >
                 {selectedAction === 'existing_customer' && (
                   <div style={{ marginTop: 10 }}>
@@ -1027,10 +1027,10 @@ export function RegistrationScanPage({
                   id="update_vehicle"
                   selected={selectedAction === 'update_vehicle'}
                   onSelect={() => setSelectedAction('update_vehicle')}
-                  icon={<RefreshCw size={20} color="#C9A84C" />}
+                  icon={<RefreshCw size={20} color="#C8102E" />}
                   title="Meglévő jármű frissítése"
                   description="Frissíti a meglévő jármű adatait az OCR eredménnyel."
-                  color="#C9A84C"
+                  color="#C8102E"
                 >
                   {selectedAction === 'update_vehicle' && (
                     <div style={{ marginTop: 10 }}>
@@ -1056,10 +1056,10 @@ export function RegistrationScanPage({
                   id="update_customer"
                   selected={selectedAction === 'update_customer'}
                   onSelect={() => setSelectedAction('update_customer')}
-                  icon={<Eye size={20} color="#5a6a80" />}
+                  icon={<Eye size={20} color="#4a4a4a" />}
                   title="Csak ügyfél frissítése"
                   description="Frissíti az ügyfél adatait, járművet nem érint."
-                  color="#5a6a80"
+                  color="#4a4a4a"
                 >
                   {selectedAction === 'update_customer' && (
                     <div style={{ marginTop: 10 }}>
@@ -1083,7 +1083,7 @@ export function RegistrationScanPage({
                 onClick={() => setStep(2)}
                 style={{
                   background: '#F4F5F7',
-                  color: '#0B1E3D',
+                  color: '#0D0D0D',
                   border: '1px solid #d1d5db',
                   display: 'flex',
                   alignItems: 'center',
@@ -1096,7 +1096,7 @@ export function RegistrationScanPage({
                 onClick={handleSave}
                 disabled={saving}
                 style={{
-                  background: '#0B1E3D',
+                  background: '#0D0D0D',
                   color: '#fff',
                   display: 'flex',
                   alignItems: 'center',
@@ -1130,14 +1130,14 @@ export function RegistrationScanPage({
               >
                 <CheckCircle size={40} color="#fff" />
               </div>
-              <h2 style={{ color: '#0B1E3D', fontWeight: 800, fontSize: 26, margin: 0 }}>
+              <h2 style={{ color: '#0D0D0D', fontWeight: 800, fontSize: 26, margin: 0 }}>
                 Sikeresen feldolgozva!
               </h2>
               <div style={{ background: '#F4F5F7', borderRadius: 10, padding: '16px 32px', marginTop: 8 }}>
-                <div style={{ fontWeight: 600, color: '#0B1E3D', fontSize: 16 }}>
+                <div style={{ fontWeight: 600, color: '#0D0D0D', fontSize: 16 }}>
                   {savedResult.customerName || '–'}
                 </div>
-                <div style={{ color: '#5a6a80', fontSize: 14, marginTop: 4 }}>
+                <div style={{ color: '#4a4a4a', fontSize: 14, marginTop: 4 }}>
                   {savedResult.vehicleInfo || '–'}
                 </div>
               </div>
@@ -1145,7 +1145,7 @@ export function RegistrationScanPage({
                 <Button
                   onClick={handleReset}
                   style={{
-                    background: '#0B1E3D',
+                    background: '#0D0D0D',
                     color: '#fff',
                     display: 'flex',
                     alignItems: 'center',
@@ -1157,7 +1157,7 @@ export function RegistrationScanPage({
                 <Button
                   style={{
                     background: '#F4F5F7',
-                    color: '#0B1E3D',
+                    color: '#0D0D0D',
                     border: '1px solid #d1d5db',
                     display: 'flex',
                     alignItems: 'center',
@@ -1170,7 +1170,7 @@ export function RegistrationScanPage({
                 <Button
                   style={{
                     background: '#F4F5F7',
-                    color: '#0B1E3D',
+                    color: '#0D0D0D',
                     border: '1px solid #d1d5db',
                     display: 'flex',
                     alignItems: 'center',
@@ -1242,8 +1242,8 @@ function ActionCard({ id, selected, onSelect, icon, title, description, color, c
           })}
         </div>
         <div style={{ flex: 1 }}>
-          <div style={{ fontWeight: 600, color: '#0B1E3D', fontSize: 14 }}>{title}</div>
-          <div style={{ color: '#5a6a80', fontSize: 12, marginTop: 2 }}>{description}</div>
+          <div style={{ fontWeight: 600, color: '#0D0D0D', fontSize: 14 }}>{title}</div>
+          <div style={{ color: '#4a4a4a', fontSize: 12, marginTop: 2 }}>{description}</div>
         </div>
         <div
           style={{

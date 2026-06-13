@@ -105,7 +105,7 @@ const STATUS_META: Record<string, { label: string; color: string; bg: string }> 
   in_repair:         { label: 'Javítás',         color: 'text-amber-700',  bg: 'bg-amber-100' },
   quality_check:     { label: 'Min.-ellenőrzés', color: 'text-teal-700',   bg: 'bg-teal-100' },
   ready:             { label: 'Kész',            color: 'text-green-700',  bg: 'bg-green-100' },
-  checkout_ready:    { label: 'Átadásra vár',    color: 'text-[#C9A84C]',  bg: 'bg-yellow-50' },
+  checkout_ready:    { label: 'Átadásra vár',    color: 'text-[#C8102E]',  bg: 'bg-yellow-50' },
   delivered:         { label: 'Kiadva',          color: 'text-gray-500',   bg: 'bg-gray-100' },
   closed:            { label: 'Lezárva',         color: 'text-gray-400',   bg: 'bg-gray-50' },
 }
@@ -187,7 +187,7 @@ function PriorityBadge({ priority }: { priority: string }) {
 
 function PlateBadge({ plate }: { plate: string }) {
   return (
-    <span className="inline-flex items-center px-2.5 py-1 bg-[#0B1E3D] text-white rounded-md text-[12px] font-mono font-bold tracking-wider">
+    <span className="inline-flex items-center px-2.5 py-1 bg-[#0D0D0D] text-white rounded-md text-[12px] font-mono font-bold tracking-wider">
       {plate}
     </span>
   )
@@ -204,8 +204,8 @@ function PhaseProgressBar({ status }: { status: string }) {
         const isActive = idx === currentPhaseIdx
         return (
           <div key={phase.key} className="flex-1 flex flex-col items-center gap-1">
-            <div className={`h-1.5 w-full rounded-full ${isDone ? 'bg-emerald-500' : isActive ? 'bg-[#C9A84C]' : 'bg-[rgba(11,30,61,0.12)]'}`} />
-            <span className={`text-[9px] font-semibold text-center leading-none ${isDone ? 'text-emerald-600' : isActive ? 'text-[#C9A84C]' : 'text-[rgba(11,30,61,0.3)]'}`}>
+            <div className={`h-1.5 w-full rounded-full ${isDone ? 'bg-emerald-500' : isActive ? 'bg-[#C8102E]' : 'bg-[rgba(0,0,0,0.12)]'}`} />
+            <span className={`text-[9px] font-semibold text-center leading-none ${isDone ? 'text-emerald-600' : isActive ? 'text-[#C8102E]' : 'text-[rgba(0,0,0,0.3)]'}`}>
               {phase.label}
             </span>
           </div>
@@ -274,14 +274,14 @@ function CheckInChecklistPanel({
             className={`w-full flex items-center gap-3 p-2.5 rounded-lg border text-left transition-colors ${
               done.includes(item)
                 ? 'bg-indigo-100 border-indigo-300 text-indigo-800'
-                : 'bg-white border-[rgba(11,30,61,0.10)] text-[#0B1E3D]'
+                : 'bg-white border-[rgba(0,0,0,0.10)] text-[#0D0D0D]'
             }`}
             onClick={() => toggle(item)}
           >
             {done.includes(item) ? (
               <CheckSquare size={14} className="text-indigo-600 shrink-0" />
             ) : (
-              <Circle size={14} className="text-[rgba(11,30,61,0.3)] shrink-0" />
+              <Circle size={14} className="text-[rgba(0,0,0,0.3)] shrink-0" />
             )}
             <span className="text-[12px] font-medium">{item}</span>
           </button>
@@ -291,7 +291,7 @@ function CheckInChecklistPanel({
         className={`w-full btn-mobile-action text-[13px] font-bold ${
           allDone
             ? 'bg-indigo-600 text-white'
-            : 'bg-[rgba(11,30,61,0.08)] text-[rgba(11,30,61,0.4)]'
+            : 'bg-[rgba(0,0,0,0.08)] text-[rgba(0,0,0,0.4)]'
         }`}
         onClick={handleComplete}
         disabled={saving}
@@ -395,17 +395,17 @@ function TaskTimerWidget({
   }
 
   return (
-    <div className="bg-[#0B1E3D] rounded-xl p-3">
+    <div className="bg-[#0D0D0D] rounded-xl p-3">
       <div className="flex items-center gap-3 mb-2.5">
-        <Clock size={14} className={ticking ? 'text-[#C9A84C] animate-pulse' : 'text-white/40'} />
+        <Clock size={14} className={ticking ? 'text-[#C8102E] animate-pulse' : 'text-white/40'} />
         <span className="font-mono text-[18px] font-bold text-white flex-1">
           {formatElapsed(localElapsed)}
         </span>
-        {ticking && <span className="text-[10px] text-[#C9A84C] font-bold">AKTÍV</span>}
+        {ticking && <span className="text-[10px] text-[#C8102E] font-bold">AKTÍV</span>}
       </div>
       <div className="flex gap-2">
         {!ticking ? (
-          <button className="btn-mobile-action bg-[#C9A84C] text-[#0B1E3D] font-bold flex-1 text-[12px]" onClick={start}>
+          <button className="btn-mobile-action bg-[#C8102E] text-[#0D0D0D] font-bold flex-1 text-[12px]" onClick={start}>
             <Play size={14} /> Indítás
           </button>
         ) : (
@@ -504,8 +504,8 @@ function WOTaskCard({
     : isProblem
     ? 'border-red-400 bg-red-50'
     : task.status === 'in_progress'
-    ? 'border-[#C9A84C] bg-amber-50'
-    : 'border-[rgba(11,30,61,0.12)] bg-white'
+    ? 'border-[#C8102E] bg-amber-50'
+    : 'border-[rgba(0,0,0,0.12)] bg-white'
 
   return (
     <div className={`border rounded-xl overflow-hidden transition-colors ${taskStatusColor}`}>
@@ -516,11 +516,11 @@ function WOTaskCard({
       >
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 flex-wrap">
-            <span className={`text-[13px] font-semibold ${isDone ? 'line-through text-[#5a6a80]' : 'text-[#0B1E3D]'}`}>
+            <span className={`text-[13px] font-semibold ${isDone ? 'line-through text-[#4a4a4a]' : 'text-[#0D0D0D]'}`}>
               {task.title}
             </span>
             {task.task_number && (
-              <span className="text-[10px] font-mono text-[#5a6a80] bg-[rgba(11,30,61,0.06)] px-1.5 py-0.5 rounded">
+              <span className="text-[10px] font-mono text-[#4a4a4a] bg-[rgba(0,0,0,0.06)] px-1.5 py-0.5 rounded">
                 {task.task_number}
               </span>
             )}
@@ -537,24 +537,24 @@ function WOTaskCard({
               </span>
             )}
             {showTimer && task.elapsed_seconds > 0 && (
-              <span className="text-[10px] text-[#5a6a80] flex items-center gap-0.5">
+              <span className="text-[10px] text-[#4a4a4a] flex items-center gap-0.5">
                 <Clock size={9} /> {formatElapsed(task.elapsed_seconds)}
               </span>
             )}
           </div>
         </div>
-        <button className="text-[#5a6a80] shrink-0">
+        <button className="text-[#4a4a4a] shrink-0">
           {expanded ? <ChevronUp size={15} /> : <ChevronDown size={15} />}
         </button>
       </div>
 
       {/* Expanded content */}
       {expanded && !isDone && (
-        <div className="px-3 pb-3 space-y-3 border-t border-[rgba(11,30,61,0.08)] pt-3">
+        <div className="px-3 pb-3 space-y-3 border-t border-[rgba(0,0,0,0.08)] pt-3">
           {/* Checklist */}
           {checklist.length > 0 && (
             <div className="space-y-1.5">
-              <div className="text-[10px] font-bold text-[#5a6a80] uppercase tracking-wide">
+              <div className="text-[10px] font-bold text-[#4a4a4a] uppercase tracking-wide">
                 Lépések — {checkDone.length}/{checklist.length}
               </div>
               {checklist.map((item: string) => (
@@ -563,14 +563,14 @@ function WOTaskCard({
                   className={`w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg border text-left transition-colors ${
                     checkDone.includes(item)
                       ? 'bg-emerald-50 border-emerald-300 text-emerald-800'
-                      : 'bg-white border-[rgba(11,30,61,0.10)] text-[#0B1E3D]'
+                      : 'bg-white border-[rgba(0,0,0,0.10)] text-[#0D0D0D]'
                   }`}
                   onClick={() => toggleChecklist(item)}
                 >
                   {checkDone.includes(item) ? (
                     <CheckSquare size={13} className="text-emerald-600 shrink-0" />
                   ) : (
-                    <Circle size={13} className="text-[rgba(11,30,61,0.3)] shrink-0" />
+                    <Circle size={13} className="text-[rgba(0,0,0,0.3)] shrink-0" />
                   )}
                   <span className={`text-[12px] ${checkDone.includes(item) ? 'line-through' : ''}`}>{item}</span>
                 </button>
@@ -585,16 +585,16 @@ function WOTaskCard({
 
           {/* Notes */}
           <div className="space-y-1.5">
-            <div className="text-[10px] font-bold text-[#5a6a80] uppercase tracking-wide">Megjegyzés</div>
+            <div className="text-[10px] font-bold text-[#4a4a4a] uppercase tracking-wide">Megjegyzés</div>
             <textarea
               value={notes}
               onChange={e => setNotes(e.target.value)}
               placeholder="Megjegyzés a feladathoz..."
-              className="w-full text-[12px] p-2.5 rounded-lg border border-[rgba(11,30,61,0.12)] min-h-[60px] resize-none focus:outline-none focus:border-[#0B1E3D]"
+              className="w-full text-[12px] p-2.5 rounded-lg border border-[rgba(0,0,0,0.12)] min-h-[60px] resize-none focus:outline-none focus:border-[#0D0D0D]"
             />
             {notes !== (task.notes || '') && (
               <button
-                className="btn-mobile-action bg-[#0B1E3D] text-white text-[12px]"
+                className="btn-mobile-action bg-[#0D0D0D] text-white text-[12px]"
                 onClick={saveNotes}
                 disabled={savingNotes}
               >
@@ -680,31 +680,31 @@ function TimeTrackerWidget({
   }
 
   return (
-    <div className="mt-3 pt-3 border-t border-[rgba(11,30,61,0.08)]">
+    <div className="mt-3 pt-3 border-t border-[rgba(0,0,0,0.08)]">
       <div className="flex items-center gap-3 mb-3">
-        <div className="flex items-center gap-2 bg-[#0B1E3D] rounded-xl px-4 py-2.5 flex-1">
-          <Clock size={16} className={timer.running ? 'text-[#C9A84C] animate-pulse' : 'text-white/40'} />
+        <div className="flex items-center gap-2 bg-[#0D0D0D] rounded-xl px-4 py-2.5 flex-1">
+          <Clock size={16} className={timer.running ? 'text-[#C8102E] animate-pulse' : 'text-white/40'} />
           <span className="font-mono text-[18px] font-bold text-white min-w-[80px]">
             {formatElapsed(timer.elapsed)}
           </span>
           {timer.running && (
-            <span className="text-[10px] text-[#C9A84C] font-semibold ml-auto">AKTÍV</span>
+            <span className="text-[10px] text-[#C8102E] font-semibold ml-auto">AKTÍV</span>
           )}
         </div>
       </div>
       <div className="flex gap-2">
         {!timer.running ? (
-          <button className="btn-mobile-action bg-[#0B1E3D] text-white flex-1 text-[13px]" onClick={start}>
+          <button className="btn-mobile-action bg-[#0D0D0D] text-white flex-1 text-[13px]" onClick={start}>
             <Play size={16} />
             Időzítő indítása
           </button>
         ) : (
           <>
-            <button className="btn-mobile-action bg-[#F4F5F7] text-[#0B1E3D] border border-[rgba(11,30,61,0.12)] flex-1 text-[13px]" onClick={pause}>
+            <button className="btn-mobile-action bg-[#F4F5F7] text-[#0D0D0D] border border-[rgba(0,0,0,0.12)] flex-1 text-[13px]" onClick={pause}>
               <Pause size={16} />
               Szünet
             </button>
-            <button className="btn-mobile-action bg-[#C9384C] text-white flex-1 text-[13px]" onClick={stop}>
+            <button className="btn-mobile-action bg-[#C8102E] text-white flex-1 text-[13px]" onClick={stop}>
               <Square size={16} />
               Stop & Rögzít
             </button>
@@ -1067,7 +1067,7 @@ export default function TechnicianPage({
   if (loading && !userId) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-[#F4F5F7]">
-        <div className="w-8 h-8 border-2 border-[#C9A84C] border-t-transparent rounded-full animate-spin" />
+        <div className="w-8 h-8 border-2 border-[#C8102E] border-t-transparent rounded-full animate-spin" />
       </div>
     )
   }
@@ -1076,23 +1076,23 @@ export default function TechnicianPage({
     <div className="min-h-screen bg-[#F4F5F7]">
 
       {/* ── Header ─────────────────────────────────────────────────────────── */}
-      <div className="bg-[#0B1E3D] px-5 pt-6 pb-7">
+      <div className="bg-[#0D0D0D] px-5 pt-6 pb-7">
         <div className="flex items-start justify-between">
           <div>
-            <h1 className="font-['DM_Serif_Display'] text-[26px] text-white leading-tight">
+            <h1 className="font-['Montserrat'] text-[26px] text-white leading-tight">
               Szia, {mechanicFirstName}! 👋
             </h1>
             <p className="text-[13px] text-white/55 mt-1 capitalize">{todayStr}</p>
           </div>
           <div className="bg-white/10 rounded-xl p-3">
-            <Wrench size={22} className="text-[#C9A84C]" />
+            <Wrench size={22} className="text-[#C8102E]" />
           </div>
         </div>
 
         {/* Quick stat pills */}
         <div className="flex gap-2 mt-4 flex-wrap">
           <div className="flex items-center gap-1.5 bg-white/10 rounded-full px-3 py-1.5">
-            <span className="text-[#C9A84C] font-bold text-[13px]">{allMyOrders.length}</span>
+            <span className="text-[#C8102E] font-bold text-[13px]">{allMyOrders.length}</span>
             <span className="text-white/70 text-[11px]">összes munkalap</span>
           </div>
           {/* GPS státusz */}
@@ -1100,16 +1100,16 @@ export default function TechnicianPage({
             <span className={`w-2 h-2 rounded-full ${gpsSharingActive ? 'bg-green-400 animate-pulse' : 'bg-white/30'}`} />
             <span className="text-white/70 text-[11px]">{gpsSharingActive ? 'GPS aktív' : 'GPS kikapcs.'}</span>
           </div>
-          <div className={`flex items-center gap-1.5 rounded-full px-3 py-1.5 ${garageOrders.length > 0 ? 'bg-[#C9A84C]/20' : 'bg-white/10'}`}>
-            <span className="font-bold text-[13px] text-[#C9A84C]">{garageOrders.length}</span>
+          <div className={`flex items-center gap-1.5 rounded-full px-3 py-1.5 ${garageOrders.length > 0 ? 'bg-[#C8102E]/20' : 'bg-white/10'}`}>
+            <span className="font-bold text-[13px] text-[#C8102E]">{garageOrders.length}</span>
             <span className="text-white/70 text-[11px]">garázsban</span>
           </div>
           <div className={`flex items-center gap-1.5 rounded-full px-3 py-1.5 ${activeOrders.length > 0 ? 'bg-emerald-500/20' : 'bg-white/10'}`}>
-            <span className={`font-bold text-[13px] ${activeOrders.length > 0 ? 'text-emerald-300' : 'text-[#C9A84C]'}`}>{activeOrders.length}</span>
+            <span className={`font-bold text-[13px] ${activeOrders.length > 0 ? 'text-emerald-300' : 'text-[#C8102E]'}`}>{activeOrders.length}</span>
             <span className="text-white/70 text-[11px]">aktív javítás</span>
           </div>
           <div className="flex items-center gap-1.5 bg-white/10 rounded-full px-3 py-1.5">
-            <span className="text-[#C9A84C] font-bold text-[13px]">{todayOrders.length}</span>
+            <span className="text-[#C8102E] font-bold text-[13px]">{todayOrders.length}</span>
             <span className="text-white/70 text-[11px]">mai feladat</span>
           </div>
         </div>
@@ -1119,7 +1119,7 @@ export default function TechnicianPage({
 
         {loading ? (
           <div className="flex items-center justify-center py-16">
-            <div className="w-7 h-7 border-2 border-[#C9A84C] border-t-transparent rounded-full animate-spin" />
+            <div className="w-7 h-7 border-2 border-[#C8102E] border-t-transparent rounded-full animate-spin" />
           </div>
         ) : (
           <>
@@ -1134,18 +1134,18 @@ export default function TechnicianPage({
                   {todayOrders.map(order => (
                     <div
                       key={order.id}
-                      className="flex-shrink-0 w-[200px] bg-white border border-[rgba(11,30,61,0.10)] rounded-[14px] p-4 cursor-pointer hover:border-[#C9A84C] transition-colors"
+                      className="flex-shrink-0 w-[200px] bg-white border border-[rgba(0,0,0,0.10)] rounded-[14px] p-4 cursor-pointer hover:border-[#C8102E] transition-colors"
                       onClick={() => setExpandedOrder(expandedOrder === order.id ? null : order.id)}
                     >
                       <PlateBadge plate={order.vehicle?.license_plate ?? '—'} />
-                      <div className="mt-2 text-[13px] font-semibold text-[#0B1E3D] truncate">
+                      <div className="mt-2 text-[13px] font-semibold text-[#0D0D0D] truncate">
                         {order.customer?.full_name?.split(' ')[0] ?? '—'}
                       </div>
-                      <div className="text-[11px] text-[#5a6a80] mt-0.5 truncate">
+                      <div className="text-[11px] text-[#4a4a4a] mt-0.5 truncate">
                         {order.vehicle?.make} {order.vehicle?.model}
                       </div>
                       {order.scheduled_time && (
-                        <div className="text-[11px] text-[#C9A84C] font-semibold mt-1.5 flex items-center gap-1">
+                        <div className="text-[11px] text-[#C8102E] font-semibold mt-1.5 flex items-center gap-1">
                           <Clock size={10} />
                           {order.scheduled_time.slice(0, 5)}
                         </div>
@@ -1154,14 +1154,14 @@ export default function TechnicianPage({
                         <StatusBadge status={order.status} />
                       </div>
                       {expandedOrder === order.id && (
-                        <div className="mt-3 pt-3 border-t border-[rgba(11,30,61,0.08)] space-y-2">
+                        <div className="mt-3 pt-3 border-t border-[rgba(0,0,0,0.08)] space-y-2">
                           {order.fault_description && (
-                            <p className="text-[11px] text-[#5a6a80] leading-relaxed">{order.fault_description}</p>
+                            <p className="text-[11px] text-[#4a4a4a] leading-relaxed">{order.fault_description}</p>
                           )}
                           {onOpenWorkOrder && (
                             <button
                               onClick={e => { e.stopPropagation(); onOpenWorkOrder(order.id) }}
-                              className="w-full btn-mobile-action bg-[#0B1E3D] text-white text-[12px] py-2"
+                              className="w-full btn-mobile-action bg-[#0D0D0D] text-white text-[12px] py-2"
                             >
                               <Wrench size={13} /> Feladatok megnyitása
                             </button>
@@ -1219,10 +1219,10 @@ export default function TechnicianPage({
                         <div className="flex items-center gap-3 px-4 py-3">
                           <PlateBadge plate={order.vehicle?.license_plate ?? '—'} />
                           <div className="flex-1 min-w-0">
-                            <div className="text-[13px] font-semibold text-[#0B1E3D] truncate">
+                            <div className="text-[13px] font-semibold text-[#0D0D0D] truncate">
                               {order.vehicle?.make} {order.vehicle?.model}
                             </div>
-                            <div className="text-[11px] text-[#5a6a80] truncate">
+                            <div className="text-[11px] text-[#4a4a4a] truncate">
                               {order.customer?.full_name}
                             </div>
                           </div>
@@ -1230,7 +1230,7 @@ export default function TechnicianPage({
                         </div>
                         <div className="flex gap-2 px-4 pb-3">
                           <button
-                            className="btn-mobile-action bg-[#0B1E3D] text-white flex-1 text-[12px]"
+                            className="btn-mobile-action bg-[#0D0D0D] text-white flex-1 text-[12px]"
                             onClick={() => setWorkflowOrder(order as WFWorkOrder)}
                           >
                             <Wrench size={14} />
@@ -1238,7 +1238,7 @@ export default function TechnicianPage({
                           </button>
                           {onOpenWorkOrder && (
                             <button
-                              className="btn-mobile-action bg-[#F4F5F7] text-[#0B1E3D] border border-[rgba(11,30,61,0.12)] text-[12px] px-3"
+                              className="btn-mobile-action bg-[#F4F5F7] text-[#0D0D0D] border border-[rgba(0,0,0,0.12)] text-[12px] px-3"
                               onClick={() => onOpenWorkOrder(order.id)}
                             >
                               <ListChecks size={14} />
@@ -1266,7 +1266,7 @@ export default function TechnicianPage({
                       <Card key={d.id}>
                         <div className="flex items-start gap-3">
                           <div className="flex-shrink-0 w-8 h-8 bg-[#F4F5F7] rounded-full flex items-center justify-center mt-0.5">
-                            <MapPin size={14} className="text-[#0B1E3D]" />
+                            <MapPin size={14} className="text-[#0D0D0D]" />
                           </div>
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-2 flex-wrap">
@@ -1275,32 +1275,32 @@ export default function TechnicianPage({
                               </span>
                               {d.vehicle && <PlateBadge plate={d.vehicle.license_plate} />}
                             </div>
-                            <div className="text-[13px] font-semibold text-[#0B1E3D] mt-1.5">
+                            <div className="text-[13px] font-semibold text-[#0D0D0D] mt-1.5">
                               {d.customer?.full_name ?? '—'}
                             </div>
                             {d.pickup_address && (
-                              <div className="text-[12px] text-[#5a6a80] mt-0.5 flex items-center gap-1">
+                              <div className="text-[12px] text-[#4a4a4a] mt-0.5 flex items-center gap-1">
                                 <MapPin size={11} className="shrink-0" />
                                 {d.pickup_address}
                               </div>
                             )}
                             {d.scheduled_time && (
-                              <div className="text-[11px] text-[#C9A84C] font-semibold mt-1 flex items-center gap-1">
+                              <div className="text-[11px] text-[#C8102E] font-semibold mt-1 flex items-center gap-1">
                                 <Clock size={10} />
                                 {new Date(d.scheduled_time).toLocaleTimeString('hu-HU', { hour: '2-digit', minute: '2-digit' })}
                               </div>
                             )}
                             {d.vehicle && (
-                              <div className="text-[11px] text-[#5a6a80] mt-0.5">
+                              <div className="text-[11px] text-[#4a4a4a] mt-0.5">
                                 {d.vehicle.make} {d.vehicle.model}
                               </div>
                             )}
                           </div>
                         </div>
                         {nextStatus && nextStatus !== d.status && (
-                          <div className="mt-3 pt-3 border-t border-[rgba(11,30,61,0.08)]">
+                          <div className="mt-3 pt-3 border-t border-[rgba(0,0,0,0.08)]">
                             <button
-                              className="btn-mobile-action bg-[#0B1E3D] text-white w-full text-[13px]"
+                              className="btn-mobile-action bg-[#0D0D0D] text-white w-full text-[13px]"
                               disabled={deliveryChanging === d.id}
                               onClick={() => advanceDeliveryStatus(d.id, d.status)}
                             >
@@ -1321,7 +1321,7 @@ export default function TechnicianPage({
               <Card>
                 <div className="flex items-center gap-3">
                   <div className="flex-1">
-                    <p className="text-[13px] text-[#5a6a80]">
+                    <p className="text-[13px] text-[#4a4a4a]">
                       Alkatrész igénylést küldhet a raktárnak vagy Barbarának.
                     </p>
                   </div>
@@ -1338,8 +1338,8 @@ export default function TechnicianPage({
               <SectionHeader icon={<ListChecks size={14} />} title="Feladataim" count={tasks.length} />
               {tasksError ? (
                 <Card className="text-center py-6">
-                  <AlertCircle size={24} className="mx-auto text-[#5a6a80] mb-2" />
-                  <p className="text-[13px] text-[#5a6a80]">A feladatok tábla még nem elérhető</p>
+                  <AlertCircle size={24} className="mx-auto text-[#4a4a4a] mb-2" />
+                  <p className="text-[13px] text-[#4a4a4a]">A feladatok tábla még nem elérhető</p>
                 </Card>
               ) : tasks.length === 0 ? (
                 <EmptyState icon={<ListChecks size={28} />} message="Nincs nyitott feladatod" />
@@ -1353,22 +1353,22 @@ export default function TechnicianPage({
                         <div className="flex items-start gap-3">
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-2 flex-wrap">
-                              <span className="text-[13px] font-semibold text-[#0B1E3D]">{task.title}</span>
+                              <span className="text-[13px] font-semibold text-[#0D0D0D]">{task.title}</span>
                               <PriorityBadge priority={task.priority} />
                             </div>
                             {task.description && (
-                              <p className="text-[12px] text-[#5a6a80] mt-0.5 line-clamp-2">{task.description}</p>
+                              <p className="text-[12px] text-[#4a4a4a] mt-0.5 line-clamp-2">{task.description}</p>
                             )}
                             <div className="flex items-center gap-3 mt-1.5 flex-wrap">
                               {task.due_date && (
-                                <span className={`text-[11px] font-semibold flex items-center gap-1 ${isOverdue ? 'text-[#C9384C]' : 'text-[#5a6a80]'}`}>
+                                <span className={`text-[11px] font-semibold flex items-center gap-1 ${isOverdue ? 'text-[#C8102E]' : 'text-[#4a4a4a]'}`}>
                                   <Clock size={10} />
                                   {formatDate(task.due_date)}
                                   {isOverdue && ' (Lejárt)'}
                                 </span>
                               )}
                               {task.customer && (
-                                <span className="text-[11px] text-[#5a6a80] flex items-center gap-1">
+                                <span className="text-[11px] text-[#4a4a4a] flex items-center gap-1">
                                   <User size={10} />
                                   {(task.customer as any).full_name}
                                 </span>
@@ -1493,10 +1493,10 @@ function SectionHeader({
 }) {
   return (
     <div className="flex items-center gap-2 mb-3">
-      <span className="text-[#C9A84C]">{icon}</span>
-      <h2 className="text-[12px] font-semibold text-[#5a6a80] uppercase tracking-[0.7px]">{title}</h2>
+      <span className="text-[#C8102E]">{icon}</span>
+      <h2 className="text-[12px] font-semibold text-[#4a4a4a] uppercase tracking-[0.7px]">{title}</h2>
       {count !== undefined && (
-        <span className="ml-auto bg-[#0B1E3D] text-white text-[11px] font-bold px-2 py-0.5 rounded-full">
+        <span className="ml-auto bg-[#0D0D0D] text-white text-[11px] font-bold px-2 py-0.5 rounded-full">
           {count}
         </span>
       )}
@@ -1507,8 +1507,8 @@ function SectionHeader({
 function EmptyState({ icon, message }: { icon: React.ReactNode; message: string }) {
   return (
     <Card className="py-8 text-center">
-      <div className="flex justify-center text-[rgba(11,30,61,0.2)] mb-2">{icon}</div>
-      <p className="text-[13px] text-[#5a6a80]">{message}</p>
+      <div className="flex justify-center text-[rgba(0,0,0,0.2)] mb-2">{icon}</div>
+      <p className="text-[13px] text-[#4a4a4a]">{message}</p>
     </Card>
   )
 }
@@ -1581,42 +1581,42 @@ function ActiveWorkOrderCard({
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 flex-wrap">
             <PlateBadge plate={order.vehicle?.license_plate ?? '—'} />
-            <span className="text-[13px] font-semibold text-[#0B1E3D]">
+            <span className="text-[13px] font-semibold text-[#0D0D0D]">
               {order.vehicle?.make} {order.vehicle?.model}
             </span>
           </div>
           <div className="flex items-center gap-2 mt-1.5 flex-wrap">
-            <span className="text-[12px] text-[#5a6a80] flex items-center gap-1">
+            <span className="text-[12px] text-[#4a4a4a] flex items-center gap-1">
               <User size={11} />
               {order.customer?.full_name}
             </span>
             <StatusBadge status={order.status} />
             {order.order_number && (
-              <span className="text-[10px] font-mono text-[#5a6a80]">{order.order_number}</span>
+              <span className="text-[10px] font-mono text-[#4a4a4a]">{order.order_number}</span>
             )}
           </div>
           {order.fault_description && (
-            <p className="text-[12px] text-[#5a6a80] mt-1.5 line-clamp-2">{order.fault_description}</p>
+            <p className="text-[12px] text-[#4a4a4a] mt-1.5 line-clamp-2">{order.fault_description}</p>
           )}
           {/* Phase progress bar */}
           <PhaseProgressBar status={order.status} />
           {/* Task progress summary */}
           {totalTasks > 0 && (
             <div className="flex items-center gap-2 mt-2">
-              <div className="flex-1 bg-[rgba(11,30,61,0.08)] rounded-full h-1.5">
+              <div className="flex-1 bg-[rgba(0,0,0,0.08)] rounded-full h-1.5">
                 <div
-                  className={`h-1.5 rounded-full transition-all ${doneTasks === totalTasks ? 'bg-emerald-500' : 'bg-[#C9A84C]'}`}
+                  className={`h-1.5 rounded-full transition-all ${doneTasks === totalTasks ? 'bg-emerald-500' : 'bg-[#C8102E]'}`}
                   style={{ width: `${totalTasks > 0 ? (doneTasks / totalTasks) * 100 : 0}%` }}
                 />
               </div>
-              <span className="text-[10px] text-[#5a6a80] font-semibold shrink-0">
+              <span className="text-[10px] text-[#4a4a4a] font-semibold shrink-0">
                 {doneTasks}/{totalTasks} feladat
                 {problemTasks > 0 && <span className="text-red-500 ml-1">⚠ {problemTasks}</span>}
               </span>
             </div>
           )}
         </div>
-        <button className="text-[#5a6a80] hover:text-[#0B1E3D] transition-colors mt-0.5 shrink-0">
+        <button className="text-[#4a4a4a] hover:text-[#0D0D0D] transition-colors mt-0.5 shrink-0">
           {expanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
         </button>
       </div>
@@ -1630,10 +1630,10 @@ function ActiveWorkOrderCard({
 
       {/* Expanded content */}
       {expanded && (
-        <div className="border-t border-[rgba(11,30,61,0.08)] px-4 pb-4 pt-3 space-y-3">
+        <div className="border-t border-[rgba(0,0,0,0.08)] px-4 pb-4 pt-3 space-y-3">
 
           {/* Phase tabs */}
-          <div className="flex gap-1 bg-[rgba(11,30,61,0.05)] rounded-xl p-1">
+          <div className="flex gap-1 bg-[rgba(0,0,0,0.05)] rounded-xl p-1">
             {[
               { key: 'tasks', label: 'Feladatok', show: true },
               { key: 'checkin', label: 'Check-In', show: isCheckin },
@@ -1644,8 +1644,8 @@ function ActiveWorkOrderCard({
                 key={tab.key}
                 className={`flex-1 text-[11px] font-semibold py-1.5 rounded-lg transition-colors ${
                   activePhase === tab.key
-                    ? 'bg-white text-[#0B1E3D] shadow-sm'
-                    : 'text-[#5a6a80]'
+                    ? 'bg-white text-[#0D0D0D] shadow-sm'
+                    : 'text-[#4a4a4a]'
                 }`}
                 onClick={() => setActivePhase(tab.key)}
               >
@@ -1668,12 +1668,12 @@ function ActiveWorkOrderCard({
             <div className="space-y-2">
               {loadingTasks ? (
                 <div className="flex justify-center py-4">
-                  <div className="w-5 h-5 border-2 border-[#C9A84C] border-t-transparent rounded-full animate-spin" />
+                  <div className="w-5 h-5 border-2 border-[#C8102E] border-t-transparent rounded-full animate-spin" />
                 </div>
               ) : (orderTasks ?? []).length === 0 ? (
                 <div className="text-center py-4">
-                  <p className="text-[12px] text-[#5a6a80]">Nincs feladat ehhez a munkalaphoz</p>
-                  <p className="text-[11px] text-[#5a6a80] mt-1 opacity-70">
+                  <p className="text-[12px] text-[#4a4a4a]">Nincs feladat ehhez a munkalaphoz</p>
+                  <p className="text-[11px] text-[#4a4a4a] mt-1 opacity-70">
                     Barbara által kiválasztott szolgáltatásokból generálódnak a feladatok
                   </p>
                 </div>
@@ -1709,7 +1709,7 @@ function ActiveWorkOrderCard({
                 )}
                 {order.status === 'in_repair' && (
                   <button
-                    className="btn-mobile-action bg-[#F4F5F7] text-[#0B1E3D] border border-[rgba(11,30,61,0.12)] text-[12px] col-span-1"
+                    className="btn-mobile-action bg-[#F4F5F7] text-[#0D0D0D] border border-[rgba(0,0,0,0.12)] text-[12px] col-span-1"
                     disabled={statusChanging === order.id}
                     onClick={() => onStatusChange(order.id, 'waiting_parts', 'waiting_parts')}
                   >
@@ -1718,7 +1718,7 @@ function ActiveWorkOrderCard({
                 )}
                 {(isRepair || isDiagnostics) && (
                   <button
-                    className="btn-mobile-action bg-[#C9A84C] text-[#0B1E3D] text-[12px] font-bold col-span-1"
+                    className="btn-mobile-action bg-[#C8102E] text-[#0D0D0D] text-[12px] font-bold col-span-1"
                     disabled={statusChanging === order.id}
                     onClick={() => onStatusChange(order.id, 'quality_check', 'qc')}
                   >
@@ -1746,18 +1746,18 @@ function ActiveWorkOrderCard({
           {/* Tab: Fotók */}
           {activePhase === 'photos' && (
             <div className="space-y-2">
-              <p className="text-[11px] text-[#5a6a80]">
+              <p className="text-[11px] text-[#4a4a4a]">
                 Fotók feltöltése a munkalaphoz ({STATUS_META[order.status]?.label ?? order.status} fázis)
               </p>
               <div className="grid grid-cols-2 gap-2">
                 <button
-                  className="btn-mobile-action bg-[#0B1E3D] text-white text-[13px]"
+                  className="btn-mobile-action bg-[#0D0D0D] text-white text-[13px]"
                   onClick={() => fileInputRef.current?.click()}
                 >
                   <Camera size={16} /> Kamera
                 </button>
                 <button
-                  className="btn-mobile-action bg-[#F4F5F7] text-[#0B1E3D] border border-[rgba(11,30,61,0.12)] text-[13px]"
+                  className="btn-mobile-action bg-[#F4F5F7] text-[#0D0D0D] border border-[rgba(0,0,0,0.12)] text-[13px]"
                   onClick={() => galleryInputRef.current?.click()}
                 >
                   <Camera size={16} /> Galéria
@@ -1793,7 +1793,7 @@ function ActiveWorkOrderCard({
           {/* Open workflow */}
           {onOpenWorkflow && (
             <button
-              className="btn-mobile-action bg-[#C9A84C] text-[#0B1E3D] font-bold w-full text-[13px]"
+              className="btn-mobile-action bg-[#C8102E] text-[#0D0D0D] font-bold w-full text-[13px]"
               onClick={onOpenWorkflow}
             >
               <Wrench size={16} />
@@ -1804,7 +1804,7 @@ function ActiveWorkOrderCard({
           {/* Open full detail */}
           {onOpenDetail && (
             <button
-              className="btn-mobile-action bg-[#185FA5] text-white w-full text-[13px]"
+              className="btn-mobile-action bg-[#333333] text-white w-full text-[13px]"
               onClick={onOpenDetail}
             >
               <ListChecks size={16} />

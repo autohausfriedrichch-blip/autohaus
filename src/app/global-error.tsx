@@ -10,7 +10,7 @@ export default function GlobalError({ error, reset }: { error: Error & { digest?
   return (
     <html>
       <body>
-        <div className="min-h-screen flex flex-col items-center justify-center bg-[#0B1E3D] text-white p-8">
+        <div className="min-h-screen flex flex-col items-center justify-center bg-[#0D0D0D] text-white p-8">
           <div className="text-5xl mb-4">⚠️</div>
           <h1 className="text-2xl font-bold mb-2">Váratlan hiba történt</h1>
           <p className="text-white/60 mb-6 text-center max-w-md">
@@ -18,7 +18,7 @@ export default function GlobalError({ error, reset }: { error: Error & { digest?
           </p>
           <button
             onClick={reset}
-            className="px-6 py-3 bg-[#C9A84C] text-[#0B1E3D] font-bold rounded-xl hover:bg-[#b8943f]"
+            className="px-6 py-3 bg-[#C8102E] text-[#0D0D0D] font-bold rounded-xl hover:bg-[#b8943f]"
           >
             Újrapróbálkozás
           </button>

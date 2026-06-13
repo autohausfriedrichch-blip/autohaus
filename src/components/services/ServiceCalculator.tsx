@@ -88,10 +88,10 @@ function RiskAcknowledgmentModal({
             <p className="text-[12px] text-red-700 mt-1">{riskText}</p>
           </div>
         </div>
-        <div className="bg-[#F4F5F7] rounded-xl p-4 border border-[rgba(11,30,61,0.10)]">
-          <p className="text-[12px] text-[#0B1E3D] leading-relaxed font-medium">{RISK_APPROVAL_TEXT}</p>
+        <div className="bg-[#F4F5F7] rounded-xl p-4 border border-[rgba(0,0,0,0.10)]">
+          <p className="text-[12px] text-[#0D0D0D] leading-relaxed font-medium">{RISK_APPROVAL_TEXT}</p>
         </div>
-        <p className="text-[12px] text-[#5a6a80]">
+        <p className="text-[12px] text-[#4a4a4a]">
           A továbblépéshez az ügyfél szóbeli vagy írásos jóváhagyása szükséges.
         </p>
       </div>
@@ -146,7 +146,7 @@ function ServicePickerModal({
               key={c}
               onClick={() => setCatFilter(c)}
               className={`text-[11px] px-2.5 py-1 rounded-full border font-medium transition-colors ${
-                catFilter === c ? 'bg-[#0B1E3D] text-white border-[#0B1E3D]' : 'bg-white text-[#5a6a80] border-[rgba(11,30,61,0.18)]'
+                catFilter === c ? 'bg-[#0D0D0D] text-white border-[#0D0D0D]' : 'bg-white text-[#4a4a4a] border-[rgba(0,0,0,0.18)]'
               }`}
             >
               {c === 'all' ? 'Mind' : c}
@@ -160,25 +160,25 @@ function ServicePickerModal({
             if (!items.length) return null
             return (
               <div key={cat}>
-                <p className="text-[10px] font-semibold text-[#8fa0b5] uppercase tracking-wide mb-1.5">{cat}</p>
+                <p className="text-[10px] font-semibold text-[#888888] uppercase tracking-wide mb-1.5">{cat}</p>
                 <div className="space-y-1">
                   {items.map(s => (
                     <button
                       key={s.id}
                       onClick={() => { onPick(s); onClose() }}
-                      className="w-full flex items-center gap-3 p-2.5 rounded-lg hover:bg-[#F4F5F7] transition-colors text-left border border-transparent hover:border-[rgba(11,30,61,0.08)]"
+                      className="w-full flex items-center gap-3 p-2.5 rounded-lg hover:bg-[#F4F5F7] transition-colors text-left border border-transparent hover:border-[rgba(0,0,0,0.08)]"
                     >
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-1.5 flex-wrap">
-                          <span className="text-[13px] font-medium text-[#0B1E3D]">{s.name}</span>
+                          <span className="text-[13px] font-medium text-[#0D0D0D]">{s.name}</span>
                           {s.is_risky && <AlertTriangle size={12} className="text-orange-500" />}
                         </div>
                         <div className="flex items-center gap-3 mt-0.5">
-                          {s.pricing_type === 'fixed' && s.base_price && <span className="text-[12px] text-[#5a6a80]">{formatCurrency(s.base_price)}</span>}
-                          {s.pricing_type === 'per_unit' && s.unit_price && <span className="text-[12px] text-[#5a6a80]">{formatCurrency(s.unit_price)} / {s.unit_label || 'db'}</span>}
-                          {s.pricing_type === 'hourly' && <span className="text-[12px] text-[#5a6a80]">{formatCurrency(s.hourly_rate || 125)} / óra</span>}
-                          {s.pricing_type === 'custom' && <span className="text-[12px] text-[#5a6a80]">Egyedi</span>}
-                          {s.duration_minutes && <span className="text-[11px] text-[#8fa0b5]">{s.duration_minutes} p</span>}
+                          {s.pricing_type === 'fixed' && s.base_price && <span className="text-[12px] text-[#4a4a4a]">{formatCurrency(s.base_price)}</span>}
+                          {s.pricing_type === 'per_unit' && s.unit_price && <span className="text-[12px] text-[#4a4a4a]">{formatCurrency(s.unit_price)} / {s.unit_label || 'db'}</span>}
+                          {s.pricing_type === 'hourly' && <span className="text-[12px] text-[#4a4a4a]">{formatCurrency(s.hourly_rate || 125)} / óra</span>}
+                          {s.pricing_type === 'custom' && <span className="text-[12px] text-[#4a4a4a]">Egyedi</span>}
+                          {s.duration_minutes && <span className="text-[11px] text-[#888888]">{s.duration_minutes} p</span>}
                         </div>
                       </div>
                       {s.pricing_type === 'per_unit' && (
@@ -223,13 +223,13 @@ function ServiceLineItemRow({
   return (
     <>
       <div className={`bg-white border rounded-xl p-3 transition-all ${
-        needsRiskAck ? 'border-l-4 border-orange-400' : 'border-[rgba(11,30,61,0.08)]'
+        needsRiskAck ? 'border-l-4 border-orange-400' : 'border-[rgba(0,0,0,0.08)]'
       }`}>
         {/* Header row */}
         <div className="flex items-start gap-2">
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 flex-wrap">
-              <span className="font-semibold text-[13px] text-[#0B1E3D]">{item.service_name}</span>
+              <span className="font-semibold text-[13px] text-[#0D0D0D]">{item.service_name}</span>
               {item.is_risky && (
                 <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-orange-700 bg-orange-50 px-1.5 py-0.5 rounded-full border border-orange-200">
                   <AlertTriangle size={10} /> Kockázatos
@@ -249,27 +249,27 @@ function ServiceLineItemRow({
                 <div className="flex items-center gap-1.5">
                   <button
                     onClick={() => update({ quantity: Math.max(1, item.quantity - 1) })}
-                    className="w-7 h-7 flex items-center justify-center rounded-lg border border-[rgba(11,30,61,0.15)] text-[#5a6a80] hover:bg-[#F4F5F7]"
+                    className="w-7 h-7 flex items-center justify-center rounded-lg border border-[rgba(0,0,0,0.15)] text-[#4a4a4a] hover:bg-[#F4F5F7]"
                   >
                     <Minus size={12} />
                   </button>
-                  <span className="text-[13px] font-semibold text-[#0B1E3D] min-w-[24px] text-center">
+                  <span className="text-[13px] font-semibold text-[#0D0D0D] min-w-[24px] text-center">
                     {item.quantity}
                   </span>
                   <button
                     onClick={() => update({ quantity: item.quantity + 1 })}
-                    className="w-7 h-7 flex items-center justify-center rounded-lg border border-[rgba(11,30,61,0.15)] text-[#5a6a80] hover:bg-[#F4F5F7]"
+                    className="w-7 h-7 flex items-center justify-center rounded-lg border border-[rgba(0,0,0,0.15)] text-[#4a4a4a] hover:bg-[#F4F5F7]"
                   >
                     <Plus size={12} />
                   </button>
-                  <span className="text-[11px] text-[#8fa0b5]">{item.unit_label || 'db'}</span>
+                  <span className="text-[11px] text-[#888888]">{item.unit_label || 'db'}</span>
                 </div>
               )}
 
               {/* Hours (hourly) */}
               {item.pricing_type === 'hourly' && (
                 <div className="flex items-center gap-1.5">
-                  <Clock size={12} className="text-[#5a6a80]" />
+                  <Clock size={12} className="text-[#4a4a4a]" />
                   <Input
                     type="number"
                     step="0.25"
@@ -278,7 +278,7 @@ function ServiceLineItemRow({
                     onChange={e => update({ hours: parseFloat(e.target.value) || 1 })}
                     className="w-20 text-[12px] py-1"
                   />
-                  <span className="text-[11px] text-[#8fa0b5]">óra</span>
+                  <span className="text-[11px] text-[#888888]">óra</span>
                 </div>
               )}
 
@@ -297,7 +297,7 @@ function ServiceLineItemRow({
 
               <button
                 onClick={() => setExpanded(e => !e)}
-                className="text-[#8fa0b5] hover:text-[#0B1E3D] transition-colors ml-auto flex items-center gap-1 text-[11px]"
+                className="text-[#888888] hover:text-[#0D0D0D] transition-colors ml-auto flex items-center gap-1 text-[11px]"
               >
                 {expanded ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
               </button>
@@ -305,15 +305,15 @@ function ServiceLineItemRow({
           </div>
 
           <div className="shrink-0 text-right">
-            <div className="text-[15px] font-bold text-[#0B1E3D]">{formatCurrency(item.final_price)}</div>
+            <div className="text-[15px] font-bold text-[#0D0D0D]">{formatCurrency(item.final_price)}</div>
             {item.difficulty !== 'normal' && (
-              <div className="text-[10px] text-[#8fa0b5]">
+              <div className="text-[10px] text-[#888888]">
                 ×{diff.multiplier}
               </div>
             )}
             <button
               onClick={onRemove}
-              className="mt-1 p-1 text-[#8fa0b5] hover:text-[#C9384C] transition-colors"
+              className="mt-1 p-1 text-[#888888] hover:text-[#C8102E] transition-colors"
             >
               <Trash2 size={13} />
             </button>
@@ -333,7 +333,7 @@ function ServiceLineItemRow({
 
         {/* Expanded extras */}
         {expanded && (
-          <div className="mt-3 pt-3 border-t border-[rgba(11,30,61,0.08)] space-y-2">
+          <div className="mt-3 pt-3 border-t border-[rgba(0,0,0,0.08)] space-y-2">
             <FormGroup className="mb-0">
               <FormLabel>Technikus megjegyzés</FormLabel>
               <Textarea
@@ -482,22 +482,22 @@ export function ServiceCalculator({
 
       {/* Summary */}
       {showSummary && items.length > 0 && (
-        <div className="bg-[#F4F5F7] rounded-xl p-4 border border-[rgba(11,30,61,0.08)] space-y-2">
-          <div className="flex justify-between text-[12px] text-[#5a6a80]">
+        <div className="bg-[#F4F5F7] rounded-xl p-4 border border-[rgba(0,0,0,0.08)] space-y-2">
+          <div className="flex justify-between text-[12px] text-[#4a4a4a]">
             <span>Nettó összeg</span>
             <span className="font-medium">{formatCurrency(subtotal)}</span>
           </div>
-          <div className="flex justify-between text-[12px] text-[#5a6a80]">
+          <div className="flex justify-between text-[12px] text-[#4a4a4a]">
             <span>MWST 7.7%</span>
             <span>{formatCurrency(vat)}</span>
           </div>
           {totalMinutes > 0 && (
-            <div className="flex justify-between text-[12px] text-[#5a6a80]">
+            <div className="flex justify-between text-[12px] text-[#4a4a4a]">
               <span className="flex items-center gap-1"><Clock size={11} /> Becsült munkaidő</span>
               <span>{Math.round(totalMinutes)} perc</span>
             </div>
           )}
-          <div className="flex justify-between text-[15px] font-bold text-[#0B1E3D] pt-2 border-t border-[rgba(11,30,61,0.10)]">
+          <div className="flex justify-between text-[15px] font-bold text-[#0D0D0D] pt-2 border-t border-[rgba(0,0,0,0.10)]">
             <span>ÖSSZESEN</span>
             <span>{formatCurrency(total)}</span>
           </div>

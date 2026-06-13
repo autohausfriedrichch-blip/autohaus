@@ -24,18 +24,18 @@ function KPICard({ kpi }: { kpi: KPI }) {
     <Card className="p-4">
       <div className="flex items-start justify-between mb-2">
         <div className={`w-9 h-9 rounded-lg flex items-center justify-center ${kpi.color || 'bg-[#F4F5F7]'}`}>
-          <Icon size={18} className={kpi.color ? 'text-white' : 'text-[#0B1E3D]'} />
+          <Icon size={18} className={kpi.color ? 'text-white' : 'text-[#0D0D0D]'} />
         </div>
         {kpi.trend !== undefined && (
-          <div className={`flex items-center gap-0.5 text-[11px] font-semibold ${up ? 'text-emerald-600' : 'text-[#C9384C]'}`}>
+          <div className={`flex items-center gap-0.5 text-[11px] font-semibold ${up ? 'text-emerald-600' : 'text-[#C8102E]'}`}>
             {up ? <ArrowUpRight size={13} /> : <ArrowDownRight size={13} />}
             {Math.abs(kpi.trend)}%
           </div>
         )}
       </div>
-      <div className="text-[22px] font-bold text-[#0B1E3D] leading-tight">{kpi.value}</div>
-      <div className="text-[11px] text-[#5a6a80] mt-0.5">{kpi.label}</div>
-      {kpi.sub && <div className="text-[10px] text-[#8fa0b5] mt-0.5">{kpi.sub}</div>}
+      <div className="text-[22px] font-bold text-[#0D0D0D] leading-tight">{kpi.value}</div>
+      <div className="text-[11px] text-[#4a4a4a] mt-0.5">{kpi.label}</div>
+      {kpi.sub && <div className="text-[10px] text-[#888888] mt-0.5">{kpi.sub}</div>}
     </Card>
   )
 }
@@ -43,8 +43,8 @@ function KPICard({ kpi }: { kpi: KPI }) {
 function SectionTitle({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex items-center gap-2 mb-3 mt-6">
-      <span className="text-[11px] font-bold text-[#5a6a80] uppercase tracking-[1.5px]">{children}</span>
-      <div className="h-px flex-1 bg-[rgba(11,30,61,0.08)]" />
+      <span className="text-[11px] font-bold text-[#4a4a4a] uppercase tracking-[1.5px]">{children}</span>
+      <div className="h-px flex-1 bg-[rgba(0,0,0,0.08)]" />
     </div>
   )
 }
@@ -132,7 +132,7 @@ export function CEODashboardPage({ refreshKey }: { refreshKey: number; onRefresh
           <button
             key={p}
             onClick={() => setPeriod(p)}
-            className={`px-4 py-1.5 rounded-lg text-[12px] font-semibold transition-all ${period === p ? 'bg-white text-[#0B1E3D] shadow-sm' : 'text-[#5a6a80] hover:text-[#0B1E3D]'}`}
+            className={`px-4 py-1.5 rounded-lg text-[12px] font-semibold transition-all ${period === p ? 'bg-white text-[#0D0D0D] shadow-sm' : 'text-[#4a4a4a] hover:text-[#0D0D0D]'}`}
           >
             {periodLabel === { day: 'Ma', week: 'Hét', month: 'Hónap', year: 'Év' }[p] ? { day: 'Ma', week: 'Hét', month: 'Hónap', year: 'Év' }[p] : { day: 'Ma', week: 'Hét', month: 'Hónap', year: 'Év' }[p]}
           </button>
@@ -140,15 +140,15 @@ export function CEODashboardPage({ refreshKey }: { refreshKey: number; onRefresh
       </div>
 
       {loading ? (
-        <div className="text-center py-16 text-[#5a6a80] text-sm">Adatok betöltése...</div>
+        <div className="text-center py-16 text-[#4a4a4a] text-sm">Adatok betöltése...</div>
       ) : (
         <>
           <SectionTitle>Pénzügyi áttekintés – {periodLabel}</SectionTitle>
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-2">
-            <KPICard kpi={{ label: 'Árbevétel', value: fmt(data.revenue), sub: `${data.periodWOCount} lezárt munkalap`, icon: TrendingUp, color: 'bg-[#C9A84C]', trend: 8 }} />
-            <KPICard kpi={{ label: 'Összes költség', value: fmt(data.cost), sub: 'Anyag + munka + út', icon: TrendingDown, color: 'bg-[#C9384C]' }} />
+            <KPICard kpi={{ label: 'Árbevétel', value: fmt(data.revenue), sub: `${data.periodWOCount} lezárt munkalap`, icon: TrendingUp, color: 'bg-[#C8102E]', trend: 8 }} />
+            <KPICard kpi={{ label: 'Összes költség', value: fmt(data.cost), sub: 'Anyag + munka + út', icon: TrendingDown, color: 'bg-[#C8102E]' }} />
             <KPICard kpi={{ label: 'Nettó profit', value: fmt(data.profit), sub: `${data.profitPct}% profit margin`, icon: Target, color: 'bg-[#16a34a]', trend: 5 }} />
-            <KPICard kpi={{ label: 'Átl. profit / munka', value: fmt(data.avgProfit), sub: 'Munkalapokra vetítve', icon: BarChart2, color: 'bg-[#0B1E3D]' }} />
+            <KPICard kpi={{ label: 'Átl. profit / munka', value: fmt(data.avgProfit), sub: 'Munkalapokra vetítve', icon: BarChart2, color: 'bg-[#0D0D0D]' }} />
           </div>
 
           <SectionTitle>Operatív mutatók</SectionTitle>
@@ -161,8 +161,8 @@ export function CEODashboardPage({ refreshKey }: { refreshKey: number; onRefresh
 
           <SectionTitle>Ügyfélbázis</SectionTitle>
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-2">
-            <KPICard kpi={{ label: 'Összes ügyfél', value: data.totalCustomers, icon: Users, color: 'bg-[#0B1E3D]', trend: 3 }} />
-            <KPICard kpi={{ label: 'VIP ügyfelek', value: data.vipCount, sub: '5+ látogatás / 2500+ CHF', icon: Crown, color: 'bg-[#C9A84C]' }} />
+            <KPICard kpi={{ label: 'Összes ügyfél', value: data.totalCustomers, icon: Users, color: 'bg-[#0D0D0D]', trend: 3 }} />
+            <KPICard kpi={{ label: 'VIP ügyfelek', value: data.vipCount, sub: '5+ látogatás / 2500+ CHF', icon: Crown, color: 'bg-[#C8102E]' }} />
             <KPICard kpi={{ label: 'Családi fiókok', value: data.familyCount, icon: Users }} />
             <KPICard kpi={{ label: 'Megrendelt alkatrész', value: data.orderedParts, sub: 'Várakozik', icon: Package }} />
           </div>
@@ -170,7 +170,7 @@ export function CEODashboardPage({ refreshKey }: { refreshKey: number; onRefresh
           <SectionTitle>Mobil & Kiszállás – {periodLabel}</SectionTitle>
           <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 mb-2">
             <KPICard kpi={{ label: 'Mobil bevétel', value: fmt(data.mobileRevenue), sub: `${data.mobileCount} kiszállás`, icon: Truck, color: 'bg-[#0891b2]' }} />
-            <KPICard kpi={{ label: 'Útköltség összesen', value: fmt(data.travelCost), sub: 'Üzemanyag + jármű', icon: MapPin, color: 'bg-[#C9384C]' }} />
+            <KPICard kpi={{ label: 'Útköltség összesen', value: fmt(data.travelCost), sub: 'Üzemanyag + jármű', icon: MapPin, color: 'bg-[#C8102E]' }} />
             <KPICard kpi={{ label: 'Mobil profit', value: fmt(data.mobileRevenue - data.travelCost), sub: 'Bevétel – útköltség', icon: DollarSign, color: 'bg-[#16a34a]' }} />
           </div>
 
@@ -178,32 +178,32 @@ export function CEODashboardPage({ refreshKey }: { refreshKey: number; onRefresh
           <SectionTitle>Profit arány</SectionTitle>
           <Card className="p-5">
             <div className="flex items-center justify-between mb-3">
-              <div className="text-[13px] font-semibold text-[#0B1E3D]">Árbevétel vs Profit – {periodLabel}</div>
+              <div className="text-[13px] font-semibold text-[#0D0D0D]">Árbevétel vs Profit – {periodLabel}</div>
               <div className="text-[13px] font-bold text-emerald-600">{data.profitPct}%</div>
             </div>
             <div className="relative h-5 bg-[#F4F5F7] rounded-full overflow-hidden">
               <div
-                className="absolute left-0 top-0 h-full bg-[#C9A84C] rounded-full transition-all duration-700"
+                className="absolute left-0 top-0 h-full bg-[#C8102E] rounded-full transition-all duration-700"
                 style={{ width: `${Math.min(100, Number(data.profitPct))}%` }}
               />
             </div>
-            <div className="flex justify-between text-[10px] text-[#8fa0b5] mt-1.5">
+            <div className="flex justify-between text-[10px] text-[#888888] mt-1.5">
               <span>0%</span>
               <span className="text-emerald-600 font-semibold">Cél: 35%</span>
               <span>100%</span>
             </div>
-            <div className="grid grid-cols-3 gap-4 mt-4 pt-4 border-t border-[rgba(11,30,61,0.08)]">
+            <div className="grid grid-cols-3 gap-4 mt-4 pt-4 border-t border-[rgba(0,0,0,0.08)]">
               <div className="text-center">
-                <div className="text-[18px] font-bold text-[#0B1E3D]">{fmt(data.revenue)}</div>
-                <div className="text-[10px] text-[#5a6a80]">Bruttó bevétel</div>
+                <div className="text-[18px] font-bold text-[#0D0D0D]">{fmt(data.revenue)}</div>
+                <div className="text-[10px] text-[#4a4a4a]">Bruttó bevétel</div>
               </div>
               <div className="text-center">
-                <div className="text-[18px] font-bold text-[#C9384C]">{fmt(data.cost)}</div>
-                <div className="text-[10px] text-[#5a6a80]">Összes költség</div>
+                <div className="text-[18px] font-bold text-[#C8102E]">{fmt(data.cost)}</div>
+                <div className="text-[10px] text-[#4a4a4a]">Összes költség</div>
               </div>
               <div className="text-center">
                 <div className="text-[18px] font-bold text-emerald-600">{fmt(data.profit)}</div>
-                <div className="text-[10px] text-[#5a6a80]">Nettó profit</div>
+                <div className="text-[10px] text-[#4a4a4a]">Nettó profit</div>
               </div>
             </div>
           </Card>

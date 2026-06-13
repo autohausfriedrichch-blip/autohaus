@@ -66,7 +66,7 @@ export function SignatureModal({ type, workOrderId, quoteId, pickupId, customerN
       {!saved ? (
         <button
           onClick={() => setOpen(true)}
-          className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-[#0B1E3D] text-white text-[12px] font-medium hover:bg-[#142a50] transition-colors"
+          className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-[#0D0D0D] text-white text-[12px] font-medium hover:bg-[#1A1A1A] transition-colors"
           style={{ minHeight: 36 }}
         >
           <PenLine size={13} /> Aláírás kérés

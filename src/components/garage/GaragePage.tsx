@@ -288,15 +288,15 @@ export default function GaragePage({ refreshKey, onRefresh, profile }: { refresh
   return (
     <div className="relative min-h-[60vh]">
       {/* Tab navigation */}
-      <div className="flex gap-1 border-b border-[rgba(11,30,61,0.10)] mb-6 overflow-x-auto">
+      <div className="flex gap-1 border-b border-[rgba(0,0,0,0.10)] mb-6 overflow-x-auto">
         {tabs.map(t => (
           <button
             key={t.key}
             onClick={() => setActiveTab(t.key)}
             className={`px-4 py-2.5 text-[13px] font-semibold whitespace-nowrap border-b-2 transition-colors ${
               activeTab === t.key
-                ? 'border-[#C9A84C] text-[#0B1E3D]'
-                : 'border-transparent text-[#5a6a80] hover:text-[#0B1E3D]'
+                ? 'border-[#C8102E] text-[#0D0D0D]'
+                : 'border-transparent text-[#4a4a4a] hover:text-[#0D0D0D]'
             }`}
           >
             {t.label}
@@ -310,22 +310,22 @@ export default function GaragePage({ refreshKey, onRefresh, profile }: { refresh
           <div className="flex items-center gap-3 mb-5">
             <button
               onClick={() => { const d = new Date(selectedDate); d.setDate(d.getDate() - 1); setSelectedDate(d) }}
-              className="p-1.5 rounded-lg hover:bg-[#F4F5F7] text-[#5a6a80]"
+              className="p-1.5 rounded-lg hover:bg-[#F4F5F7] text-[#4a4a4a]"
             >
               <ChevronLeft size={18} />
             </button>
-            <span className="text-[15px] font-bold text-[#0B1E3D] min-w-[200px] text-center">
+            <span className="text-[15px] font-bold text-[#0D0D0D] min-w-[200px] text-center">
               {selectedDate.toLocaleDateString('hu-HU', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
             </span>
             <button
               onClick={() => { const d = new Date(selectedDate); d.setDate(d.getDate() + 1); setSelectedDate(d) }}
-              className="p-1.5 rounded-lg hover:bg-[#F4F5F7] text-[#5a6a80]"
+              className="p-1.5 rounded-lg hover:bg-[#F4F5F7] text-[#4a4a4a]"
             >
               <ChevronRight size={18} />
             </button>
             <button
               onClick={() => setSelectedDate(new Date())}
-              className="ml-2 px-3 py-1 text-[12px] font-semibold text-[#C9A84C] border border-[#C9A84C] rounded-lg hover:bg-[#C9A84C]/10"
+              className="ml-2 px-3 py-1 text-[12px] font-semibold text-[#C8102E] border border-[#C8102E] rounded-lg hover:bg-[#C8102E]/10"
             >
               Ma
             </button>
@@ -340,36 +340,36 @@ export default function GaragePage({ refreshKey, onRefresh, profile }: { refresh
             ].map(s => (
               <div key={s.label} className={`${s.bg} rounded-xl p-4 flex flex-col gap-1`}>
                 <span className={`text-2xl font-bold ${s.color}`}>{s.value}</span>
-                <span className="text-[12px] text-[#5a6a80] font-medium">{s.label}</span>
+                <span className="text-[12px] text-[#4a4a4a] font-medium">{s.label}</span>
               </div>
             ))}
           </div>
 
           {loading ? (
-            <div className="text-center py-12 text-[#5a6a80]">Betöltés...</div>
+            <div className="text-center py-12 text-[#4a4a4a]">Betöltés...</div>
           ) : todayOrders.length === 0 ? (
-            <div className="text-center py-12 text-[#5a6a80]">
+            <div className="text-center py-12 text-[#4a4a4a]">
               <Car size={40} className="mx-auto mb-3 opacity-30" />
               <p className="text-[14px]">Nincs munkalap erre a napra</p>
             </div>
           ) : (
             <div className="space-y-2">
               {todayOrders.map(order => (
-                <div key={order.id} className="flex items-center gap-3 p-3 bg-white border border-[rgba(11,30,61,0.08)] rounded-xl hover:border-[rgba(11,30,61,0.18)] transition-colors">
-                  <span className="flex-shrink-0 inline-block bg-[#0B1E3D] text-white text-[11px] font-bold px-2 py-1 rounded-lg font-mono tracking-wide">
+                <div key={order.id} className="flex items-center gap-3 p-3 bg-white border border-[rgba(0,0,0,0.08)] rounded-xl hover:border-[rgba(0,0,0,0.18)] transition-colors">
+                  <span className="flex-shrink-0 inline-block bg-[#0D0D0D] text-white text-[11px] font-bold px-2 py-1 rounded-lg font-mono tracking-wide">
                     {order.vehicle?.license_plate || '—'}
                   </span>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2">
-                      <span className="text-[13px] font-semibold text-[#0B1E3D] truncate">{order.customer?.full_name || '—'}</span>
+                      <span className="text-[13px] font-semibold text-[#0D0D0D] truncate">{order.customer?.full_name || '—'}</span>
                       {order.mechanic && (
-                        <span className="text-[11px] text-[#5a6a80]">· {order.mechanic.full_name}</span>
+                        <span className="text-[11px] text-[#4a4a4a]">· {order.mechanic.full_name}</span>
                       )}
                     </div>
-                    <div className="text-[11px] text-[#5a6a80]">{order.vehicle ? `${order.vehicle.make} ${order.vehicle.model}` : '—'}</div>
+                    <div className="text-[11px] text-[#4a4a4a]">{order.vehicle ? `${order.vehicle.make} ${order.vehicle.model}` : '—'}</div>
                   </div>
                   {order.scheduled_time && (
-                    <div className="flex items-center gap-1 text-[12px] text-[#5a6a80]">
+                    <div className="flex items-center gap-1 text-[12px] text-[#4a4a4a]">
                       <Clock size={12} />
                       {order.scheduled_time.substring(0, 5)}
                     </div>
@@ -386,29 +386,29 @@ export default function GaragePage({ refreshKey, onRefresh, profile }: { refresh
       {activeTab === 'arriving' && (
         <div>
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-[15px] font-bold text-[#0B1E3D]">Mai érkezők</h2>
-            <span className="text-[12px] text-[#5a6a80]">{arrivingOrders.length} munkalap</span>
+            <h2 className="text-[15px] font-bold text-[#0D0D0D]">Mai érkezők</h2>
+            <span className="text-[12px] text-[#4a4a4a]">{arrivingOrders.length} munkalap</span>
           </div>
           {loading ? (
-            <div className="text-center py-12 text-[#5a6a80]">Betöltés...</div>
+            <div className="text-center py-12 text-[#4a4a4a]">Betöltés...</div>
           ) : arrivingOrders.length === 0 ? (
-            <div className="text-center py-12 text-[#5a6a80]">
+            <div className="text-center py-12 text-[#4a4a4a]">
               <Car size={40} className="mx-auto mb-3 opacity-30" />
               <p className="text-[14px]">Nincs érkező autó ma</p>
             </div>
           ) : (
             <div className="space-y-2">
               {arrivingOrders.map(order => (
-                <div key={order.id} className="flex items-center gap-3 p-4 bg-white border border-[rgba(11,30,61,0.08)] rounded-xl hover:border-[rgba(11,30,61,0.18)] transition-colors">
-                  <span className="flex-shrink-0 inline-block bg-[#0B1E3D] text-white text-[11px] font-bold px-2 py-1 rounded-lg font-mono">
+                <div key={order.id} className="flex items-center gap-3 p-4 bg-white border border-[rgba(0,0,0,0.08)] rounded-xl hover:border-[rgba(0,0,0,0.18)] transition-colors">
+                  <span className="flex-shrink-0 inline-block bg-[#0D0D0D] text-white text-[11px] font-bold px-2 py-1 rounded-lg font-mono">
                     {order.vehicle?.license_plate || '—'}
                   </span>
                   <div className="flex-1 min-w-0">
-                    <div className="text-[13px] font-semibold text-[#0B1E3D]">{order.customer?.full_name || '—'}</div>
-                    <div className="text-[11px] text-[#5a6a80]">{order.vehicle ? `${order.vehicle.make} ${order.vehicle.model}` : '—'}</div>
+                    <div className="text-[13px] font-semibold text-[#0D0D0D]">{order.customer?.full_name || '—'}</div>
+                    <div className="text-[11px] text-[#4a4a4a]">{order.vehicle ? `${order.vehicle.make} ${order.vehicle.model}` : '—'}</div>
                   </div>
                   {order.scheduled_time && (
-                    <div className="flex items-center gap-1 text-[12px] text-[#5a6a80]">
+                    <div className="flex items-center gap-1 text-[12px] text-[#4a4a4a]">
                       <Clock size={12} />
                       {order.scheduled_time.substring(0, 5)}
                     </div>
@@ -457,30 +457,30 @@ export default function GaragePage({ refreshKey, onRefresh, profile }: { refresh
       {activeTab === 'inworkshop' && (
         <div>
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-[15px] font-bold text-[#0B1E3D]">Garázsban lévő autók</h2>
-            <span className="text-[12px] text-[#5a6a80]">{inWorkshopOrders.length} jármű</span>
+            <h2 className="text-[15px] font-bold text-[#0D0D0D]">Garázsban lévő autók</h2>
+            <span className="text-[12px] text-[#4a4a4a]">{inWorkshopOrders.length} jármű</span>
           </div>
           {loading ? (
-            <div className="text-center py-12 text-[#5a6a80]">Betöltés...</div>
+            <div className="text-center py-12 text-[#4a4a4a]">Betöltés...</div>
           ) : inWorkshopOrders.length === 0 ? (
-            <div className="text-center py-12 text-[#5a6a80]">
+            <div className="text-center py-12 text-[#4a4a4a]">
               <Wrench size={40} className="mx-auto mb-3 opacity-30" />
               <p className="text-[14px]">Nincs autó a garázsban</p>
             </div>
           ) : (
             <div className="space-y-2">
               {inWorkshopOrders.map(order => (
-                <div key={order.id} className="flex items-center gap-3 p-4 bg-white border border-[rgba(11,30,61,0.08)] rounded-xl hover:border-[rgba(11,30,61,0.18)] transition-colors">
-                  <span className="flex-shrink-0 inline-block bg-[#0B1E3D] text-white text-[11px] font-bold px-2 py-1 rounded-lg font-mono">
+                <div key={order.id} className="flex items-center gap-3 p-4 bg-white border border-[rgba(0,0,0,0.08)] rounded-xl hover:border-[rgba(0,0,0,0.18)] transition-colors">
+                  <span className="flex-shrink-0 inline-block bg-[#0D0D0D] text-white text-[11px] font-bold px-2 py-1 rounded-lg font-mono">
                     {order.vehicle?.license_plate || '—'}
                   </span>
                   <div className="flex-1 min-w-0">
-                    <div className="text-[13px] font-semibold text-[#0B1E3D]">{order.customer?.full_name || '—'}</div>
-                    <div className="text-[11px] text-[#5a6a80] flex items-center gap-1">
+                    <div className="text-[13px] font-semibold text-[#0D0D0D]">{order.customer?.full_name || '—'}</div>
+                    <div className="text-[11px] text-[#4a4a4a] flex items-center gap-1">
                       {order.mechanic ? <><User size={10} /> {order.mechanic.full_name}</> : 'Nincs szerelő'}
                     </div>
                   </div>
-                  <div className="text-[11px] text-[#5a6a80] flex items-center gap-1">
+                  <div className="text-[11px] text-[#4a4a4a] flex items-center gap-1">
                     <Clock size={12} />
                     {elapsedTime(order.checked_in_at)}
                   </div>
@@ -514,33 +514,33 @@ export default function GaragePage({ refreshKey, onRefresh, profile }: { refresh
       {activeTab === 'completed' && (
         <div>
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-[15px] font-bold text-[#0B1E3D]">Elkészült munkák</h2>
-            <span className="text-[12px] text-[#5a6a80]">{completedOrders.length} munkalap</span>
+            <h2 className="text-[15px] font-bold text-[#0D0D0D]">Elkészült munkák</h2>
+            <span className="text-[12px] text-[#4a4a4a]">{completedOrders.length} munkalap</span>
           </div>
           {loading ? (
-            <div className="text-center py-12 text-[#5a6a80]">Betöltés...</div>
+            <div className="text-center py-12 text-[#4a4a4a]">Betöltés...</div>
           ) : completedOrders.length === 0 ? (
-            <div className="text-center py-12 text-[#5a6a80]">
+            <div className="text-center py-12 text-[#4a4a4a]">
               <CheckCircle size={40} className="mx-auto mb-3 opacity-30" />
               <p className="text-[14px]">Nincs elkészült munka</p>
             </div>
           ) : (
             <div className="space-y-2">
               {completedOrders.map(order => (
-                <div key={order.id} className="flex items-center gap-3 p-4 bg-white border border-[rgba(11,30,61,0.08)] rounded-xl hover:border-[rgba(11,30,61,0.18)] transition-colors">
-                  <span className="flex-shrink-0 inline-block bg-[#0B1E3D] text-white text-[11px] font-bold px-2 py-1 rounded-lg font-mono">
+                <div key={order.id} className="flex items-center gap-3 p-4 bg-white border border-[rgba(0,0,0,0.08)] rounded-xl hover:border-[rgba(0,0,0,0.18)] transition-colors">
+                  <span className="flex-shrink-0 inline-block bg-[#0D0D0D] text-white text-[11px] font-bold px-2 py-1 rounded-lg font-mono">
                     {order.vehicle?.license_plate || '—'}
                   </span>
                   <div className="flex-1 min-w-0">
-                    <div className="text-[13px] font-semibold text-[#0B1E3D]">{order.customer?.full_name || '—'}</div>
-                    <div className="text-[11px] text-[#5a6a80]">
+                    <div className="text-[13px] font-semibold text-[#0D0D0D]">{order.customer?.full_name || '—'}</div>
+                    <div className="text-[11px] text-[#4a4a4a]">
                       {order.completed_at
                         ? `Kész: ${new Date(order.completed_at).toLocaleString('hu-HU', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}`
                         : '—'}
                     </div>
                   </div>
                   {order.total_amount != null && (
-                    <div className="text-[13px] font-bold text-[#0B1E3D]">{formatCurrency(order.total_amount)}</div>
+                    <div className="text-[13px] font-bold text-[#0D0D0D]">{formatCurrency(order.total_amount)}</div>
                   )}
                   {order.payment_status && (
                     <span className={`inline-flex px-2 py-0.5 rounded-full text-[11px] font-semibold ${PAYMENT_STATUS_COLORS[order.payment_status] || 'bg-gray-100 text-gray-600'}`}>
@@ -567,13 +567,13 @@ export default function GaragePage({ refreshKey, onRefresh, profile }: { refresh
       {activeTab === 'pickup' && (
         <div>
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-[15px] font-bold text-[#0B1E3D]">Átadásra váró járművek</h2>
-            <span className="text-[12px] text-[#5a6a80]">{pickupOrders.length} jármű</span>
+            <h2 className="text-[15px] font-bold text-[#0D0D0D]">Átadásra váró járművek</h2>
+            <span className="text-[12px] text-[#4a4a4a]">{pickupOrders.length} jármű</span>
           </div>
           {loading ? (
-            <div className="text-center py-12 text-[#5a6a80]">Betöltés...</div>
+            <div className="text-center py-12 text-[#4a4a4a]">Betöltés...</div>
           ) : pickupOrders.length === 0 ? (
-            <div className="text-center py-12 text-[#5a6a80]">
+            <div className="text-center py-12 text-[#4a4a4a]">
               <Car size={40} className="mx-auto mb-3 opacity-30" />
               <p className="text-[14px]">Nincs átadásra váró jármű</p>
             </div>
@@ -581,17 +581,17 @@ export default function GaragePage({ refreshKey, onRefresh, profile }: { refresh
             <div className="space-y-2">
               {pickupOrders.map(order => (
                 <div key={order.id} className="flex items-center gap-3 p-4 bg-yellow-50/40 border border-[rgba(201,168,76,0.3)] rounded-xl">
-                  <span className="flex-shrink-0 inline-block bg-[#0B1E3D] text-white text-[11px] font-bold px-2 py-1 rounded-lg font-mono">
+                  <span className="flex-shrink-0 inline-block bg-[#0D0D0D] text-white text-[11px] font-bold px-2 py-1 rounded-lg font-mono">
                     {order.vehicle?.license_plate || '—'}
                   </span>
                   <div className="flex-1 min-w-0">
-                    <div className="text-[13px] font-semibold text-[#0B1E3D]">{order.customer?.full_name || '—'}</div>
-                    <div className="text-[11px] text-[#5a6a80]">
+                    <div className="text-[13px] font-semibold text-[#0D0D0D]">{order.customer?.full_name || '—'}</div>
+                    <div className="text-[11px] text-[#4a4a4a]">
                       {order.completed_at ? `Vár: ${elapsedTime(order.completed_at)} óta` : 'Ismeretlen ideje vár'}
                     </div>
                   </div>
                   {order.total_amount != null && (
-                    <div className="text-[13px] font-bold text-[#0B1E3D]">{formatCurrency(order.total_amount)}</div>
+                    <div className="text-[13px] font-bold text-[#0D0D0D]">{formatCurrency(order.total_amount)}</div>
                   )}
                   <div className="flex items-center gap-1.5">
                     <Button size="sm" variant="secondary" onClick={() => openWhatsApp(order)}>
@@ -613,7 +613,7 @@ export default function GaragePage({ refreshKey, onRefresh, profile }: { refresh
       {/* Floating new work order button */}
       <button
         onClick={() => setShowNewModal(true)}
-        className="fixed bottom-6 right-6 z-40 flex items-center gap-2 px-4 py-3 bg-[#C9A84C] text-[#0B1E3D] font-bold text-[13px] rounded-full shadow-lg hover:bg-[#e8c96b] transition-colors"
+        className="fixed bottom-6 right-6 z-40 flex items-center gap-2 px-4 py-3 bg-[#C8102E] text-[#0D0D0D] font-bold text-[13px] rounded-full shadow-lg hover:bg-[#e8314e] transition-colors"
       >
         <Plus size={16} />
         Új munkalap

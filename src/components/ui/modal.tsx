@@ -26,11 +26,11 @@ export function Modal({ open, onClose, title, children, footer, className }: Mod
 
   return (
     <div
-      className="fixed inset-0 bg-[rgba(11,30,61,0.4)] backdrop-blur-sm z-50 flex items-end sm:items-center justify-center sm:p-4"
+      className="fixed inset-0 bg-[rgba(0,0,0,0.4)] backdrop-blur-sm z-50 flex items-end sm:items-center justify-center sm:p-4"
       onClick={(e) => e.target === e.currentTarget && onClose()}
     >
       <div className={cn(
-        'bg-white w-full shadow-[0_4px_24px_rgba(11,30,61,0.13)] overflow-y-auto',
+        'bg-white w-full shadow-[0_4px_24px_rgba(0,0,0,0.13)] overflow-y-auto',
         // Mobile: slide-up sheet from bottom, full width, rounded top corners
         'rounded-t-2xl sm:rounded-2xl',
         // Desktop: centered, max width
@@ -42,14 +42,14 @@ export function Modal({ open, onClose, title, children, footer, className }: Mod
       )}>
         {/* Handle bar on mobile */}
         <div className="flex justify-center pt-3 pb-1 sm:hidden">
-          <div className="w-10 h-1 bg-[rgba(11,30,61,0.15)] rounded-full" />
+          <div className="w-10 h-1 bg-[rgba(0,0,0,0.15)] rounded-full" />
         </div>
 
-        <div className="flex items-center justify-between px-5 py-3.5 sm:px-6 sm:py-4 border-b border-[rgba(11,30,61,0.10)]">
-          <h2 className="font-['DM_Serif_Display'] text-[17px] sm:text-[18px] text-[#0B1E3D]">{title}</h2>
+        <div className="flex items-center justify-between px-5 py-3.5 sm:px-6 sm:py-4 border-b border-[rgba(0,0,0,0.10)]">
+          <h2 className="font-['Montserrat'] text-[17px] sm:text-[18px] text-[#0D0D0D]">{title}</h2>
           <button
             onClick={onClose}
-            className="text-[#5a6a80] hover:text-[#0B1E3D] transition-colors rounded-lg"
+            className="text-[#4a4a4a] hover:text-[#0D0D0D] transition-colors rounded-lg"
             style={{ minWidth: 44, minHeight: 44, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
           >
             <X size={18} />
@@ -58,7 +58,7 @@ export function Modal({ open, onClose, title, children, footer, className }: Mod
         <div className="px-5 py-4 sm:px-6 sm:py-5">{children}</div>
         {footer && (
           <div
-            className="px-5 py-4 sm:px-6 border-t border-[rgba(11,30,61,0.10)] flex flex-wrap justify-end gap-2"
+            className="px-5 py-4 sm:px-6 border-t border-[rgba(0,0,0,0.10)] flex flex-wrap justify-end gap-2"
             style={{ paddingBottom: 'max(16px, env(safe-area-inset-bottom, 16px))' }}
           >
             {footer}

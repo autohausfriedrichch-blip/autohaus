@@ -19,7 +19,7 @@ const STATUSES = [
 ]
 
 function HealthDot({ health }: { health?: string }) {
-  if (health === 'red') return <span className="w-2.5 h-2.5 rounded-full bg-[#C9384C] inline-block flex-shrink-0" title="Piros" />
+  if (health === 'red') return <span className="w-2.5 h-2.5 rounded-full bg-[#C8102E] inline-block flex-shrink-0" title="Piros" />
   if (health === 'yellow') return <span className="w-2.5 h-2.5 rounded-full bg-yellow-400 inline-block flex-shrink-0" title="Sárga" />
   return <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 inline-block flex-shrink-0" title="Zöld" />
 }
@@ -442,10 +442,10 @@ export function WorkOrdersPage({ refreshKey, onRefresh, profile, onNewQuote }: {
           {!editOrder && <FormGroup className="col-span-2">
             <FormLabel>
               Elvégzendő szolgáltatások
-              {selectedServiceIds.length > 0 && <span className="ml-2 text-[#C9A84C] font-bold">{selectedServiceIds.length} kiválasztva</span>}
+              {selectedServiceIds.length > 0 && <span className="ml-2 text-[#C8102E] font-bold">{selectedServiceIds.length} kiválasztva</span>}
             </FormLabel>
             {services.length === 0 ? (
-              <p className="text-xs text-[#8fa0b5] py-2">Nincs aktív szolgáltatás – add hozzá a Szolgáltatások menüben.</p>
+              <p className="text-xs text-[#888888] py-2">Nincs aktív szolgáltatás – add hozzá a Szolgáltatások menüben.</p>
             ) : (
               <div className="border border-gray-200 rounded-xl max-h-48 overflow-y-auto divide-y divide-gray-100">
                 {Object.entries(
@@ -457,15 +457,15 @@ export function WorkOrdersPage({ refreshKey, onRefresh, profile, onNewQuote }: {
                   }, {})
                 ).map(([cat, svcs]) => (
                   <div key={cat}>
-                    <div className="px-3 py-1 bg-gray-50 text-[10px] font-bold text-[#5a6a80] uppercase tracking-wider">{cat}</div>
+                    <div className="px-3 py-1 bg-gray-50 text-[10px] font-bold text-[#4a4a4a] uppercase tracking-wider">{cat}</div>
                     {(svcs as any[]).map((svc: any) => {
                       const checked = selectedServiceIds.includes(svc.id)
                       return (
                         <button key={svc.id} type="button" onClick={() => toggleService(svc.id)}
                           className={`w-full flex items-center gap-3 px-3 py-2 hover:bg-gray-50 transition-colors text-left ${checked ? 'bg-blue-50/60' : ''}`}>
-                          {checked ? <CheckSquare size={15} className="text-[#0B1E3D] flex-shrink-0" /> : <Square size={15} className="text-gray-300 flex-shrink-0" />}
-                          <span className="flex-1 text-[13px] font-medium text-[#0B1E3D]">{svc.name}</span>
-                          <span className="text-[11px] text-[#8fa0b5] shrink-0">
+                          {checked ? <CheckSquare size={15} className="text-[#0D0D0D] flex-shrink-0" /> : <Square size={15} className="text-gray-300 flex-shrink-0" />}
+                          <span className="flex-1 text-[13px] font-medium text-[#0D0D0D]">{svc.name}</span>
+                          <span className="text-[11px] text-[#888888] shrink-0">
                             {svc.pricing_type === 'hourly' ? `${svc.hourly_rate || 0} CHF/h` : svc.base_price ? `${svc.base_price} CHF` : ''}
                             {svc.duration_minutes ? ` · ${svc.duration_minutes}p` : ''}
                           </span>

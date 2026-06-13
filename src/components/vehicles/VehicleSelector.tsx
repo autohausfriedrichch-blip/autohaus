@@ -111,34 +111,34 @@ function SearchableSelect({
         onClick={() => { setOpen((o) => !o); setQuery('') }}
         className={`w-full flex items-center justify-between px-3 py-2.5 border rounded-lg text-[13px] transition-all ${
           disabled
-            ? 'bg-[#F4F5F7] border-[rgba(11,30,61,0.10)] text-[#8fa0b5] cursor-not-allowed'
-            : 'bg-white border-[rgba(11,30,61,0.18)] text-[#0B1E3D] hover:border-[#0B1E3D] cursor-pointer'
-        } ${open ? 'border-[#0B1E3D]' : ''}`}
+            ? 'bg-[#F4F5F7] border-[rgba(0,0,0,0.10)] text-[#888888] cursor-not-allowed'
+            : 'bg-white border-[rgba(0,0,0,0.18)] text-[#0D0D0D] hover:border-[#0D0D0D] cursor-pointer'
+        } ${open ? 'border-[#0D0D0D]' : ''}`}
       >
-        <span className={value ? 'text-[#0B1E3D] font-medium' : 'text-[#8fa0b5]'}>
+        <span className={value ? 'text-[#0D0D0D] font-medium' : 'text-[#888888]'}>
           {value || placeholder}
         </span>
-        <ChevronDown size={14} className={`text-[#5a6a80] transition-transform ${open ? 'rotate-180' : ''}`} />
+        <ChevronDown size={14} className={`text-[#4a4a4a] transition-transform ${open ? 'rotate-180' : ''}`} />
       </button>
 
       {open && (
-        <div className="absolute z-50 top-full left-0 right-0 mt-1 bg-white border border-[rgba(11,30,61,0.15)] rounded-xl shadow-lg overflow-hidden">
-          <div className="p-2 border-b border-[rgba(11,30,61,0.08)]">
+        <div className="absolute z-50 top-full left-0 right-0 mt-1 bg-white border border-[rgba(0,0,0,0.15)] rounded-xl shadow-lg overflow-hidden">
+          <div className="p-2 border-b border-[rgba(0,0,0,0.08)]">
             <div className="relative">
-              <Search size={13} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-[#8fa0b5]" />
+              <Search size={13} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-[#888888]" />
               <input
                 autoFocus
                 type="text"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder={searchPlaceholder}
-                className="w-full pl-7 pr-3 py-1.5 bg-[#F4F5F7] rounded-lg text-[12px] text-[#0B1E3D] outline-none placeholder:text-[#8fa0b5]"
+                className="w-full pl-7 pr-3 py-1.5 bg-[#F4F5F7] rounded-lg text-[12px] text-[#0D0D0D] outline-none placeholder:text-[#888888]"
               />
             </div>
           </div>
           <div className="max-h-52 overflow-y-auto">
             {filtered.length === 0 ? (
-              <div className="px-3 py-4 text-[12px] text-[#8fa0b5] text-center">Nincs találat</div>
+              <div className="px-3 py-4 text-[12px] text-[#888888] text-center">Nincs találat</div>
             ) : (
               filtered.map((opt) => (
                 <button
@@ -146,11 +146,11 @@ function SearchableSelect({
                   type="button"
                   onClick={() => { onChange(opt); setOpen(false) }}
                   className={`w-full text-left px-3 py-2 text-[13px] hover:bg-[#F4F5F7] transition-colors flex items-center justify-between group ${
-                    opt === value ? 'text-[#0B1E3D] font-semibold bg-[rgba(201,168,76,0.08)]' : 'text-[#0B1E3D]'
+                    opt === value ? 'text-[#0D0D0D] font-semibold bg-[rgba(201,168,76,0.08)]' : 'text-[#0D0D0D]'
                   }`}
                 >
                   {opt}
-                  {opt === value && <CheckCircle2 size={13} className="text-[#C9A84C]" />}
+                  {opt === value && <CheckCircle2 size={13} className="text-[#C8102E]" />}
                 </button>
               ))
             )}
@@ -257,7 +257,7 @@ export function VehicleSelector({ onSelect, initialMake, initialModel, initialYe
     <div className="space-y-3">
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
         <div>
-          <label className="block text-[11px] font-semibold text-[#5a6a80] uppercase tracking-[0.5px] mb-1.5">
+          <label className="block text-[11px] font-semibold text-[#4a4a4a] uppercase tracking-[0.5px] mb-1.5">
             Márka
           </label>
           {makesLoading ? (
@@ -274,7 +274,7 @@ export function VehicleSelector({ onSelect, initialMake, initialModel, initialYe
         </div>
 
         <div>
-          <label className="block text-[11px] font-semibold text-[#5a6a80] uppercase tracking-[0.5px] mb-1.5">
+          <label className="block text-[11px] font-semibold text-[#4a4a4a] uppercase tracking-[0.5px] mb-1.5">
             Modell
           </label>
           {modelsLoading ? (
@@ -292,7 +292,7 @@ export function VehicleSelector({ onSelect, initialMake, initialModel, initialYe
         </div>
 
         <div>
-          <label className="block text-[11px] font-semibold text-[#5a6a80] uppercase tracking-[0.5px] mb-1.5">
+          <label className="block text-[11px] font-semibold text-[#4a4a4a] uppercase tracking-[0.5px] mb-1.5">
             Évjárat
           </label>
           {yearsLoading ? (
@@ -312,7 +312,7 @@ export function VehicleSelector({ onSelect, initialMake, initialModel, initialYe
 
       {selectedYear && selectedModel && (
         <div className="pt-1">
-          <p className="text-[11px] font-semibold text-[#5a6a80] uppercase tracking-[0.5px] mb-2">
+          <p className="text-[11px] font-semibold text-[#4a4a4a] uppercase tracking-[0.5px] mb-2">
             Motorváltozat
           </p>
           {variantsLoading ? (
@@ -322,7 +322,7 @@ export function VehicleSelector({ onSelect, initialMake, initialModel, initialYe
               ))}
             </div>
           ) : filteredVariants.length === 0 ? (
-            <p className="text-[12px] text-[#8fa0b5] py-2">
+            <p className="text-[12px] text-[#888888] py-2">
               Nincs elérhető változat ehhez az évjárathoz.
             </p>
           ) : (
@@ -336,8 +336,8 @@ export function VehicleSelector({ onSelect, initialMake, initialModel, initialYe
                     onClick={() => handleVariantClick(v)}
                     className={`px-3 py-1.5 rounded-full border text-[12px] font-medium transition-all ${
                       isSelected
-                        ? 'bg-[#0B1E3D] border-[#0B1E3D] text-white shadow-sm'
-                        : 'bg-white border-[rgba(11,30,61,0.18)] text-[#0B1E3D] hover:border-[#C9A84C] hover:bg-[#FFFBF0] hover:text-[#8a6a20]'
+                        ? 'bg-[#0D0D0D] border-[#0D0D0D] text-white shadow-sm'
+                        : 'bg-white border-[rgba(0,0,0,0.18)] text-[#0D0D0D] hover:border-[#C8102E] hover:bg-[#FFFBF0] hover:text-[#8a6a20]'
                     }`}
                   >
                     {variantChipLabel(v)}
@@ -350,9 +350,9 @@ export function VehicleSelector({ onSelect, initialMake, initialModel, initialYe
       )}
 
       {selectedVariant && selectedYear && (
-        <div className="mt-3 p-4 rounded-xl border border-[rgba(11,30,61,0.10)] bg-[#F8F9FB]">
+        <div className="mt-3 p-4 rounded-xl border border-[rgba(0,0,0,0.10)] bg-[#F8F9FB]">
           <div className="flex items-center justify-between mb-3">
-            <span className="text-[11px] font-bold text-[#0B1E3D] uppercase tracking-[0.6px]">
+            <span className="text-[11px] font-bold text-[#0D0D0D] uppercase tracking-[0.6px]">
               Jármű összesítő
             </span>
             <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-[rgba(16,185,129,0.12)] text-emerald-700 text-[10px] font-bold uppercase tracking-[0.4px]">
@@ -414,7 +414,7 @@ export function VehicleSelector({ onSelect, initialMake, initialModel, initialYe
         <button
           type="button"
           onClick={handleManualEntry}
-          className="text-[12px] text-[#5a6a80] hover:text-[#0B1E3D] underline underline-offset-2 transition-colors"
+          className="text-[12px] text-[#4a4a4a] hover:text-[#0D0D0D] underline underline-offset-2 transition-colors"
         >
           Kézi bevitel
         </button>
@@ -426,10 +426,10 @@ export function VehicleSelector({ onSelect, initialMake, initialModel, initialYe
 function SummaryRow({ label, value }: { label: string; value: string }) {
   return (
     <div>
-      <span className="block text-[10px] text-[#8fa0b5] uppercase tracking-[0.4px] font-semibold mb-0.5">
+      <span className="block text-[10px] text-[#888888] uppercase tracking-[0.4px] font-semibold mb-0.5">
         {label}
       </span>
-      <span className="text-[12px] font-semibold text-[#0B1E3D]">{value}</span>
+      <span className="text-[12px] font-semibold text-[#0D0D0D]">{value}</span>
     </div>
   )
 }

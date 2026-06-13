@@ -12,15 +12,15 @@ import {
 
 // ─── Categories ──────────────────────────────────────────────────────────────
 const CATEGORIES = [
-  { id: 'all',        label: 'Összes',          icon: FolderOpen,  color: '#5a6a80' },
-  { id: 'workorder',  label: 'Munkalabok',       icon: Wrench,      color: '#0B1E3D' },
+  { id: 'all',        label: 'Összes',          icon: FolderOpen,  color: '#4a4a4a' },
+  { id: 'workorder',  label: 'Munkalabok',       icon: Wrench,      color: '#0D0D0D' },
   { id: 'quote',      label: 'Árajánlatok',      icon: FileText,    color: '#2563eb' },
   { id: 'invoice',    label: 'Számlák',          icon: Receipt,     color: '#16a34a' },
   { id: 'checkin',    label: 'Átvételi jkv.',    icon: FileCheck,   color: '#7c3aed' },
   { id: 'checkout',   label: 'Kiadási jkv.',     icon: FileCheck,   color: '#db2777' },
   { id: 'photo',      label: 'Fotók',            icon: Image,       color: '#ea580c' },
   { id: 'vehicle',    label: 'Jármű dok.',       icon: Car,         color: '#0891b2' },
-  { id: 'other',      label: 'Egyéb',            icon: Package,     color: '#8fa0b5' },
+  { id: 'other',      label: 'Egyéb',            icon: Package,     color: '#888888' },
 ]
 
 const FILENAME_HINTS: { pattern: RegExp; category: string }[] = [
@@ -136,7 +136,7 @@ function UploadModal({ open, onClose, onSuccess }: {
       type="button"
       onClick={() => setCategory(id)}
       className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold border transition-all ${
-        category === id ? 'text-white border-transparent' : 'bg-white text-[#5a6a80] border-gray-200 hover:border-[#C9A84C]'
+        category === id ? 'text-white border-transparent' : 'bg-white text-[#4a4a4a] border-gray-200 hover:border-[#C8102E]'
       }`}
       style={category === id ? { backgroundColor: color, borderColor: color } : {}}
     >
@@ -149,8 +149,8 @@ function UploadModal({ open, onClose, onSuccess }: {
     <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4">
       <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
-          <h2 className="text-base font-bold text-[#0B1E3D]">Dokumentum feltöltése</h2>
-          <button onClick={onClose} className="text-[#8fa0b5] hover:text-[#0B1E3D]"><X size={18} /></button>
+          <h2 className="text-base font-bold text-[#0D0D0D]">Dokumentum feltöltése</h2>
+          <button onClick={onClose} className="text-[#888888] hover:text-[#0D0D0D]"><X size={18} /></button>
         </div>
         <div className="p-6 space-y-4">
           {/* Drop zone */}
@@ -158,19 +158,19 @@ function UploadModal({ open, onClose, onSuccess }: {
             onDragOver={e => e.preventDefault()}
             onDrop={handleDrop}
             onClick={() => fileRef.current?.click()}
-            className="border-2 border-dashed border-gray-200 rounded-xl p-6 text-center cursor-pointer hover:border-[#C9A84C] transition-colors"
+            className="border-2 border-dashed border-gray-200 rounded-xl p-6 text-center cursor-pointer hover:border-[#C8102E] transition-colors"
           >
             {file ? (
-              <div className="flex items-center justify-center gap-2 text-[#0B1E3D]">
-                <FileText size={20} className="text-[#C9A84C]" />
+              <div className="flex items-center justify-center gap-2 text-[#0D0D0D]">
+                <FileText size={20} className="text-[#C8102E]" />
                 <span className="font-medium text-sm">{file.name}</span>
-                <span className="text-xs text-[#8fa0b5]">({formatBytes(file.size)})</span>
+                <span className="text-xs text-[#888888]">({formatBytes(file.size)})</span>
               </div>
             ) : (
               <>
-                <Upload size={24} className="mx-auto text-[#8fa0b5] mb-2" />
-                <p className="text-sm text-[#5a6a80]">Húzd ide a fájlt, vagy kattints a böngészéshez</p>
-                <p className="text-xs text-[#8fa0b5] mt-1">PDF, JPG, PNG, DOCX — max. 50 MB</p>
+                <Upload size={24} className="mx-auto text-[#888888] mb-2" />
+                <p className="text-sm text-[#4a4a4a]">Húzd ide a fájlt, vagy kattints a böngészéshez</p>
+                <p className="text-xs text-[#888888] mt-1">PDF, JPG, PNG, DOCX — max. 50 MB</p>
               </>
             )}
             <input ref={fileRef} type="file" className="hidden" accept="*/*" onChange={e => { if (e.target.files?.[0]) handleFile(e.target.files[0]) }} />
@@ -178,13 +178,13 @@ function UploadModal({ open, onClose, onSuccess }: {
 
           {/* Name */}
           <div>
-            <label className="block text-xs font-semibold text-[#5a6a80] mb-1">Dokumentum neve</label>
+            <label className="block text-xs font-semibold text-[#4a4a4a] mb-1">Dokumentum neve</label>
             <Input value={name} onChange={e => setName(e.target.value)} placeholder="pl. Arbeitsauftrag_2025-06_BMW" />
           </div>
 
           {/* Category */}
           <div>
-            <label className="block text-xs font-semibold text-[#5a6a80] mb-2">Kategória</label>
+            <label className="block text-xs font-semibold text-[#4a4a4a] mb-2">Kategória</label>
             <div className="flex flex-wrap gap-1.5">
               {CATEGORIES.filter(c => c.id !== 'all').map(cat => <CatBtn key={cat.id} {...cat} />)}
             </div>
@@ -192,11 +192,11 @@ function UploadModal({ open, onClose, onSuccess }: {
 
           {/* Description */}
           <div>
-            <label className="block text-xs font-semibold text-[#5a6a80] mb-1">Megjegyzés (opcionális)</label>
+            <label className="block text-xs font-semibold text-[#4a4a4a] mb-1">Megjegyzés (opcionális)</label>
             <textarea
               value={description}
               onChange={e => setDescription(e.target.value)}
-              className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm text-[#0B1E3D] resize-none focus:outline-none focus:ring-2 focus:ring-[#C9A84C]/40"
+              className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm text-[#0D0D0D] resize-none focus:outline-none focus:ring-2 focus:ring-[#C8102E]/40"
               rows={2}
               placeholder="Rövid leírás..."
             />
@@ -205,22 +205,22 @@ function UploadModal({ open, onClose, onSuccess }: {
           {/* Relations */}
           <div className="grid grid-cols-3 gap-2">
             <div>
-              <label className="block text-xs font-semibold text-[#5a6a80] mb-1">Ügyfél</label>
-              <select value={customerId} onChange={e => setCustomerId(e.target.value)} className="w-full border border-gray-200 rounded-lg px-2 py-1.5 text-xs text-[#0B1E3D] focus:outline-none focus:ring-2 focus:ring-[#C9A84C]/40">
+              <label className="block text-xs font-semibold text-[#4a4a4a] mb-1">Ügyfél</label>
+              <select value={customerId} onChange={e => setCustomerId(e.target.value)} className="w-full border border-gray-200 rounded-lg px-2 py-1.5 text-xs text-[#0D0D0D] focus:outline-none focus:ring-2 focus:ring-[#C8102E]/40">
                 <option value="">–</option>
                 {customers.map(c => <option key={c.id} value={c.id}>{c.full_name}</option>)}
               </select>
             </div>
             <div>
-              <label className="block text-xs font-semibold text-[#5a6a80] mb-1">Jármű</label>
-              <select value={vehicleId} onChange={e => setVehicleId(e.target.value)} className="w-full border border-gray-200 rounded-lg px-2 py-1.5 text-xs text-[#0B1E3D] focus:outline-none focus:ring-2 focus:ring-[#C9A84C]/40">
+              <label className="block text-xs font-semibold text-[#4a4a4a] mb-1">Jármű</label>
+              <select value={vehicleId} onChange={e => setVehicleId(e.target.value)} className="w-full border border-gray-200 rounded-lg px-2 py-1.5 text-xs text-[#0D0D0D] focus:outline-none focus:ring-2 focus:ring-[#C8102E]/40">
                 <option value="">–</option>
                 {vehicles.map(v => <option key={v.id} value={v.id}>{v.license_plate} {v.make}</option>)}
               </select>
             </div>
             <div>
-              <label className="block text-xs font-semibold text-[#5a6a80] mb-1">Munkalap</label>
-              <select value={workOrderId} onChange={e => setWorkOrderId(e.target.value)} className="w-full border border-gray-200 rounded-lg px-2 py-1.5 text-xs text-[#0B1E3D] focus:outline-none focus:ring-2 focus:ring-[#C9A84C]/40">
+              <label className="block text-xs font-semibold text-[#4a4a4a] mb-1">Munkalap</label>
+              <select value={workOrderId} onChange={e => setWorkOrderId(e.target.value)} className="w-full border border-gray-200 rounded-lg px-2 py-1.5 text-xs text-[#0D0D0D] focus:outline-none focus:ring-2 focus:ring-[#C8102E]/40">
                 <option value="">–</option>
                 {workOrders.map(w => <option key={w.id} value={w.id}>{w.order_number}</option>)}
               </select>
@@ -261,16 +261,16 @@ function DocDetail({ doc, onClose, onDelete }: { doc: any; onClose: () => void; 
         <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
           <div className="flex items-center gap-2">
             <CatIcon size={16} style={{ color: cat.color }} />
-            <span className="font-bold text-[#0B1E3D] text-sm">{doc.name}</span>
+            <span className="font-bold text-[#0D0D0D] text-sm">{doc.name}</span>
           </div>
-          <button onClick={onClose} className="text-[#8fa0b5] hover:text-[#0B1E3D]"><X size={16} /></button>
+          <button onClick={onClose} className="text-[#888888] hover:text-[#0D0D0D]"><X size={16} /></button>
         </div>
 
         <div className="p-5 space-y-4">
           {/* DOC-ID badge */}
           <div className="flex items-center gap-2">
-            <span className="bg-[#0B1E3D] text-white text-xs font-mono px-2 py-0.5 rounded">{doc.doc_id}</span>
-            <span className="text-xs text-[#8fa0b5]">{formatDate(doc.created_at)}</span>
+            <span className="bg-[#0D0D0D] text-white text-xs font-mono px-2 py-0.5 rounded">{doc.doc_id}</span>
+            <span className="text-xs text-[#888888]">{formatDate(doc.created_at)}</span>
           </div>
 
           {/* Preview */}
@@ -281,7 +281,7 @@ function DocDetail({ doc, onClose, onDelete }: { doc: any; onClose: () => void; 
           {/* Meta */}
           <div className="space-y-2 text-sm">
             {doc.description && (
-              <p className="text-[#5a6a80] text-xs bg-[#F4F5F7] rounded-lg p-2">{doc.description}</p>
+              <p className="text-[#4a4a4a] text-xs bg-[#F4F5F7] rounded-lg p-2">{doc.description}</p>
             )}
             <MetaRow icon={Tag} label="Kategória" value={cat.label} />
             {doc.file_size && <MetaRow icon={HardDrive} label="Méret" value={formatBytes(doc.file_size)} />}
@@ -321,9 +321,9 @@ function DocDetail({ doc, onClose, onDelete }: { doc: any; onClose: () => void; 
 function MetaRow({ icon: Icon, label, value }: { icon: any; label: string; value: string }) {
   return (
     <div className="flex items-center gap-2">
-      <Icon size={13} className="text-[#8fa0b5] shrink-0" />
-      <span className="text-[#8fa0b5] text-xs w-20 shrink-0">{label}</span>
-      <span className="text-[#0B1E3D] text-xs font-medium truncate">{value}</span>
+      <Icon size={13} className="text-[#888888] shrink-0" />
+      <span className="text-[#888888] text-xs w-20 shrink-0">{label}</span>
+      <span className="text-[#0D0D0D] text-xs font-medium truncate">{value}</span>
     </div>
   )
 }
@@ -337,7 +337,7 @@ function DocCard({ doc, onClick }: { doc: any; onClick: () => void }) {
   return (
     <div
       onClick={onClick}
-      className="bg-white rounded-xl border border-gray-100 overflow-hidden cursor-pointer hover:border-[#C9A84C] hover:shadow-md transition-all group"
+      className="bg-white rounded-xl border border-gray-100 overflow-hidden cursor-pointer hover:border-[#C8102E] hover:shadow-md transition-all group"
     >
       {/* Thumbnail or color header */}
       <div className="h-24 relative overflow-hidden" style={{ backgroundColor: cat.color + '18' }}>
@@ -357,11 +357,11 @@ function DocCard({ doc, onClick }: { doc: any; onClick: () => void }) {
 
       {/* Info */}
       <div className="p-3">
-        <p className="text-xs font-semibold text-[#0B1E3D] truncate group-hover:text-[#C9A84C] transition-colors">{doc.name}</p>
-        <p className="text-[10px] text-[#8fa0b5] mt-0.5 font-mono">{doc.doc_id}</p>
+        <p className="text-xs font-semibold text-[#0D0D0D] truncate group-hover:text-[#C8102E] transition-colors">{doc.name}</p>
+        <p className="text-[10px] text-[#888888] mt-0.5 font-mono">{doc.doc_id}</p>
         <div className="flex items-center justify-between mt-1.5">
-          <span className="text-[10px] text-[#8fa0b5]">{formatDate(doc.created_at)}</span>
-          {doc.file_size && <span className="text-[10px] text-[#8fa0b5]">{formatBytes(doc.file_size)}</span>}
+          <span className="text-[10px] text-[#888888]">{formatDate(doc.created_at)}</span>
+          {doc.file_size && <span className="text-[10px] text-[#888888]">{formatBytes(doc.file_size)}</span>}
         </div>
       </div>
     </div>
@@ -435,8 +435,8 @@ export function DocumentsPage({ refreshKey, onRefresh }: { refreshKey?: number; 
       <div className="flex flex-col items-center justify-center h-64 gap-4 text-center">
         <AlertCircle size={36} className="text-amber-400" />
         <div>
-          <p className="font-semibold text-[#0B1E3D]">A documents tábla nem létezik</p>
-          <p className="text-sm text-[#5a6a80] mt-1">Futtasd le a <code className="bg-gray-100 px-1 rounded">supabase/documents.sql</code> fájlt a Supabase SQL Editorban.</p>
+          <p className="font-semibold text-[#0D0D0D]">A documents tábla nem létezik</p>
+          <p className="text-sm text-[#4a4a4a] mt-1">Futtasd le a <code className="bg-gray-100 px-1 rounded">supabase/documents.sql</code> fájlt a Supabase SQL Editorban.</p>
         </div>
         <Button variant="secondary" size="sm" onClick={load}>
           <RefreshCw size={13} /> Újrapróbálás
@@ -458,7 +458,7 @@ export function DocumentsPage({ refreshKey, onRefresh }: { refreshKey?: number; 
               key={cat.id}
               onClick={() => setActiveCategory(cat.id)}
               className={`flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-medium transition-all text-left ${
-                isActive ? 'bg-[#0B1E3D] text-white' : 'text-[#5a6a80] hover:bg-white hover:text-[#0B1E3D]'
+                isActive ? 'bg-[#0D0D0D] text-white' : 'text-[#4a4a4a] hover:bg-white hover:text-[#0D0D0D]'
               }`}
             >
               <Icon size={14} style={{ color: isActive ? '#fff' : cat.color }} />
@@ -473,7 +473,7 @@ export function DocumentsPage({ refreshKey, onRefresh }: { refreshKey?: number; 
         {/* Header */}
         <div className="flex items-center gap-3 px-4 py-3 border-b border-gray-100 bg-white shrink-0 flex-wrap">
           <div className="flex items-center gap-2 flex-1 min-w-[200px]">
-            <Search size={15} className="text-[#8fa0b5] shrink-0" />
+            <Search size={15} className="text-[#888888] shrink-0" />
             <Input
               value={search}
               onChange={e => setSearch(e.target.value)}
@@ -485,20 +485,20 @@ export function DocumentsPage({ refreshKey, onRefresh }: { refreshKey?: number; 
           <select
             value={activeCategory}
             onChange={e => setActiveCategory(e.target.value)}
-            className="lg:hidden border border-gray-200 rounded-lg px-2 py-1.5 text-xs text-[#0B1E3D] focus:outline-none"
+            className="lg:hidden border border-gray-200 rounded-lg px-2 py-1.5 text-xs text-[#0D0D0D] focus:outline-none"
           >
             {CATEGORIES.map(c => <option key={c.id} value={c.id}>{c.label}</option>)}
           </select>
           <Button variant="primary" size="sm" onClick={() => setUploadOpen(true)}>
             <Plus size={13} /> Feltöltés
           </Button>
-          <button onClick={load} className="text-[#8fa0b5] hover:text-[#0B1E3D] transition-colors">
+          <button onClick={load} className="text-[#888888] hover:text-[#0D0D0D] transition-colors">
             <RefreshCw size={15} />
           </button>
         </div>
 
         {/* Stats bar */}
-        <div className="flex gap-4 px-4 py-2.5 border-b border-gray-50 bg-[#F8F9FB] shrink-0 overflow-x-auto text-xs text-[#5a6a80]">
+        <div className="flex gap-4 px-4 py-2.5 border-b border-gray-50 bg-[#F8F9FB] shrink-0 overflow-x-auto text-xs text-[#4a4a4a]">
           <StatPill label="Összes" value={stats.total} />
           <StatPill label="Mai" value={stats.today} accent />
           <StatPill label="Fotó" value={stats.photos} />
@@ -510,9 +510,9 @@ export function DocumentsPage({ refreshKey, onRefresh }: { refreshKey?: number; 
         {/* Grid */}
         <div className="flex-1 overflow-y-auto p-4">
           {loading ? (
-            <div className="flex items-center justify-center h-40 text-[#8fa0b5] text-sm">Betöltés...</div>
+            <div className="flex items-center justify-center h-40 text-[#888888] text-sm">Betöltés...</div>
           ) : docs.length === 0 ? (
-            <div className="flex flex-col items-center justify-center h-40 gap-2 text-[#8fa0b5]">
+            <div className="flex flex-col items-center justify-center h-40 gap-2 text-[#888888]">
               <FolderOpen size={32} className="opacity-30" />
               <p className="text-sm">Nincsenek dokumentumok</p>
               <Button variant="secondary" size="sm" onClick={() => setUploadOpen(true)}>
@@ -546,8 +546,8 @@ export function DocumentsPage({ refreshKey, onRefresh }: { refreshKey?: number; 
 
 function StatPill({ label, value, accent, warn }: { label: string; value: number; accent?: boolean; warn?: boolean }) {
   return (
-    <div className={`flex items-center gap-1.5 whitespace-nowrap ${warn ? 'text-amber-500' : accent ? 'text-[#0B1E3D] font-semibold' : ''}`}>
-      <span className={`text-base font-bold ${warn ? 'text-amber-500' : accent ? 'text-[#C9A84C]' : 'text-[#0B1E3D]'}`}>{value}</span>
+    <div className={`flex items-center gap-1.5 whitespace-nowrap ${warn ? 'text-amber-500' : accent ? 'text-[#0D0D0D] font-semibold' : ''}`}>
+      <span className={`text-base font-bold ${warn ? 'text-amber-500' : accent ? 'text-[#C8102E]' : 'text-[#0D0D0D]'}`}>{value}</span>
       {label}
     </div>
   )

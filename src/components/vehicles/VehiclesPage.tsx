@@ -147,27 +147,27 @@ export function VehiclesPage({ refreshKey }: { refreshKey: number; onRefresh: ()
     <div className="animate-fade-in">
       <div className="flex gap-2.5 mb-4">
         <div className="relative flex-1">
-          <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#8fa0b5]" />
+          <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#888888]" />
           <input type="text" value={search} onChange={e => setSearch(e.target.value)}
             placeholder="Rendszám, márka, VIN, tulajdonos..."
-            className="w-full pl-9 pr-3 py-2 border border-[rgba(11,30,61,0.18)] rounded-lg text-[13px] bg-white outline-none focus:border-[#0B1E3D]" />
+            className="w-full pl-9 pr-3 py-2 border border-[rgba(0,0,0,0.18)] rounded-lg text-[13px] bg-white outline-none focus:border-[#0D0D0D]" />
         </div>
         <Button variant="primary" onClick={openNew}><Plus size={14} /> Jármű</Button>
       </div>
 
       {loading ? (
-        <div className="text-center py-12 text-[#5a6a80] text-sm">Járművek betöltése...</div>
+        <div className="text-center py-12 text-[#4a4a4a] text-sm">Járművek betöltése...</div>
       ) : (
         <Card className="p-0 overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-[13px] min-w-[560px]">
               <thead>
-                <tr className="bg-[#F4F5F7] border-b border-[rgba(11,30,61,0.10)]">
-                  <th className="text-left px-4 py-3 text-[11px] font-semibold text-[#5a6a80] uppercase">Rendszám</th>
-                  <th className="text-left px-4 py-3 text-[11px] font-semibold text-[#5a6a80] uppercase">Jármű</th>
-                  <th className="text-left px-4 py-3 text-[11px] font-semibold text-[#5a6a80] uppercase hidden md:table-cell">Tulajdonos</th>
-                  <th className="text-left px-4 py-3 text-[11px] font-semibold text-[#5a6a80] uppercase hidden lg:table-cell">Motor / Üzemanyag</th>
-                  <th className="text-left px-4 py-3 text-[11px] font-semibold text-[#5a6a80] uppercase hidden lg:table-cell">Km</th>
+                <tr className="bg-[#F4F5F7] border-b border-[rgba(0,0,0,0.10)]">
+                  <th className="text-left px-4 py-3 text-[11px] font-semibold text-[#4a4a4a] uppercase">Rendszám</th>
+                  <th className="text-left px-4 py-3 text-[11px] font-semibold text-[#4a4a4a] uppercase">Jármű</th>
+                  <th className="text-left px-4 py-3 text-[11px] font-semibold text-[#4a4a4a] uppercase hidden md:table-cell">Tulajdonos</th>
+                  <th className="text-left px-4 py-3 text-[11px] font-semibold text-[#4a4a4a] uppercase hidden lg:table-cell">Motor / Üzemanyag</th>
+                  <th className="text-left px-4 py-3 text-[11px] font-semibold text-[#4a4a4a] uppercase hidden lg:table-cell">Km</th>
                   <th className="px-4 py-3" />
                 </tr>
               </thead>
@@ -175,9 +175,9 @@ export function VehiclesPage({ refreshKey }: { refreshKey: number; onRefresh: ()
                 {filtered.map(v => {
                   const src = DATA_SOURCE_BADGE[v.data_source || 'manual']
                   return (
-                    <tr key={v.id} className="border-b border-[rgba(11,30,61,0.06)] hover:bg-[#fafbfc] transition-colors">
+                    <tr key={v.id} className="border-b border-[rgba(0,0,0,0.06)] hover:bg-[#fafbfc] transition-colors">
                       <td className="px-4 py-3">
-                        <span className="bg-[#0B1E3D] text-white text-[11px] font-bold px-2 py-1 rounded">{v.license_plate}</span>
+                        <span className="bg-[#0D0D0D] text-white text-[11px] font-bold px-2 py-1 rounded">{v.license_plate}</span>
                         {src && (
                           <div className="mt-1">
                             <span className={`text-[9px] font-semibold px-1.5 py-0.5 rounded-full ${src.cls}`}>{src.label}</span>
@@ -185,30 +185,30 @@ export function VehiclesPage({ refreshKey }: { refreshKey: number; onRefresh: ()
                         )}
                       </td>
                       <td className="px-4 py-3">
-                        <div className="font-semibold text-[#0B1E3D]">{v.make} {v.model}</div>
-                        <div className="text-[11px] text-[#5a6a80]">
+                        <div className="font-semibold text-[#0D0D0D]">{v.make} {v.model}</div>
+                        <div className="text-[11px] text-[#4a4a4a]">
                           {v.year}{v.engine_label ? ` · ${v.engine_label}` : ''}{v.color ? ` · ${v.color}` : ''}
                         </div>
                       </td>
-                      <td className="px-4 py-3 hidden md:table-cell text-[12px] text-[#5a6a80]">
+                      <td className="px-4 py-3 hidden md:table-cell text-[12px] text-[#4a4a4a]">
                         {(v as any).customer?.full_name || '–'}
                       </td>
-                      <td className="px-4 py-3 hidden lg:table-cell text-[12px] text-[#5a6a80]">
+                      <td className="px-4 py-3 hidden lg:table-cell text-[12px] text-[#4a4a4a]">
                         <div>{v.engine_label || '–'}</div>
                         <div className="text-[11px]">
                           {FUEL_LABELS[v.fuel_type] || v.fuel_type}
                           {v.power_hp ? ` · ${v.power_hp} LE` : ''}
                         </div>
                       </td>
-                      <td className="px-4 py-3 hidden lg:table-cell text-[12px] text-[#5a6a80]">
+                      <td className="px-4 py-3 hidden lg:table-cell text-[12px] text-[#4a4a4a]">
                         {v.mileage ? `${v.mileage.toLocaleString()} km` : '–'}
                       </td>
                       <td className="px-4 py-3">
                         <div className="flex items-center gap-1 justify-end">
-                          <button onClick={() => openEdit(v)} className="p-1.5 text-[#5a6a80] hover:text-[#0B1E3D]"><Edit2 size={14} /></button>
+                          <button onClick={() => openEdit(v)} className="p-1.5 text-[#4a4a4a] hover:text-[#0D0D0D]"><Edit2 size={14} /></button>
                           <button onClick={async () => {
                             if (confirm('Biztosan törlöd a járművet?')) { await supabase.from('vehicles').delete().eq('id', v.id); load() }
-                          }} className="p-1.5 text-[#5a6a80] hover:text-[#C9384C]"><Trash2 size={14} /></button>
+                          }} className="p-1.5 text-[#4a4a4a] hover:text-[#C8102E]"><Trash2 size={14} /></button>
                         </div>
                       </td>
                     </tr>
@@ -217,7 +217,7 @@ export function VehiclesPage({ refreshKey }: { refreshKey: number; onRefresh: ()
               </tbody>
             </table>
           </div>
-          {filtered.length === 0 && <div className="text-center py-10 text-[#8fa0b5] text-sm">Nem található jármű</div>}
+          {filtered.length === 0 && <div className="text-center py-10 text-[#888888] text-sm">Nem található jármű</div>}
         </Card>
       )}
 
@@ -282,8 +282,8 @@ export function VehiclesPage({ refreshKey }: { refreshKey: number; onRefresh: ()
                   <button key={m.id} onClick={() => setInputMode(m.id as any)}
                     className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[12px] font-medium border transition-colors ${
                       inputMode === m.id
-                        ? 'bg-[#0B1E3D] text-white border-[#0B1E3D]'
-                        : 'bg-white text-[#5a6a80] border-gray-200 hover:border-[#0B1E3D]'
+                        ? 'bg-[#0D0D0D] text-white border-[#0D0D0D]'
+                        : 'bg-white text-[#4a4a4a] border-gray-200 hover:border-[#0D0D0D]'
                     }`}>
                     <m.icon size={13} /> {m.label}
                   </button>
@@ -314,8 +314,8 @@ export function VehiclesPage({ refreshKey }: { refreshKey: number; onRefresh: ()
             <div>
               {(form.make || editVehicle) && (
                 <div className="bg-[#F4F5F7] rounded-xl p-3 mb-3">
-                  <div className="font-semibold text-[#0B1E3D] text-sm">{form.make} {form.model} {form.year}</div>
-                  <div className="text-[11px] text-[#5a6a80] mt-0.5 flex flex-wrap gap-2">
+                  <div className="font-semibold text-[#0D0D0D] text-sm">{form.make} {form.model} {form.year}</div>
+                  <div className="text-[11px] text-[#4a4a4a] mt-0.5 flex flex-wrap gap-2">
                     {form.engine_label && <span>{form.engine_label}</span>}
                     {form.fuel_type && <span>{FUEL_LABELS[form.fuel_type] || form.fuel_type}</span>}
                     {form.power_hp && <span>{form.power_hp} LE</span>}
@@ -355,7 +355,7 @@ export function VehiclesPage({ refreshKey }: { refreshKey: number; onRefresh: ()
 
               {/* Részletes adatok toggle */}
               <button onClick={() => setShowAdvanced(v => !v)}
-                className="flex items-center gap-1.5 text-[12px] text-[#5a6a80] hover:text-[#0B1E3D] mt-2">
+                className="flex items-center gap-1.5 text-[12px] text-[#4a4a4a] hover:text-[#0D0D0D] mt-2">
                 {showAdvanced ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
                 {showAdvanced ? 'Kevesebb adat' : 'Részletes járműadatok'}
               </button>

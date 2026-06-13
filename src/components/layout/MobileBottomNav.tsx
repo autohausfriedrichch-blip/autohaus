@@ -29,7 +29,7 @@ export function MobileBottomNav({ activePage, onNavigate, role, badges = {} }: M
   const tabs = role === 'mechanic' ? MECHANIC_TABS : ADMIN_TABS
 
   return (
-    <nav className="mobile-nav fixed bottom-0 left-0 right-0 bg-[#0B1E3D] border-t border-white/10 flex md:hidden z-30">
+    <nav className="mobile-nav fixed bottom-0 left-0 right-0 bg-[#0D0D0D] border-t border-white/10 flex md:hidden z-30">
       {tabs.map(tab => {
         const Icon = tab.icon
         const isActive = activePage === tab.id
@@ -40,20 +40,20 @@ export function MobileBottomNav({ activePage, onNavigate, role, badges = {} }: M
             onClick={() => onNavigate(tab.id)}
             className={cn(
               'flex-1 flex flex-col items-center justify-center py-1 gap-0 relative transition-colors',
-              isActive ? 'text-[#C9A84C]' : 'text-white/40 active:text-white/70'
+              isActive ? 'text-[#C8102E]' : 'text-white/40 active:text-white/70'
             )}
           >
             <div className="relative">
               <Icon size={18} />
               {badgeCount !== undefined && badgeCount > 0 && (
-                <span className="absolute -top-1 -right-1.5 bg-[#C9384C] text-white text-[8px] font-bold min-w-[14px] h-3.5 flex items-center justify-center rounded-full px-0.5">
+                <span className="absolute -top-1 -right-1.5 bg-[#C8102E] text-white text-[8px] font-bold min-w-[14px] h-3.5 flex items-center justify-center rounded-full px-0.5">
                   {badgeCount}
                 </span>
               )}
             </div>
             <span className="text-[9px] font-medium leading-tight mt-0.5">{tab.label}</span>
             {isActive && (
-              <span className="absolute top-0 left-1/2 -translate-x-1/2 w-6 h-0.5 bg-[#C9A84C] rounded-full" />
+              <span className="absolute top-0 left-1/2 -translate-x-1/2 w-6 h-0.5 bg-[#C8102E] rounded-full" />
             )}
           </button>
         )

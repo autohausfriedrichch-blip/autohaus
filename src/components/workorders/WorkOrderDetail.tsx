@@ -698,7 +698,7 @@ export function WorkOrderDetail({ workOrderId, profile, onClose, onNewQuote }: P
   }
 
   const healthDot = (h: string) => {
-    if (h === 'red') return <span className="w-3 h-3 rounded-full bg-[#C9384C] inline-block" title="Piros" />
+    if (h === 'red') return <span className="w-3 h-3 rounded-full bg-[#C8102E] inline-block" title="Piros" />
     if (h === 'yellow') return <span className="w-3 h-3 rounded-full bg-yellow-400 inline-block" title="Sárga" />
     return <span className="w-3 h-3 rounded-full bg-emerald-500 inline-block" title="Zöld" />
   }
@@ -706,7 +706,7 @@ export function WorkOrderDetail({ workOrderId, profile, onClose, onNewQuote }: P
   if (loading || !wo) {
     return (
       <div className="fixed inset-0 z-50 bg-white flex items-center justify-center">
-        <div className="text-[#5a6a80] text-sm">Betöltés...</div>
+        <div className="text-[#4a4a4a] text-sm">Betöltés...</div>
       </div>
     )
   }
@@ -759,23 +759,23 @@ export function WorkOrderDetail({ workOrderId, profile, onClose, onNewQuote }: P
     <div className="wo-detail-panel animate-slide-right">
       <div className="px-3 sm:px-5 pb-10">
 
-        <div className="sticky top-0 bg-white border-b border-[rgba(11,30,61,0.10)] z-10 pt-3 sm:pt-4 pb-0">
+        <div className="sticky top-0 bg-white border-b border-[rgba(0,0,0,0.10)] z-10 pt-3 sm:pt-4 pb-0">
           <div className="flex items-center gap-2 sm:gap-3 flex-wrap mb-2 sm:mb-3">
-            <span className="text-[11px] font-bold text-[#185FA5] bg-[#E6F1FB] px-2 py-0.5 rounded">{wo.order_number}</span>
+            <span className="text-[11px] font-bold text-[#333333] bg-[#F0F0F0] px-2 py-0.5 rounded">{wo.order_number}</span>
             {healthDot(wo.health || 'green')}
-            <span className="font-bold text-[15px] text-[#0B1E3D]">{wo.customer?.full_name}</span>
+            <span className="font-bold text-[15px] text-[#0D0D0D]">{wo.customer?.full_name}</span>
             {wo.vehicle && (
               <>
-                <span className="bg-[#0B1E3D] text-white text-[11px] font-bold px-2 py-1 rounded">{wo.vehicle.license_plate}</span>
-                <span className="text-[13px] text-[#5a6a80]">{wo.vehicle.make} {wo.vehicle.model}</span>
+                <span className="bg-[#0D0D0D] text-white text-[11px] font-bold px-2 py-1 rounded">{wo.vehicle.license_plate}</span>
+                <span className="text-[13px] text-[#4a4a4a]">{wo.vehicle.make} {wo.vehicle.model}</span>
               </>
             )}
-            {wo.scheduled_date && <span className="text-[12px] text-[#5a6a80]">{formatDate(wo.scheduled_date)}</span>}
+            {wo.scheduled_date && <span className="text-[12px] text-[#4a4a4a]">{formatDate(wo.scheduled_date)}</span>}
             <div className="ml-auto flex items-center gap-1">
               {isAdmin && (
                 <>
                   <button onClick={openEdit}
-                    className="flex items-center gap-1 text-[11px] font-semibold px-2.5 py-1.5 border border-[#C9A84C] text-[#C9A84C] hover:bg-[#C9A84C] hover:text-white rounded-lg transition-colors">
+                    className="flex items-center gap-1 text-[11px] font-semibold px-2.5 py-1.5 border border-[#C8102E] text-[#C8102E] hover:bg-[#C8102E] hover:text-white rounded-lg transition-colors">
                     ✏️ Szerkesztés
                   </button>
                   <button onClick={deleteWorkOrder}
@@ -784,7 +784,7 @@ export function WorkOrderDetail({ workOrderId, profile, onClose, onNewQuote }: P
                   </button>
                 </>
               )}
-              <button onClick={onClose} className="p-2 rounded-full hover:bg-[#F4F5F7] text-[#5a6a80] hover:text-[#0B1E3D]">
+              <button onClick={onClose} className="p-2 rounded-full hover:bg-[#F4F5F7] text-[#4a4a4a] hover:text-[#0D0D0D]">
                 <X size={20} />
               </button>
             </div>
@@ -793,7 +793,7 @@ export function WorkOrderDetail({ workOrderId, profile, onClose, onNewQuote }: P
           <div className="flex gap-0 overflow-x-auto scrollbar-hide">
             {TABS.map(t => (
               <button key={t.id} onClick={() => setTab(t.id)}
-                className={`relative px-3 sm:px-4 py-2.5 text-[12px] sm:text-[13px] font-medium whitespace-nowrap border-b-2 transition-colors flex-shrink-0 ${tab === t.id ? 'border-[#C9A84C] text-[#0B1E3D]' : 'border-transparent text-[#5a6a80] hover:text-[#0B1E3D]'} ${t.id === 'checklist' && checklistScore === 100 ? 'text-emerald-600' : ''}`}
+                className={`relative px-3 sm:px-4 py-2.5 text-[12px] sm:text-[13px] font-medium whitespace-nowrap border-b-2 transition-colors flex-shrink-0 ${tab === t.id ? 'border-[#C8102E] text-[#0D0D0D]' : 'border-transparent text-[#4a4a4a] hover:text-[#0D0D0D]'} ${t.id === 'checklist' && checklistScore === 100 ? 'text-emerald-600' : ''}`}
                 style={{ minHeight: 44 }}>
                 {t.label}
                 {t.badge ? <span className="absolute top-1.5 right-0.5 w-1.5 h-1.5 bg-red-500 rounded-full" /> : null}
@@ -814,8 +814,8 @@ export function WorkOrderDetail({ workOrderId, profile, onClose, onNewQuote }: P
                     const colorClasses = {
                       green: 'bg-emerald-500 text-white',
                       blue: 'bg-blue-500 text-white',
-                      red: 'bg-[#C9384C] text-white',
-                      gray: 'bg-[#dde3ec] text-[#5a6a80]',
+                      red: 'bg-[#C8102E] text-white',
+                      gray: 'bg-[#dde3ec] text-[#4a4a4a]',
                     }[color]
                     const labelMap = pd.labels as unknown as Record<string, string>
                     return (
@@ -827,12 +827,12 @@ export function WorkOrderDetail({ workOrderId, profile, onClose, onNewQuote }: P
                             {pd.label}
                             <ChevronDown size={10} />
                           </button>
-                          <span className="text-[10px] text-[#5a6a80] mt-1 whitespace-nowrap">{labelMap[val] || val}</span>
+                          <span className="text-[10px] text-[#4a4a4a] mt-1 whitespace-nowrap">{labelMap[val] || val}</span>
                           {openPhaseDropdown === pd.key && (
-                            <div className="absolute top-full mt-1 bg-white border border-[rgba(11,30,61,0.15)] rounded-lg shadow-lg z-20 min-w-[140px]">
+                            <div className="absolute top-full mt-1 bg-white border border-[rgba(0,0,0,0.15)] rounded-lg shadow-lg z-20 min-w-[140px]">
                               {pd.options.map(opt => (
                                 <button key={opt} onClick={() => updatePhase(pd.key, opt, pd.label)}
-                                  className={`block w-full text-left px-3 py-2 text-[12px] hover:bg-[#F4F5F7] ${val === opt ? 'font-semibold text-[#0B1E3D]' : 'text-[#5a6a80]'}`}>
+                                  className={`block w-full text-left px-3 py-2 text-[12px] hover:bg-[#F4F5F7] ${val === opt ? 'font-semibold text-[#0D0D0D]' : 'text-[#4a4a4a]'}`}>
                                   {labelMap[opt] || opt}
                                 </button>
                               ))}
@@ -857,12 +857,12 @@ export function WorkOrderDetail({ workOrderId, profile, onClose, onNewQuote }: P
                   const val = phaseValues[pd.key]
                   const color = phaseColor(pd, val)
                   const labelMap = pd.labels as unknown as Record<string, string>
-                  const borderColor = { green: 'border-emerald-400', blue: 'border-blue-400', red: 'border-[#C9384C]', gray: 'border-[#dde3ec]' }[color]
+                  const borderColor = { green: 'border-emerald-400', blue: 'border-blue-400', red: 'border-[#C8102E]', gray: 'border-[#dde3ec]' }[color]
                   return (
                     <div key={pd.key} className={`bg-white border-l-4 ${borderColor} rounded-lg px-4 py-3 shadow-sm`}>
-                      <div className="text-[11px] text-[#5a6a80] font-semibold uppercase mb-1">{pd.label}</div>
+                      <div className="text-[11px] text-[#4a4a4a] font-semibold uppercase mb-1">{pd.label}</div>
                       <select value={val} onChange={e => updatePhase(pd.key, e.target.value, pd.label)}
-                        className="w-full text-[12px] border border-[rgba(11,30,61,0.15)] rounded px-2 py-1.5 bg-white outline-none">
+                        className="w-full text-[12px] border border-[rgba(0,0,0,0.15)] rounded px-2 py-1.5 bg-white outline-none">
                         {pd.options.map(opt => <option key={opt} value={opt}>{labelMap[opt] || opt}</option>)}
                       </select>
                     </div>
@@ -874,7 +874,7 @@ export function WorkOrderDetail({ workOrderId, profile, onClose, onNewQuote }: P
                 <div className="flex">
                   <button
                     onClick={onNewQuote}
-                    className="flex items-center gap-2 px-4 py-2.5 bg-[#185FA5] text-white rounded-lg text-[13px] font-semibold hover:bg-[#1472c4] transition-colors shadow-sm"
+                    className="flex items-center gap-2 px-4 py-2.5 bg-[#333333] text-white rounded-lg text-[13px] font-semibold hover:bg-[#1472c4] transition-colors shadow-sm"
                   >
                     <span className="text-base">📋</span>
                     Árajánlat készítése
@@ -884,20 +884,20 @@ export function WorkOrderDetail({ workOrderId, profile, onClose, onNewQuote }: P
 
               <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-3">
                 <div className="bg-[#F4F5F7] rounded-lg p-3 text-center">
-                  <div className="text-[11px] text-[#5a6a80] mb-1">Feladatok</div>
-                  <div className="text-[22px] font-bold text-[#0B1E3D]">{tasksDone}/{tasks.length}</div>
+                  <div className="text-[11px] text-[#4a4a4a] mb-1">Feladatok</div>
+                  <div className="text-[22px] font-bold text-[#0D0D0D]">{tasksDone}/{tasks.length}</div>
                 </div>
                 <div className="bg-[#F4F5F7] rounded-lg p-3 text-center">
-                  <div className="text-[11px] text-[#5a6a80] mb-1">Alkatrészek</div>
-                  <div className="text-[22px] font-bold text-[#0B1E3D]">{parts.length}</div>
+                  <div className="text-[11px] text-[#4a4a4a] mb-1">Alkatrészek</div>
+                  <div className="text-[22px] font-bold text-[#0D0D0D]">{parts.length}</div>
                 </div>
                 <div className="bg-[#F4F5F7] rounded-lg p-3 text-center">
-                  <div className="text-[11px] text-[#5a6a80] mb-1">Fotók</div>
-                  <div className="text-[22px] font-bold text-[#0B1E3D]">{photos.length}</div>
+                  <div className="text-[11px] text-[#4a4a4a] mb-1">Fotók</div>
+                  <div className="text-[22px] font-bold text-[#0D0D0D]">{photos.length}</div>
                 </div>
                 <div className="bg-[#F4F5F7] rounded-lg p-3 text-center">
-                  <div className="text-[11px] text-[#5a6a80] mb-1">Összeg</div>
-                  <div className="text-[16px] font-bold text-[#0B1E3D]">{formatCurrency(wo.total_amount)}</div>
+                  <div className="text-[11px] text-[#4a4a4a] mb-1">Összeg</div>
+                  <div className="text-[16px] font-bold text-[#0D0D0D]">{formatCurrency(wo.total_amount)}</div>
                 </div>
               </div>
 
@@ -905,25 +905,25 @@ export function WorkOrderDetail({ workOrderId, profile, onClose, onNewQuote }: P
               {isAdmin && (
                 <div>
                   <div className="flex items-center justify-between mb-3">
-                    <h3 className="text-[11px] font-bold text-[#5a6a80] uppercase tracking-wider">Idővonal</h3>
-                    <span className="text-[10px] text-[#8fa0b5]">automatikusan frissül</span>
+                    <h3 className="text-[11px] font-bold text-[#4a4a4a] uppercase tracking-wider">Idővonal</h3>
+                    <span className="text-[10px] text-[#888888]">automatikusan frissül</span>
                   </div>
                   <div className="space-y-2 max-h-[320px] overflow-y-auto pr-1">
                     {events.length === 0 && (
-                      <div className="text-[12px] text-[#8fa0b5] py-3 text-center">Még nincs esemény</div>
+                      <div className="text-[12px] text-[#888888] py-3 text-center">Még nincs esemény</div>
                     )}
                     {[...events].reverse().map(ev => (
                       <div key={ev.id} className="flex gap-2.5 items-start">
                         <span className="text-[16px] flex-shrink-0 mt-0.5">{EVENT_ICONS[ev.event_type] || 'ℹ️'}</span>
-                        <div className="flex-1 min-w-0 border-b border-[rgba(11,30,61,0.05)] pb-2">
+                        <div className="flex-1 min-w-0 border-b border-[rgba(0,0,0,0.05)] pb-2">
                           <div className="flex items-center gap-1.5 flex-wrap">
-                            <span className="text-[12px] font-semibold text-[#0B1E3D]">{ev.title}</span>
+                            <span className="text-[12px] font-semibold text-[#0D0D0D]">{ev.title}</span>
                             {ev.user_name && (
-                              <span className="text-[9px] bg-[#E6F1FB] text-[#185FA5] px-1.5 py-0.5 rounded-full font-semibold">{ev.user_name}</span>
+                              <span className="text-[9px] bg-[#F0F0F0] text-[#333333] px-1.5 py-0.5 rounded-full font-semibold">{ev.user_name}</span>
                             )}
-                            <span className="text-[10px] text-[#8fa0b5] ml-auto">{formatTime(ev.created_at)}</span>
+                            <span className="text-[10px] text-[#888888] ml-auto">{formatTime(ev.created_at)}</span>
                           </div>
-                          {ev.description && <p className="text-[11px] text-[#5a6a80] mt-0.5">{ev.description}</p>}
+                          {ev.description && <p className="text-[11px] text-[#4a4a4a] mt-0.5">{ev.description}</p>}
                         </div>
                       </div>
                     ))}
@@ -943,25 +943,25 @@ export function WorkOrderDetail({ workOrderId, profile, onClose, onNewQuote }: P
                       <div className="w-10 h-10 rounded-full bg-[#F4F5F7] border-2 border-white flex items-center justify-center text-[16px] flex-shrink-0 relative z-10">
                         {EVENT_ICONS[ev.event_type] || 'ℹ️'}
                       </div>
-                      <div className="flex-1 bg-white border border-[rgba(11,30,61,0.08)] rounded-lg px-4 py-3">
+                      <div className="flex-1 bg-white border border-[rgba(0,0,0,0.08)] rounded-lg px-4 py-3">
                         <div className="flex items-center gap-2 flex-wrap">
-                          <span className="font-semibold text-[13px] text-[#0B1E3D]">{ev.title}</span>
-                          <span className="text-[11px] text-[#8fa0b5]">{formatTime(ev.created_at)}</span>
+                          <span className="font-semibold text-[13px] text-[#0D0D0D]">{ev.title}</span>
+                          <span className="text-[11px] text-[#888888]">{formatTime(ev.created_at)}</span>
                           {ev.user_name && (
-                            <span className="ml-auto text-[10px] bg-[#E6F1FB] text-[#185FA5] px-2 py-0.5 rounded-full font-semibold">{ev.user_name}</span>
+                            <span className="ml-auto text-[10px] bg-[#F0F0F0] text-[#333333] px-2 py-0.5 rounded-full font-semibold">{ev.user_name}</span>
                           )}
                         </div>
-                        {ev.description && <p className="text-[12px] text-[#5a6a80] mt-1">{ev.description}</p>}
+                        {ev.description && <p className="text-[12px] text-[#4a4a4a] mt-1">{ev.description}</p>}
                       </div>
                     </div>
                   ))}
-                  {events.length === 0 && <div className="text-[#8fa0b5] text-sm py-4 text-center">Nincs esemény</div>}
+                  {events.length === 0 && <div className="text-[#888888] text-sm py-4 text-center">Nincs esemény</div>}
                 </div>
               </div>
 
               {!newEventForm.open ? (
                 <button onClick={() => setNewEventForm(f => ({ ...f, open: true }))}
-                  className="flex items-center gap-2 text-[13px] text-[#C9A84C] font-semibold hover:text-[#0B1E3D]">
+                  className="flex items-center gap-2 text-[13px] text-[#C8102E] font-semibold hover:text-[#0D0D0D]">
                   <Plus size={16} /> Esemény hozzáadása
                 </button>
               ) : (
@@ -1012,14 +1012,14 @@ export function WorkOrderDetail({ workOrderId, profile, onClose, onNewQuote }: P
                       const done = tasks.filter(t => t.status === 'done').length
                       const pct = Math.round((done / tasks.length) * 100)
                       return (
-                        <div className="mb-4 bg-white border border-[rgba(11,30,61,0.08)] rounded-xl p-3">
+                        <div className="mb-4 bg-white border border-[rgba(0,0,0,0.08)] rounded-xl p-3">
                           <div className="flex items-center justify-between mb-2">
-                            <span className="text-[12px] font-semibold text-[#0B1E3D]">Haladás</span>
-                            <span className="text-[12px] font-bold text-[#C9A84C]">{done}/{tasks.length} kész ({pct}%)</span>
+                            <span className="text-[12px] font-semibold text-[#0D0D0D]">Haladás</span>
+                            <span className="text-[12px] font-bold text-[#C8102E]">{done}/{tasks.length} kész ({pct}%)</span>
                           </div>
                           <div className="h-2 bg-[#F4F5F7] rounded-full overflow-hidden">
                             <div
-                              className={`h-full rounded-full transition-all duration-500 ${pct === 100 ? 'bg-emerald-500' : pct >= 50 ? 'bg-[#C9A84C]' : 'bg-blue-400'}`}
+                              className={`h-full rounded-full transition-all duration-500 ${pct === 100 ? 'bg-emerald-500' : pct >= 50 ? 'bg-[#C8102E]' : 'bg-blue-400'}`}
                               style={{ width: `${pct}%` }}
                             />
                           </div>
@@ -1037,13 +1037,13 @@ export function WorkOrderDetail({ workOrderId, profile, onClose, onNewQuote }: P
                       const isHourly = task.pricing_type === 'hourly'
                       return (
                         <div key={task.id} className={`bg-white border rounded-xl overflow-hidden ${
-                          task.status === 'problem' ? 'border-red-300' : task.status === 'done' ? 'border-emerald-200' : 'border-[rgba(11,30,61,0.10)]'
+                          task.status === 'problem' ? 'border-red-300' : task.status === 'done' ? 'border-emerald-200' : 'border-[rgba(0,0,0,0.10)]'
                         }`}>
                           <div className="px-4 py-3 cursor-pointer" onClick={() => setExpandedTaskId(isExpanded ? null : task.id)}>
                             <div className="flex items-center gap-2 flex-wrap">
                               <span className={`w-2 h-2 rounded-full flex-shrink-0 ${cfg.dot}`} />
-                              {task.task_number && <span className="text-[10px] font-bold text-[#5a6a80] bg-[#F4F5F7] px-1.5 py-0.5 rounded font-mono">{task.task_number}</span>}
-                              <span className="font-semibold text-[14px] text-[#0B1E3D] flex-1">{task.title}</span>
+                              {task.task_number && <span className="text-[10px] font-bold text-[#4a4a4a] bg-[#F4F5F7] px-1.5 py-0.5 rounded font-mono">{task.task_number}</span>}
+                              <span className="font-semibold text-[14px] text-[#0D0D0D] flex-1">{task.title}</span>
                               {task.priority === 'urgent' && <span className="text-[9px] bg-red-100 text-red-700 px-1.5 py-0.5 rounded font-bold">SÜRGŐS</span>}
                               {checklist.length > 0 && (
                                 <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${checkDone.length === checklist.length ? 'bg-emerald-100 text-emerald-700' : 'bg-gray-100 text-gray-600'}`}>
@@ -1051,13 +1051,13 @@ export function WorkOrderDetail({ workOrderId, profile, onClose, onNewQuote }: P
                                 </span>
                               )}
                               <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${cfg.color}`}>{cfg.label}</span>
-                              <ChevronDown size={14} className={`text-[#8fa0b5] transition-transform ${isExpanded ? 'rotate-180' : ''}`} />
+                              <ChevronDown size={14} className={`text-[#888888] transition-transform ${isExpanded ? 'rotate-180' : ''}`} />
                             </div>
                             {isHourly && (
                               <div className="flex items-center gap-2 mt-1.5 flex-wrap" onClick={e => e.stopPropagation()}>
-                                <Clock size={12} className="text-[#8fa0b5]" />
-                                <span className="text-[11px] text-[#5a6a80]">{formatElapsed(elapsed)}</span>
-                                {task.estimated_minutes ? <span className="text-[11px] text-[#8fa0b5]">/ {task.estimated_minutes}p</span> : null}
+                                <Clock size={12} className="text-[#888888]" />
+                                <span className="text-[11px] text-[#4a4a4a]">{formatElapsed(elapsed)}</span>
+                                {task.estimated_minutes ? <span className="text-[11px] text-[#888888]">/ {task.estimated_minutes}p</span> : null}
                                 {task.status === 'in_progress' && <span className="text-[10px] text-blue-500 animate-pulse font-semibold">● Fut</span>}
                                 <div className="flex gap-1 ml-auto">
                                   {task.status !== 'in_progress' && task.status !== 'done' && (
@@ -1077,7 +1077,7 @@ export function WorkOrderDetail({ workOrderId, profile, onClose, onNewQuote }: P
                           {isExpanded && (
                             <div className="border-t border-gray-100 px-4 py-3 space-y-4">
                               <div>
-                                <div className="text-[10px] font-bold text-[#5a6a80] uppercase tracking-wide mb-2">Státusz</div>
+                                <div className="text-[10px] font-bold text-[#4a4a4a] uppercase tracking-wide mb-2">Státusz</div>
                                 <div className="flex flex-wrap gap-1.5 status-btn-row">
                                   {Object.entries(STATUS_CFG).map(([key, c]) => (
                                     <button key={key} onClick={() => setTaskStatus(task, key)}
@@ -1092,7 +1092,7 @@ export function WorkOrderDetail({ workOrderId, profile, onClose, onNewQuote }: P
                               </div>
                               {checklist.length > 0 && (
                                 <div>
-                                  <div className="text-[10px] font-bold text-[#5a6a80] uppercase tracking-wide mb-2">Checklist — {checkDone.length}/{checklist.length}</div>
+                                  <div className="text-[10px] font-bold text-[#4a4a4a] uppercase tracking-wide mb-2">Checklist — {checkDone.length}/{checklist.length}</div>
                                   <div className="space-y-1.5">
                                     {checklist.map((item: string) => {
                                       const done = checkDone.includes(item)
@@ -1102,7 +1102,7 @@ export function WorkOrderDetail({ workOrderId, profile, onClose, onNewQuote }: P
                                           <span className={`w-4 h-4 rounded border-2 flex-shrink-0 flex items-center justify-center ${done ? 'bg-emerald-500 border-emerald-500' : 'border-gray-300'}`}>
                                             {done && <Check size={10} className="text-white" />}
                                           </span>
-                                          <span className={`text-[12px] ${done ? 'text-emerald-700 line-through' : 'text-[#0B1E3D]'}`}>{item}</span>
+                                          <span className={`text-[12px] ${done ? 'text-emerald-700 line-through' : 'text-[#0D0D0D]'}`}>{item}</span>
                                         </button>
                                       )
                                     })}
@@ -1110,11 +1110,11 @@ export function WorkOrderDetail({ workOrderId, profile, onClose, onNewQuote }: P
                                 </div>
                               )}
                               <div>
-                                <div className="text-[10px] font-bold text-[#5a6a80] uppercase tracking-wide mb-2">Jegyzetek</div>
+                                <div className="text-[10px] font-bold text-[#4a4a4a] uppercase tracking-wide mb-2">Jegyzetek</div>
                                 <div className="flex gap-1 mb-2">
                                   {NOTE_TABS.map(nt => (
                                     <button key={nt.key} onClick={() => setActiveNoteTab(prev => ({ ...prev, [task.id]: nt.key }))}
-                                      className={`text-[10px] px-2 py-1 rounded-md font-semibold transition-colors ${noteTabKey === nt.key ? 'bg-[#0B1E3D] text-white' : 'bg-gray-100 text-[#5a6a80] hover:bg-gray-200'}`}>
+                                      className={`text-[10px] px-2 py-1 rounded-md font-semibold transition-colors ${noteTabKey === nt.key ? 'bg-[#0D0D0D] text-white' : 'bg-gray-100 text-[#4a4a4a] hover:bg-gray-200'}`}>
                                       {nt.label}
                                     </button>
                                   ))}
@@ -1129,7 +1129,7 @@ export function WorkOrderDetail({ workOrderId, profile, onClose, onNewQuote }: P
                                     noteTabKey === 'notes_problem' ? 'Probléma / akadály...' : 'Extra munka javaslata...'
                                   }
                                   rows={3}
-                                  className="w-full text-[12px] px-3 py-2 border border-gray-200 rounded-lg outline-none focus:border-[#0B1E3D] resize-none"
+                                  className="w-full text-[12px] px-3 py-2 border border-gray-200 rounded-lg outline-none focus:border-[#0D0D0D] resize-none"
                                 />
                               </div>
                               {task.status !== 'done' && (
@@ -1160,23 +1160,23 @@ export function WorkOrderDetail({ workOrderId, profile, onClose, onNewQuote }: P
               )}
               {isAdmin && svcPickerOpen && (
                 <div className="bg-[#F4F5F7] rounded-xl p-4 space-y-3">
-                  <div className="text-[12px] font-bold text-[#0B1E3D] uppercase tracking-wide">Szolgáltatás kiválasztása</div>
+                  <div className="text-[12px] font-bold text-[#0D0D0D] uppercase tracking-wide">Szolgáltatás kiválasztása</div>
                   <div className="border border-gray-200 rounded-xl max-h-52 overflow-y-auto divide-y divide-gray-100 bg-white">
-                    {services.length === 0 && <div className="px-3 py-4 text-[12px] text-[#8fa0b5] text-center">Nincs aktív szolgáltatás</div>}
+                    {services.length === 0 && <div className="px-3 py-4 text-[12px] text-[#888888] text-center">Nincs aktív szolgáltatás</div>}
                     {Object.entries(services.reduce((acc: Record<string, any[]>, s) => { const cat = s.category || 'Egyéb'; if (!acc[cat]) acc[cat] = []; acc[cat].push(s); return acc }, {})).map(([cat, svcs]) => (
                       <div key={cat}>
-                        <div className="px-3 py-1 bg-gray-50 text-[10px] font-bold text-[#5a6a80] uppercase tracking-wider">{cat}</div>
+                        <div className="px-3 py-1 bg-gray-50 text-[10px] font-bold text-[#4a4a4a] uppercase tracking-wider">{cat}</div>
                         {(svcs as any[]).map((svc: any) => {
                           const checked = svcPickerIds.includes(svc.id)
                           return (
                             <button key={svc.id} type="button"
                               onClick={() => setSvcPickerIds(prev => checked ? prev.filter(x => x !== svc.id) : [...prev, svc.id])}
                               className={`w-full flex items-center gap-3 px-3 py-2 hover:bg-gray-50 transition-colors text-left ${checked ? 'bg-blue-50/60' : ''}`}>
-                              <span className={`w-4 h-4 rounded border-2 flex-shrink-0 flex items-center justify-center ${checked ? 'bg-[#0B1E3D] border-[#0B1E3D]' : 'border-gray-300'}`}>
+                              <span className={`w-4 h-4 rounded border-2 flex-shrink-0 flex items-center justify-center ${checked ? 'bg-[#0D0D0D] border-[#0D0D0D]' : 'border-gray-300'}`}>
                                 {checked && <Check size={10} className="text-white" />}
                               </span>
-                              <span className="flex-1 text-[13px] font-medium text-[#0B1E3D]">{svc.name}</span>
-                              <span className="text-[11px] text-[#8fa0b5] shrink-0">
+                              <span className="flex-1 text-[13px] font-medium text-[#0D0D0D]">{svc.name}</span>
+                              <span className="text-[11px] text-[#888888] shrink-0">
                                 {svc.pricing_type === 'hourly' ? `${svc.hourly_rate || 0} CHF/h` : svc.base_price ? `${svc.base_price} CHF` : ''}
                               </span>
                             </button>
@@ -1195,7 +1195,7 @@ export function WorkOrderDetail({ workOrderId, profile, onClose, onNewQuote }: P
               )}
               {!newTaskForm.open ? (
                 <button onClick={() => setNewTaskForm(f => ({ ...f, open: true }))}
-                  className="flex items-center gap-2 text-[13px] text-[#C9A84C] font-semibold hover:text-[#0B1E3D]">
+                  className="flex items-center gap-2 text-[13px] text-[#C8102E] font-semibold hover:text-[#0D0D0D]">
                   <Plus size={16} /> Feladat hozzáadása
                 </button>
               ) : (
@@ -1222,37 +1222,37 @@ export function WorkOrderDetail({ workOrderId, profile, onClose, onNewQuote }: P
               <div className="overflow-x-auto">
                 <table className="w-full text-[13px]">
                   <thead>
-                    <tr className="border-b border-[rgba(11,30,61,0.08)]">
+                    <tr className="border-b border-[rgba(0,0,0,0.08)]">
                       {['Név', 'Cikkszám', 'Gyártó', 'Menny.', 'Besz. ár', 'El. ár', 'Profit'].map(h => (
-                        <th key={h} className="text-left px-3 py-2 text-[11px] font-semibold text-[#5a6a80] uppercase">{h}</th>
+                        <th key={h} className="text-left px-3 py-2 text-[11px] font-semibold text-[#4a4a4a] uppercase">{h}</th>
                       ))}
                     </tr>
                   </thead>
                   <tbody>
                     {parts.map(p => (
-                      <tr key={p.id} className="border-b border-[rgba(11,30,61,0.05)] hover:bg-[#F4F5F7]">
-                        <td className="px-3 py-2 font-medium text-[#0B1E3D]">{p.name}</td>
-                        <td className="px-3 py-2 text-[#5a6a80]">{p.article_number || '-'}</td>
-                        <td className="px-3 py-2 text-[#5a6a80]">{p.manufacturer || '-'}</td>
+                      <tr key={p.id} className="border-b border-[rgba(0,0,0,0.05)] hover:bg-[#F4F5F7]">
+                        <td className="px-3 py-2 font-medium text-[#0D0D0D]">{p.name}</td>
+                        <td className="px-3 py-2 text-[#4a4a4a]">{p.article_number || '-'}</td>
+                        <td className="px-3 py-2 text-[#4a4a4a]">{p.manufacturer || '-'}</td>
                         <td className="px-3 py-2">{p.quantity}</td>
                         <td className="px-3 py-2">{formatCurrency(p.purchase_price)}</td>
                         <td className="px-3 py-2">{formatCurrency(p.sale_price)}</td>
-                        <td className={`px-3 py-2 font-semibold ${(p.sale_price - p.purchase_price) >= 0 ? 'text-emerald-600' : 'text-[#C9384C]'}`}>
+                        <td className={`px-3 py-2 font-semibold ${(p.sale_price - p.purchase_price) >= 0 ? 'text-emerald-600' : 'text-[#C8102E]'}`}>
                           {formatCurrency((p.sale_price - p.purchase_price) * p.quantity)}
                         </td>
                       </tr>
                     ))}
                     {parts.length === 0 && (
-                      <tr><td colSpan={7} className="text-center py-6 text-[#8fa0b5]">Nincs alkatrész</td></tr>
+                      <tr><td colSpan={7} className="text-center py-6 text-[#888888]">Nincs alkatrész</td></tr>
                     )}
                   </tbody>
                   {parts.length > 0 && (
                     <tfoot>
-                      <tr className="border-t-2 border-[rgba(11,30,61,0.12)] font-bold">
-                        <td colSpan={4} className="px-3 py-2 text-[#0B1E3D]">Összesen</td>
+                      <tr className="border-t-2 border-[rgba(0,0,0,0.12)] font-bold">
+                        <td colSpan={4} className="px-3 py-2 text-[#0D0D0D]">Összesen</td>
                         <td className="px-3 py-2">{formatCurrency(totalPartsCost)}</td>
                         <td className="px-3 py-2">{formatCurrency(totalSalePrice)}</td>
-                        <td className={`px-3 py-2 ${totalMargin >= 0 ? 'text-emerald-600' : 'text-[#C9384C]'}`}>{formatCurrency(totalMargin)}</td>
+                        <td className={`px-3 py-2 ${totalMargin >= 0 ? 'text-emerald-600' : 'text-[#C8102E]'}`}>{formatCurrency(totalMargin)}</td>
                       </tr>
                     </tfoot>
                   )}
@@ -1261,7 +1261,7 @@ export function WorkOrderDetail({ workOrderId, profile, onClose, onNewQuote }: P
 
               {!newPartForm.open ? (
                 <button onClick={() => setNewPartForm(f => ({ ...f, open: true }))}
-                  className="flex items-center gap-2 text-[13px] text-[#C9A84C] font-semibold hover:text-[#0B1E3D]">
+                  className="flex items-center gap-2 text-[13px] text-[#C8102E] font-semibold hover:text-[#0D0D0D]">
                   <Plus size={16} /> Alkatrész hozzáadása
                 </button>
               ) : (
@@ -1318,14 +1318,14 @@ export function WorkOrderDetail({ workOrderId, profile, onClose, onNewQuote }: P
                         a.click()
                       }, i * 150)
                     })}
-                    className="flex items-center gap-1.5 px-3 py-1.5 border border-[#C9A84C] text-[#C9A84C] text-[12px] font-semibold rounded-lg hover:bg-amber-50">
+                    className="flex items-center gap-1.5 px-3 py-1.5 border border-[#C8102E] text-[#C8102E] text-[12px] font-semibold rounded-lg hover:bg-amber-50">
                     <Download size={13} /> Összes letöltése ({photos.length})
                   </button>
                 </div>
               )}
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
                 {photos.map(photo => (
-                  <div key={photo.id} className="rounded-lg overflow-hidden border border-[rgba(11,30,61,0.08)] bg-white group">
+                  <div key={photo.id} className="rounded-lg overflow-hidden border border-[rgba(0,0,0,0.08)] bg-white group">
                     <div className="relative">
                       <img src={photo.url} alt={photo.caption || 'Photo'} className="w-full h-32 object-cover" />
                       {(profile.role === 'admin' || profile.role === 'super_admin') && (
@@ -1343,12 +1343,12 @@ export function WorkOrderDetail({ workOrderId, profile, onClose, onNewQuote }: P
                       )}
                     </div>
                     <div className="px-2 py-1.5">
-                      <span className="text-[10px] font-semibold text-[#5a6a80] uppercase">{photo.category}</span>
-                      <div className="text-[10px] text-[#8fa0b5]">{photo.uploaded_by} · {formatTime(photo.created_at)}</div>
+                      <span className="text-[10px] font-semibold text-[#4a4a4a] uppercase">{photo.category}</span>
+                      <div className="text-[10px] text-[#888888]">{photo.uploaded_by} · {formatTime(photo.created_at)}</div>
                     </div>
                   </div>
                 ))}
-                {photos.length === 0 && <div className="col-span-4 text-center py-10 text-[#8fa0b5] text-sm">Nincs fotó</div>}
+                {photos.length === 0 && <div className="col-span-4 text-center py-10 text-[#888888] text-sm">Nincs fotó</div>}
               </div>
               <div>
                 <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={e => {
@@ -1356,7 +1356,7 @@ export function WorkOrderDetail({ workOrderId, profile, onClose, onNewQuote }: P
                   if (file) uploadPhoto(file)
                 }} />
                 <button onClick={() => fileInputRef.current?.click()}
-                  className="flex items-center gap-2 text-[13px] text-[#C9A84C] font-semibold hover:text-[#0B1E3D]">
+                  className="flex items-center gap-2 text-[13px] text-[#C8102E] font-semibold hover:text-[#0D0D0D]">
                   <Camera size={16} /> Fotó feltöltése
                 </button>
               </div>
@@ -1410,8 +1410,8 @@ export function WorkOrderDetail({ workOrderId, profile, onClose, onNewQuote }: P
         <div className="fixed inset-0 z-[60] bg-black/50 flex items-end sm:items-center justify-center sm:p-4" onClick={() => setEditModal(false)}>
           <div className="bg-white rounded-t-2xl sm:rounded-2xl shadow-2xl w-full sm:max-w-2xl max-h-[92vh] sm:max-h-[90vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
             <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
-              <h2 className="font-bold text-[#0B1E3D] text-base">✏️ Munkalap szerkesztése – {wo?.order_number || ''}</h2>
-              <button onClick={() => setEditModal(false)} className="p-1 text-[#5a6a80] hover:text-[#0B1E3D]"><X size={18} /></button>
+              <h2 className="font-bold text-[#0D0D0D] text-base">✏️ Munkalap szerkesztése – {wo?.order_number || ''}</h2>
+              <button onClick={() => setEditModal(false)} className="p-1 text-[#4a4a4a] hover:text-[#0D0D0D]"><X size={18} /></button>
             </div>
             <div className="p-5">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -1505,9 +1505,9 @@ export function WorkOrderDetail({ workOrderId, profile, onClose, onNewQuote }: P
       {closeChecklist.open && wo && (
         <div className="fixed inset-0 z-[70] flex items-center justify-center bg-black/60 p-4">
           <div className="bg-white rounded-2xl shadow-2xl w-full max-w-sm">
-            <div className="p-5 border-b border-[rgba(11,30,61,0.08)]">
-              <h3 className="text-[15px] font-semibold text-[#0B1E3D]">Munkalap lezárása</h3>
-              <p className="text-[12px] text-[#5a6a80] mt-0.5">Válassza ki a szükséges lépéseket</p>
+            <div className="p-5 border-b border-[rgba(0,0,0,0.08)]">
+              <h3 className="text-[15px] font-semibold text-[#0D0D0D]">Munkalap lezárása</h3>
+              <p className="text-[12px] text-[#4a4a4a] mt-0.5">Válassza ki a szükséges lépéseket</p>
             </div>
             <div className="p-5 space-y-3">
               {[
@@ -1521,11 +1521,11 @@ export function WorkOrderDetail({ workOrderId, profile, onClose, onNewQuote }: P
                     type="checkbox"
                     checked={(closeActions as any)[action.key]}
                     onChange={e => setCloseActions(prev => ({ ...prev, [action.key]: e.target.checked }))}
-                    className="mt-0.5 w-4 h-4 accent-[#C9A84C]"
+                    className="mt-0.5 w-4 h-4 accent-[#C8102E]"
                   />
                   <div>
-                    <div className="text-[13px] font-medium text-[#0B1E3D]">{action.label}</div>
-                    <div className="text-[11px] text-[#8fa0b5]">{action.desc}</div>
+                    <div className="text-[13px] font-medium text-[#0D0D0D]">{action.label}</div>
+                    <div className="text-[11px] text-[#888888]">{action.desc}</div>
                   </div>
                 </label>
               ))}
@@ -1533,7 +1533,7 @@ export function WorkOrderDetail({ workOrderId, profile, onClose, onNewQuote }: P
             <div className="px-5 pb-5 flex gap-2">
               <button
                 onClick={() => setCloseChecklist({ open: false })}
-                className="flex-1 py-2.5 border border-[rgba(11,30,61,0.15)] rounded-xl text-[13px] text-[#5a6a80] hover:bg-gray-50 transition-colors"
+                className="flex-1 py-2.5 border border-[rgba(0,0,0,0.15)] rounded-xl text-[13px] text-[#4a4a4a] hover:bg-gray-50 transition-colors"
               >
                 Mégse
               </button>
@@ -1553,7 +1553,7 @@ export function WorkOrderDetail({ workOrderId, profile, onClose, onNewQuote }: P
                     toast('Review kérés rögzítve')
                   }
                 }}
-                className="flex-1 py-2.5 bg-[#0B1E3D] text-white rounded-xl text-[13px] font-semibold hover:bg-[#142a50] transition-colors"
+                className="flex-1 py-2.5 bg-[#0D0D0D] text-white rounded-xl text-[13px] font-semibold hover:bg-[#1A1A1A] transition-colors"
               >
                 Lezárás
               </button>

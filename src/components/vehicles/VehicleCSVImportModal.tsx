@@ -348,16 +348,16 @@ export function VehicleCSVImportModal({
       className="max-w-3xl"
     >
       {/* ── Instructions + Sample download ───────────────────────────────── */}
-      <div className="mb-5 p-4 rounded-xl bg-[#F4F5F7] border border-[rgba(11,30,61,0.08)]">
+      <div className="mb-5 p-4 rounded-xl bg-[#F4F5F7] border border-[rgba(0,0,0,0.08)]">
         <div className="flex items-start justify-between gap-3">
           <div className="flex-1">
-            <p className="text-[11px] font-bold text-[#5a6a80] uppercase tracking-[0.8px] mb-2">
+            <p className="text-[11px] font-bold text-[#4a4a4a] uppercase tracking-[0.8px] mb-2">
               Elvárt CSV formátum
             </p>
-            <div className="overflow-x-auto rounded-lg border border-[rgba(11,30,61,0.10)] bg-white">
-              <table className="text-[10px] text-[#5a6a80] whitespace-nowrap">
+            <div className="overflow-x-auto rounded-lg border border-[rgba(0,0,0,0.10)] bg-white">
+              <table className="text-[10px] text-[#4a4a4a] whitespace-nowrap">
                 <thead>
-                  <tr className="bg-[#0B1E3D]">
+                  <tr className="bg-[#0D0D0D]">
                     {CSV_COLUMNS.map((col) => (
                       <th
                         key={col}
@@ -369,7 +369,7 @@ export function VehicleCSVImportModal({
                   </tr>
                 </thead>
                 <tbody>
-                  <tr className="border-t border-[rgba(11,30,61,0.08)]">
+                  <tr className="border-t border-[rgba(0,0,0,0.08)]">
                     {CSV_COLUMNS.map((col) => {
                       const examples: Record<string, string> = {
                         make: 'BMW',
@@ -385,7 +385,7 @@ export function VehicleCSVImportModal({
                         notes: 'G20',
                       }
                       return (
-                        <td key={col} className="px-2 py-1 text-[#8fa0b5] italic">
+                        <td key={col} className="px-2 py-1 text-[#888888] italic">
                           {examples[col]}
                         </td>
                       )
@@ -394,9 +394,9 @@ export function VehicleCSVImportModal({
                 </tbody>
               </table>
             </div>
-            <p className="text-[11px] text-[#8fa0b5] mt-2">
-              Kötelező mezők: <span className="font-semibold text-[#C9384C]">make</span>,{' '}
-              <span className="font-semibold text-[#C9384C]">model</span>. Többi mező opcionális.
+            <p className="text-[11px] text-[#888888] mt-2">
+              Kötelező mezők: <span className="font-semibold text-[#C8102E]">make</span>,{' '}
+              <span className="font-semibold text-[#C8102E]">model</span>. Többi mező opcionális.
             </p>
           </div>
           <Button variant="secondary" size="sm" onClick={downloadSample} className="shrink-0">
@@ -418,22 +418,22 @@ export function VehicleCSVImportModal({
           onClick={() => fileInputRef.current?.click()}
           className={`flex flex-col items-center justify-center gap-3 py-10 rounded-xl border-2 border-dashed cursor-pointer transition-all mb-4 ${
             isDragging
-              ? 'border-[#C9A84C] bg-[#FFFBF0] scale-[1.01]'
-              : 'border-[rgba(11,30,61,0.18)] bg-[#F4F5F7] hover:border-[#C9A84C] hover:bg-[#FFFBF0]'
+              ? 'border-[#C8102E] bg-[#FFFBF0] scale-[1.01]'
+              : 'border-[rgba(0,0,0,0.18)] bg-[#F4F5F7] hover:border-[#C8102E] hover:bg-[#FFFBF0]'
           }`}
         >
           <div
             className={`w-12 h-12 rounded-full flex items-center justify-center transition-colors ${
-              isDragging ? 'bg-[#C9A84C]' : 'bg-[rgba(11,30,61,0.08)]'
+              isDragging ? 'bg-[#C8102E]' : 'bg-[rgba(0,0,0,0.08)]'
             }`}
           >
-            <Upload size={20} className={isDragging ? 'text-[#0B1E3D]' : 'text-[#5a6a80]'} />
+            <Upload size={20} className={isDragging ? 'text-[#0D0D0D]' : 'text-[#4a4a4a]'} />
           </div>
           <div className="text-center">
-            <p className="text-[13px] font-semibold text-[#0B1E3D]">
+            <p className="text-[13px] font-semibold text-[#0D0D0D]">
               Húzd ide a CSV fájlt, vagy kattints a feltöltéshez
             </p>
-            <p className="text-[11px] text-[#8fa0b5] mt-0.5">.csv vagy .txt formátum</p>
+            <p className="text-[11px] text-[#888888] mt-0.5">.csv vagy .txt formátum</p>
           </div>
           <input
             ref={fileInputRef}
@@ -447,17 +447,17 @@ export function VehicleCSVImportModal({
 
       {/* ── File info bar ─────────────────────────────────────────────────── */}
       {hasFile && (
-        <div className="flex items-center gap-3 px-4 py-2.5 rounded-xl bg-[rgba(11,30,61,0.05)] border border-[rgba(11,30,61,0.10)] mb-4">
-          <FileText size={16} className="text-[#C9A84C] shrink-0" />
+        <div className="flex items-center gap-3 px-4 py-2.5 rounded-xl bg-[rgba(0,0,0,0.05)] border border-[rgba(0,0,0,0.10)] mb-4">
+          <FileText size={16} className="text-[#C8102E] shrink-0" />
           <div className="flex-1 min-w-0">
-            <p className="text-[12px] font-semibold text-[#0B1E3D] truncate">{fileName}</p>
-            <p className="text-[11px] text-[#5a6a80]">
+            <p className="text-[12px] font-semibold text-[#0D0D0D] truncate">{fileName}</p>
+            <p className="text-[11px] text-[#4a4a4a]">
               {parsedRows.length} sor beolvasva
             </p>
           </div>
           <button
             onClick={reset}
-            className="text-[#5a6a80] hover:text-[#C9384C] transition-colors p-1"
+            className="text-[#4a4a4a] hover:text-[#C8102E] transition-colors p-1"
           >
             <X size={14} />
           </button>
@@ -467,16 +467,16 @@ export function VehicleCSVImportModal({
       {/* ── Validation summary ────────────────────────────────────────────── */}
       {validation && (
         <div className="flex gap-3 mb-4">
-          <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-[rgba(11,30,61,0.05)] border border-[rgba(11,30,61,0.10)] flex-1">
-            <CheckCircle size={14} className="text-[#C9A84C] shrink-0" />
-            <span className="text-[12px] font-semibold text-[#0B1E3D]">
+          <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-[rgba(0,0,0,0.05)] border border-[rgba(0,0,0,0.10)] flex-1">
+            <CheckCircle size={14} className="text-[#C8102E] shrink-0" />
+            <span className="text-[12px] font-semibold text-[#0D0D0D]">
               {validation.valid.length} érvényes sor
             </span>
           </div>
           {validation.errors.length > 0 && (
             <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-[rgba(201,56,76,0.07)] border border-[rgba(201,56,76,0.2)] flex-1">
-              <AlertCircle size={14} className="text-[#C9384C] shrink-0" />
-              <span className="text-[12px] font-semibold text-[#C9384C]">
+              <AlertCircle size={14} className="text-[#C8102E] shrink-0" />
+              <span className="text-[12px] font-semibold text-[#C8102E]">
                 {validation.errors.length} hiba
               </span>
             </div>
@@ -487,11 +487,11 @@ export function VehicleCSVImportModal({
       {/* ── Validation errors list ────────────────────────────────────────── */}
       {validation && validation.errors.length > 0 && (
         <div className="mb-4 p-3 rounded-xl bg-[rgba(201,56,76,0.05)] border border-[rgba(201,56,76,0.15)] max-h-[120px] overflow-y-auto">
-          <p className="text-[10px] font-bold text-[#C9384C] uppercase tracking-[0.5px] mb-2">
+          <p className="text-[10px] font-bold text-[#C8102E] uppercase tracking-[0.5px] mb-2">
             Hibás sorok
           </p>
           {validation.errors.map((e, i) => (
-            <p key={i} className="text-[11px] text-[#C9384C] leading-relaxed">
+            <p key={i} className="text-[11px] text-[#C8102E] leading-relaxed">
               {e.reason}
             </p>
           ))}
@@ -502,15 +502,15 @@ export function VehicleCSVImportModal({
       {previewRows.length > 0 && (
         <div className="mb-5">
           <div className="flex items-center gap-2 mb-2">
-            <Table size={13} className="text-[#5a6a80]" />
-            <span className="text-[11px] font-bold text-[#5a6a80] uppercase tracking-[0.5px]">
+            <Table size={13} className="text-[#4a4a4a]" />
+            <span className="text-[11px] font-bold text-[#4a4a4a] uppercase tracking-[0.5px]">
               Előnézet (első {previewRows.length} sor)
             </span>
           </div>
-          <div className="overflow-x-auto rounded-xl border border-[rgba(11,30,61,0.10)]">
+          <div className="overflow-x-auto rounded-xl border border-[rgba(0,0,0,0.10)]">
             <table className="w-full text-[11px] min-w-[700px]">
               <thead>
-                <tr className="bg-[#0B1E3D]">
+                <tr className="bg-[#0D0D0D]">
                   {previewCols.map((col) => (
                     <th
                       key={col}
@@ -529,7 +529,7 @@ export function VehicleCSVImportModal({
                   return (
                     <tr
                       key={i}
-                      className={`border-t border-[rgba(11,30,61,0.07)] ${
+                      className={`border-t border-[rgba(0,0,0,0.07)] ${
                         hasError ? 'bg-[rgba(201,56,76,0.05)]' : i % 2 === 0 ? 'bg-white' : 'bg-[#F4F5F7]'
                       }`}
                     >
@@ -538,12 +538,12 @@ export function VehicleCSVImportModal({
                           key={col}
                           className={`px-3 py-1.5 whitespace-nowrap ${
                             (col === 'make' && isMakeEmpty) || (col === 'model' && isModelEmpty)
-                              ? 'text-[#C9384C] font-semibold'
-                              : 'text-[#0B1E3D]'
+                              ? 'text-[#C8102E] font-semibold'
+                              : 'text-[#0D0D0D]'
                           }`}
                         >
                           {row[col] || (
-                            <span className="text-[#8fa0b5] italic text-[10px]">—</span>
+                            <span className="text-[#888888] italic text-[10px]">—</span>
                           )}
                         </td>
                       ))}
@@ -554,7 +554,7 @@ export function VehicleCSVImportModal({
             </table>
           </div>
           {parsedRows.length > 10 && (
-            <p className="text-[11px] text-[#8fa0b5] mt-1.5 text-right">
+            <p className="text-[11px] text-[#888888] mt-1.5 text-right">
               + {parsedRows.length - 10} további sor nem látható
             </p>
           )}
@@ -565,28 +565,28 @@ export function VehicleCSVImportModal({
       {(importing || importDone) && importTotal > 0 && (
         <div className="mb-5">
           <div className="flex items-center justify-between mb-1.5">
-            <span className="text-[12px] font-semibold text-[#0B1E3D]">
+            <span className="text-[12px] font-semibold text-[#0D0D0D]">
               {importDone ? 'Importálás befejezve' : 'Importálás folyamatban…'}
             </span>
-            <span className="text-[12px] text-[#5a6a80]">
+            <span className="text-[12px] text-[#4a4a4a]">
               {importProgress} / {importTotal} importálva
             </span>
           </div>
-          <div className="h-2 w-full bg-[rgba(11,30,61,0.1)] rounded-full overflow-hidden">
+          <div className="h-2 w-full bg-[rgba(0,0,0,0.1)] rounded-full overflow-hidden">
             <div
-              className="h-full rounded-full bg-[#C9A84C] transition-all duration-300"
+              className="h-full rounded-full bg-[#C8102E] transition-all duration-300"
               style={{ width: `${(importProgress / importTotal) * 100}%` }}
             />
           </div>
           {importDone && (
             <div className="mt-2 flex items-center gap-2">
               {importErrors.length === 0 ? (
-                <div className="flex items-center gap-1.5 text-[12px] text-[#0B1E3D]">
-                  <CheckCircle size={14} className="text-[#C9A84C]" />
+                <div className="flex items-center gap-1.5 text-[12px] text-[#0D0D0D]">
+                  <CheckCircle size={14} className="text-[#C8102E]" />
                   {importedCount} modell sikeresen importálva
                 </div>
               ) : (
-                <div className="flex items-center gap-1.5 text-[12px] text-[#C9384C]">
+                <div className="flex items-center gap-1.5 text-[12px] text-[#C8102E]">
                   <AlertCircle size={14} />
                   {importedCount} importálva, {importErrors.length} batch hiba
                 </div>
@@ -599,11 +599,11 @@ export function VehicleCSVImportModal({
       {/* ── Import batch errors ───────────────────────────────────────────── */}
       {importErrors.length > 0 && (
         <div className="mb-4 p-3 rounded-xl bg-[rgba(201,56,76,0.05)] border border-[rgba(201,56,76,0.15)] max-h-[100px] overflow-y-auto">
-          <p className="text-[10px] font-bold text-[#C9384C] uppercase tracking-[0.5px] mb-1.5">
+          <p className="text-[10px] font-bold text-[#C8102E] uppercase tracking-[0.5px] mb-1.5">
             Import hibák
           </p>
           {importErrors.map((e, i) => (
-            <p key={i} className="text-[11px] text-[#C9384C]">
+            <p key={i} className="text-[11px] text-[#C8102E]">
               {e}
             </p>
           ))}
@@ -611,7 +611,7 @@ export function VehicleCSVImportModal({
       )}
 
       {/* ── Footer actions ────────────────────────────────────────────────── */}
-      <div className="flex items-center justify-between gap-2 pt-2 border-t border-[rgba(11,30,61,0.08)]">
+      <div className="flex items-center justify-between gap-2 pt-2 border-t border-[rgba(0,0,0,0.08)]">
         <div className="flex gap-2">
           {!hasFile && (
             <Button

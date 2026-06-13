@@ -24,8 +24,8 @@ const MESSAGE_TYPES = [
 const channelIcons: Record<string, React.ReactNode> = {
   whatsapp: <MessageCircle size={14} className="text-emerald-500" />,
   phone: <Phone size={14} className="text-blue-500" />,
-  email: <Mail size={14} className="text-[#5a6a80]" />,
-  in_person: <span className="text-[10px] font-bold text-[#C9A84C]">FP</span>,
+  email: <Mail size={14} className="text-[#4a4a4a]" />,
+  in_person: <span className="text-[10px] font-bold text-[#C8102E]">FP</span>,
 }
 
 export function CommunicationPage({ refreshKey }: { refreshKey: number; onRefresh: () => void }) {
@@ -72,19 +72,19 @@ export function CommunicationPage({ refreshKey }: { refreshKey: number; onRefres
     <div className="animate-fade-in">
       <div className="flex gap-2.5 mb-4">
         <div className="relative flex-1">
-          <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#8fa0b5]" />
+          <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#888888]" />
           <input type="text" value={search} onChange={e => setSearch(e.target.value)} placeholder="Ügyfél, üzenet tartalma..."
-            className="w-full pl-9 pr-3 py-2 border border-[rgba(11,30,61,0.18)] rounded-lg text-[13px] bg-white outline-none focus:border-[#0B1E3D]" />
+            className="w-full pl-9 pr-3 py-2 border border-[rgba(0,0,0,0.18)] rounded-lg text-[13px] bg-white outline-none focus:border-[#0D0D0D]" />
         </div>
         <Button variant="primary" onClick={() => { setForm({ direction: 'inbound', channel: 'whatsapp', message_type: 'inquiry' }); setModalOpen(true) }}>
           <Plus size={14} /> Eintrag
         </Button>
       </div>
 
-      {loading ? <div className="text-center py-12 text-[#5a6a80] text-sm">Wird geladen...</div> : (
+      {loading ? <div className="text-center py-12 text-[#4a4a4a] text-sm">Wird geladen...</div> : (
         <Card>
           {filtered.map((log, idx) => (
-            <div key={log.id} className={`flex items-start gap-3 py-3 ${idx < filtered.length - 1 ? 'border-b border-[rgba(11,30,61,0.07)]' : ''}`}>
+            <div key={log.id} className={`flex items-start gap-3 py-3 ${idx < filtered.length - 1 ? 'border-b border-[rgba(0,0,0,0.07)]' : ''}`}>
               <div className="mt-0.5 shrink-0">
                 {log.direction === 'inbound'
                   ? <ArrowDownLeft size={16} className="text-emerald-500" />
@@ -94,16 +94,16 @@ export function CommunicationPage({ refreshKey }: { refreshKey: number; onRefres
                 <div className="flex items-center gap-2 flex-wrap">
                   <span className="font-semibold text-[13px]">{log.customer?.full_name}</span>
                   <span className="flex items-center gap-1">{channelIcons[log.channel]}</span>
-                  <span className="text-[10px] bg-[#F4F5F7] text-[#5a6a80] px-2 py-0.5 rounded-full">
+                  <span className="text-[10px] bg-[#F4F5F7] text-[#4a4a4a] px-2 py-0.5 rounded-full">
                     {MESSAGE_TYPES.find(t => t.value === log.message_type)?.label || log.message_type}
                   </span>
                 </div>
-                {log.content && <p className="text-[12px] text-[#5a6a80] mt-1">{log.content}</p>}
+                {log.content && <p className="text-[12px] text-[#4a4a4a] mt-1">{log.content}</p>}
               </div>
-              <div className="text-[11px] text-[#8fa0b5] shrink-0">{formatDateTime(log.created_at)}</div>
+              <div className="text-[11px] text-[#888888] shrink-0">{formatDateTime(log.created_at)}</div>
             </div>
           ))}
-          {filtered.length === 0 && <div className="text-center py-10 text-[#8fa0b5] text-sm">Nincs bejegyzés</div>}
+          {filtered.length === 0 && <div className="text-center py-10 text-[#888888] text-sm">Nincs bejegyzés</div>}
         </Card>
       )}
 

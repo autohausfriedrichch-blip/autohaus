@@ -105,7 +105,7 @@ export function Topbar({ title, onMenuClick, onRefresh, onNewItem, newItemLabel,
         {title}
       </h1>
 
-      <div className="text-[12px] text-[#5a6a80] hidden md:flex items-center gap-1.5 shrink-0">
+      <div className="text-[12px] text-[#4a4a4a] hidden md:flex items-center gap-1.5 shrink-0">
         <span className="w-2 h-2 rounded-full bg-emerald-500 pulse-dot" />
         {dateStr}
       </div>
@@ -114,13 +114,13 @@ export function Topbar({ title, onMenuClick, onRefresh, onNewItem, newItemLabel,
       <div className="relative" ref={dropRef}>
         <button
           onClick={() => setOpen(v => !v)}
-          className={`relative p-2 rounded-lg transition-colors ${urgentUnread > 0 ? 'text-red-500 hover:bg-red-50' : 'text-[#5a6a80] hover:text-[#0D0D0D] hover:bg-[#F4F5F7]'}`}
+          className={`relative p-2 rounded-lg transition-colors ${urgentUnread > 0 ? 'text-red-500 hover:bg-red-50' : 'text-[#4a4a4a] hover:text-[#0D0D0D] hover:bg-[#F4F5F7]'}`}
           style={{ minWidth: 44, minHeight: 44, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
           title="Értesítések"
         >
           <Bell size={18} className={urgentUnread > 0 ? 'animate-pulse' : ''} />
           {unreadCount > 0 && (
-            <span className={`absolute top-1.5 right-1.5 text-white text-[9px] font-bold rounded-full min-w-[16px] h-4 flex items-center justify-center px-0.5 ${urgentUnread > 0 ? 'bg-red-500' : 'bg-[#C9384C]'}`}>
+            <span className={`absolute top-1.5 right-1.5 text-white text-[9px] font-bold rounded-full min-w-[16px] h-4 flex items-center justify-center px-0.5 ${urgentUnread > 0 ? 'bg-red-500' : 'bg-[#C8102E]'}`}>
               {unreadCount > 99 ? '99+' : unreadCount}
             </span>
           )}
@@ -134,7 +134,7 @@ export function Topbar({ title, onMenuClick, onRefresh, onNewItem, newItemLabel,
                 <Bell size={14} className="text-[#0D0D0D]" />
                 <span className="font-semibold text-[#0D0D0D] text-[13px]">Értesítések</span>
                 {unreadCount > 0 && (
-                  <span className="bg-[#C9384C] text-white text-[9px] font-bold rounded-full min-w-[18px] h-4 flex items-center justify-center px-1">
+                  <span className="bg-[#C8102E] text-white text-[9px] font-bold rounded-full min-w-[18px] h-4 flex items-center justify-center px-1">
                     {unreadCount}
                   </span>
                 )}
@@ -148,7 +148,7 @@ export function Topbar({ title, onMenuClick, onRefresh, onNewItem, newItemLabel,
                 {onNavigate && (
                   <button
                     onClick={() => { setOpen(false); onNavigate('notifications') }}
-                    className="text-[11px] text-[#5a6a80] hover:text-[#0D0D0D] transition-colors"
+                    className="text-[11px] text-[#4a4a4a] hover:text-[#0D0D0D] transition-colors"
                   >
                     Összes
                   </button>
@@ -167,7 +167,7 @@ export function Topbar({ title, onMenuClick, onRefresh, onNewItem, newItemLabel,
             {/* List */}
             <div className="max-h-[360px] overflow-y-auto divide-y divide-gray-50">
               {notifications.length === 0 ? (
-                <div className="px-4 py-8 text-center text-[13px] text-[#5a6a80]">Nincs értesítés</div>
+                <div className="px-4 py-8 text-center text-[13px] text-[#4a4a4a]">Nincs értesítés</div>
               ) : notifications.slice(0, 15).map(n => (
                 <div
                   key={n.id}
@@ -182,7 +182,7 @@ export function Topbar({ title, onMenuClick, onRefresh, onNewItem, newItemLabel,
                     <div className={`w-2 h-2 rounded-full mt-1.5 shrink-0 ${PRIORITY_DOT[n.priority] || PRIORITY_DOT.normal}`} />
                     <div className="flex-1 min-w-0">
                       <div className="flex items-start justify-between gap-1">
-                        <p className={`text-[12.5px] leading-tight ${!n.is_read ? 'font-semibold text-[#0D0D0D]' : 'font-medium text-[#5a6a80]'}`}>
+                        <p className={`text-[12.5px] leading-tight ${!n.is_read ? 'font-semibold text-[#0D0D0D]' : 'font-medium text-[#4a4a4a]'}`}>
                           {n.title}
                         </p>
                         {n.priority === 'urgent' && (
@@ -193,10 +193,10 @@ export function Topbar({ title, onMenuClick, onRefresh, onNewItem, newItemLabel,
                         )}
                       </div>
                       {n.message && (
-                        <p className="text-[11px] text-[#5a6a80] mt-0.5 leading-snug line-clamp-2">{n.message}</p>
+                        <p className="text-[11px] text-[#4a4a4a] mt-0.5 leading-snug line-clamp-2">{n.message}</p>
                       )}
                       <div className="flex items-center justify-between mt-1">
-                        <span className="text-[10px] text-[#8fa0b5]">
+                        <span className="text-[10px] text-[#888888]">
                           {new Date(n.created_at).toLocaleString('hu-HU', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
                           {n.created_by && ` · ${n.created_by}`}
                         </span>
@@ -226,7 +226,7 @@ export function Topbar({ title, onMenuClick, onRefresh, onNewItem, newItemLabel,
 
       <button
         onClick={onRefresh}
-        className="text-[#5a6a80] hover:text-[#0D0D0D] active:text-[#0D0D0D] transition-colors p-2 rounded-lg active:bg-[#F4F5F7]"
+        className="text-[#4a4a4a] hover:text-[#0D0D0D] active:text-[#0D0D0D] transition-colors p-2 rounded-lg active:bg-[#F4F5F7]"
         title="Frissítés"
         style={{ minWidth: 44, minHeight: 44, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
       >

@@ -275,7 +275,7 @@ export function PartsInventoryPage({ refreshKey, onRefresh }: { refreshKey: numb
       {/* Stats bar */}
       <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
         {[
-          { label: 'Összes alkatrész', value: totalParts,    color: 'text-[#0B1E3D]', bg: 'bg-[#F4F5F7]' },
+          { label: 'Összes alkatrész', value: totalParts,    color: 'text-[#0D0D0D]', bg: 'bg-[#F4F5F7]' },
           { label: 'Készleten',        value: inStockCount,  color: 'text-green-700',  bg: 'bg-green-50' },
           { label: 'Megrendelve',      value: orderedCount,  color: 'text-blue-700',   bg: 'bg-blue-50' },
           { label: 'Megérkezett',      value: arrivedCount,  color: 'text-yellow-700', bg: 'bg-yellow-50' },
@@ -283,15 +283,15 @@ export function PartsInventoryPage({ refreshKey, onRefresh }: { refreshKey: numb
         ].map(s => (
           <div key={s.label} className={`${s.bg} rounded-xl p-3`}>
             <div className={`text-[22px] font-bold ${s.color}`}>{s.value}</div>
-            <div className="text-[11px] text-[#5a6a80]">{s.label}</div>
+            <div className="text-[11px] text-[#4a4a4a]">{s.label}</div>
           </div>
         ))}
       </div>
 
       {/* Profit summary strip */}
-      <div className="flex items-center gap-3 bg-white border border-[rgba(11,30,61,0.10)] rounded-xl px-4 py-3">
-        <TrendingUp size={16} className="text-[#C9A84C] shrink-0" />
-        <span className="text-[12px] text-[#5a6a80]">Teljes árrés (készleten lévő alkatrészek):</span>
+      <div className="flex items-center gap-3 bg-white border border-[rgba(0,0,0,0.10)] rounded-xl px-4 py-3">
+        <TrendingUp size={16} className="text-[#C8102E] shrink-0" />
+        <span className="text-[12px] text-[#4a4a4a]">Teljes árrés (készleten lévő alkatrészek):</span>
         <span className="text-[14px] font-bold text-[#16a34a]">{formatCurrency(totalMarginCHF)}</span>
         <div className="ml-auto flex gap-1">
           <Button
@@ -308,15 +308,15 @@ export function PartsInventoryPage({ refreshKey, onRefresh }: { refreshKey: numb
       </div>
 
       {/* View tabs */}
-      <div className="flex gap-1 border-b border-[rgba(11,30,61,0.10)]">
+      <div className="flex gap-1 border-b border-[rgba(0,0,0,0.10)]">
         {(['inventory', 'purchase'] as const).map(tab => (
           <button
             key={tab}
             onClick={() => setActiveView(tab)}
             className={`px-4 py-2 text-[12px] font-semibold border-b-2 transition-colors ${
               activeView === tab
-                ? 'border-[#C9A84C] text-[#0B1E3D]'
-                : 'border-transparent text-[#5a6a80] hover:text-[#0B1E3D]'
+                ? 'border-[#C8102E] text-[#0D0D0D]'
+                : 'border-transparent text-[#4a4a4a] hover:text-[#0D0D0D]'
             }`}
           >
             {tab === 'inventory' ? 'Készletlista' : 'Megrendelési lista'}
@@ -335,18 +335,18 @@ export function PartsInventoryPage({ refreshKey, onRefresh }: { refreshKey: numb
           {/* Filters */}
           <div className="flex gap-2 flex-wrap">
             <div className="relative flex-1 min-w-[160px]">
-              <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#8fa0b5]" />
+              <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#888888]" />
               <input
                 value={search}
                 onChange={e => setSearch(e.target.value)}
                 placeholder="Név, cikkszám, gyártó..."
-                className="w-full pl-9 pr-3 py-2 border border-[rgba(11,30,61,0.18)] rounded-lg text-[13px] bg-white outline-none focus:border-[#0B1E3D]"
+                className="w-full pl-9 pr-3 py-2 border border-[rgba(0,0,0,0.18)] rounded-lg text-[13px] bg-white outline-none focus:border-[#0D0D0D]"
               />
             </div>
             <select
               value={filterStatus}
               onChange={e => setFilterStatus(e.target.value as any)}
-              className="px-3 py-2 border border-[rgba(11,30,61,0.18)] rounded-lg text-[13px] bg-white outline-none focus:border-[#0B1E3D]"
+              className="px-3 py-2 border border-[rgba(0,0,0,0.18)] rounded-lg text-[13px] bg-white outline-none focus:border-[#0D0D0D]"
             >
               <option value="all">Minden státusz</option>
               {(Object.entries(STATUS_META) as [PartStatus, typeof STATUS_META[PartStatus]][]).map(([k, v]) => (
@@ -356,7 +356,7 @@ export function PartsInventoryPage({ refreshKey, onRefresh }: { refreshKey: numb
             <select
               value={filterCategory}
               onChange={e => setFilterCategory(e.target.value as any)}
-              className="px-3 py-2 border border-[rgba(11,30,61,0.18)] rounded-lg text-[13px] bg-white outline-none focus:border-[#0B1E3D]"
+              className="px-3 py-2 border border-[rgba(0,0,0,0.18)] rounded-lg text-[13px] bg-white outline-none focus:border-[#0D0D0D]"
             >
               <option value="all">Minden kategória</option>
               {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
@@ -364,24 +364,24 @@ export function PartsInventoryPage({ refreshKey, onRefresh }: { refreshKey: numb
           </div>
 
           {loading ? (
-            <div className="text-center py-12 text-[#5a6a80] text-sm">Betöltés...</div>
+            <div className="text-center py-12 text-[#4a4a4a] text-sm">Betöltés...</div>
           ) : (
             <Card className="p-0 overflow-hidden">
               <div className="overflow-x-auto">
                 <table className="w-full text-[13px]">
                   <thead>
-                    <tr className="bg-[#F4F5F7] border-b border-[rgba(11,30,61,0.10)]">
-                      <th className="text-left px-4 py-3 text-[11px] font-semibold text-[#5a6a80] uppercase">Név</th>
-                      <th className="text-left px-4 py-3 text-[11px] font-semibold text-[#5a6a80] uppercase hidden lg:table-cell">Cikkszám</th>
-                      <th className="text-left px-4 py-3 text-[11px] font-semibold text-[#5a6a80] uppercase hidden lg:table-cell">Gyártó</th>
-                      <th className="text-left px-4 py-3 text-[11px] font-semibold text-[#5a6a80] uppercase hidden md:table-cell">Kategória</th>
-                      <th className="text-right px-4 py-3 text-[11px] font-semibold text-[#5a6a80] uppercase hidden md:table-cell">Bsz. ár</th>
-                      <th className="text-right px-4 py-3 text-[11px] font-semibold text-[#5a6a80] uppercase hidden md:table-cell">Elad. ár</th>
-                      <th className="text-right px-4 py-3 text-[11px] font-semibold text-[#5a6a80] uppercase hidden md:table-cell">Haszonkulcs%</th>
-                      <th className="text-center px-4 py-3 text-[11px] font-semibold text-[#5a6a80] uppercase">Készlet</th>
-                      <th className="text-left px-4 py-3 text-[11px] font-semibold text-[#5a6a80] uppercase">Státusz</th>
-                      <th className="text-left px-4 py-3 text-[11px] font-semibold text-[#5a6a80] uppercase hidden lg:table-cell">Munkalap</th>
-                      <th className="px-4 py-3 text-[11px] font-semibold text-[#5a6a80] uppercase text-right">Műveletek</th>
+                    <tr className="bg-[#F4F5F7] border-b border-[rgba(0,0,0,0.10)]">
+                      <th className="text-left px-4 py-3 text-[11px] font-semibold text-[#4a4a4a] uppercase">Név</th>
+                      <th className="text-left px-4 py-3 text-[11px] font-semibold text-[#4a4a4a] uppercase hidden lg:table-cell">Cikkszám</th>
+                      <th className="text-left px-4 py-3 text-[11px] font-semibold text-[#4a4a4a] uppercase hidden lg:table-cell">Gyártó</th>
+                      <th className="text-left px-4 py-3 text-[11px] font-semibold text-[#4a4a4a] uppercase hidden md:table-cell">Kategória</th>
+                      <th className="text-right px-4 py-3 text-[11px] font-semibold text-[#4a4a4a] uppercase hidden md:table-cell">Bsz. ár</th>
+                      <th className="text-right px-4 py-3 text-[11px] font-semibold text-[#4a4a4a] uppercase hidden md:table-cell">Elad. ár</th>
+                      <th className="text-right px-4 py-3 text-[11px] font-semibold text-[#4a4a4a] uppercase hidden md:table-cell">Haszonkulcs%</th>
+                      <th className="text-center px-4 py-3 text-[11px] font-semibold text-[#4a4a4a] uppercase">Készlet</th>
+                      <th className="text-left px-4 py-3 text-[11px] font-semibold text-[#4a4a4a] uppercase">Státusz</th>
+                      <th className="text-left px-4 py-3 text-[11px] font-semibold text-[#4a4a4a] uppercase hidden lg:table-cell">Munkalap</th>
+                      <th className="px-4 py-3 text-[11px] font-semibold text-[#4a4a4a] uppercase text-right">Műveletek</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -389,36 +389,36 @@ export function PartsInventoryPage({ refreshKey, onRefresh }: { refreshKey: numb
                       const sm = STATUS_META[p.status]
                       const nextStatus = STATUS_FLOW[p.status]
                       return (
-                        <tr key={p.id} className="border-b border-[rgba(11,30,61,0.06)] hover:bg-[#fafbfc]">
+                        <tr key={p.id} className="border-b border-[rgba(0,0,0,0.06)] hover:bg-[#fafbfc]">
                           {/* Name */}
                           <td className="px-4 py-3">
-                            <div className="font-medium text-[#0B1E3D]">{p.name}</div>
+                            <div className="font-medium text-[#0D0D0D]">{p.name}</div>
                             {p.manufacturer && (
-                              <div className="text-[11px] text-[#8fa0b5]">{p.manufacturer}</div>
+                              <div className="text-[11px] text-[#888888]">{p.manufacturer}</div>
                             )}
                           </td>
                           {/* Article # */}
                           <td className="px-4 py-3 hidden lg:table-cell">
-                            <span className="font-mono text-[12px] text-[#5a6a80]">{p.article_number || '–'}</span>
+                            <span className="font-mono text-[12px] text-[#4a4a4a]">{p.article_number || '–'}</span>
                           </td>
                           {/* Manufacturer */}
-                          <td className="px-4 py-3 hidden lg:table-cell text-[12px] text-[#5a6a80]">
+                          <td className="px-4 py-3 hidden lg:table-cell text-[12px] text-[#4a4a4a]">
                             {p.manufacturer || '–'}
                           </td>
                           {/* Category */}
                           <td className="px-4 py-3 hidden md:table-cell">
                             {p.category ? (
-                              <span className="text-[11px] px-2 py-0.5 bg-[#F4F5F7] text-[#5a6a80] rounded-full font-medium">
+                              <span className="text-[11px] px-2 py-0.5 bg-[#F4F5F7] text-[#4a4a4a] rounded-full font-medium">
                                 {p.category}
                               </span>
                             ) : '–'}
                           </td>
                           {/* Purchase price */}
-                          <td className="px-4 py-3 text-right hidden md:table-cell text-[12px] text-[#5a6a80]">
+                          <td className="px-4 py-3 text-right hidden md:table-cell text-[12px] text-[#4a4a4a]">
                             {p.purchase_price != null ? formatCurrency(p.purchase_price) : '–'}
                           </td>
                           {/* Sale price */}
-                          <td className="px-4 py-3 text-right hidden md:table-cell font-semibold text-[#0B1E3D]">
+                          <td className="px-4 py-3 text-right hidden md:table-cell font-semibold text-[#0D0D0D]">
                             {p.sale_price != null ? formatCurrency(p.sale_price) : '–'}
                           </td>
                           {/* Margin */}
@@ -436,9 +436,9 @@ export function PartsInventoryPage({ refreshKey, onRefresh }: { refreshKey: numb
                           {/* Stock qty */}
                           <td className="px-4 py-3 text-center">
                             <span className={`font-bold text-[14px] ${
-                              p.stock_quantity === 0 ? 'text-[#C9384C]'
+                              p.stock_quantity === 0 ? 'text-[#C8102E]'
                               : p.stock_quantity <= 2 ? 'text-amber-600'
-                              : 'text-[#0B1E3D]'
+                              : 'text-[#0D0D0D]'
                             }`}>
                               {p.stock_quantity}
                             </span>
@@ -450,7 +450,7 @@ export function PartsInventoryPage({ refreshKey, onRefresh }: { refreshKey: numb
                               {sm.label}
                             </span>
                             {p.status === 'ordered' && p.expected_arrival && (
-                              <div className="text-[10px] text-[#8fa0b5] mt-0.5">
+                              <div className="text-[10px] text-[#888888] mt-0.5">
                                 Várható: {formatDate(p.expected_arrival)}
                               </div>
                             )}
@@ -458,7 +458,7 @@ export function PartsInventoryPage({ refreshKey, onRefresh }: { refreshKey: numb
                           {/* Work order */}
                           <td className="px-4 py-3 hidden lg:table-cell">
                             {p.work_order ? (
-                              <span className="font-mono text-[12px] text-[#0B1E3D]">{p.work_order.order_number}</span>
+                              <span className="font-mono text-[12px] text-[#0D0D0D]">{p.work_order.order_number}</span>
                             ) : '–'}
                           </td>
                           {/* Actions */}
@@ -476,14 +476,14 @@ export function PartsInventoryPage({ refreshKey, onRefresh }: { refreshKey: numb
                               )}
                               <button
                                 onClick={() => openEdit(p)}
-                                className="p-1.5 text-[#5a6a80] hover:text-[#0B1E3D] transition-colors"
+                                className="p-1.5 text-[#4a4a4a] hover:text-[#0D0D0D] transition-colors"
                                 title="Szerkesztés"
                               >
                                 <Edit2 size={13} />
                               </button>
                               <button
                                 onClick={() => handleDelete(p.id)}
-                                className="p-1.5 text-[#5a6a80] hover:text-[#C9384C] transition-colors"
+                                className="p-1.5 text-[#4a4a4a] hover:text-[#C8102E] transition-colors"
                                 title="Törlés"
                               >
                                 <Trash2 size={13} />
@@ -496,7 +496,7 @@ export function PartsInventoryPage({ refreshKey, onRefresh }: { refreshKey: numb
                   </tbody>
                 </table>
                 {filtered.length === 0 && (
-                  <div className="text-center py-10 text-[#8fa0b5] text-sm">
+                  <div className="text-center py-10 text-[#888888] text-sm">
                     {search || filterStatus !== 'all' || filterCategory !== 'all'
                       ? 'Nincs találat a szűrési feltételekre'
                       : 'Még nincs alkatrész a készletben'}
@@ -512,10 +512,10 @@ export function PartsInventoryPage({ refreshKey, onRefresh }: { refreshKey: numb
       {activeView === 'purchase' && (
         <div className="space-y-4">
           {loading ? (
-            <div className="text-center py-12 text-[#5a6a80] text-sm">Betöltés...</div>
+            <div className="text-center py-12 text-[#4a4a4a] text-sm">Betöltés...</div>
           ) : Object.keys(purchaseBySupplier).length === 0 ? (
             <Card>
-              <div className="text-center py-10 text-[#8fa0b5] text-sm">
+              <div className="text-center py-10 text-[#888888] text-sm">
                 Nincsenek megrendelés alatt álló alkatrészek
               </div>
             </Card>
@@ -523,13 +523,13 @@ export function PartsInventoryPage({ refreshKey, onRefresh }: { refreshKey: numb
             Object.entries(purchaseBySupplier).map(([supplier, group]) => (
               <Card key={supplier} className="p-0 overflow-hidden">
                 {/* Supplier header */}
-                <div className="flex items-center justify-between px-4 py-3 bg-[#F4F5F7] border-b border-[rgba(11,30,61,0.10)]">
+                <div className="flex items-center justify-between px-4 py-3 bg-[#F4F5F7] border-b border-[rgba(0,0,0,0.10)]">
                   <div className="flex items-center gap-2">
-                    <ShoppingCart size={15} className="text-[#C9A84C]" />
-                    <span className="font-semibold text-[13px] text-[#0B1E3D]">{supplier}</span>
-                    <span className="text-[11px] text-[#5a6a80]">{group.parts.length} tétel</span>
+                    <ShoppingCart size={15} className="text-[#C8102E]" />
+                    <span className="font-semibold text-[13px] text-[#0D0D0D]">{supplier}</span>
+                    <span className="text-[11px] text-[#4a4a4a]">{group.parts.length} tétel</span>
                   </div>
-                  <span className="font-bold text-[13px] text-[#0B1E3D]">
+                  <span className="font-bold text-[13px] text-[#0D0D0D]">
                     Összesen: {formatCurrency(group.total)}
                   </span>
                 </div>
@@ -539,27 +539,27 @@ export function PartsInventoryPage({ refreshKey, onRefresh }: { refreshKey: numb
                     {group.parts.map(p => {
                       const sm = STATUS_META[p.status]
                       return (
-                        <tr key={p.id} className="border-b border-[rgba(11,30,61,0.06)] last:border-0 hover:bg-[#fafbfc]">
+                        <tr key={p.id} className="border-b border-[rgba(0,0,0,0.06)] last:border-0 hover:bg-[#fafbfc]">
                           <td className="px-4 py-3">
-                            <div className="font-medium text-[#0B1E3D]">{p.name}</div>
+                            <div className="font-medium text-[#0D0D0D]">{p.name}</div>
                             {p.article_number && (
-                              <div className="font-mono text-[11px] text-[#8fa0b5]">#{p.article_number}</div>
+                              <div className="font-mono text-[11px] text-[#888888]">#{p.article_number}</div>
                             )}
                           </td>
                           <td className="px-4 py-3 hidden md:table-cell">
                             {p.category && (
-                              <span className="text-[11px] px-2 py-0.5 bg-[#F4F5F7] text-[#5a6a80] rounded-full">
+                              <span className="text-[11px] px-2 py-0.5 bg-[#F4F5F7] text-[#4a4a4a] rounded-full">
                                 {p.category}
                               </span>
                             )}
                           </td>
                           <td className="px-4 py-3 text-center">
-                            <span className="font-semibold text-[#0B1E3D]">{p.stock_quantity} db</span>
+                            <span className="font-semibold text-[#0D0D0D]">{p.stock_quantity} db</span>
                           </td>
-                          <td className="px-4 py-3 text-right hidden md:table-cell text-[12px] text-[#5a6a80]">
+                          <td className="px-4 py-3 text-right hidden md:table-cell text-[12px] text-[#4a4a4a]">
                             {p.purchase_price != null ? formatCurrency(p.purchase_price) + ' / db' : '–'}
                           </td>
-                          <td className="px-4 py-3 text-right font-semibold text-[#0B1E3D]">
+                          <td className="px-4 py-3 text-right font-semibold text-[#0D0D0D]">
                             {p.purchase_price != null
                               ? formatCurrency(p.purchase_price * (p.stock_quantity || 0))
                               : '–'}
@@ -570,7 +570,7 @@ export function PartsInventoryPage({ refreshKey, onRefresh }: { refreshKey: numb
                               {sm.label}
                             </span>
                             {p.expected_arrival && (
-                              <div className="text-[10px] text-[#8fa0b5] mt-0.5">
+                              <div className="text-[10px] text-[#888888] mt-0.5">
                                 Várható: {formatDate(p.expected_arrival)}
                               </div>
                             )}
@@ -579,7 +579,7 @@ export function PartsInventoryPage({ refreshKey, onRefresh }: { refreshKey: numb
                             {STATUS_FLOW[p.status] && (
                               <button
                                 onClick={() => advanceStatus(p)}
-                                className="flex items-center gap-1 ml-auto text-[11px] text-[#0B1E3D] hover:text-[#C9A84C] font-semibold transition-colors"
+                                className="flex items-center gap-1 ml-auto text-[11px] text-[#0D0D0D] hover:text-[#C8102E] font-semibold transition-colors"
                               >
                                 <ChevronRight size={13} />
                                 {STATUS_META[STATUS_FLOW[p.status]!].label}
@@ -598,10 +598,10 @@ export function PartsInventoryPage({ refreshKey, onRefresh }: { refreshKey: numb
           {/* Grand total */}
           {Object.keys(purchaseBySupplier).length > 0 && (
             <div className="flex items-center justify-end gap-3 px-2">
-              <span className="text-[12px] text-[#5a6a80] font-semibold uppercase tracking-wide">
+              <span className="text-[12px] text-[#4a4a4a] font-semibold uppercase tracking-wide">
                 Teljes megrendelési értéke:
               </span>
-              <span className="text-[16px] font-bold text-[#0B1E3D]">
+              <span className="text-[16px] font-bold text-[#0D0D0D]">
                 {formatCurrency(purchaseParts.reduce((s, p) => s + (p.purchase_price || 0) * (p.stock_quantity || 0), 0))}
               </span>
             </div>
@@ -702,7 +702,7 @@ export function PartsInventoryPage({ refreshKey, onRefresh }: { refreshKey: numb
           {/* Margin (read-only display) */}
           {form.margin_percent !== '' && (
             <FormGroup className="col-span-2">
-              <div className="flex items-center gap-2 text-[12px] text-[#5a6a80]">
+              <div className="flex items-center gap-2 text-[12px] text-[#4a4a4a]">
                 <TrendingUp size={13} className="text-[#16a34a]" />
                 Haszonkulcs:{' '}
                 <span className={`font-bold ${parseFloat(form.margin_percent) >= 20 ? 'text-[#16a34a]' : 'text-amber-600'}`}>

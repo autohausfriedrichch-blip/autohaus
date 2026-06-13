@@ -191,7 +191,7 @@ export function ProfitPage({ refreshKey, onRefresh }: { refreshKey: number; onRe
       label: 'Bruttó bevétel',
       value: formatCurrency(totalRevenue),
       icon: <DollarSign size={18} />,
-      color: '#C9A84C',
+      color: '#C8102E',
       bg: 'bg-amber-50',
       text: 'text-amber-700',
     },
@@ -199,7 +199,7 @@ export function ProfitPage({ refreshKey, onRefresh }: { refreshKey: number; onRe
       label: 'Összes költség',
       value: formatCurrency(totalCost),
       icon: <TrendingDown size={18} />,
-      color: '#C9384C',
+      color: '#C8102E',
       bg: 'bg-red-50',
       text: 'text-red-700',
     },
@@ -215,7 +215,7 @@ export function ProfitPage({ refreshKey, onRefresh }: { refreshKey: number; onRe
       label: 'Profit %',
       value: profitPercent.toFixed(1) + '%',
       icon: <Percent size={18} />,
-      color: '#0B1E3D',
+      color: '#0D0D0D',
       bg: 'bg-blue-50',
       text: 'text-blue-700',
     },
@@ -225,15 +225,15 @@ export function ProfitPage({ refreshKey, onRefresh }: { refreshKey: number; onRe
     <div className="animate-fade-in space-y-4">
       {/* Period tabs + refresh */}
       <div className="flex items-center justify-between flex-wrap gap-2">
-        <div className="flex gap-1 bg-white border border-[rgba(11,30,61,0.10)] rounded-xl p-1">
+        <div className="flex gap-1 bg-white border border-[rgba(0,0,0,0.10)] rounded-xl p-1">
           {PERIOD_LABELS.map(p => (
             <button
               key={p}
               onClick={() => setPeriod(p)}
               className={`px-4 py-1.5 rounded-lg text-[12px] font-semibold transition-all ${
                 period === p
-                  ? 'bg-[#0B1E3D] text-white'
-                  : 'text-[#5a6a80] hover:bg-[#F4F5F7]'
+                  ? 'bg-[#0D0D0D] text-white'
+                  : 'text-[#4a4a4a] hover:bg-[#F4F5F7]'
               }`}
             >
               {p}
@@ -250,25 +250,25 @@ export function ProfitPage({ refreshKey, onRefresh }: { refreshKey: number; onRe
         {kpis.map(kpi => (
           <div key={kpi.label} className={`${kpi.bg} rounded-xl p-4`}>
             <div className="flex items-center justify-between mb-2">
-              <span className="text-[11px] font-semibold text-[#5a6a80] uppercase tracking-wide">{kpi.label}</span>
+              <span className="text-[11px] font-semibold text-[#4a4a4a] uppercase tracking-wide">{kpi.label}</span>
               <span style={{ color: kpi.color }}>{kpi.icon}</span>
             </div>
             <div className={`text-[22px] font-bold ${kpi.text} leading-tight`}>{kpi.value}</div>
-            <div className="text-[11px] text-[#5a6a80] mt-0.5">{orders.length} munkalap</div>
+            <div className="text-[11px] text-[#4a4a4a] mt-0.5">{orders.length} munkalap</div>
           </div>
         ))}
       </div>
 
       {/* Sub-tab navigation */}
-      <div className="flex gap-1 border-b border-[rgba(11,30,61,0.10)]">
+      <div className="flex gap-1 border-b border-[rgba(0,0,0,0.10)]">
         {(['overview', 'orders', 'services'] as const).map(tab => (
           <button
             key={tab}
             onClick={() => setActiveTab(tab)}
             className={`px-4 py-2 text-[12px] font-semibold border-b-2 transition-colors ${
               activeTab === tab
-                ? 'border-[#C9A84C] text-[#0B1E3D]'
-                : 'border-transparent text-[#5a6a80] hover:text-[#0B1E3D]'
+                ? 'border-[#C8102E] text-[#0D0D0D]'
+                : 'border-transparent text-[#4a4a4a] hover:text-[#0D0D0D]'
             }`}
           >
             {tab === 'overview' ? 'Áttekintés' : tab === 'orders' ? 'Munkalapok' : 'Szolgáltatások'}
@@ -277,7 +277,7 @@ export function ProfitPage({ refreshKey, onRefresh }: { refreshKey: number; onRe
       </div>
 
       {loading ? (
-        <div className="text-center py-12 text-[#5a6a80] text-sm">Betöltés...</div>
+        <div className="text-center py-12 text-[#4a4a4a] text-sm">Betöltés...</div>
       ) : (
         <>
           {/* OVERVIEW TAB */}
@@ -292,17 +292,17 @@ export function ProfitPage({ refreshKey, onRefresh }: { refreshKey: number; onRe
                     { label: 'Alkatrész árrés', value: partsRevenue, icon: <Package size={13} /> },
                     { label: 'Útköltség / Pickup díj', value: travelRevenue, icon: <MapPin size={13} /> },
                   ].map(row => (
-                    <div key={row.label} className="flex items-center justify-between py-2 border-b border-[rgba(11,30,61,0.06)] last:border-0">
-                      <div className="flex items-center gap-2 text-[13px] text-[#0B1E3D]">
-                        <span className="text-[#C9A84C]">{row.icon}</span>
+                    <div key={row.label} className="flex items-center justify-between py-2 border-b border-[rgba(0,0,0,0.06)] last:border-0">
+                      <div className="flex items-center gap-2 text-[13px] text-[#0D0D0D]">
+                        <span className="text-[#C8102E]">{row.icon}</span>
                         {row.label}
                       </div>
-                      <span className="font-semibold text-[13px] text-[#0B1E3D]">{formatCurrency(row.value)}</span>
+                      <span className="font-semibold text-[13px] text-[#0D0D0D]">{formatCurrency(row.value)}</span>
                     </div>
                   ))}
                   <div className="flex items-center justify-between pt-2">
-                    <span className="text-[12px] font-bold text-[#0B1E3D] uppercase tracking-wide">Összesen</span>
-                    <span className="font-bold text-[#C9A84C]">{formatCurrency(totalRevenue)}</span>
+                    <span className="text-[12px] font-bold text-[#0D0D0D] uppercase tracking-wide">Összesen</span>
+                    <span className="font-bold text-[#C8102E]">{formatCurrency(totalRevenue)}</span>
                   </div>
                 </div>
               </Card>
@@ -317,17 +317,17 @@ export function ProfitPage({ refreshKey, onRefresh }: { refreshKey: number; onRe
                     { label: 'Üzemanyag', value: orders.reduce((s, o) => s + (o.fuel_cost || 0), 0), icon: <Fuel size={13} /> },
                     { label: 'Útköltség', value: orders.reduce((s, o) => s + (o.travel_cost || 0), 0), icon: <MapPin size={13} /> },
                   ].map(row => (
-                    <div key={row.label} className="flex items-center justify-between py-2 border-b border-[rgba(11,30,61,0.06)] last:border-0">
-                      <div className="flex items-center gap-2 text-[13px] text-[#0B1E3D]">
-                        <span className="text-[#C9384C]">{row.icon}</span>
+                    <div key={row.label} className="flex items-center justify-between py-2 border-b border-[rgba(0,0,0,0.06)] last:border-0">
+                      <div className="flex items-center gap-2 text-[13px] text-[#0D0D0D]">
+                        <span className="text-[#C8102E]">{row.icon}</span>
                         {row.label}
                       </div>
-                      <span className="font-semibold text-[13px] text-[#C9384C]">{formatCurrency(row.value)}</span>
+                      <span className="font-semibold text-[13px] text-[#C8102E]">{formatCurrency(row.value)}</span>
                     </div>
                   ))}
                   <div className="flex items-center justify-between pt-2">
-                    <span className="text-[12px] font-bold text-[#0B1E3D] uppercase tracking-wide">Összesen</span>
-                    <span className="font-bold text-[#C9384C]">{formatCurrency(totalCost)}</span>
+                    <span className="text-[12px] font-bold text-[#0D0D0D] uppercase tracking-wide">Összesen</span>
+                    <span className="font-bold text-[#C8102E]">{formatCurrency(totalCost)}</span>
                   </div>
                 </div>
               </Card>
@@ -337,15 +337,15 @@ export function ProfitPage({ refreshKey, onRefresh }: { refreshKey: number; onRe
                 <CardTitle icon={<TrendingUp size={14} />}>Profit összefoglaló</CardTitle>
                 <div className="grid grid-cols-3 gap-4">
                   <div className="text-center p-4 bg-amber-50 rounded-xl">
-                    <div className="text-[11px] text-[#5a6a80] uppercase font-semibold mb-1">Bevétel</div>
+                    <div className="text-[11px] text-[#4a4a4a] uppercase font-semibold mb-1">Bevétel</div>
                     <div className="text-[20px] font-bold text-amber-700">{formatCurrency(totalRevenue)}</div>
                   </div>
                   <div className="text-center p-4 bg-red-50 rounded-xl">
-                    <div className="text-[11px] text-[#5a6a80] uppercase font-semibold mb-1">Költség</div>
+                    <div className="text-[11px] text-[#4a4a4a] uppercase font-semibold mb-1">Költség</div>
                     <div className="text-[20px] font-bold text-red-700">{formatCurrency(totalCost)}</div>
                   </div>
                   <div className={`text-center p-4 rounded-xl ${totalProfit >= 0 ? 'bg-green-50' : 'bg-red-50'}`}>
-                    <div className="text-[11px] text-[#5a6a80] uppercase font-semibold mb-1">Nettó profit</div>
+                    <div className="text-[11px] text-[#4a4a4a] uppercase font-semibold mb-1">Nettó profit</div>
                     <div className={`text-[20px] font-bold ${totalProfit >= 0 ? 'text-green-700' : 'text-red-700'}`}>
                       {formatCurrency(totalProfit)}
                     </div>
@@ -363,13 +363,13 @@ export function ProfitPage({ refreshKey, onRefresh }: { refreshKey: number; onRe
             <Card className="p-0 overflow-hidden">
               <table className="w-full text-[13px]">
                 <thead>
-                  <tr className="bg-[#F4F5F7] border-b border-[rgba(11,30,61,0.10)]">
-                    <th className="text-left px-4 py-3 text-[11px] font-semibold text-[#5a6a80] uppercase">Munkalap</th>
-                    <th className="text-left px-4 py-3 text-[11px] font-semibold text-[#5a6a80] uppercase hidden md:table-cell">Ügyfél / Jármű</th>
-                    <th className="text-right px-4 py-3 text-[11px] font-semibold text-[#5a6a80] uppercase">Bevétel</th>
-                    <th className="text-right px-4 py-3 text-[11px] font-semibold text-[#5a6a80] uppercase">Önköltség</th>
-                    <th className="text-right px-4 py-3 text-[11px] font-semibold text-[#5a6a80] uppercase">Profit</th>
-                    <th className="text-right px-4 py-3 text-[11px] font-semibold text-[#5a6a80] uppercase">%</th>
+                  <tr className="bg-[#F4F5F7] border-b border-[rgba(0,0,0,0.10)]">
+                    <th className="text-left px-4 py-3 text-[11px] font-semibold text-[#4a4a4a] uppercase">Munkalap</th>
+                    <th className="text-left px-4 py-3 text-[11px] font-semibold text-[#4a4a4a] uppercase hidden md:table-cell">Ügyfél / Jármű</th>
+                    <th className="text-right px-4 py-3 text-[11px] font-semibold text-[#4a4a4a] uppercase">Bevétel</th>
+                    <th className="text-right px-4 py-3 text-[11px] font-semibold text-[#4a4a4a] uppercase">Önköltség</th>
+                    <th className="text-right px-4 py-3 text-[11px] font-semibold text-[#4a4a4a] uppercase">Profit</th>
+                    <th className="text-right px-4 py-3 text-[11px] font-semibold text-[#4a4a4a] uppercase">%</th>
                     <th className="px-4 py-3" />
                   </tr>
                 </thead>
@@ -384,28 +384,28 @@ export function ProfitPage({ refreshKey, onRefresh }: { refreshKey: number; onRe
                       <>
                         <tr
                           key={o.id}
-                          className={`border-b border-[rgba(11,30,61,0.06)] hover:bg-[#fafbfc] ${isExpanded ? 'bg-[#fafbfc]' : ''}`}
+                          className={`border-b border-[rgba(0,0,0,0.06)] hover:bg-[#fafbfc] ${isExpanded ? 'bg-[#fafbfc]' : ''}`}
                         >
                           <td className="px-4 py-3">
-                            <div className="font-mono font-semibold text-[#0B1E3D] text-[12px]">{o.order_number}</div>
-                            <div className="text-[11px] text-[#8fa0b5]">{formatDate(o.created_at)}</div>
+                            <div className="font-mono font-semibold text-[#0D0D0D] text-[12px]">{o.order_number}</div>
+                            <div className="text-[11px] text-[#888888]">{formatDate(o.created_at)}</div>
                           </td>
                           <td className="px-4 py-3 hidden md:table-cell">
-                            <div className="text-[13px] text-[#0B1E3D]">{o.customer?.full_name || '–'}</div>
-                            <div className="text-[11px] text-[#8fa0b5]">
+                            <div className="text-[13px] text-[#0D0D0D]">{o.customer?.full_name || '–'}</div>
+                            <div className="text-[11px] text-[#888888]">
                               {o.vehicle ? `${o.vehicle.make} ${o.vehicle.model} · ${o.vehicle.license_plate}` : '–'}
                             </div>
                           </td>
-                          <td className="px-4 py-3 text-right font-semibold text-[#0B1E3D]">
+                          <td className="px-4 py-3 text-right font-semibold text-[#0D0D0D]">
                             {formatCurrency(o.total_amount || 0)}
                           </td>
                           <td className="px-4 py-3 text-right">
                             {isEditing ? (
-                              <span className="text-[11px] text-[#5a6a80] italic">szerkesztés alatt</span>
+                              <span className="text-[11px] text-[#4a4a4a] italic">szerkesztés alatt</span>
                             ) : (
                               <button
                                 onClick={() => startCostEdit(o)}
-                                className="group flex items-center gap-1 ml-auto text-[13px] text-[#5a6a80] hover:text-[#0B1E3D]"
+                                className="group flex items-center gap-1 ml-auto text-[13px] text-[#4a4a4a] hover:text-[#0D0D0D]"
                                 title="Szerkesztés"
                               >
                                 <span>{o.real_cost != null ? formatCurrency(o.real_cost) : '–'}</span>
@@ -413,7 +413,7 @@ export function ProfitPage({ refreshKey, onRefresh }: { refreshKey: number; onRe
                               </button>
                             )}
                           </td>
-                          <td className={`px-4 py-3 text-right font-semibold ${profit >= 0 ? 'text-[#16a34a]' : 'text-[#C9384C]'}`}>
+                          <td className={`px-4 py-3 text-right font-semibold ${profit >= 0 ? 'text-[#16a34a]' : 'text-[#C8102E]'}`}>
                             {o.real_cost != null ? formatCurrency(profit) : '–'}
                           </td>
                           <td className="px-4 py-3 text-right">
@@ -430,7 +430,7 @@ export function ProfitPage({ refreshKey, onRefresh }: { refreshKey: number; onRe
                           <td className="px-4 py-3">
                             <button
                               onClick={() => setExpandedId(isExpanded && !isEditing ? null : o.id)}
-                              className="text-[#5a6a80] hover:text-[#0B1E3D] p-1"
+                              className="text-[#4a4a4a] hover:text-[#0D0D0D] p-1"
                             >
                               {isExpanded ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
                             </button>
@@ -439,10 +439,10 @@ export function ProfitPage({ refreshKey, onRefresh }: { refreshKey: number; onRe
 
                         {/* Inline cost editor */}
                         {isExpanded && (
-                          <tr key={`${o.id}-edit`} className="border-b border-[rgba(11,30,61,0.06)] bg-[#F4F5F7]">
+                          <tr key={`${o.id}-edit`} className="border-b border-[rgba(0,0,0,0.06)] bg-[#F4F5F7]">
                             <td colSpan={7} className="px-4 py-4">
                               <div className="max-w-2xl">
-                                <div className="text-[11px] font-semibold text-[#5a6a80] uppercase tracking-wide mb-3">
+                                <div className="text-[11px] font-semibold text-[#4a4a4a] uppercase tracking-wide mb-3">
                                   Önköltség szerkesztés · Óradíj: {formatCurrency(hourlyRate)}/óra
                                 </div>
                                 {isEditing ? (
@@ -461,7 +461,7 @@ export function ProfitPage({ refreshKey, onRefresh }: { refreshKey: number; onRe
                                         placeholder="0"
                                       />
                                       {editingCost[o.id]?.technician_hours && (
-                                        <div className="text-[11px] text-[#5a6a80] mt-1">
+                                        <div className="text-[11px] text-[#4a4a4a] mt-1">
                                           = {formatCurrency(parseFloat(editingCost[o.id].technician_hours || '0') * hourlyRate)}
                                         </div>
                                       )}
@@ -494,10 +494,10 @@ export function ProfitPage({ refreshKey, onRefresh }: { refreshKey: number; onRe
                                         placeholder="0.00"
                                       />
                                     </FormGroup>
-                                    <div className="col-span-3 flex items-center justify-between pt-2 border-t border-[rgba(11,30,61,0.10)]">
-                                      <div className="text-[12px] text-[#5a6a80]">
+                                    <div className="col-span-3 flex items-center justify-between pt-2 border-t border-[rgba(0,0,0,0.10)]">
+                                      <div className="text-[12px] text-[#4a4a4a]">
                                         Kalkulált önköltség:{' '}
-                                        <strong className="text-[#C9384C]">
+                                        <strong className="text-[#C8102E]">
                                           {formatCurrency(
                                             (parseFloat(editingCost[o.id]?.technician_hours || '0') * hourlyRate) +
                                             parseFloat(editingCost[o.id]?.fuel_cost || '0') +
@@ -530,9 +530,9 @@ export function ProfitPage({ refreshKey, onRefresh }: { refreshKey: number; onRe
                                       { label: 'Útköltség', value: o.travel_cost != null ? formatCurrency(o.travel_cost) : '–' },
                                       { label: 'Alkatrész', value: formatCurrency(o.parts_cost || 0) },
                                     ].map(item => (
-                                      <div key={item.label} className="bg-white rounded-lg p-3 border border-[rgba(11,30,61,0.08)]">
-                                        <div className="text-[10px] text-[#5a6a80] uppercase font-semibold mb-1">{item.label}</div>
-                                        <div className="font-semibold text-[#0B1E3D]">{item.value}</div>
+                                      <div key={item.label} className="bg-white rounded-lg p-3 border border-[rgba(0,0,0,0.08)]">
+                                        <div className="text-[10px] text-[#4a4a4a] uppercase font-semibold mb-1">{item.label}</div>
+                                        <div className="font-semibold text-[#0D0D0D]">{item.value}</div>
                                       </div>
                                     ))}
                                   </div>
@@ -547,7 +547,7 @@ export function ProfitPage({ refreshKey, onRefresh }: { refreshKey: number; onRe
                 </tbody>
               </table>
               {orders.length === 0 && (
-                <div className="text-center py-10 text-[#8fa0b5] text-sm">
+                <div className="text-center py-10 text-[#888888] text-sm">
                   Nincs adat a kiválasztott időszakra
                 </div>
               )}
@@ -559,13 +559,13 @@ export function ProfitPage({ refreshKey, onRefresh }: { refreshKey: number; onRe
             <Card className="p-0 overflow-hidden">
               <table className="w-full text-[13px]">
                 <thead>
-                  <tr className="bg-[#F4F5F7] border-b border-[rgba(11,30,61,0.10)]">
-                    <th className="text-left px-4 py-3 text-[11px] font-semibold text-[#5a6a80] uppercase">Szolgáltatás típus</th>
-                    <th className="text-center px-4 py-3 text-[11px] font-semibold text-[#5a6a80] uppercase">Db</th>
-                    <th className="text-right px-4 py-3 text-[11px] font-semibold text-[#5a6a80] uppercase">Bevétel</th>
-                    <th className="text-right px-4 py-3 text-[11px] font-semibold text-[#5a6a80] uppercase">Költség</th>
-                    <th className="text-right px-4 py-3 text-[11px] font-semibold text-[#5a6a80] uppercase">Profit</th>
-                    <th className="text-right px-4 py-3 text-[11px] font-semibold text-[#5a6a80] uppercase">Margin%</th>
+                  <tr className="bg-[#F4F5F7] border-b border-[rgba(0,0,0,0.10)]">
+                    <th className="text-left px-4 py-3 text-[11px] font-semibold text-[#4a4a4a] uppercase">Szolgáltatás típus</th>
+                    <th className="text-center px-4 py-3 text-[11px] font-semibold text-[#4a4a4a] uppercase">Db</th>
+                    <th className="text-right px-4 py-3 text-[11px] font-semibold text-[#4a4a4a] uppercase">Bevétel</th>
+                    <th className="text-right px-4 py-3 text-[11px] font-semibold text-[#4a4a4a] uppercase">Költség</th>
+                    <th className="text-right px-4 py-3 text-[11px] font-semibold text-[#4a4a4a] uppercase">Profit</th>
+                    <th className="text-right px-4 py-3 text-[11px] font-semibold text-[#4a4a4a] uppercase">Margin%</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -573,14 +573,14 @@ export function ProfitPage({ refreshKey, onRefresh }: { refreshKey: number; onRe
                     const profit = data.revenue - data.cost
                     const margin = data.revenue > 0 ? (profit / data.revenue) * 100 : 0
                     return (
-                      <tr key={type} className="border-b border-[rgba(11,30,61,0.06)] hover:bg-[#fafbfc]">
+                      <tr key={type} className="border-b border-[rgba(0,0,0,0.06)] hover:bg-[#fafbfc]">
                         <td className="px-4 py-3">
-                          <span className="font-medium text-[#0B1E3D] capitalize">{type}</span>
+                          <span className="font-medium text-[#0D0D0D] capitalize">{type}</span>
                         </td>
-                        <td className="px-4 py-3 text-center text-[#5a6a80]">{data.count}</td>
-                        <td className="px-4 py-3 text-right font-semibold text-[#0B1E3D]">{formatCurrency(data.revenue)}</td>
-                        <td className="px-4 py-3 text-right text-[#C9384C]">{formatCurrency(data.cost)}</td>
-                        <td className={`px-4 py-3 text-right font-semibold ${profit >= 0 ? 'text-[#16a34a]' : 'text-[#C9384C]'}`}>
+                        <td className="px-4 py-3 text-center text-[#4a4a4a]">{data.count}</td>
+                        <td className="px-4 py-3 text-right font-semibold text-[#0D0D0D]">{formatCurrency(data.revenue)}</td>
+                        <td className="px-4 py-3 text-right text-[#C8102E]">{formatCurrency(data.cost)}</td>
+                        <td className={`px-4 py-3 text-right font-semibold ${profit >= 0 ? 'text-[#16a34a]' : 'text-[#C8102E]'}`}>
                           {formatCurrency(profit)}
                         </td>
                         <td className="px-4 py-3 text-right">
@@ -598,7 +598,7 @@ export function ProfitPage({ refreshKey, onRefresh }: { refreshKey: number; onRe
                 </tbody>
               </table>
               {Object.keys(serviceGroups).length === 0 && (
-                <div className="text-center py-10 text-[#8fa0b5] text-sm">Nincs adat</div>
+                <div className="text-center py-10 text-[#888888] text-sm">Nincs adat</div>
               )}
             </Card>
           )}

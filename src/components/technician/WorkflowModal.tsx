@@ -123,14 +123,14 @@ function PhotoBtn({
   return (
     <div className="flex gap-1.5">
       <button
-        className="flex-1 flex items-center justify-center gap-1.5 bg-[#0B1E3D] text-white text-[11px] font-semibold py-2 px-3 rounded-lg"
+        className="flex-1 flex items-center justify-center gap-1.5 bg-[#0D0D0D] text-white text-[11px] font-semibold py-2 px-3 rounded-lg"
         onClick={() => camRef.current?.click()}
         disabled={uploading}
       >
         <Camera size={12} /> {uploading ? '...' : 'Kamera'}
       </button>
       <button
-        className="flex-1 flex items-center justify-center gap-1.5 bg-[rgba(11,30,61,0.08)] text-[#0B1E3D] text-[11px] font-semibold py-2 px-3 rounded-lg border border-[rgba(11,30,61,0.12)]"
+        className="flex-1 flex items-center justify-center gap-1.5 bg-[rgba(0,0,0,0.08)] text-[#0D0D0D] text-[11px] font-semibold py-2 px-3 rounded-lg border border-[rgba(0,0,0,0.12)]"
         onClick={() => galRef.current?.click()}
         disabled={uploading}
       >
@@ -193,15 +193,15 @@ function TaskTimer({ task, onUpdate }: { task: WOTask; onUpdate: (id: string, u:
   }
 
   return (
-    <div className="bg-[#0B1E3D] rounded-xl p-3 mt-2">
+    <div className="bg-[#0D0D0D] rounded-xl p-3 mt-2">
       <div className="flex items-center gap-2 mb-2">
-        <Clock size={13} className={ticking ? 'text-[#C9A84C] animate-pulse' : 'text-white/40'} />
+        <Clock size={13} className={ticking ? 'text-[#C8102E] animate-pulse' : 'text-white/40'} />
         <span className="font-mono text-[16px] font-bold text-white flex-1">{formatElapsed(elapsed)}</span>
-        {ticking && <span className="text-[9px] text-[#C9A84C] font-bold">AKTÍV</span>}
+        {ticking && <span className="text-[9px] text-[#C8102E] font-bold">AKTÍV</span>}
       </div>
       <div className="flex gap-1.5">
         {!ticking ? (
-          <button className="flex-1 flex items-center justify-center gap-1 bg-[#C9A84C] text-[#0B1E3D] font-bold text-[11px] py-2 rounded-lg" onClick={start}>
+          <button className="flex-1 flex items-center justify-center gap-1 bg-[#C8102E] text-[#0D0D0D] font-bold text-[11px] py-2 rounded-lg" onClick={start}>
             <Play size={12} /> Indítás
           </button>
         ) : (
@@ -266,7 +266,7 @@ function RepairTaskCard({
     toast('Megjegyzés mentve', 'success')
   }
 
-  const borderColor = isDone ? 'border-emerald-400' : isProblem ? 'border-red-400' : task.status === 'in_progress' ? 'border-[#C9A84C]' : 'border-[rgba(11,30,61,0.12)]'
+  const borderColor = isDone ? 'border-emerald-400' : isProblem ? 'border-red-400' : task.status === 'in_progress' ? 'border-[#C8102E]' : 'border-[rgba(0,0,0,0.12)]'
   const bg = isDone ? 'bg-emerald-50' : isProblem ? 'bg-red-50' : 'bg-white'
 
   return (
@@ -276,27 +276,27 @@ function RepairTaskCard({
           <div className="flex items-center gap-2">
             {isDone ? <CheckCircle size={14} className="text-emerald-600 shrink-0" /> :
              isProblem ? <AlertTriangle size={14} className="text-red-500 shrink-0" /> :
-             <Circle size={14} className="text-[rgba(11,30,61,0.3)] shrink-0" />}
-            <span className={`text-[13px] font-semibold ${isDone ? 'line-through text-[#5a6a80]' : 'text-[#0B1E3D]'}`}>{task.title}</span>
+             <Circle size={14} className="text-[rgba(0,0,0,0.3)] shrink-0" />}
+            <span className={`text-[13px] font-semibold ${isDone ? 'line-through text-[#4a4a4a]' : 'text-[#0D0D0D]'}`}>{task.title}</span>
           </div>
           <div className="flex items-center gap-2 mt-1 ml-5 flex-wrap">
-            {task.task_number && <span className="text-[9px] font-mono text-[#5a6a80] bg-[rgba(11,30,61,0.06)] px-1.5 py-0.5 rounded">{task.task_number}</span>}
+            {task.task_number && <span className="text-[9px] font-mono text-[#4a4a4a] bg-[rgba(0,0,0,0.06)] px-1.5 py-0.5 rounded">{task.task_number}</span>}
             {checklist.length > 0 && <span className={`text-[10px] font-semibold px-1.5 py-0.5 rounded-full ${checkDone.length === checklist.length ? 'bg-emerald-100 text-emerald-700' : 'bg-gray-100 text-gray-600'}`}>{checkDone.length}/{checklist.length}</span>}
-            {showTimer && task.elapsed_seconds > 0 && <span className="text-[10px] text-[#5a6a80] flex items-center gap-0.5"><Clock size={9} />{formatElapsed(task.elapsed_seconds)}</span>}
+            {showTimer && task.elapsed_seconds > 0 && <span className="text-[10px] text-[#4a4a4a] flex items-center gap-0.5"><Clock size={9} />{formatElapsed(task.elapsed_seconds)}</span>}
           </div>
         </div>
-        <span className="text-[#5a6a80] text-[11px]">{open ? '▲' : '▼'}</span>
+        <span className="text-[#4a4a4a] text-[11px]">{open ? '▲' : '▼'}</span>
       </button>
 
       {open && !isDone && (
-        <div className="border-t border-[rgba(11,30,61,0.08)] px-3 pb-3 pt-2.5 space-y-3">
+        <div className="border-t border-[rgba(0,0,0,0.08)] px-3 pb-3 pt-2.5 space-y-3">
           {checklist.length > 0 && (
             <div className="space-y-1.5">
-              <div className="text-[10px] font-bold text-[#5a6a80] uppercase tracking-wide">Lépések — {checkDone.length}/{checklist.length}</div>
+              <div className="text-[10px] font-bold text-[#4a4a4a] uppercase tracking-wide">Lépések — {checkDone.length}/{checklist.length}</div>
               {checklist.map((item: string) => (
                 <button key={item} onClick={() => toggleCheck(item)}
-                  className={`w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg border text-left ${checkDone.includes(item) ? 'bg-emerald-50 border-emerald-300 text-emerald-800' : 'bg-white border-[rgba(11,30,61,0.10)] text-[#0B1E3D]'}`}>
-                  {checkDone.includes(item) ? <CheckSquare size={12} className="text-emerald-600 shrink-0" /> : <Circle size={12} className="text-[rgba(11,30,61,0.3)] shrink-0" />}
+                  className={`w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg border text-left ${checkDone.includes(item) ? 'bg-emerald-50 border-emerald-300 text-emerald-800' : 'bg-white border-[rgba(0,0,0,0.10)] text-[#0D0D0D]'}`}>
+                  {checkDone.includes(item) ? <CheckSquare size={12} className="text-emerald-600 shrink-0" /> : <Circle size={12} className="text-[rgba(0,0,0,0.3)] shrink-0" />}
                   <span className={`text-[12px] ${checkDone.includes(item) ? 'line-through' : ''}`}>{item}</span>
                 </button>
               ))}
@@ -308,9 +308,9 @@ function RepairTaskCard({
           <div>
             <textarea value={notes} onChange={e => setNotes(e.target.value)}
               placeholder="Megjegyzés a feladathoz..." rows={2}
-              className="w-full text-[12px] p-2.5 rounded-lg border border-[rgba(11,30,61,0.12)] resize-none focus:outline-none focus:border-[#0B1E3D]" />
+              className="w-full text-[12px] p-2.5 rounded-lg border border-[rgba(0,0,0,0.12)] resize-none focus:outline-none focus:border-[#0D0D0D]" />
             {notes !== (task.notes || '') && (
-              <button onClick={saveNotes} className="mt-1 text-[11px] text-[#0B1E3D] font-semibold underline">Mentés</button>
+              <button onClick={saveNotes} className="mt-1 text-[11px] text-[#0D0D0D] font-semibold underline">Mentés</button>
             )}
           </div>
 
@@ -589,7 +589,7 @@ export function WorkflowModal({
     <div className="fixed inset-0 z-50 bg-[#F4F5F7] flex flex-col overflow-hidden">
 
       {/* Header */}
-      <div className="bg-[#0B1E3D] px-4 pt-5 pb-4 shrink-0">
+      <div className="bg-[#0D0D0D] px-4 pt-5 pb-4 shrink-0">
         <div className="flex items-start gap-3">
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 flex-wrap">
@@ -606,7 +606,7 @@ export function WorkflowModal({
               {order.order_number && <span className="font-mono">{order.order_number}</span>}
             </div>
             {order.pricing_mode && order.pricing_mode !== 'fixed' && (
-              <div className="mt-1 inline-flex items-center gap-1 bg-[#C9A84C]/20 text-[#C9A84C] text-[10px] font-bold px-2 py-0.5 rounded-full">
+              <div className="mt-1 inline-flex items-center gap-1 bg-[#C8102E]/20 text-[#C8102E] text-[10px] font-bold px-2 py-0.5 rounded-full">
                 <Clock size={9} />
                 {order.pricing_mode === 'hourly' ? 'Óradíjas' : 'Kombinált'} — időzítő aktív
               </div>
@@ -627,7 +627,7 @@ export function WorkflowModal({
                 key={phase.key}
                 onClick={() => setActivePhase(phase.key)}
                 className={`flex-shrink-0 flex flex-col items-center gap-1 px-2.5 py-1.5 rounded-xl transition-colors ${
-                  isActive ? 'bg-[#C9A84C] text-[#0B1E3D]' :
+                  isActive ? 'bg-[#C8102E] text-[#0D0D0D]' :
                   st === 'done' ? 'bg-emerald-600/30 text-emerald-300' :
                   'bg-white/8 text-white/50'
                 }`}
@@ -655,12 +655,12 @@ export function WorkflowModal({
                 const done = checkinDone.includes(item.key)
                 const photoDone = item.photoCategory ? uploadedCategories.includes(item.photoCategory) : false
                 return (
-                  <div key={item.key} className={`border rounded-xl overflow-hidden ${done ? 'border-emerald-400 bg-emerald-50' : 'border-[rgba(11,30,61,0.10)] bg-white'}`}>
+                  <div key={item.key} className={`border rounded-xl overflow-hidden ${done ? 'border-emerald-400 bg-emerald-50' : 'border-[rgba(0,0,0,0.10)] bg-white'}`}>
                     <div className="flex items-center gap-3 px-3 py-2.5">
                       {done
                         ? <CheckSquare size={14} className="text-emerald-600 shrink-0" />
-                        : <Circle size={14} className="text-[rgba(11,30,61,0.25)] shrink-0" />}
-                      <span className={`text-[12px] font-medium flex-1 ${done ? 'line-through text-[#5a6a80]' : 'text-[#0B1E3D]'}`}>
+                        : <Circle size={14} className="text-[rgba(0,0,0,0.25)] shrink-0" />}
+                      <span className={`text-[12px] font-medium flex-1 ${done ? 'line-through text-[#4a4a4a]' : 'text-[#0D0D0D]'}`}>
                         {item.label}
                       </span>
                       {item.requiresPhoto && !done && (
@@ -668,7 +668,7 @@ export function WorkflowModal({
                       )}
                       {!item.requiresPhoto && !done && (
                         <button onClick={() => toggleCheckin(item.key)}
-                          className="text-[10px] text-[#5a6a80] underline shrink-0">Kész</button>
+                          className="text-[10px] text-[#4a4a4a] underline shrink-0">Kész</button>
                       )}
                     </div>
                     {item.requiresPhoto && !photoDone && (
@@ -691,10 +691,10 @@ export function WorkflowModal({
             </div>
 
             <div>
-              <label className="text-[11px] font-bold text-[#5a6a80] uppercase tracking-wide mb-1 block">Megjegyzés (opcionális)</label>
+              <label className="text-[11px] font-bold text-[#4a4a4a] uppercase tracking-wide mb-1 block">Megjegyzés (opcionális)</label>
               <textarea value={checkinNotes} onChange={e => setCheckinNotes(e.target.value)}
                 placeholder="Ügyfél megjegyzése, extra infó..." rows={2}
-                className="w-full text-[12px] p-2.5 rounded-xl border border-[rgba(11,30,61,0.12)] resize-none focus:outline-none focus:border-[#0B1E3D]" />
+                className="w-full text-[12px] p-2.5 rounded-xl border border-[rgba(0,0,0,0.12)] resize-none focus:outline-none focus:border-[#0D0D0D]" />
             </div>
 
             <ActionButton
@@ -721,14 +721,14 @@ export function WorkflowModal({
                 <div className="grid grid-cols-2 gap-2">
                   <button
                     onClick={() => setDiagNeeded(true)}
-                    className={`p-3 rounded-xl border-2 text-center transition-colors ${diagNeeded === true ? 'border-[#0B1E3D] bg-[#0B1E3D] text-white' : 'border-[rgba(11,30,61,0.12)] text-[#0B1E3D]'}`}
+                    className={`p-3 rounded-xl border-2 text-center transition-colors ${diagNeeded === true ? 'border-[#0D0D0D] bg-[#0D0D0D] text-white' : 'border-[rgba(0,0,0,0.12)] text-[#0D0D0D]'}`}
                   >
                     <div className="text-[18px]">🔍</div>
                     <div className="text-[12px] font-semibold mt-1">Igen, szükséges</div>
                   </button>
                   <button
                     onClick={() => setDiagNeeded(false)}
-                    className={`p-3 rounded-xl border-2 text-center transition-colors ${diagNeeded === false ? 'border-emerald-500 bg-emerald-50 text-emerald-800' : 'border-[rgba(11,30,61,0.12)] text-[#0B1E3D]'}`}
+                    className={`p-3 rounded-xl border-2 text-center transition-colors ${diagNeeded === false ? 'border-emerald-500 bg-emerald-50 text-emerald-800' : 'border-[rgba(0,0,0,0.12)] text-[#0D0D0D]'}`}
                   >
                     <div className="text-[18px]">⏭</div>
                     <div className="text-[12px] font-semibold mt-1">Nem szükséges</div>
@@ -738,10 +738,10 @@ export function WorkflowModal({
                 {diagNeeded === true && (
                   <div className="space-y-3">
                     <div>
-                      <label className="text-[11px] font-bold text-[#5a6a80] uppercase tracking-wide mb-1 block">Diagnosztika eredménye</label>
+                      <label className="text-[11px] font-bold text-[#4a4a4a] uppercase tracking-wide mb-1 block">Diagnosztika eredménye</label>
                       <textarea value={diagNotes} onChange={e => setDiagNotes(e.target.value)}
                         placeholder="Megállapítások, hibakódok, megfigyelések..." rows={3}
-                        className="w-full text-[12px] p-2.5 rounded-xl border border-[rgba(11,30,61,0.12)] resize-none focus:outline-none focus:border-[#0B1E3D]" />
+                        className="w-full text-[12px] p-2.5 rounded-xl border border-[rgba(0,0,0,0.12)] resize-none focus:outline-none focus:border-[#0D0D0D]" />
                     </div>
                     <PhotoBtn label="Diagnosztika fotó" category="diagnostics" orderId={order.id} userId={userId}
                       onUploaded={() => toast('Diagnosztika fotó feltöltve', 'success')} />
@@ -774,14 +774,14 @@ export function WorkflowModal({
                 <div className="grid grid-cols-2 gap-2">
                   <button
                     onClick={() => setPartsNeeded(true)}
-                    className={`p-3 rounded-xl border-2 text-center transition-colors ${partsNeeded === true ? 'border-[#0B1E3D] bg-[#0B1E3D] text-white' : 'border-[rgba(11,30,61,0.12)] text-[#0B1E3D]'}`}
+                    className={`p-3 rounded-xl border-2 text-center transition-colors ${partsNeeded === true ? 'border-[#0D0D0D] bg-[#0D0D0D] text-white' : 'border-[rgba(0,0,0,0.12)] text-[#0D0D0D]'}`}
                   >
                     <div className="text-[18px]">⚙️</div>
                     <div className="text-[12px] font-semibold mt-1">Igen, szükséges</div>
                   </button>
                   <button
                     onClick={() => setPartsNeeded(false)}
-                    className={`p-3 rounded-xl border-2 text-center transition-colors ${partsNeeded === false ? 'border-emerald-500 bg-emerald-50 text-emerald-800' : 'border-[rgba(11,30,61,0.12)] text-[#0B1E3D]'}`}
+                    className={`p-3 rounded-xl border-2 text-center transition-colors ${partsNeeded === false ? 'border-emerald-500 bg-emerald-50 text-emerald-800' : 'border-[rgba(0,0,0,0.12)] text-[#0D0D0D]'}`}
                   >
                     <div className="text-[18px]">⏭</div>
                     <div className="text-[12px] font-semibold mt-1">Nem szükséges</div>
@@ -789,33 +789,33 @@ export function WorkflowModal({
                 </div>
 
                 {partsNeeded === true && (
-                  <div className="space-y-2 bg-white rounded-xl border border-[rgba(11,30,61,0.10)] p-3">
+                  <div className="space-y-2 bg-white rounded-xl border border-[rgba(0,0,0,0.10)] p-3">
                     <div>
-                      <label className="text-[10px] font-bold text-[#5a6a80] uppercase tracking-wide">Alkatrész neve *</label>
+                      <label className="text-[10px] font-bold text-[#4a4a4a] uppercase tracking-wide">Alkatrész neve *</label>
                       <input value={partsForm.name} onChange={e => setPartsForm(p => ({ ...p, name: e.target.value }))}
                         placeholder="Pl.: Fékbetét, olajszűrő..."
-                        className="w-full text-[13px] p-2.5 rounded-lg border border-[rgba(11,30,61,0.12)] mt-1 focus:outline-none focus:border-[#0B1E3D]" />
+                        className="w-full text-[13px] p-2.5 rounded-lg border border-[rgba(0,0,0,0.12)] mt-1 focus:outline-none focus:border-[#0D0D0D]" />
                     </div>
                     <div className="grid grid-cols-2 gap-2">
                       <div>
-                        <label className="text-[10px] font-bold text-[#5a6a80] uppercase tracking-wide">Mennyiség</label>
+                        <label className="text-[10px] font-bold text-[#4a4a4a] uppercase tracking-wide">Mennyiség</label>
                         <input type="number" min="1" value={partsForm.qty} onChange={e => setPartsForm(p => ({ ...p, qty: e.target.value }))}
-                          className="w-full text-[13px] p-2.5 rounded-lg border border-[rgba(11,30,61,0.12)] mt-1 focus:outline-none focus:border-[#0B1E3D]" />
+                          className="w-full text-[13px] p-2.5 rounded-lg border border-[rgba(0,0,0,0.12)] mt-1 focus:outline-none focus:border-[#0D0D0D]" />
                       </div>
                       <div>
-                        <label className="text-[10px] font-bold text-[#5a6a80] uppercase tracking-wide">Sürgősség</label>
+                        <label className="text-[10px] font-bold text-[#4a4a4a] uppercase tracking-wide">Sürgősség</label>
                         <select value={partsForm.urgency} onChange={e => setPartsForm(p => ({ ...p, urgency: e.target.value }))}
-                          className="w-full text-[13px] p-2.5 rounded-lg border border-[rgba(11,30,61,0.12)] mt-1 focus:outline-none bg-white">
+                          className="w-full text-[13px] p-2.5 rounded-lg border border-[rgba(0,0,0,0.12)] mt-1 focus:outline-none bg-white">
                           <option value="normal">Normál</option>
                           <option value="urgent">Sürgős</option>
                         </select>
                       </div>
                     </div>
                     <div>
-                      <label className="text-[10px] font-bold text-[#5a6a80] uppercase tracking-wide">Megjegyzés</label>
+                      <label className="text-[10px] font-bold text-[#4a4a4a] uppercase tracking-wide">Megjegyzés</label>
                       <textarea value={partsForm.notes} onChange={e => setPartsForm(p => ({ ...p, notes: e.target.value }))}
                         placeholder="Cikkszám, forrás, extra infó..." rows={2}
-                        className="w-full text-[12px] p-2.5 rounded-lg border border-[rgba(11,30,61,0.12)] mt-1 resize-none focus:outline-none focus:border-[#0B1E3D]" />
+                        className="w-full text-[12px] p-2.5 rounded-lg border border-[rgba(0,0,0,0.12)] mt-1 resize-none focus:outline-none focus:border-[#0D0D0D]" />
                     </div>
                   </div>
                 )}
@@ -839,22 +839,22 @@ export function WorkflowModal({
             <PhaseHeader icon="🔧" title="Javítás" subtitle="Kötelező fázis" required />
 
             {/* Summary box */}
-            <div className="bg-white rounded-xl border border-[rgba(11,30,61,0.10)] p-3 space-y-2">
-              <div className="text-[10px] font-bold text-[#5a6a80] uppercase tracking-wide">Mit kell elvégezni?</div>
+            <div className="bg-white rounded-xl border border-[rgba(0,0,0,0.10)] p-3 space-y-2">
+              <div className="text-[10px] font-bold text-[#4a4a4a] uppercase tracking-wide">Mit kell elvégezni?</div>
               {order.fault_description && (
                 <div className="flex gap-2">
-                  <span className="text-[10px] font-semibold text-[#5a6a80] shrink-0 w-20">Panasz:</span>
-                  <span className="text-[12px] text-[#0B1E3D]">{order.fault_description}</span>
+                  <span className="text-[10px] font-semibold text-[#4a4a4a] shrink-0 w-20">Panasz:</span>
+                  <span className="text-[12px] text-[#0D0D0D]">{order.fault_description}</span>
                 </div>
               )}
               {order.work_to_do && (
                 <div className="flex gap-2">
-                  <span className="text-[10px] font-semibold text-[#5a6a80] shrink-0 w-20">Elvégzendő:</span>
-                  <span className="text-[12px] text-[#0B1E3D]">{order.work_to_do}</span>
+                  <span className="text-[10px] font-semibold text-[#4a4a4a] shrink-0 w-20">Elvégzendő:</span>
+                  <span className="text-[12px] text-[#0D0D0D]">{order.work_to_do}</span>
                 </div>
               )}
               <div className="flex gap-2">
-                <span className="text-[10px] font-semibold text-[#5a6a80] shrink-0 w-20">Árazás:</span>
+                <span className="text-[10px] font-semibold text-[#4a4a4a] shrink-0 w-20">Árazás:</span>
                 <span className={`text-[11px] font-bold px-2 py-0.5 rounded-full ${
                   order.pricing_mode === 'hourly' ? 'bg-amber-100 text-amber-700' :
                   order.pricing_mode === 'combined' ? 'bg-blue-100 text-blue-700' :
@@ -873,13 +873,13 @@ export function WorkflowModal({
             {/* Tasks */}
             {loadingTasks ? (
               <div className="flex justify-center py-6">
-                <div className="w-6 h-6 border-2 border-[#C9A84C] border-t-transparent rounded-full animate-spin" />
+                <div className="w-6 h-6 border-2 border-[#C8102E] border-t-transparent rounded-full animate-spin" />
               </div>
             ) : tasks.length === 0 ? (
               <InfoBox>Nincs feladat ehhez a munkalaphoz. Barbara még nem rendelt hozzá szolgáltatásokat.</InfoBox>
             ) : (
               <div className="space-y-2">
-                <div className="text-[10px] font-bold text-[#5a6a80] uppercase tracking-wide flex items-center gap-2">
+                <div className="text-[10px] font-bold text-[#4a4a4a] uppercase tracking-wide flex items-center gap-2">
                   <Wrench size={11} />
                   Feladatok — {tasks.filter(t => t.status === 'done').length}/{tasks.length} kész
                 </div>
@@ -917,8 +917,8 @@ export function WorkflowModal({
                 const done = qcDone.includes(item.key)
                 return (
                   <button key={item.key} onClick={() => setQcDone(prev => done ? prev.filter(k => k !== item.key) : [...prev, item.key])}
-                    className={`w-full flex items-center gap-3 px-3 py-3 rounded-xl border text-left transition-colors ${done ? 'bg-emerald-50 border-emerald-400 text-emerald-800' : 'bg-white border-[rgba(11,30,61,0.10)] text-[#0B1E3D]'}`}>
-                    {done ? <CheckSquare size={14} className="text-emerald-600 shrink-0" /> : <Circle size={14} className="text-[rgba(11,30,61,0.25)] shrink-0" />}
+                    className={`w-full flex items-center gap-3 px-3 py-3 rounded-xl border text-left transition-colors ${done ? 'bg-emerald-50 border-emerald-400 text-emerald-800' : 'bg-white border-[rgba(0,0,0,0.10)] text-[#0D0D0D]'}`}>
+                    {done ? <CheckSquare size={14} className="text-emerald-600 shrink-0" /> : <Circle size={14} className="text-[rgba(0,0,0,0.25)] shrink-0" />}
                     <span className={`text-[12px] font-medium ${done ? 'line-through' : ''}`}>{item.label}</span>
                   </button>
                 )
@@ -950,7 +950,7 @@ export function WorkflowModal({
                   Ezután Barbara ellenőrzi és értesíti az ügyfelet.
                 </InfoBox>
 
-                <div className="bg-white rounded-xl border border-[rgba(11,30,61,0.10)] p-3 space-y-1.5">
+                <div className="bg-white rounded-xl border border-[rgba(0,0,0,0.10)] p-3 space-y-1.5">
                   <CheckItem done={checkinDone.length >= 7} label="Check-In kész" />
                   <CheckItem done={diagDone} label="Diagnosztika rendben" />
                   <CheckItem done={partsSaved} label="Alkatrész fázis rendben" />
@@ -979,13 +979,13 @@ export function WorkflowModal({
 function PhaseHeader({ icon, title, subtitle, required }: { icon: string; title: string; subtitle?: string; required?: boolean }) {
   return (
     <div className="flex items-center gap-3">
-      <div className="w-10 h-10 bg-[#0B1E3D] rounded-xl flex items-center justify-center text-[20px] shrink-0">{icon}</div>
+      <div className="w-10 h-10 bg-[#0D0D0D] rounded-xl flex items-center justify-center text-[20px] shrink-0">{icon}</div>
       <div>
         <div className="flex items-center gap-2">
-          <h2 className="text-[16px] font-bold text-[#0B1E3D]">{title}</h2>
+          <h2 className="text-[16px] font-bold text-[#0D0D0D]">{title}</h2>
           {required && <span className="text-[9px] bg-red-100 text-red-600 font-bold px-1.5 py-0.5 rounded uppercase">Kötelező</span>}
         </div>
-        {subtitle && <p className="text-[11px] text-[#5a6a80]">{subtitle}</p>}
+        {subtitle && <p className="text-[11px] text-[#4a4a4a]">{subtitle}</p>}
       </div>
     </div>
   )
@@ -1011,8 +1011,8 @@ function DoneCard({ label }: { label: string }) {
 
 function CheckItem({ done, label }: { done: boolean; label: string }) {
   return (
-    <div className={`flex items-center gap-2.5 py-1 ${done ? 'text-emerald-700' : 'text-[#5a6a80]'}`}>
-      {done ? <CheckCircle size={13} className="text-emerald-600 shrink-0" /> : <Circle size={13} className="text-[rgba(11,30,61,0.25)] shrink-0" />}
+    <div className={`flex items-center gap-2.5 py-1 ${done ? 'text-emerald-700' : 'text-[#4a4a4a]'}`}>
+      {done ? <CheckCircle size={13} className="text-emerald-600 shrink-0" /> : <Circle size={13} className="text-[rgba(0,0,0,0.25)] shrink-0" />}
       <span className="text-[12px] font-medium">{label}</span>
     </div>
   )
@@ -1031,11 +1031,11 @@ function ActionButton({
   hint?: string
 }) {
   const colorMap: Record<ActionColor, string> = {
-    dark:      'bg-[#0B1E3D] text-white',
-    gold:      'bg-[#C9A84C] text-[#0B1E3D] font-bold',
+    dark:      'bg-[#0D0D0D] text-white',
+    gold:      'bg-[#C8102E] text-[#0D0D0D] font-bold',
     emerald:   'bg-emerald-600 text-white',
     indigo:    'bg-indigo-600 text-white',
-    secondary: 'bg-[rgba(11,30,61,0.08)] text-[#0B1E3D] border border-[rgba(11,30,61,0.12)]',
+    secondary: 'bg-[rgba(0,0,0,0.08)] text-[#0D0D0D] border border-[rgba(0,0,0,0.12)]',
   }
   return (
     <div className="space-y-1.5">
@@ -1051,7 +1051,7 @@ function ActionButton({
         )}
         {loading ? 'Mentés...' : label}
       </button>
-      {hint && <p className="text-[11px] text-center text-[#5a6a80]">{hint}</p>}
+      {hint && <p className="text-[11px] text-center text-[#4a4a4a]">{hint}</p>}
     </div>
   )
 }

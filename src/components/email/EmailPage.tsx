@@ -47,7 +47,7 @@ const STATUS_BADGE: Record<string, { label: string; color: string }> = {
   draft:     { label: 'Piszkozat', color: 'bg-gray-100 text-gray-600' },
   sent:      { label: 'Elküldve',  color: 'bg-blue-100 text-blue-700' },
   delivered: { label: 'Kézbesítve', color: 'bg-green-100 text-green-700' },
-  opened:    { label: 'Megnyitva', color: 'bg-[#C9A84C]/10 text-[#C9A84C]' },
+  opened:    { label: 'Megnyitva', color: 'bg-[#C8102E]/10 text-[#C8102E]' },
   failed:    { label: 'Sikertelen', color: 'bg-red-100 text-red-700' },
 }
 
@@ -149,54 +149,54 @@ function ComposeModal({ onClose, onSent, account, customers, templates, prefill 
     <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/40 p-0 sm:p-4">
       <div className="bg-white w-full sm:max-w-2xl rounded-t-2xl sm:rounded-2xl shadow-2xl flex flex-col max-h-[90vh]">
         <div className="flex items-center justify-between px-4 py-3 border-b border-[#e0e4e8]">
-          <span className="font-semibold text-[#0B1E3D] text-[14px]">Új email</span>
+          <span className="font-semibold text-[#0D0D0D] text-[14px]">Új email</span>
           <button onClick={onClose} className="p-1.5 rounded-full hover:bg-gray-100"><X size={16} /></button>
         </div>
         <div className="flex-1 overflow-y-auto p-4 space-y-3">
           <div className="flex items-center gap-2 text-[12px]">
-            <span className="text-[#5a6a80] w-14 shrink-0">Feladó:</span>
-            <span className="text-[#0B1E3D] font-medium">{account.display_name} &lt;{account.email}&gt;</span>
+            <span className="text-[#4a4a4a] w-14 shrink-0">Feladó:</span>
+            <span className="text-[#0D0D0D] font-medium">{account.display_name} &lt;{account.email}&gt;</span>
           </div>
           <div className="flex items-center gap-2">
-            <span className="text-[#5a6a80] text-[12px] w-14 shrink-0">Cím:</span>
+            <span className="text-[#4a4a4a] text-[12px] w-14 shrink-0">Cím:</span>
             <input value={to} onChange={e => setTo(e.target.value)} placeholder="email@example.com"
-              className="flex-1 border border-[#e0e4e8] rounded-lg px-3 py-1.5 text-[12px] outline-none focus:border-[#C9A84C]"
+              className="flex-1 border border-[#e0e4e8] rounded-lg px-3 py-1.5 text-[12px] outline-none focus:border-[#C8102E]"
               list="customer-emails-list" />
             <datalist id="customer-emails-list">
               {customers.map(c => <option key={c.id} value={c.email} label={`${c.first_name} ${c.last_name}`} />)}
             </datalist>
-            <button onClick={() => setShowCc(!showCc)} className="text-[11px] text-[#5a6a80]">CC</button>
+            <button onClick={() => setShowCc(!showCc)} className="text-[11px] text-[#4a4a4a]">CC</button>
           </div>
           {showCc && (
             <div className="flex items-center gap-2">
-              <span className="text-[#5a6a80] text-[12px] w-14 shrink-0">CC:</span>
+              <span className="text-[#4a4a4a] text-[12px] w-14 shrink-0">CC:</span>
               <input value={cc} onChange={e => setCc(e.target.value)}
-                className="flex-1 border border-[#e0e4e8] rounded-lg px-3 py-1.5 text-[12px] outline-none focus:border-[#C9A84C]" />
+                className="flex-1 border border-[#e0e4e8] rounded-lg px-3 py-1.5 text-[12px] outline-none focus:border-[#C8102E]" />
             </div>
           )}
           <div className="flex items-center gap-2">
-            <span className="text-[#5a6a80] text-[12px] w-14 shrink-0">Sablon:</span>
+            <span className="text-[#4a4a4a] text-[12px] w-14 shrink-0">Sablon:</span>
             <select value={selectedTemplate} onChange={e => applyTemplate(e.target.value)}
-              className="flex-1 border border-[#e0e4e8] rounded-lg px-3 py-1.5 text-[12px] outline-none focus:border-[#C9A84C]">
+              className="flex-1 border border-[#e0e4e8] rounded-lg px-3 py-1.5 text-[12px] outline-none focus:border-[#C8102E]">
               <option value="">— Válassz sablont —</option>
               {templates.map(t => <option key={t.id} value={t.id}>{t.name}</option>)}
             </select>
           </div>
           <div className="flex items-center gap-2">
-            <span className="text-[#5a6a80] text-[12px] w-14 shrink-0">Tárgy:</span>
+            <span className="text-[#4a4a4a] text-[12px] w-14 shrink-0">Tárgy:</span>
             <input value={subject} onChange={e => setSubject(e.target.value)}
-              className="flex-1 border border-[#e0e4e8] rounded-lg px-3 py-1.5 text-[12px] outline-none focus:border-[#C9A84C]" />
+              className="flex-1 border border-[#e0e4e8] rounded-lg px-3 py-1.5 text-[12px] outline-none focus:border-[#C8102E]" />
           </div>
           <div>
             <div className="flex items-center justify-between mb-1">
-              <span className="text-[#5a6a80] text-[12px]">Szöveg:</span>
+              <span className="text-[#4a4a4a] text-[12px]">Szöveg:</span>
               <button onClick={generateAI} disabled={aiLoading}
-                className="flex items-center gap-1 text-[11px] text-[#C9A84C]">
+                className="flex items-center gap-1 text-[11px] text-[#C8102E]">
                 {aiLoading ? <Loader2 size={12} className="animate-spin" /> : <Wand2 size={12} />} AI
               </button>
             </div>
             <textarea value={body} onChange={e => setBody(e.target.value)} rows={8}
-              className="w-full border border-[#e0e4e8] rounded-lg px-3 py-2 text-[12px] outline-none focus:border-[#C9A84C] font-mono resize-none" />
+              className="w-full border border-[#e0e4e8] rounded-lg px-3 py-2 text-[12px] outline-none focus:border-[#C8102E] font-mono resize-none" />
           </div>
           {attachments.length > 0 && (
             <div className="flex flex-wrap gap-2">
@@ -212,14 +212,14 @@ function ComposeModal({ onClose, onSent, account, customers, templates, prefill 
         </div>
         <div className="flex items-center justify-between px-4 py-3 border-t border-[#e0e4e8]">
           <button onClick={() => fileRef.current?.click()}
-            className="flex items-center gap-1 text-[12px] text-[#5a6a80] border border-[#e0e4e8] rounded-lg px-2 py-1">
+            className="flex items-center gap-1 text-[12px] text-[#4a4a4a] border border-[#e0e4e8] rounded-lg px-2 py-1">
             <Paperclip size={12} /> Csatolmány
           </button>
           <input ref={fileRef} type="file" multiple className="hidden" onChange={handleFile} />
           <div className="flex gap-2">
             <button onClick={onClose} className="px-3 py-1.5 text-[12px] border border-[#e0e4e8] rounded-lg">Mégse</button>
             <button onClick={send} disabled={sending}
-              className="flex items-center gap-1.5 px-4 py-1.5 bg-[#0B1E3D] text-white text-[12px] rounded-lg disabled:opacity-50">
+              className="flex items-center gap-1.5 px-4 py-1.5 bg-[#0D0D0D] text-white text-[12px] rounded-lg disabled:opacity-50">
               {sending ? <Loader2 size={12} className="animate-spin" /> : <Send size={12} />} Küldés
             </button>
           </div>
@@ -255,25 +255,25 @@ function TemplateManager({ templates, onRefresh }: { templates: EmailTemplate[];
   return (
     <div className="p-4 space-y-4">
       <div className="flex items-center justify-between">
-        <h3 className="font-semibold text-[#0B1E3D] text-[14px]">Email sablonok</h3>
+        <h3 className="font-semibold text-[#0D0D0D] text-[14px]">Email sablonok</h3>
         <button onClick={() => setEditing({ category: 'general' })}
-          className="flex items-center gap-1 text-[12px] bg-[#0B1E3D] text-white px-3 py-1.5 rounded-lg">
+          className="flex items-center gap-1 text-[12px] bg-[#0D0D0D] text-white px-3 py-1.5 rounded-lg">
           <Plus size={12} /> Új sablon
         </button>
       </div>
       {editing && (
         <div className="bg-[#f8fafc] border border-[#e0e4e8] rounded-xl p-4 space-y-3">
           <input value={editing.name || ''} onChange={e => setEditing(p => ({ ...p, name: e.target.value }))}
-            placeholder="Sablon neve" className="w-full border border-[#e0e4e8] rounded-lg px-3 py-1.5 text-[12px] outline-none focus:border-[#C9A84C]" />
+            placeholder="Sablon neve" className="w-full border border-[#e0e4e8] rounded-lg px-3 py-1.5 text-[12px] outline-none focus:border-[#C8102E]" />
           <input value={editing.subject || ''} onChange={e => setEditing(p => ({ ...p, subject: e.target.value }))}
-            placeholder="Tárgy" className="w-full border border-[#e0e4e8] rounded-lg px-3 py-1.5 text-[12px] outline-none focus:border-[#C9A84C]" />
+            placeholder="Tárgy" className="w-full border border-[#e0e4e8] rounded-lg px-3 py-1.5 text-[12px] outline-none focus:border-[#C8102E]" />
           <textarea value={editing.body_html || ''} onChange={e => setEditing(p => ({ ...p, body_html: e.target.value }))}
             rows={4} placeholder="<p>Szöveg HTML-ben</p>"
-            className="w-full border border-[#e0e4e8] rounded-lg px-3 py-2 text-[12px] outline-none focus:border-[#C9A84C] font-mono resize-none" />
+            className="w-full border border-[#e0e4e8] rounded-lg px-3 py-2 text-[12px] outline-none focus:border-[#C8102E] font-mono resize-none" />
           <div className="flex gap-2 justify-end">
             <button onClick={() => setEditing(null)} className="text-[12px] border border-[#e0e4e8] px-3 py-1.5 rounded-lg">Mégse</button>
             <button onClick={save} disabled={saving}
-              className="text-[12px] bg-[#C9A84C] text-white px-3 py-1.5 rounded-lg disabled:opacity-50">
+              className="text-[12px] bg-[#C8102E] text-white px-3 py-1.5 rounded-lg disabled:opacity-50">
               {saving ? 'Mentés...' : 'Mentés'}
             </button>
           </div>
@@ -283,11 +283,11 @@ function TemplateManager({ templates, onRefresh }: { templates: EmailTemplate[];
         {templates.map(t => (
           <div key={t.id} className="flex items-center justify-between bg-white border border-[#e0e4e8] rounded-xl px-4 py-3">
             <div>
-              <p className="text-[13px] font-medium text-[#0B1E3D]">{t.name}</p>
-              <p className="text-[11px] text-[#5a6a80]">{t.subject}</p>
+              <p className="text-[13px] font-medium text-[#0D0D0D]">{t.name}</p>
+              <p className="text-[11px] text-[#4a4a4a]">{t.subject}</p>
             </div>
             <div className="flex gap-2">
-              <button onClick={() => setEditing(t)} className="p-1.5 rounded-lg hover:bg-[#f0f4f8] text-[#5a6a80]"><FileText size={13} /></button>
+              <button onClick={() => setEditing(t)} className="p-1.5 rounded-lg hover:bg-[#f0f4f8] text-[#4a4a4a]"><FileText size={13} /></button>
               <button onClick={async () => { await supabase.from('email_templates').delete().eq('id', t.id); onRefresh() }}
                 className="p-1.5 rounded-lg hover:bg-red-50 text-red-400"><Trash2 size={13} /></button>
             </div>
@@ -309,19 +309,19 @@ function EmailDetail({ email, customers, onBack }: {
   return (
     <div className="p-4 space-y-4">
       <div className="flex items-center justify-between">
-        <button onClick={onBack} className="flex items-center gap-1.5 text-[12px] text-[#5a6a80] hover:text-[#0B1E3D]">
+        <button onClick={onBack} className="flex items-center gap-1.5 text-[12px] text-[#4a4a4a] hover:text-[#0D0D0D]">
           <ChevronLeft size={14} /> Vissza
         </button>
         <span className={`text-[10px] px-2 py-0.5 rounded-full ${statusBadge.color}`}>{statusBadge.label}</span>
       </div>
-      <h2 className="text-[16px] font-bold text-[#0B1E3D]">{email.subject}</h2>
+      <h2 className="text-[16px] font-bold text-[#0D0D0D]">{email.subject}</h2>
       <div className="bg-[#f8fafc] rounded-xl p-3 space-y-1 text-[12px]">
-        <div className="flex gap-2"><span className="text-[#5a6a80] w-16 shrink-0">Feladó:</span><span>{email.from_name} &lt;{email.from_email}&gt;</span></div>
-        <div className="flex gap-2"><span className="text-[#5a6a80] w-16 shrink-0">Cím:</span><span>{email.to_emails?.join(', ')}</span></div>
-        <div className="flex gap-2"><span className="text-[#5a6a80] w-16 shrink-0">Dátum:</span><span>{new Date(email.sent_at || email.received_at || '').toLocaleString('hu-HU')}</span></div>
+        <div className="flex gap-2"><span className="text-[#4a4a4a] w-16 shrink-0">Feladó:</span><span>{email.from_name} &lt;{email.from_email}&gt;</span></div>
+        <div className="flex gap-2"><span className="text-[#4a4a4a] w-16 shrink-0">Cím:</span><span>{email.to_emails?.join(', ')}</span></div>
+        <div className="flex gap-2"><span className="text-[#4a4a4a] w-16 shrink-0">Dátum:</span><span>{new Date(email.sent_at || email.received_at || '').toLocaleString('hu-HU')}</span></div>
         {customer && (
-          <div className="flex gap-2"><span className="text-[#5a6a80] w-16 shrink-0">Ügyfél:</span>
-            <span className="flex items-center gap-1 text-[#C9A84C] font-medium"><User size={11} /> {customer.first_name} {customer.last_name}</span>
+          <div className="flex gap-2"><span className="text-[#4a4a4a] w-16 shrink-0">Ügyfél:</span>
+            <span className="flex items-center gap-1 text-[#C8102E] font-medium"><User size={11} /> {customer.first_name} {customer.last_name}</span>
           </div>
         )}
       </div>
@@ -329,7 +329,7 @@ function EmailDetail({ email, customers, onBack }: {
         <div className="flex flex-wrap gap-2">
           {email.attachments.map((a, i) => (
             <div key={i} className="flex items-center gap-1.5 bg-[#f0f4f8] border border-[#e0e4e8] rounded-lg px-2 py-1.5 text-[11px]">
-              <Paperclip size={11} className="text-[#5a6a80]" /><span>{a.filename}</span>
+              <Paperclip size={11} className="text-[#4a4a4a]" /><span>{a.filename}</span>
             </div>
           ))}
         </div>
@@ -395,19 +395,19 @@ export function EmailPage({ profile, refreshKey }: Props) {
     return acc
   }, {} as Record<string, number>)
 
-  if (loading) return <div className="flex items-center justify-center h-64"><Loader2 className="animate-spin text-[#C9A84C]" size={24} /></div>
+  if (loading) return <div className="flex items-center justify-center h-64"><Loader2 className="animate-spin text-[#C8102E]" size={24} /></div>
 
   if (!account) {
     return (
       <div className="flex flex-col items-center justify-center h-64 text-center gap-4">
         <div className="w-16 h-16 bg-[#f0f4f8] rounded-2xl flex items-center justify-center">
-          <Mail size={28} className="text-[#5a6a80]" />
+          <Mail size={28} className="text-[#4a4a4a]" />
         </div>
         <div>
-          <p className="font-semibold text-[#0B1E3D] text-[15px]">Gmail nincs csatlakoztatva</p>
-          <p className="text-[12px] text-[#5a6a80] mt-1">Csatlakoztasd Gmail fiókodat a Beállítások → Email menüpontban</p>
+          <p className="font-semibold text-[#0D0D0D] text-[15px]">Gmail nincs csatlakoztatva</p>
+          <p className="text-[12px] text-[#4a4a4a] mt-1">Csatlakoztasd Gmail fiókodat a Beállítások → Email menüpontban</p>
         </div>
-        <div className="flex items-center gap-2 bg-[#0B1E3D] text-white text-[12px] px-4 py-2 rounded-xl">
+        <div className="flex items-center gap-2 bg-[#0D0D0D] text-white text-[12px] px-4 py-2 rounded-xl">
           <Building2 size={14} /> Beállítások → Email / Gmail tab
         </div>
       </div>
@@ -419,13 +419,13 @@ export function EmailPage({ profile, refreshKey }: Props) {
       {/* Folder sidebar */}
       <div className="w-48 shrink-0 hidden md:flex flex-col gap-1">
         <button onClick={() => setShowCompose(true)}
-          className="flex items-center gap-2 bg-[#C9A84C] text-white text-[12px] font-semibold px-3 py-2.5 rounded-xl hover:bg-[#a07d35] mb-2">
+          className="flex items-center gap-2 bg-[#C8102E] text-white text-[12px] font-semibold px-3 py-2.5 rounded-xl hover:bg-[#a07d35] mb-2">
           <Plus size={14} /> Új email
         </button>
         {FOLDERS.map(f => (
           <button key={f.id} onClick={() => { setActiveFolder(f.id); setActiveView('list') }}
             className={`flex items-center justify-between px-3 py-2 rounded-xl text-[12px] transition-colors ${
-              activeFolder === f.id && activeView !== 'templates' ? 'bg-[#0B1E3D] text-white' : 'text-[#5a6a80] hover:bg-[#f0f4f8]'
+              activeFolder === f.id && activeView !== 'templates' ? 'bg-[#0D0D0D] text-white' : 'text-[#4a4a4a] hover:bg-[#f0f4f8]'
             }`}>
             <div className="flex items-center gap-2"><f.icon size={13} />{f.label}</div>
             {folderCounts[f.id] > 0 && (
@@ -435,16 +435,16 @@ export function EmailPage({ profile, refreshKey }: Props) {
         ))}
         <div className="h-px bg-[#e0e4e8] my-2" />
         <button onClick={() => setActiveView('templates')}
-          className={`flex items-center gap-2 px-3 py-2 rounded-xl text-[12px] ${activeView === 'templates' ? 'bg-[#0B1E3D] text-white' : 'text-[#5a6a80] hover:bg-[#f0f4f8]'}`}>
+          className={`flex items-center gap-2 px-3 py-2 rounded-xl text-[12px] ${activeView === 'templates' ? 'bg-[#0D0D0D] text-white' : 'text-[#4a4a4a] hover:bg-[#f0f4f8]'}`}>
           <FileText size={13} /> Sablonok
         </button>
         <div className="h-px bg-[#e0e4e8] my-2" />
-        <div className="px-3 py-2 text-[10px] text-[#5a6a80]">
+        <div className="px-3 py-2 text-[10px] text-[#4a4a4a]">
           <div className="flex items-center gap-1.5 mb-1">
             <div className="w-2 h-2 bg-green-500 rounded-full" />
             <span className="font-medium truncate">{account.email}</span>
           </div>
-          <button onClick={syncInbox} disabled={syncing} className="flex items-center gap-1 hover:text-[#0B1E3D]">
+          <button onClick={syncInbox} disabled={syncing} className="flex items-center gap-1 hover:text-[#0D0D0D]">
             <RefreshCw size={10} className={syncing ? 'animate-spin' : ''} />
             {syncing ? 'Szinkronizálás...' : 'Szinkronizálás'}
           </button>
@@ -463,17 +463,17 @@ export function EmailPage({ profile, refreshKey }: Props) {
           <>
             <div className="p-3 border-b border-[#e0e4e8] flex items-center gap-2">
               <div className="flex-1 flex items-center gap-2 bg-[#f8fafc] border border-[#e0e4e8] rounded-xl px-3 py-1.5">
-                <Search size={13} className="text-[#5a6a80]" />
+                <Search size={13} className="text-[#4a4a4a]" />
                 <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Keresés..."
                   className="flex-1 bg-transparent text-[12px] outline-none" />
               </div>
-              <button onClick={syncInbox} disabled={syncing} className="p-2 border border-[#e0e4e8] rounded-xl hover:bg-[#f0f4f8] text-[#5a6a80]">
+              <button onClick={syncInbox} disabled={syncing} className="p-2 border border-[#e0e4e8] rounded-xl hover:bg-[#f0f4f8] text-[#4a4a4a]">
                 <RefreshCw size={13} className={syncing ? 'animate-spin' : ''} />
               </button>
             </div>
             <div className="flex-1 overflow-y-auto divide-y divide-[#f0f4f8]">
               {folderEmails.length === 0 ? (
-                <div className="flex flex-col items-center justify-center h-40 text-[#5a6a80]">
+                <div className="flex flex-col items-center justify-center h-40 text-[#4a4a4a]">
                   <Mail size={24} className="mb-2 opacity-40" />
                   <p className="text-[12px]">Nincs email ebben a mappában</p>
                 </div>
@@ -481,24 +481,24 @@ export function EmailPage({ profile, refreshKey }: Props) {
                 <button key={email.id} onClick={() => { setSelectedEmail(email); setActiveView('detail') }}
                   className="w-full text-left px-4 py-3 hover:bg-[#f8fafc] transition-colors">
                   <div className="flex items-start gap-3">
-                    <div className="w-8 h-8 rounded-full bg-[#0B1E3D] flex items-center justify-center shrink-0">
+                    <div className="w-8 h-8 rounded-full bg-[#0D0D0D] flex items-center justify-center shrink-0">
                       <span className="text-white text-[10px] font-bold">
                         {(email.from_name || email.from_email || '?')[0].toUpperCase()}
                       </span>
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center justify-between gap-2">
-                        <span className="text-[12px] font-medium text-[#0B1E3D] truncate">
+                        <span className="text-[12px] font-medium text-[#0D0D0D] truncate">
                           {email.direction === 'inbound' ? (email.from_name || email.from_email) : `→ ${email.to_emails?.[0] || ''}`}
                         </span>
-                        <span className="text-[10px] text-[#5a6a80] shrink-0">{formatDate(email.sent_at || email.received_at)}</span>
+                        <span className="text-[10px] text-[#4a4a4a] shrink-0">{formatDate(email.sent_at || email.received_at)}</span>
                       </div>
                       <p className="text-[12px] text-[#3a4a5c] truncate">{email.subject}</p>
-                      <p className="text-[11px] text-[#5a6a80] truncate">
+                      <p className="text-[11px] text-[#4a4a4a] truncate">
                         {email.body_html ? stripHtml(email.body_html) : email.body_text?.slice(0, 120)}
                       </p>
                     </div>
-                    {email.attachments && email.attachments.length > 0 && <Paperclip size={12} className="text-[#5a6a80] shrink-0" />}
+                    {email.attachments && email.attachments.length > 0 && <Paperclip size={12} className="text-[#4a4a4a] shrink-0" />}
                   </div>
                 </button>
               ))}

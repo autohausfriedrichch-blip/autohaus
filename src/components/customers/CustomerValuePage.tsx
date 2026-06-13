@@ -178,7 +178,7 @@ function CustomerDetailModal({
   if (!customer) {
     return (
       <Modal open onClose={onClose} title="Ügyfél részletei">
-        <div className="py-10 text-center text-[#5a6a80]">Betöltés...</div>
+        <div className="py-10 text-center text-[#4a4a4a]">Betöltés...</div>
       </Modal>
     )
   }
@@ -192,16 +192,16 @@ function CustomerDetailModal({
         {/* Personal info */}
         <div className="grid grid-cols-2 gap-3 text-[13px]">
           <div>
-            <div className="text-[11px] text-[#5a6a80] font-semibold uppercase tracking-wide mb-1">Elérhetőség</div>
-            <div className="text-[#0B1E3D]">{customer.phone || '–'}</div>
-            {customer.email && <div className="text-[#5a6a80]">{customer.email}</div>}
-            {customer.city && <div className="text-[#5a6a80]">{customer.city}</div>}
+            <div className="text-[11px] text-[#4a4a4a] font-semibold uppercase tracking-wide mb-1">Elérhetőség</div>
+            <div className="text-[#0D0D0D]">{customer.phone || '–'}</div>
+            {customer.email && <div className="text-[#4a4a4a]">{customer.email}</div>}
+            {customer.city && <div className="text-[#4a4a4a]">{customer.city}</div>}
           </div>
           <div>
-            <div className="text-[11px] text-[#5a6a80] font-semibold uppercase tracking-wide mb-1">Státusz</div>
+            <div className="text-[11px] text-[#4a4a4a] font-semibold uppercase tracking-wide mb-1">Státusz</div>
             <div className="flex flex-wrap gap-1.5">
               {customer.is_vip && (
-                <span className="inline-flex items-center gap-1 text-[11px] bg-[#C9A84C]/15 text-[#8a6a00] font-bold px-2 py-0.5 rounded-full">
+                <span className="inline-flex items-center gap-1 text-[11px] bg-[#C8102E]/15 text-[#8a6a00] font-bold px-2 py-0.5 rounded-full">
                   <Star size={10} /> VIP
                 </span>
               )}
@@ -222,12 +222,12 @@ function CustomerDetailModal({
         {/* Financial summary */}
         <div className="grid grid-cols-3 gap-2">
           {[
-            { label: 'Összes költés', value: formatCurrency(metrics?.total_spent ?? 0), color: 'text-[#0B1E3D]' },
-            { label: 'Átl. munkalap', value: formatCurrency(metrics?.avg_order ?? 0), color: 'text-[#0B1E3D]' },
+            { label: 'Összes költés', value: formatCurrency(metrics?.total_spent ?? 0), color: 'text-[#0D0D0D]' },
+            { label: 'Átl. munkalap', value: formatCurrency(metrics?.avg_order ?? 0), color: 'text-[#0D0D0D]' },
             { label: 'Nyereség (35%)', value: formatCurrency(profit), color: 'text-[#16a34a]' },
           ].map(item => (
             <div key={item.label} className="bg-[#F4F5F7] rounded-xl p-3 text-center">
-              <div className="text-[10px] text-[#5a6a80] mb-0.5">{item.label}</div>
+              <div className="text-[10px] text-[#4a4a4a] mb-0.5">{item.label}</div>
               <div className={`text-[14px] font-bold ${item.color}`}>{item.value}</div>
             </div>
           ))}
@@ -235,25 +235,25 @@ function CustomerDetailModal({
 
         {/* Recent work orders */}
         <div>
-          <div className="text-[11px] text-[#5a6a80] font-semibold uppercase tracking-wide mb-2">Utóbbi munkák</div>
+          <div className="text-[11px] text-[#4a4a4a] font-semibold uppercase tracking-wide mb-2">Utóbbi munkák</div>
           {recentOrders.length === 0 ? (
-            <div className="text-[12px] text-[#8fa0b5] py-2">Nincs rögzített munka</div>
+            <div className="text-[12px] text-[#888888] py-2">Nincs rögzített munka</div>
           ) : (
             <div className="space-y-1.5">
               {recentOrders.map(wo => (
-                <div key={wo.id} className="flex items-center justify-between py-1.5 border-b border-[rgba(11,30,61,0.06)] text-[12px]">
+                <div key={wo.id} className="flex items-center justify-between py-1.5 border-b border-[rgba(0,0,0,0.06)] text-[12px]">
                   <div>
-                    <span className="font-medium text-[#0B1E3D]">{wo.order_number || wo.id.slice(0, 8)}</span>
+                    <span className="font-medium text-[#0D0D0D]">{wo.order_number || wo.id.slice(0, 8)}</span>
                     {wo.scheduled_date && (
-                      <span className="text-[#5a6a80] ml-2">{formatDate(wo.scheduled_date)}</span>
+                      <span className="text-[#4a4a4a] ml-2">{formatDate(wo.scheduled_date)}</span>
                     )}
                     {wo.description && (
-                      <div className="text-[11px] text-[#8fa0b5] truncate max-w-[200px]">{wo.description}</div>
+                      <div className="text-[11px] text-[#888888] truncate max-w-[200px]">{wo.description}</div>
                     )}
                   </div>
                   <div className="text-right shrink-0 ml-3">
-                    <div className="font-semibold text-[#0B1E3D]">{formatCurrency(wo.total_amount ?? 0)}</div>
-                    <div className={`text-[10px] font-semibold ${wo.status === 'completed' ? 'text-[#16a34a]' : 'text-[#5a6a80]'}`}>
+                    <div className="font-semibold text-[#0D0D0D]">{formatCurrency(wo.total_amount ?? 0)}</div>
+                    <div className={`text-[10px] font-semibold ${wo.status === 'completed' ? 'text-[#16a34a]' : 'text-[#4a4a4a]'}`}>
                       {wo.status}
                     </div>
                   </div>
@@ -265,16 +265,16 @@ function CustomerDetailModal({
 
         {/* Vehicles */}
         <div>
-          <div className="text-[11px] text-[#5a6a80] font-semibold uppercase tracking-wide mb-2">Járművek</div>
+          <div className="text-[11px] text-[#4a4a4a] font-semibold uppercase tracking-wide mb-2">Járművek</div>
           {vehicles.length === 0 ? (
-            <div className="text-[12px] text-[#8fa0b5] py-2">Nincs rögzített jármű</div>
+            <div className="text-[12px] text-[#888888] py-2">Nincs rögzített jármű</div>
           ) : (
             <div className="flex flex-wrap gap-2">
               {vehicles.map(v => (
                 <div key={v.id} className="flex items-center gap-2 bg-[#F4F5F7] rounded-lg px-3 py-1.5 text-[12px]">
-                  <Car size={12} className="text-[#C9A84C]" />
-                  <span className="font-medium text-[#0B1E3D]">{[v.make, v.model].filter(Boolean).join(' ') || 'Ismeretlen'}</span>
-                  {v.license_plate && <span className="text-[#5a6a80]">{v.license_plate}</span>}
+                  <Car size={12} className="text-[#C8102E]" />
+                  <span className="font-medium text-[#0D0D0D]">{[v.make, v.model].filter(Boolean).join(' ') || 'Ismeretlen'}</span>
+                  {v.license_plate && <span className="text-[#4a4a4a]">{v.license_plate}</span>}
                   {v.health_score != null && (
                     <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full ${v.health_score >= 70 ? 'bg-green-100 text-green-700' : v.health_score >= 40 ? 'bg-amber-100 text-amber-700' : 'bg-red-100 text-red-700'}`}>
                       {v.health_score}%
@@ -289,14 +289,14 @@ function CustomerDetailModal({
         {/* Reminders */}
         {reminders.length > 0 && (
           <div>
-            <div className="text-[11px] text-[#5a6a80] font-semibold uppercase tracking-wide mb-2">Következő emlékeztetők</div>
+            <div className="text-[11px] text-[#4a4a4a] font-semibold uppercase tracking-wide mb-2">Következő emlékeztetők</div>
             <div className="space-y-1.5">
               {reminders.map(r => (
                 <div key={r.id} className="flex items-center gap-2 text-[12px]">
-                  <CheckCircle size={12} className="text-[#C9A84C] shrink-0" />
-                  <span className="text-[#0B1E3D] font-medium">{r.reminder_type || 'Emlékeztető'}</span>
-                  {r.due_date && <span className="text-[#5a6a80]">{formatDate(r.due_date)}</span>}
-                  {r.notes && <span className="text-[#8fa0b5] truncate">{r.notes}</span>}
+                  <CheckCircle size={12} className="text-[#C8102E] shrink-0" />
+                  <span className="text-[#0D0D0D] font-medium">{r.reminder_type || 'Emlékeztető'}</span>
+                  {r.due_date && <span className="text-[#4a4a4a]">{formatDate(r.due_date)}</span>}
+                  {r.notes && <span className="text-[#888888] truncate">{r.notes}</span>}
                 </div>
               ))}
             </div>
@@ -306,7 +306,7 @@ function CustomerDetailModal({
         {/* Notes */}
         <div>
           <div className="flex items-center justify-between mb-1.5">
-            <div className="text-[11px] text-[#5a6a80] font-semibold uppercase tracking-wide">Megjegyzések</div>
+            <div className="text-[11px] text-[#4a4a4a] font-semibold uppercase tracking-wide">Megjegyzések</div>
             <Button variant="secondary" size="sm" onClick={saveNotes} disabled={savingNotes}>
               <Edit2 size={11} /> {savingNotes ? 'Mentés...' : 'Mentés'}
             </Button>
@@ -321,7 +321,7 @@ function CustomerDetailModal({
         {/* Family account selector */}
         <div>
           <div className="flex items-center justify-between mb-1.5">
-            <div className="text-[11px] text-[#5a6a80] font-semibold uppercase tracking-wide">Családi fiók</div>
+            <div className="text-[11px] text-[#4a4a4a] font-semibold uppercase tracking-wide">Családi fiók</div>
             <Button variant="secondary" size="sm" onClick={saveFamily} disabled={savingFamily}>
               <Users size={11} /> {savingFamily ? 'Mentés...' : 'Hozzárendelés'}
             </Button>
@@ -373,27 +373,27 @@ function FamilyAccountsSection({ familyAccounts, allCustomers, onRefreshFamilies
       </div>
 
       {familyAccounts.length === 0 ? (
-        <div className="text-center py-8 text-[#8fa0b5] text-[13px]">Nincs még családi fiók</div>
+        <div className="text-center py-8 text-[#888888] text-[13px]">Nincs még családi fiók</div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
           {familyAccounts.map(fa => (
-            <div key={fa.id} className="border border-[rgba(11,30,61,0.10)] rounded-xl p-3 bg-[#F4F5F7]">
+            <div key={fa.id} className="border border-[rgba(0,0,0,0.10)] rounded-xl p-3 bg-[#F4F5F7]">
               <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center gap-1.5">
-                  <Users size={14} className="text-[#C9A84C]" />
-                  <span className="font-semibold text-[13px] text-[#0B1E3D]">{fa.name}</span>
+                  <Users size={14} className="text-[#C8102E]" />
+                  <span className="font-semibold text-[13px] text-[#0D0D0D]">{fa.name}</span>
                 </div>
-                <span className="text-[12px] font-bold text-[#C9A84C]">{formatCurrency(fa.total_spending)}</span>
+                <span className="text-[12px] font-bold text-[#C8102E]">{formatCurrency(fa.total_spending)}</span>
               </div>
               <div className="space-y-1">
                 {fa.members.map(m => (
                   <div key={m.id} className="flex items-center justify-between text-[12px]">
-                    <span className="text-[#5a6a80]">{m.full_name}</span>
-                    <span className="text-[#0B1E3D] font-medium">{formatCurrency(m.total_spent)}</span>
+                    <span className="text-[#4a4a4a]">{m.full_name}</span>
+                    <span className="text-[#0D0D0D] font-medium">{formatCurrency(m.total_spent)}</span>
                   </div>
                 ))}
                 {fa.members.length === 0 && (
-                  <div className="text-[11px] text-[#8fa0b5]">Nincs tag hozzárendelve</div>
+                  <div className="text-[11px] text-[#888888]">Nincs tag hozzárendelve</div>
                 )}
               </div>
             </div>
@@ -520,8 +520,8 @@ export function CustomerValuePage({
   return (
     <div className="animate-fade-in space-y-4">
       {/* Auto-VIP rule banner */}
-      <div className="flex items-center gap-2.5 bg-[#C9A84C]/10 border border-[#C9A84C]/30 rounded-xl px-4 py-2.5">
-        <Award size={15} className="text-[#C9A84C] shrink-0" />
+      <div className="flex items-center gap-2.5 bg-[#C8102E]/10 border border-[#C8102E]/30 rounded-xl px-4 py-2.5">
+        <Award size={15} className="text-[#C8102E] shrink-0" />
         <span className="text-[12px] text-[#7a5c00] font-medium">
           <strong>VIP szabály:</strong> 5+ látogatás VAGY 2 500 CHF+ költés esetén automatikus VIP jelölés
         </span>
@@ -530,16 +530,16 @@ export function CustomerValuePage({
       {/* Search + VIP filter */}
       <div className="flex flex-wrap gap-2.5 items-center">
         <div className="relative flex-1 min-w-[200px]">
-          <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#8fa0b5]" />
+          <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#888888]" />
           <input
             type="text"
             value={search}
             onChange={e => setSearch(e.target.value)}
             placeholder="Keresés név, telefon alapján..."
-            className="w-full pl-9 pr-3 py-2 border border-[rgba(11,30,61,0.18)] rounded-lg text-[13px] bg-white outline-none focus:border-[#0B1E3D]"
+            className="w-full pl-9 pr-3 py-2 border border-[rgba(0,0,0,0.18)] rounded-lg text-[13px] bg-white outline-none focus:border-[#0D0D0D]"
           />
           {search && (
-            <button onClick={() => setSearch('')} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[#8fa0b5] hover:text-[#0B1E3D]">
+            <button onClick={() => setSearch('')} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[#888888] hover:text-[#0D0D0D]">
               <X size={13} />
             </button>
           )}
@@ -548,8 +548,8 @@ export function CustomerValuePage({
           onClick={() => setVipOnly(v => !v)}
           className={`inline-flex items-center gap-1.5 px-3 py-2 rounded-lg border text-[12px] font-semibold transition-colors ${
             vipOnly
-              ? 'bg-[#C9A84C] text-[#0B1E3D] border-[#C9A84C]'
-              : 'bg-white text-[#5a6a80] border-[rgba(11,30,61,0.18)] hover:bg-[#F4F5F7]'
+              ? 'bg-[#C8102E] text-[#0D0D0D] border-[#C8102E]'
+              : 'bg-white text-[#4a4a4a] border-[rgba(0,0,0,0.18)] hover:bg-[#F4F5F7]'
           }`}
         >
           <Star size={13} /> Csak VIP
@@ -559,19 +559,19 @@ export function CustomerValuePage({
       {/* Customer value table */}
       {loading ? (
         <Card>
-          <div className="text-center py-12 text-[#5a6a80] text-sm">Betöltés...</div>
+          <div className="text-center py-12 text-[#4a4a4a] text-sm">Betöltés...</div>
         </Card>
       ) : (
         <Card className="p-0 overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-[13px]">
               <thead>
-                <tr className="bg-[#F4F5F7] border-b border-[rgba(11,30,61,0.10)]">
+                <tr className="bg-[#F4F5F7] border-b border-[rgba(0,0,0,0.10)]">
                   {[
                     'Ügyfél neve', 'Járművek', 'Látogatások', 'Összes költés',
                     'Átl. munkalap', 'Ajánlat %', 'VIP', 'Műveletek',
                   ].map(col => (
-                    <th key={col} className="text-left px-4 py-3 text-[11px] font-semibold text-[#5a6a80] uppercase tracking-wider whitespace-nowrap">
+                    <th key={col} className="text-left px-4 py-3 text-[11px] font-semibold text-[#4a4a4a] uppercase tracking-wider whitespace-nowrap">
                       {col}
                     </th>
                   ))}
@@ -584,15 +584,15 @@ export function CustomerValuePage({
                   return (
                     <tr
                       key={m.id}
-                      className="border-b border-[rgba(11,30,61,0.06)] hover:bg-[#fafbfc] transition-colors cursor-pointer"
+                      className="border-b border-[rgba(0,0,0,0.06)] hover:bg-[#fafbfc] transition-colors cursor-pointer"
                       onClick={() => setDetailId(m.id)}
                     >
                       {/* Name */}
                       <td className="px-4 py-3">
                         <div className="flex items-center gap-1.5 flex-wrap">
-                          <span className="font-semibold text-[#0B1E3D]">{m.full_name}</span>
+                          <span className="font-semibold text-[#0D0D0D]">{m.full_name}</span>
                           {m.is_vip && (
-                            <span className="inline-flex items-center gap-0.5 text-[10px] bg-[#C9A84C]/15 text-[#8a6a00] font-bold px-1.5 py-0.5 rounded-full">
+                            <span className="inline-flex items-center gap-0.5 text-[10px] bg-[#C8102E]/15 text-[#8a6a00] font-bold px-1.5 py-0.5 rounded-full">
                               <Star size={9} fill="currentColor" /> VIP
                             </span>
                           )}
@@ -611,25 +611,25 @@ export function CustomerValuePage({
 
                       {/* Vehicles */}
                       <td className="px-4 py-3">
-                        <span className="inline-flex items-center gap-1 text-[12px] font-medium text-[#0B1E3D]">
-                          <Car size={12} className="text-[#C9A84C]" /> {m.vehicle_count}
+                        <span className="inline-flex items-center gap-1 text-[12px] font-medium text-[#0D0D0D]">
+                          <Car size={12} className="text-[#C8102E]" /> {m.vehicle_count}
                         </span>
                       </td>
 
                       {/* Visits */}
                       <td className="px-4 py-3">
-                        <span className="font-medium text-[#0B1E3D]">{m.visit_count}</span>
+                        <span className="font-medium text-[#0D0D0D]">{m.visit_count}</span>
                       </td>
 
                       {/* Total spent */}
                       <td className="px-4 py-3">
-                        <span className={`font-bold ${m.total_spent >= 2500 ? 'text-[#C9A84C]' : 'text-[#0B1E3D]'}`}>
+                        <span className={`font-bold ${m.total_spent >= 2500 ? 'text-[#C8102E]' : 'text-[#0D0D0D]'}`}>
                           {formatCurrency(m.total_spent)}
                         </span>
                       </td>
 
                       {/* Avg order */}
-                      <td className="px-4 py-3 text-[#5a6a80]">
+                      <td className="px-4 py-3 text-[#4a4a4a]">
                         {m.visit_count > 0 ? formatCurrency(m.avg_order) : '–'}
                       </td>
 
@@ -637,18 +637,18 @@ export function CustomerValuePage({
                       <td className="px-4 py-3">
                         {m.quote_acceptance > 0 ? (
                           <div className="flex items-center gap-1.5">
-                            <div className="w-16 h-1.5 bg-[rgba(11,30,61,0.10)] rounded-full overflow-hidden">
+                            <div className="w-16 h-1.5 bg-[rgba(0,0,0,0.10)] rounded-full overflow-hidden">
                               <div
                                 className="h-full rounded-full bg-[#16a34a]"
                                 style={{ width: `${Math.min(m.quote_acceptance, 100)}%` }}
                               />
                             </div>
-                            <span className="text-[11px] font-semibold text-[#0B1E3D]">
+                            <span className="text-[11px] font-semibold text-[#0D0D0D]">
                               {m.quote_acceptance.toFixed(0)}%
                             </span>
                           </div>
                         ) : (
-                          <span className="text-[#8fa0b5]">–</span>
+                          <span className="text-[#888888]">–</span>
                         )}
                       </td>
 
@@ -659,7 +659,7 @@ export function CustomerValuePage({
                           disabled={updatingVip === m.id}
                           title={m.is_vip ? 'VIP eltávolítása' : 'VIP hozzáadása'}
                           className={`w-8 h-5 rounded-full transition-colors relative ${
-                            m.is_vip ? 'bg-[#C9A84C]' : 'bg-[rgba(11,30,61,0.15)]'
+                            m.is_vip ? 'bg-[#C8102E]' : 'bg-[rgba(0,0,0,0.15)]'
                           } disabled:opacity-50`}
                         >
                           <span
@@ -674,7 +674,7 @@ export function CustomerValuePage({
                       <td className="px-4 py-3">
                         <button
                           onClick={() => setDetailId(m.id)}
-                          className="p-1.5 text-[#5a6a80] hover:text-[#0B1E3D] transition-colors"
+                          className="p-1.5 text-[#4a4a4a] hover:text-[#0D0D0D] transition-colors"
                         >
                           <ChevronRight size={15} />
                         </button>
@@ -685,7 +685,7 @@ export function CustomerValuePage({
               </tbody>
             </table>
             {filtered.length === 0 && (
-              <div className="text-center py-10 text-[#8fa0b5] text-[13px]">
+              <div className="text-center py-10 text-[#888888] text-[13px]">
                 {search || vipOnly ? 'Nincs találat' : 'Nincsenek ügyfelek'}
               </div>
             )}
@@ -693,16 +693,16 @@ export function CustomerValuePage({
 
           {/* Table footer */}
           {filtered.length > 0 && (
-            <div className="flex items-center gap-4 px-4 py-3 border-t border-[rgba(11,30,61,0.08)] bg-[#F4F5F7] text-[11px] text-[#5a6a80]">
-              <span><strong className="text-[#0B1E3D]">{filtered.length}</strong> ügyfél</span>
+            <div className="flex items-center gap-4 px-4 py-3 border-t border-[rgba(0,0,0,0.08)] bg-[#F4F5F7] text-[11px] text-[#4a4a4a]">
+              <span><strong className="text-[#0D0D0D]">{filtered.length}</strong> ügyfél</span>
               <span>
                 Összes forgalom:{' '}
-                <strong className="text-[#C9A84C]">
+                <strong className="text-[#C8102E]">
                   {formatCurrency(filtered.reduce((s, m) => s + m.total_spent, 0))}
                 </strong>
               </span>
               <span>
-                VIP ügyfelek: <strong className="text-[#0B1E3D]">{filtered.filter(m => m.is_vip).length}</strong>
+                VIP ügyfelek: <strong className="text-[#0D0D0D]">{filtered.filter(m => m.is_vip).length}</strong>
               </span>
             </div>
           )}

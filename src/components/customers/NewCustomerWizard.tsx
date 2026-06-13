@@ -208,7 +208,7 @@ export function NewCustomerWizard({ customerId, customerName, onClose, onNavigat
       <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[92vh] flex flex-col overflow-hidden">
 
         {/* Header */}
-        <div className="flex items-center gap-3 px-6 py-4 border-b border-gray-100 bg-[#0B1E3D] rounded-t-2xl">
+        <div className="flex items-center gap-3 px-6 py-4 border-b border-gray-100 bg-[#0D0D0D] rounded-t-2xl">
           {step !== 'decision' && (
             <button onClick={() => setStep(step === 'vehicle' ? 'decision' : step === 'services' ? 'vehicle' : step === 'assign' || step === 'quote_review' ? 'services' : 'decision')}
               className="p-1.5 text-white/60 hover:text-white transition-colors">
@@ -223,7 +223,7 @@ export function NewCustomerWizard({ customerId, customerName, onClose, onNavigat
           {step !== 'decision' && step !== 'done' && (
             <div className="flex items-center gap-1.5">
               {(['vehicle','services', path === 'quote' ? 'quote_review' : 'assign'] as WizardStep[]).map((s, i) => (
-                <div key={s} className={`w-2 h-2 rounded-full transition-colors ${step === s ? 'bg-[#C9A84C]' : 'bg-white/20'}`} />
+                <div key={s} className={`w-2 h-2 rounded-full transition-colors ${step === s ? 'bg-[#C8102E]' : 'bg-white/20'}`} />
               ))}
             </div>
           )}
@@ -238,41 +238,41 @@ export function NewCustomerWizard({ customerId, customerName, onClose, onNavigat
           {/* ── DECISION ── */}
           {step === 'decision' && (
             <div className="p-8">
-              <h3 className="text-[18px] font-bold text-[#0B1E3D] mb-2">Következő lépés</h3>
-              <p className="text-[13px] text-[#5a6a80] mb-6">Mit szeretnél most csinálni?</p>
+              <h3 className="text-[18px] font-bold text-[#0D0D0D] mb-2">Következő lépés</h3>
+              <p className="text-[13px] text-[#4a4a4a] mb-6">Mit szeretnél most csinálni?</p>
               <div className="space-y-3">
                 <button onClick={() => choosePath('quote')}
-                  className="w-full flex items-center gap-4 p-4 border-2 border-[rgba(11,30,61,0.12)] rounded-xl hover:border-[#C9A84C] hover:bg-amber-50/50 transition-all text-left group">
+                  className="w-full flex items-center gap-4 p-4 border-2 border-[rgba(0,0,0,0.12)] rounded-xl hover:border-[#C8102E] hover:bg-amber-50/50 transition-all text-left group">
                   <div className="w-10 h-10 rounded-xl bg-amber-100 flex items-center justify-center flex-shrink-0 group-hover:bg-amber-200 transition-colors">
                     <FileText size={18} className="text-amber-700" />
                   </div>
                   <div className="flex-1">
-                    <p className="font-semibold text-[14px] text-[#0B1E3D]">Árajánlatot készítek</p>
-                    <p className="text-[12px] text-[#5a6a80]">Árajánlat → ügyfél elfogadja → automatikus munkalap</p>
+                    <p className="font-semibold text-[14px] text-[#0D0D0D]">Árajánlatot készítek</p>
+                    <p className="text-[12px] text-[#4a4a4a]">Árajánlat → ügyfél elfogadja → automatikus munkalap</p>
                   </div>
-                  <ChevronRight size={16} className="text-[#8fa0b5]" />
+                  <ChevronRight size={16} className="text-[#888888]" />
                 </button>
 
                 <button onClick={() => choosePath('workorder')}
-                  className="w-full flex items-center gap-4 p-4 border-2 border-[rgba(11,30,61,0.12)] rounded-xl hover:border-[#185FA5] hover:bg-blue-50/50 transition-all text-left group">
+                  className="w-full flex items-center gap-4 p-4 border-2 border-[rgba(0,0,0,0.12)] rounded-xl hover:border-[#333333] hover:bg-blue-50/50 transition-all text-left group">
                   <div className="w-10 h-10 rounded-xl bg-blue-100 flex items-center justify-center flex-shrink-0 group-hover:bg-blue-200 transition-colors">
                     <ClipboardList size={18} className="text-blue-700" />
                   </div>
                   <div className="flex-1">
-                    <p className="font-semibold text-[14px] text-[#0B1E3D]">Munkalapot készítek árajánlat nélkül</p>
-                    <p className="text-[12px] text-[#5a6a80]">Közvetlen munkalap + Karl feladatai azonnal</p>
+                    <p className="font-semibold text-[14px] text-[#0D0D0D]">Munkalapot készítek árajánlat nélkül</p>
+                    <p className="text-[12px] text-[#4a4a4a]">Közvetlen munkalap + Karl feladatai azonnal</p>
                   </div>
-                  <ChevronRight size={16} className="text-[#8fa0b5]" />
+                  <ChevronRight size={16} className="text-[#888888]" />
                 </button>
 
                 <button onClick={onClose}
-                  className="w-full flex items-center gap-4 p-4 border border-[rgba(11,30,61,0.08)] rounded-xl hover:bg-gray-50 transition-all text-left">
+                  className="w-full flex items-center gap-4 p-4 border border-[rgba(0,0,0,0.08)] rounded-xl hover:bg-gray-50 transition-all text-left">
                   <div className="w-10 h-10 rounded-xl bg-gray-100 flex items-center justify-center flex-shrink-0">
                     <Clock size={18} className="text-gray-500" />
                   </div>
                   <div className="flex-1">
-                    <p className="font-semibold text-[14px] text-[#0B1E3D]">Később folytatom</p>
-                    <p className="text-[12px] text-[#5a6a80]">Az ügyfél mentve, folytathatod bármikor</p>
+                    <p className="font-semibold text-[14px] text-[#0D0D0D]">Később folytatom</p>
+                    <p className="text-[12px] text-[#4a4a4a]">Az ügyfél mentve, folytathatod bármikor</p>
                   </div>
                 </button>
               </div>
@@ -282,20 +282,20 @@ export function NewCustomerWizard({ customerId, customerName, onClose, onNavigat
           {/* ── VEHICLE ── */}
           {step === 'vehicle' && (
             <div className="p-6">
-              <h3 className="text-[16px] font-bold text-[#0B1E3D] mb-1">Jármű kiválasztása</h3>
-              <p className="text-[12px] text-[#5a6a80] mb-4">Válassz meglévő járművet vagy rögzíts újat</p>
+              <h3 className="text-[16px] font-bold text-[#0D0D0D] mb-1">Jármű kiválasztása</h3>
+              <p className="text-[12px] text-[#4a4a4a] mb-4">Válassz meglévő járművet vagy rögzíts újat</p>
 
               {vehicles.length > 0 && (
                 <div className="space-y-2 mb-4">
                   {vehicles.map(v => (
                     <button key={v.id} onClick={() => { setVehicleId(v.id); setAddingVehicle(false) }}
-                      className={`w-full flex items-center gap-3 p-3.5 border-2 rounded-xl transition-all text-left ${vehicleId === v.id ? 'border-[#0B1E3D] bg-[#0B1E3D]/5' : 'border-[rgba(11,30,61,0.10)] hover:border-[rgba(11,30,61,0.25)]'}`}>
-                      <Car size={18} className={vehicleId === v.id ? 'text-[#0B1E3D]' : 'text-[#8fa0b5]'} />
+                      className={`w-full flex items-center gap-3 p-3.5 border-2 rounded-xl transition-all text-left ${vehicleId === v.id ? 'border-[#0D0D0D] bg-[#0D0D0D]/5' : 'border-[rgba(0,0,0,0.10)] hover:border-[rgba(0,0,0,0.25)]'}`}>
+                      <Car size={18} className={vehicleId === v.id ? 'text-[#0D0D0D]' : 'text-[#888888]'} />
                       <div className="flex-1">
-                        <span className="font-semibold text-[13px] text-[#0B1E3D]">{v.make} {v.model} {v.year}</span>
-                        <span className="ml-2 text-[11px] font-bold bg-[#0B1E3D] text-white px-1.5 py-0.5 rounded">{v.license_plate}</span>
+                        <span className="font-semibold text-[13px] text-[#0D0D0D]">{v.make} {v.model} {v.year}</span>
+                        <span className="ml-2 text-[11px] font-bold bg-[#0D0D0D] text-white px-1.5 py-0.5 rounded">{v.license_plate}</span>
                       </div>
-                      {vehicleId === v.id && <Check size={16} className="text-[#0B1E3D]" />}
+                      {vehicleId === v.id && <Check size={16} className="text-[#0D0D0D]" />}
                     </button>
                   ))}
                 </div>
@@ -303,13 +303,13 @@ export function NewCustomerWizard({ customerId, customerName, onClose, onNavigat
 
               {!addingVehicle ? (
                 <button onClick={() => setAddingVehicle(true)}
-                  className="w-full flex items-center gap-3 p-3.5 border-2 border-dashed border-[rgba(11,30,61,0.15)] rounded-xl hover:border-[#C9A84C] hover:bg-amber-50/30 transition-all text-[#5a6a80] hover:text-[#C9A84C]">
+                  className="w-full flex items-center gap-3 p-3.5 border-2 border-dashed border-[rgba(0,0,0,0.15)] rounded-xl hover:border-[#C8102E] hover:bg-amber-50/30 transition-all text-[#4a4a4a] hover:text-[#C8102E]">
                   <Car size={16} />
                   <span className="text-[13px] font-medium">+ Új jármű rögzítése</span>
                 </button>
               ) : (
-                <div className="border border-[rgba(11,30,61,0.12)] rounded-xl p-4 bg-gray-50/50">
-                  <p className="text-[12px] font-semibold text-[#0B1E3D] mb-3">Új jármű adatai</p>
+                <div className="border border-[rgba(0,0,0,0.12)] rounded-xl p-4 bg-gray-50/50">
+                  <p className="text-[12px] font-semibold text-[#0D0D0D] mb-3">Új jármű adatai</p>
                   <div className="grid grid-cols-2 gap-2">
                     <FormGroup className="mb-0">
                       <FormLabel>Márka *</FormLabel>
@@ -350,27 +350,27 @@ export function NewCustomerWizard({ customerId, customerName, onClose, onNavigat
           {/* ── SERVICES ── */}
           {step === 'services' && (
             <div className="p-6">
-              <h3 className="text-[16px] font-bold text-[#0B1E3D] mb-1">
+              <h3 className="text-[16px] font-bold text-[#0D0D0D] mb-1">
                 Szolgáltatások kiválasztása
-                {selectedServiceIds.length > 0 && <span className="ml-2 text-[#C9A84C]">{selectedServiceIds.length} kiválasztva</span>}
+                {selectedServiceIds.length > 0 && <span className="ml-2 text-[#C8102E]">{selectedServiceIds.length} kiválasztva</span>}
               </h3>
-              <p className="text-[12px] text-[#5a6a80] mb-4">
-                {vehicle && <span className="font-medium text-[#0B1E3D]">{vehicle.make} {vehicle.model} – {vehicle.license_plate}</span>}
+              <p className="text-[12px] text-[#4a4a4a] mb-4">
+                {vehicle && <span className="font-medium text-[#0D0D0D]">{vehicle.make} {vehicle.model} – {vehicle.license_plate}</span>}
               </p>
 
               <div className="border border-gray-200 rounded-xl overflow-hidden divide-y divide-gray-100 mb-4 max-h-64 overflow-y-auto">
                 {Object.entries(servicesByCategory).map(([cat, svcs]) => (
                   <div key={cat}>
-                    <div className="px-3 py-1.5 bg-gray-50 text-[10px] font-bold text-[#5a6a80] uppercase tracking-wider">{cat}</div>
+                    <div className="px-3 py-1.5 bg-gray-50 text-[10px] font-bold text-[#4a4a4a] uppercase tracking-wider">{cat}</div>
                     {(svcs as any[]).map(svc => {
                       const checked = selectedServiceIds.includes(svc.id)
                       const price = svc.pricing_type === 'hourly' ? svc.hourly_rate : svc.base_price
                       return (
                         <button key={svc.id} onClick={() => toggleService(svc.id)}
                           className={`w-full flex items-center gap-3 px-3 py-2.5 hover:bg-gray-50 transition-colors text-left ${checked ? 'bg-blue-50/60' : ''}`}>
-                          {checked ? <CheckSquare size={15} className="text-[#0B1E3D] flex-shrink-0" /> : <Square size={15} className="text-gray-300 flex-shrink-0" />}
-                          <span className="flex-1 text-[13px] font-medium text-[#0B1E3D]">{svc.name}</span>
-                          <span className="text-[11px] text-[#8fa0b5] shrink-0">
+                          {checked ? <CheckSquare size={15} className="text-[#0D0D0D] flex-shrink-0" /> : <Square size={15} className="text-gray-300 flex-shrink-0" />}
+                          <span className="flex-1 text-[13px] font-medium text-[#0D0D0D]">{svc.name}</span>
+                          <span className="text-[11px] text-[#888888] shrink-0">
                             {price ? formatCurrency(price) : '–'}
                             {svc.pricing_type === 'hourly' ? '/h' : ''}
                             {svc.duration_minutes ? ` · ${svc.duration_minutes}p` : ''}
@@ -384,19 +384,19 @@ export function NewCustomerWizard({ customerId, customerName, onClose, onNavigat
 
               {selectedServices.length > 0 && (
                 <div className="bg-[#F4F5F7] rounded-xl p-3 mb-4">
-                  <p className="text-[11px] font-semibold text-[#5a6a80] mb-2">Kiválasztott szolgáltatások</p>
+                  <p className="text-[11px] font-semibold text-[#4a4a4a] mb-2">Kiválasztott szolgáltatások</p>
                   {selectedServices.map(s => (
                     <div key={s.id} className="flex items-center justify-between text-[12px] py-0.5">
-                      <span className="text-[#0B1E3D]">{s.name}</span>
-                      <span className="font-semibold text-[#0B1E3D]">
+                      <span className="text-[#0D0D0D]">{s.name}</span>
+                      <span className="font-semibold text-[#0D0D0D]">
                         {formatCurrency(s.pricing_type === 'hourly' ? s.hourly_rate : s.base_price || 0)}
                         {s.pricing_type === 'hourly' ? '/h' : ''}
                       </span>
                     </div>
                   ))}
                   <div className="border-t border-gray-200 mt-2 pt-2 flex justify-between">
-                    <span className="text-[12px] font-bold text-[#0B1E3D]">Összesen (nettó)</span>
-                    <span className="text-[13px] font-bold text-[#C9A84C]">{formatCurrency(calcTotal())}</span>
+                    <span className="text-[12px] font-bold text-[#0D0D0D]">Összesen (nettó)</span>
+                    <span className="text-[13px] font-bold text-[#C8102E]">{formatCurrency(calcTotal())}</span>
                   </div>
                 </div>
               )}
@@ -411,8 +411,8 @@ export function NewCustomerWizard({ customerId, customerName, onClose, onNavigat
           {/* ── ASSIGN (direct workorder) ── */}
           {step === 'assign' && (
             <div className="p-6">
-              <h3 className="text-[16px] font-bold text-[#0B1E3D] mb-1">Munkalap beállítások</h3>
-              <p className="text-[12px] text-[#5a6a80] mb-4">{selectedServices.length} szolgáltatás · {vehicle?.make} {vehicle?.model}</p>
+              <h3 className="text-[16px] font-bold text-[#0D0D0D] mb-1">Munkalap beállítások</h3>
+              <p className="text-[12px] text-[#4a4a4a] mb-4">{selectedServices.length} szolgáltatás · {vehicle?.make} {vehicle?.model}</p>
 
               <div className="grid grid-cols-2 gap-3 mb-4">
                 <FormGroup>
@@ -452,38 +452,38 @@ export function NewCustomerWizard({ customerId, customerName, onClose, onNavigat
           {/* ── QUOTE REVIEW ── */}
           {step === 'quote_review' && (
             <div className="p-6">
-              <h3 className="text-[16px] font-bold text-[#0B1E3D] mb-1">Árajánlat összefoglalója</h3>
-              <p className="text-[12px] text-[#5a6a80] mb-4">{customerName} · {vehicle?.make} {vehicle?.model} {vehicle?.license_plate}</p>
+              <h3 className="text-[16px] font-bold text-[#0D0D0D] mb-1">Árajánlat összefoglalója</h3>
+              <p className="text-[12px] text-[#4a4a4a] mb-4">{customerName} · {vehicle?.make} {vehicle?.model} {vehicle?.license_plate}</p>
 
               <div className="border border-gray-200 rounded-xl overflow-hidden mb-4">
-                <div className="bg-gray-50 px-4 py-2 text-[11px] font-semibold text-[#5a6a80] uppercase tracking-wide grid grid-cols-3">
+                <div className="bg-gray-50 px-4 py-2 text-[11px] font-semibold text-[#4a4a4a] uppercase tracking-wide grid grid-cols-3">
                   <span>Szolgáltatás</span><span className="text-right">Árazás</span><span className="text-right">Ár</span>
                 </div>
                 {selectedServices.map(s => (
                   <div key={s.id} className="px-4 py-2.5 grid grid-cols-3 text-[13px] border-t border-gray-100">
-                    <span className="font-medium text-[#0B1E3D]">{s.name}</span>
-                    <span className="text-right text-[#5a6a80] text-[11px]">
+                    <span className="font-medium text-[#0D0D0D]">{s.name}</span>
+                    <span className="text-right text-[#4a4a4a] text-[11px]">
                       {s.pricing_type === 'fixed' ? 'Fix' : s.pricing_type === 'hourly' ? 'Óradíjas' : 'Egyedi'}
                     </span>
-                    <span className="text-right font-semibold text-[#0B1E3D]">
+                    <span className="text-right font-semibold text-[#0D0D0D]">
                       {formatCurrency(s.pricing_type === 'hourly' ? s.hourly_rate || 0 : s.base_price || 0)}
-                      {s.pricing_type === 'hourly' && <span className="text-[10px] text-[#5a6a80]">/h</span>}
+                      {s.pricing_type === 'hourly' && <span className="text-[10px] text-[#4a4a4a]">/h</span>}
                     </span>
                   </div>
                 ))}
                 <div className="px-4 py-3 bg-gray-50 border-t border-gray-200 flex items-center justify-between">
-                  <span className="text-[12px] font-bold text-[#0B1E3D]">Nettó összesen</span>
-                  <span className="text-[14px] font-bold text-[#C9A84C]">{formatCurrency(calcTotal())}</span>
+                  <span className="text-[12px] font-bold text-[#0D0D0D]">Nettó összesen</span>
+                  <span className="text-[14px] font-bold text-[#C8102E]">{formatCurrency(calcTotal())}</span>
                 </div>
                 <div className="px-4 py-2 bg-gray-50 flex items-center justify-between border-t border-gray-100">
-                  <span className="text-[11px] text-[#5a6a80]">+ 7.7% MwSt</span>
-                  <span className="text-[12px] font-semibold text-[#0B1E3D]">{formatCurrency(calcTotal() * 1.077)}</span>
+                  <span className="text-[11px] text-[#4a4a4a]">+ 7.7% MwSt</span>
+                  <span className="text-[12px] font-semibold text-[#0D0D0D]">{formatCurrency(calcTotal() * 1.077)}</span>
                 </div>
               </div>
 
               {faultDescription && (
-                <div className="bg-gray-50 rounded-xl p-3 mb-4 text-[12px] text-[#5a6a80]">
-                  <span className="font-medium text-[#0B1E3D]">Megjegyzés: </span>{faultDescription}
+                <div className="bg-gray-50 rounded-xl p-3 mb-4 text-[12px] text-[#4a4a4a]">
+                  <span className="font-medium text-[#0D0D0D]">Megjegyzés: </span>{faultDescription}
                 </div>
               )}
 
@@ -500,11 +500,11 @@ export function NewCustomerWizard({ customerId, customerName, onClose, onNavigat
               <div className="w-16 h-16 rounded-full bg-emerald-100 flex items-center justify-center mx-auto mb-4">
                 <Check size={28} className="text-emerald-600" />
               </div>
-              <h3 className="text-[18px] font-bold text-[#0B1E3D] mb-2">
+              <h3 className="text-[18px] font-bold text-[#0D0D0D] mb-2">
                 {createdId.type === 'quote' ? 'Árajánlat létrehozva!' : 'Munkalap létrehozva!'}
               </h3>
               {createdId.number && (
-                <p className="text-[13px] text-[#5a6a80] mb-6">{createdId.number}</p>
+                <p className="text-[13px] text-[#4a4a4a] mb-6">{createdId.number}</p>
               )}
 
               {createdId.type === 'workorder' && (

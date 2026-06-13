@@ -271,7 +271,7 @@ export function PhotosPage({ refreshKey, profile }: { refreshKey: number; onRefr
           </div>
           <div className="flex items-center gap-2">
             {isSuperAdmin && !ph.confirmed && (
-              <button onClick={() => confirmPhoto(ph.id)} className="px-3 py-1.5 bg-[#C9A84C] text-[#0B1E3D] text-xs font-bold rounded-lg">
+              <button onClick={() => confirmPhoto(ph.id)} className="px-3 py-1.5 bg-[#C8102E] text-[#0D0D0D] text-xs font-bold rounded-lg">
                 <ShieldCheck size={13} className="inline mr-1" />Rögzít
               </button>
             )}
@@ -331,17 +331,17 @@ export function PhotosPage({ refreshKey, profile }: { refreshKey: number; onRefr
     return (
       <div className="animate-fade-in max-w-lg mx-auto space-y-4 pb-32 md:pb-8">
         <button onClick={() => { setView('gallery'); setFiles([]) }}
-          className="flex items-center gap-2 text-sm text-[#5a6a80] hover:text-[#0B1E3D]">
+          className="flex items-center gap-2 text-sm text-[#4a4a4a] hover:text-[#0D0D0D]">
           <ArrowLeft size={16} /> Vissza
         </button>
 
         <div className="bg-white rounded-xl p-5 shadow-sm space-y-4">
-          <h2 className="font-bold text-[#0B1E3D] text-lg">📷 Fotók feltöltése</h2>
+          <h2 className="font-bold text-[#0D0D0D] text-lg">📷 Fotók feltöltése</h2>
 
           <div>
-            <label className="block text-xs font-semibold text-[#5a6a80] uppercase tracking-wide mb-1.5">Munkalap *</label>
+            <label className="block text-xs font-semibold text-[#4a4a4a] uppercase tracking-wide mb-1.5">Munkalap *</label>
             <select value={workOrderId} onChange={e => setWorkOrderId(e.target.value)}
-              className="w-full border border-gray-200 rounded-xl px-3 py-3 text-sm bg-white outline-none focus:border-[#0B1E3D]">
+              className="w-full border border-gray-200 rounded-xl px-3 py-3 text-sm bg-white outline-none focus:border-[#0D0D0D]">
               <option value="">Válassz munkalapot...</option>
               {workOrders.map(wo => (
                 <option key={wo.id} value={wo.id}>
@@ -352,9 +352,9 @@ export function PhotosPage({ refreshKey, profile }: { refreshKey: number; onRefr
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-[#5a6a80] uppercase tracking-wide mb-1.5">Kategória</label>
+            <label className="block text-xs font-semibold text-[#4a4a4a] uppercase tracking-wide mb-1.5">Kategória</label>
             <select value={category} onChange={e => setCategory(e.target.value)}
-              className="w-full border border-gray-200 rounded-xl px-3 py-3 text-sm bg-white outline-none focus:border-[#0B1E3D]">
+              className="w-full border border-gray-200 rounded-xl px-3 py-3 text-sm bg-white outline-none focus:border-[#0D0D0D]">
               {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
             </select>
           </div>
@@ -368,7 +368,7 @@ export function PhotosPage({ refreshKey, profile }: { refreshKey: number; onRefr
           </button>
 
           <label className="block">
-            <div className="flex items-center justify-center gap-3 w-full py-5 bg-[#0B1E3D] hover:bg-[#142a50] text-white rounded-xl font-bold text-base cursor-pointer transition-colors select-none">
+            <div className="flex items-center justify-center gap-3 w-full py-5 bg-[#0D0D0D] hover:bg-[#1A1A1A] text-white rounded-xl font-bold text-base cursor-pointer transition-colors select-none">
               <Camera size={22} /> Képek kiválasztása / Kamera
             </div>
             <input type="file" accept="image/*" multiple className="hidden" onChange={handleFileChange} />
@@ -378,7 +378,7 @@ export function PhotosPage({ refreshKey, profile }: { refreshKey: number; onRefr
         {files.length > 0 && (
           <div className="bg-white rounded-xl p-4 shadow-sm space-y-3">
             <div className="flex items-center justify-between">
-              <h3 className="font-semibold text-[#0B1E3D]">{files.length} kép kiválasztva</h3>
+              <h3 className="font-semibold text-[#0D0D0D]">{files.length} kép kiválasztva</h3>
               {!uploading && !allDone && (
                 <button onClick={() => setFiles([])} className="text-xs text-red-500 hover:underline">Összes törlése</button>
               )}
@@ -392,8 +392,8 @@ export function PhotosPage({ refreshKey, profile }: { refreshKey: number; onRefr
                   item.status === 'uploading' ? 'bg-blue-50 border-blue-200' :
                   'bg-gray-50 border-gray-200'
                 }`}>
-                  <span className="flex-1 truncate text-[#0B1E3D]">{item.file.name}</span>
-                  <span className="text-xs text-[#5a6a80] shrink-0">{(item.file.size/1024/1024).toFixed(1)}MB</span>
+                  <span className="flex-1 truncate text-[#0D0D0D]">{item.file.name}</span>
+                  <span className="text-xs text-[#4a4a4a] shrink-0">{(item.file.size/1024/1024).toFixed(1)}MB</span>
                   {item.status === 'uploading' && <Loader2 size={15} className="text-blue-500 animate-spin shrink-0" />}
                   {item.status === 'done' && <CheckCircle size={15} className="text-green-500 shrink-0" />}
                   {item.status === 'error' && <span className="text-xs text-red-500 shrink-0">{item.error}</span>}
@@ -406,7 +406,7 @@ export function PhotosPage({ refreshKey, profile }: { refreshKey: number; onRefr
 
             {!allDone ? (
               <button onClick={handleUpload} disabled={uploading}
-                className="w-full py-4 bg-[#C9A84C] hover:bg-[#b8943f] disabled:opacity-50 text-[#0B1E3D] rounded-xl font-bold text-base flex items-center justify-center gap-2 transition-colors">
+                className="w-full py-4 bg-[#C8102E] hover:bg-[#b8943f] disabled:opacity-50 text-[#0D0D0D] rounded-xl font-bold text-base flex items-center justify-center gap-2 transition-colors">
                 {uploading
                   ? <><Loader2 size={18} className="animate-spin" /> Feltöltés folyamatban...</>
                   : <><Upload size={18} /> {files.filter(f => f.status !== 'done').length} fotó feltöltése</>}
@@ -419,7 +419,7 @@ export function PhotosPage({ refreshKey, profile }: { refreshKey: number; onRefr
 
             {!uploading && !allDone && (
               <label className="block">
-                <div className="flex items-center justify-center gap-2 w-full py-2.5 border border-dashed border-gray-300 rounded-lg text-sm text-[#5a6a80] cursor-pointer hover:border-[#0B1E3D]">
+                <div className="flex items-center justify-center gap-2 w-full py-2.5 border border-dashed border-gray-300 rounded-lg text-sm text-[#4a4a4a] cursor-pointer hover:border-[#0D0D0D]">
                   <Camera size={14} /> További képek hozzáadása
                 </div>
                 <input type="file" accept="image/*" multiple className="hidden" onChange={handleFileChange} />
@@ -437,7 +437,7 @@ export function PhotosPage({ refreshKey, profile }: { refreshKey: number; onRefr
       {/* Header bar */}
       <div className="flex flex-wrap gap-2 items-center">
         <select value={filterWO} onChange={e => setFilterWO(e.target.value)}
-          className="flex-1 min-w-[180px] px-3 py-2 border border-gray-200 rounded-lg text-sm bg-white outline-none focus:border-[#0B1E3D]">
+          className="flex-1 min-w-[180px] px-3 py-2 border border-gray-200 rounded-lg text-sm bg-white outline-none focus:border-[#0D0D0D]">
           <option value="">Összes munkalap</option>
           {workOrders.map(wo => (
             <option key={wo.id} value={wo.id}>{wo.order_number} – {wo.customer?.full_name}</option>
@@ -449,15 +449,15 @@ export function PhotosPage({ refreshKey, profile }: { refreshKey: number; onRefr
           </span>
         )}
         <button onClick={() => setView('upload')}
-          className="flex items-center gap-2 px-4 py-2 bg-[#0B1E3D] text-white rounded-lg text-sm font-semibold hover:bg-[#142a50]">
+          className="flex items-center gap-2 px-4 py-2 bg-[#0D0D0D] text-white rounded-lg text-sm font-semibold hover:bg-[#1A1A1A]">
           <Upload size={14} /> Fotó feltöltés
         </button>
       </div>
 
       {loading ? (
-        <div className="text-center py-12 text-[#5a6a80] text-sm">Betöltés...</div>
+        <div className="text-center py-12 text-[#4a4a4a] text-sm">Betöltés...</div>
       ) : filtered.length === 0 ? (
-        <div className="text-center py-16 text-[#8fa0b5]">
+        <div className="text-center py-16 text-[#888888]">
           <Camera size={40} className="mx-auto mb-3 opacity-30" />
           <p className="text-sm">Még nincsenek fotók</p>
         </div>
@@ -471,12 +471,12 @@ export function PhotosPage({ refreshKey, profile }: { refreshKey: number; onRefr
               {/* Group header */}
               <div className="px-4 py-3 border-b border-gray-100 flex items-center justify-between flex-wrap gap-2">
                 <div className="flex items-center gap-2 flex-wrap">
-                  <span className="font-semibold text-[#0B1E3D] text-sm">{orderNum}</span>
+                  <span className="font-semibold text-[#0D0D0D] text-sm">{orderNum}</span>
                   {gPhotos[0]?.work_order?.customer?.full_name && (
-                    <span className="text-xs text-[#5a6a80]">– {gPhotos[0].work_order.customer.full_name}</span>
+                    <span className="text-xs text-[#4a4a4a]">– {gPhotos[0].work_order.customer.full_name}</span>
                   )}
                   {gPhotos[0]?.work_order?.vehicle?.license_plate && (
-                    <span className="text-xs font-bold bg-[#0B1E3D] text-white px-2 py-0.5 rounded">{gPhotos[0].work_order.vehicle.license_plate}</span>
+                    <span className="text-xs font-bold bg-[#0D0D0D] text-white px-2 py-0.5 rounded">{gPhotos[0].work_order.vehicle.license_plate}</span>
                   )}
                   {pendingInGroup.length > 0 && (
                     <span className="text-xs bg-amber-100 text-amber-700 px-2 py-0.5 rounded-full font-medium">
@@ -485,22 +485,22 @@ export function PhotosPage({ refreshKey, profile }: { refreshKey: number; onRefr
                   )}
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="text-xs text-[#5a6a80]">{gPhotos.length} fotó</span>
+                  <span className="text-xs text-[#4a4a4a]">{gPhotos.length} fotó</span>
                   {isAdmin && gPhotos.length > 0 && (
                     <button onClick={() => downloadAll(gPhotos)}
-                      className="flex items-center gap-1 px-2.5 py-1.5 border border-[#C9A84C] text-[#C9A84C] text-xs rounded-lg hover:bg-amber-50 font-semibold">
+                      className="flex items-center gap-1 px-2.5 py-1.5 border border-[#C8102E] text-[#C8102E] text-xs rounded-lg hover:bg-amber-50 font-semibold">
                       <Download size={12} /> Összes letöltése
                     </button>
                   )}
                   {isAdmin && confirmedInGroup.length > 0 && (
                     <button onClick={() => printPhotos(gPhotos)}
-                      className="flex items-center gap-1 px-2.5 py-1.5 border border-gray-200 text-[#5a6a80] text-xs rounded-lg hover:bg-gray-50">
+                      className="flex items-center gap-1 px-2.5 py-1.5 border border-gray-200 text-[#4a4a4a] text-xs rounded-lg hover:bg-gray-50">
                       <Printer size={12} /> PDF
                     </button>
                   )}
                   {isSuperAdmin && pendingInGroup.length > 0 && (
                     <button onClick={() => confirmAllPending(woId)}
-                      className="flex items-center gap-1.5 px-3 py-1.5 bg-[#0B1E3D] hover:bg-[#142a50] text-white text-xs font-bold rounded-lg transition-colors">
+                      className="flex items-center gap-1.5 px-3 py-1.5 bg-[#0D0D0D] hover:bg-[#1A1A1A] text-white text-xs font-bold rounded-lg transition-colors">
                       <ShieldCheck size={13} /> Összes rögzítése ({pendingInGroup.length})
                     </button>
                   )}
@@ -540,16 +540,16 @@ export function PhotosPage({ refreshKey, profile }: { refreshKey: number; onRefr
 
                       {/* Meta */}
                       <div className="p-2 flex-1 flex flex-col gap-1">
-                        <div className="text-[10px] font-semibold text-[#0B1E3D] uppercase truncate">{p.category}</div>
-                        <div className="flex items-center gap-1 text-[9px] text-[#8fa0b5]">
+                        <div className="text-[10px] font-semibold text-[#0D0D0D] uppercase truncate">{p.category}</div>
+                        <div className="flex items-center gap-1 text-[9px] text-[#888888]">
                           <User size={8} />
                           <span className="truncate">{p.uploaded_by_name || '–'}</span>
                         </div>
-                        <div className="text-[9px] text-[#8fa0b5]">
+                        <div className="text-[9px] text-[#888888]">
                           {new Date(p.created_at).toLocaleString('hu-HU', { month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' })}
                         </div>
                         {p.notes && (
-                          <div className="text-[9px] text-[#5a6a80] italic truncate">"{p.notes}"</div>
+                          <div className="text-[9px] text-[#4a4a4a] italic truncate">"{p.notes}"</div>
                         )}
 
                         {/* Actions */}
@@ -557,7 +557,7 @@ export function PhotosPage({ refreshKey, profile }: { refreshKey: number; onRefr
                           {/* Confirm – super admin only, pending only */}
                           {isSuperAdmin && !p.confirmed && (
                             <button onClick={() => confirmPhoto(p.id)} disabled={confirmingIds.has(p.id)}
-                              className="flex items-center gap-0.5 text-[9px] bg-[#0B1E3D] text-white px-1.5 py-1 rounded font-bold hover:bg-[#142a50] disabled:opacity-50">
+                              className="flex items-center gap-0.5 text-[9px] bg-[#0D0D0D] text-white px-1.5 py-1 rounded font-bold hover:bg-[#1A1A1A] disabled:opacity-50">
                               {confirmingIds.has(p.id) ? <Loader2 size={8} className="animate-spin" /> : <ShieldCheck size={8} />}
                               Rögzít
                             </button>
@@ -582,15 +582,15 @@ export function PhotosPage({ refreshKey, profile }: { refreshKey: number; onRefr
                                   value={noteText}
                                   onChange={e => setNoteText(e.target.value)}
                                   placeholder="Megjegyzés..."
-                                  className="flex-1 text-[10px] border border-gray-200 rounded px-1.5 py-1 outline-none focus:border-[#0B1E3D]"
+                                  className="flex-1 text-[10px] border border-gray-200 rounded px-1.5 py-1 outline-none focus:border-[#0D0D0D]"
                                   autoFocus
                                 />
-                                <button onClick={() => saveNote(p.id)} className="text-[9px] bg-[#C9A84C] text-[#0B1E3D] px-1.5 py-1 rounded font-bold">OK</button>
+                                <button onClick={() => saveNote(p.id)} className="text-[9px] bg-[#C8102E] text-[#0D0D0D] px-1.5 py-1 rounded font-bold">OK</button>
                                 <button onClick={() => setEditingNoteId(null)} className="text-[9px] text-gray-400 px-1 py-1">✕</button>
                               </div>
                             ) : (
                               <button onClick={() => { setEditingNoteId(p.id); setNoteText(p.notes || '') }}
-                                className="flex items-center gap-0.5 text-[9px] text-[#5a6a80] hover:text-[#0B1E3D] px-1 py-1 rounded">
+                                className="flex items-center gap-0.5 text-[9px] text-[#4a4a4a] hover:text-[#0D0D0D] px-1 py-1 rounded">
                                 <MessageSquare size={8} />
                                 {p.notes ? 'Szerk.' : 'Megjegyzés'}
                               </button>
@@ -599,14 +599,14 @@ export function PhotosPage({ refreshKey, profile }: { refreshKey: number; onRefr
                           {/* Download – admin */}
                           {isAdmin && (
                             <button onClick={() => downloadPhoto(p)}
-                              className="flex items-center gap-0.5 text-[9px] text-[#5a6a80] hover:text-[#0B1E3D] px-1 py-1 rounded">
+                              className="flex items-center gap-0.5 text-[9px] text-[#4a4a4a] hover:text-[#0D0D0D] px-1 py-1 rounded">
                               <Download size={8} /> Letölt
                             </button>
                           )}
                           {/* Delete – super admin only */}
                           {isSuperAdmin && (
                             <button onClick={() => deletePhoto(p.id)} className="ml-auto p-1 rounded hover:bg-red-50">
-                              <Trash2 size={9} className="text-[#C9384C]" />
+                              <Trash2 size={9} className="text-[#C8102E]" />
                             </button>
                           )}
                         </div>

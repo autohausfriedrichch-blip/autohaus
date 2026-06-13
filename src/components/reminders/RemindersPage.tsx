@@ -74,7 +74,7 @@ const TYPE_LABELS: Record<string, string> = {
 }
 
 const STATUS_STYLES: Record<string, { label: string; color: string; bg: string }> = {
-  pending:  { label: 'Függőben', color: '#5a6a80', bg: '#F4F5F7' },
+  pending:  { label: 'Függőben', color: '#4a4a4a', bg: '#F4F5F7' },
   sent:     { label: 'Elküldve', color: '#2563eb', bg: '#dbeafe' },
   opened:   { label: 'Megnyitva', color: '#d97706', bg: '#fef3c7' },
   replied:  { label: 'Válaszolt', color: '#ea580c', bg: '#ffedd5' },
@@ -114,11 +114,11 @@ function fmtDate(d: string | null) {
 }
 
 function dueDateStyle(d: string | null): { color: string; label?: string } {
-  if (!d) return { color: '#5a6a80' }
+  if (!d) return { color: '#4a4a4a' }
   const diff = (new Date(d).getTime() - Date.now()) / 86400000
-  if (diff < 0) return { color: '#C9384C', label: 'Lejárt' }
+  if (diff < 0) return { color: '#C8102E', label: 'Lejárt' }
   if (diff <= 30) return { color: '#f59e0b', label: `${Math.ceil(diff)} nap` }
-  return { color: '#5a6a80' }
+  return { color: '#4a4a4a' }
 }
 
 // ─── Main Component ───────────────────────────────────────────────────────────
@@ -315,7 +315,7 @@ export function RemindersPage({ refreshKey, onRefresh }: { refreshKey: number; o
       {/* ── Stats Bar ── */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         {[
-          { label: 'Összes', value: stats.total, icon: <Bell size={14} />, color: '#0B1E3D' },
+          { label: 'Összes', value: stats.total, icon: <Bell size={14} />, color: '#0D0D0D' },
           { label: 'Függőben', value: stats.pending, icon: <Clock size={14} />, color: '#f59e0b' },
           { label: 'Elküldve', value: stats.sent, icon: <Send size={14} />, color: '#2563eb' },
           { label: 'Lefoglalt', value: stats.booked, icon: <CheckCircle size={14} />, color: '#16a34a' },
@@ -328,8 +328,8 @@ export function RemindersPage({ refreshKey, onRefresh }: { refreshKey: number; o
               {stat.icon}
             </div>
             <div>
-              <div className="text-[11px] text-[#5a6a80]">{stat.label}</div>
-              <div className="text-[20px] font-bold text-[#0B1E3D] leading-tight">{stat.value}</div>
+              <div className="text-[11px] text-[#4a4a4a]">{stat.label}</div>
+              <div className="text-[20px] font-bold text-[#0D0D0D] leading-tight">{stat.value}</div>
             </div>
           </Card>
         ))}
@@ -345,8 +345,8 @@ export function RemindersPage({ refreshKey, onRefresh }: { refreshKey: number; o
               onClick={() => setActiveTab(tab.key)}
               className={`px-3 py-1.5 rounded-lg text-[12px] font-semibold transition-all ${
                 activeTab === tab.key
-                  ? 'bg-white text-[#0B1E3D] shadow-sm'
-                  : 'text-[#5a6a80] hover:text-[#0B1E3D]'
+                  ? 'bg-white text-[#0D0D0D] shadow-sm'
+                  : 'text-[#4a4a4a] hover:text-[#0D0D0D]'
               }`}
             >
               {tab.label}
@@ -372,11 +372,11 @@ export function RemindersPage({ refreshKey, onRefresh }: { refreshKey: number; o
         </CardTitle>
 
         {loading ? (
-          <div className="py-8 text-center text-[13px] text-[#5a6a80]">Betöltés...</div>
+          <div className="py-8 text-center text-[13px] text-[#4a4a4a]">Betöltés...</div>
         ) : filtered.length === 0 ? (
           <div className="py-10 text-center">
-            <Bell size={28} className="mx-auto mb-2 text-[#8fa0b5]" />
-            <p className="text-[13px] text-[#5a6a80]">Nincs emlékeztető ebben a kategóriában.</p>
+            <Bell size={28} className="mx-auto mb-2 text-[#888888]" />
+            <p className="text-[13px] text-[#4a4a4a]">Nincs emlékeztető ebben a kategóriában.</p>
           </div>
         ) : (
           <div className="space-y-2.5">
@@ -391,8 +391,8 @@ export function RemindersPage({ refreshKey, onRefresh }: { refreshKey: number; o
                   key={reminder.id}
                   className={`border rounded-xl p-4 transition-all hover:shadow-sm ${
                     isOverdue
-                      ? 'border-[#C9384C]/20 bg-[#fff5f5]'
-                      : 'border-[rgba(11,30,61,0.10)] bg-white'
+                      ? 'border-[#C8102E]/20 bg-[#fff5f5]'
+                      : 'border-[rgba(0,0,0,0.10)] bg-white'
                   }`}
                 >
                   <div className="flex items-start gap-3">
@@ -412,7 +412,7 @@ export function RemindersPage({ refreshKey, onRefresh }: { refreshKey: number; o
                       <div className="flex items-start justify-between gap-2 flex-wrap">
                         <div className="min-w-0">
                           <div className="flex items-center gap-2 flex-wrap mb-0.5">
-                            <span className="text-[13px] font-semibold text-[#0B1E3D]">{reminder.title}</span>
+                            <span className="text-[13px] font-semibold text-[#0D0D0D]">{reminder.title}</span>
                             <span
                               className="text-[10px] font-semibold px-2 py-0.5 rounded-full"
                               style={{ color: statusStyle.color, backgroundColor: statusStyle.bg }}
@@ -420,16 +420,16 @@ export function RemindersPage({ refreshKey, onRefresh }: { refreshKey: number; o
                               {statusStyle.label}
                             </span>
                             {TYPE_LABELS[reminder.type] && reminder.type !== 'custom' && (
-                              <span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-[#F4F5F7] text-[#5a6a80]">
+                              <span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-[#F4F5F7] text-[#4a4a4a]">
                                 {TYPE_LABELS[reminder.type]}
                               </span>
                             )}
                           </div>
 
                           {/* Customer + vehicle */}
-                          <div className="flex flex-wrap items-center gap-x-3 gap-y-0.5 text-[12px] text-[#5a6a80]">
+                          <div className="flex flex-wrap items-center gap-x-3 gap-y-0.5 text-[12px] text-[#4a4a4a]">
                             {reminder.customer?.full_name && (
-                              <span className="font-medium text-[#0B1E3D]">{reminder.customer.full_name}</span>
+                              <span className="font-medium text-[#0D0D0D]">{reminder.customer.full_name}</span>
                             )}
                             {reminder.vehicle && (
                               <span className="flex items-center gap-1">
@@ -462,7 +462,7 @@ export function RemindersPage({ refreshKey, onRefresh }: { refreshKey: number; o
                           )}
 
                           {reminder.notes && (
-                            <p className="text-[11px] text-[#5a6a80] mt-1 italic line-clamp-1">{reminder.notes}</p>
+                            <p className="text-[11px] text-[#4a4a4a] mt-1 italic line-clamp-1">{reminder.notes}</p>
                           )}
                         </div>
 
@@ -489,7 +489,7 @@ export function RemindersPage({ refreshKey, onRefresh }: { refreshKey: number; o
                           <button
                             onClick={() => deleteReminder(reminder.id)}
                             title="Törlés"
-                            className="w-7 h-7 rounded-lg flex items-center justify-center bg-[#fee2e2] text-[#C9384C] hover:bg-[#fecaca] transition-colors"
+                            className="w-7 h-7 rounded-lg flex items-center justify-center bg-[#fee2e2] text-[#C8102E] hover:bg-[#fecaca] transition-colors"
                           >
                             <Trash2 size={12} />
                           </button>
@@ -608,12 +608,12 @@ export function RemindersPage({ refreshKey, onRefresh }: { refreshKey: number; o
       >
         <div className="space-y-4 py-1">
           <div className="flex items-start gap-3 p-4 bg-[#F4F5F7] rounded-xl">
-            <BellRing size={18} className="text-[#C9A84C] shrink-0 mt-0.5" />
+            <BellRing size={18} className="text-[#C8102E] shrink-0 mt-0.5" />
             <div>
-              <p className="text-[13px] font-semibold text-[#0B1E3D] mb-1">
+              <p className="text-[13px] font-semibold text-[#0D0D0D] mb-1">
                 {seasonalLabel} emlékeztetők
               </p>
-              <p className="text-[12px] text-[#5a6a80]">
+              <p className="text-[12px] text-[#4a4a4a]">
                 Az aktuális hónap alapján a rendszer <strong>{seasonalLabel}</strong> típusú emlékeztetőket hoz létre az összes olyan járműhöz, amelyhez még nincs ilyen függőben lévő emlékeztető.
               </p>
             </div>
@@ -629,7 +629,7 @@ export function RemindersPage({ refreshKey, onRefresh }: { refreshKey: number; o
               ) : (
                 <>
                   <AlertCircle size={14} className="text-[#f59e0b]" />
-                  <span className="text-[#0B1E3D]">
+                  <span className="text-[#0D0D0D]">
                     <strong>{seasonalPreviewCount}</strong> új emlékeztető lesz létrehozva.
                   </span>
                 </>

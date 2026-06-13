@@ -49,34 +49,34 @@ export function FleetPage({ refreshKey }: { refreshKey: number; onRefresh: () =>
   return (
     <div className="animate-fade-in">
       <div className="flex justify-between items-center mb-4">
-        <p className="text-[#5a6a80] text-sm">{fleets.length} Flottenkonten</p>
+        <p className="text-[#4a4a4a] text-sm">{fleets.length} Flottenkonten</p>
         <Button variant="primary" onClick={openNew}><Plus size={14} /> Neuer Flottenkunde</Button>
       </div>
 
-      {loading ? <div className="text-center py-12 text-[#5a6a80] text-sm">Wird geladen...</div> : (
+      {loading ? <div className="text-center py-12 text-[#4a4a4a] text-sm">Wird geladen...</div> : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
           {fleets.map(f => (
             <Card key={f.id} className="relative">
               <div className="flex items-start justify-between mb-3">
-                <div className="w-10 h-10 bg-[#0B1E3D] rounded-lg flex items-center justify-center shrink-0">
-                  <Building2 size={18} className="text-[#C9A84C]" />
+                <div className="w-10 h-10 bg-[#0D0D0D] rounded-lg flex items-center justify-center shrink-0">
+                  <Building2 size={18} className="text-[#C8102E]" />
                 </div>
                 <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${statusColors[f.contract_status] || ''}`}>
                   {f.contract_status === 'active' ? 'Aktiv' : f.contract_status === 'inactive' ? 'Inaktiv' : 'Ausstehend'}
                 </span>
               </div>
-              <h3 className="font-semibold text-[14px] text-[#0B1E3D] mb-1">{f.company_name}</h3>
-              {f.contact_name && <p className="text-[12px] text-[#5a6a80]">{f.contact_name}</p>}
-              {f.contact_phone && <p className="text-[12px] text-[#5a6a80]">{f.contact_phone}</p>}
+              <h3 className="font-semibold text-[14px] text-[#0D0D0D] mb-1">{f.company_name}</h3>
+              {f.contact_name && <p className="text-[12px] text-[#4a4a4a]">{f.contact_name}</p>}
+              {f.contact_phone && <p className="text-[12px] text-[#4a4a4a]">{f.contact_phone}</p>}
               {f.discount_percent > 0 && (
                 <div className="mt-2 inline-flex items-center gap-1 text-[11px] font-semibold bg-[rgba(201,168,76,0.15)] text-[#7a5a10] px-2 py-0.5 rounded-full">
                   {f.discount_percent}% Rabatt
                 </div>
               )}
-              <button onClick={() => openEdit(f)} className="absolute top-4 right-10 p-1.5 text-[#5a6a80] hover:text-[#0B1E3D]"><Edit2 size={14} /></button>
+              <button onClick={() => openEdit(f)} className="absolute top-4 right-10 p-1.5 text-[#4a4a4a] hover:text-[#0D0D0D]"><Edit2 size={14} /></button>
             </Card>
           ))}
-          {fleets.length === 0 && <div className="col-span-full text-center py-10 text-[#8fa0b5] text-sm">Nincs flottafiók</div>}
+          {fleets.length === 0 && <div className="col-span-full text-center py-10 text-[#888888] text-sm">Nincs flottafiók</div>}
         </div>
       )}
 

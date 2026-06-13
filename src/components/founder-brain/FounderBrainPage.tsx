@@ -79,7 +79,7 @@ function StatCard({ label, value, icon: Icon, color }: any) {
         <Icon size={18} />
       </div>
       <div>
-        <div className="text-2xl font-bold text-[#0B1E3D]">{value}</div>
+        <div className="text-2xl font-bold text-[#0D0D0D]">{value}</div>
         <div className="text-xs text-gray-500">{label}</div>
       </div>
     </div>
@@ -110,7 +110,7 @@ function IdeaModal({
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50">
       <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between p-5 border-b border-gray-100">
-          <h2 className="font-bold text-[#0B1E3D]">{idea?.id ? 'Ötlet szerkesztése' : 'Új ötlet'}</h2>
+          <h2 className="font-bold text-[#0D0D0D]">{idea?.id ? 'Ötlet szerkesztése' : 'Új ötlet'}</h2>
           <button onClick={onClose} className="text-gray-400 hover:text-gray-600"><X size={18} /></button>
         </div>
 
@@ -172,7 +172,7 @@ function IdeaModal({
           <button
             onClick={() => onSave({ ...form, tags: form.tags.split(',').map((t: string) => t.trim()).filter(Boolean) })}
             disabled={!form.title.trim() || saving}
-            className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-[#C9A84C] text-white rounded-xl text-sm font-semibold hover:bg-[#b8943f] disabled:opacity-60"
+            className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-[#C8102E] text-white rounded-xl text-sm font-semibold hover:bg-[#b8943f] disabled:opacity-60"
           >
             {saving ? <Loader2 size={14} className="animate-spin" /> : null}
             Mentés
@@ -182,7 +182,7 @@ function IdeaModal({
       <style jsx>{`
         .label { display:block; font-size:0.7rem; font-weight:600; color:#6b7280; text-transform:uppercase; letter-spacing:0.05em; margin-bottom:4px; }
         .input { width:100%; padding:8px 12px; font-size:0.875rem; border:1px solid #e5e7eb; border-radius:8px; outline:none; background:white; }
-        .input:focus { border-color:#C9A84C; box-shadow:0 0 0 2px rgba(201,168,76,0.2); }
+        .input:focus { border-color:#C8102E; box-shadow:0 0 0 2px rgba(201,168,76,0.2); }
       `}</style>
     </div>
   )
@@ -203,7 +203,7 @@ function IdeaDetail({
         <div className="flex items-center justify-between p-5 border-b border-gray-100">
           <div className="flex items-center gap-2">
             <div className={`w-2.5 h-2.5 rounded-full ${PRIORITY_DOTS[idea.priority]}`} />
-            <span className="font-bold text-[#0B1E3D] text-sm">{idea.title}</span>
+            <span className="font-bold text-[#0D0D0D] text-sm">{idea.title}</span>
           </div>
           <button onClick={onClose} className="text-gray-400 hover:text-gray-600"><X size={18} /></button>
         </div>
@@ -228,7 +228,7 @@ function IdeaDetail({
           {idea.tags?.length > 0 && (
             <div className="flex flex-wrap gap-1.5">
               {idea.tags.map((t: string) => (
-                <span key={t} className="inline-flex items-center gap-1 px-2 py-0.5 bg-[#faf8f2] text-[#C9A84C] text-xs rounded-full border border-[#C9A84C]/20">
+                <span key={t} className="inline-flex items-center gap-1 px-2 py-0.5 bg-[#faf8f2] text-[#C8102E] text-xs rounded-full border border-[#C8102E]/20">
                   <Tag size={9} />{t}
                 </span>
               ))}
@@ -252,7 +252,7 @@ function IdeaDetail({
             <button
               onClick={onConvertToTask}
               disabled={converting}
-              className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-[#0B1E3D] text-white rounded-xl text-sm font-semibold hover:bg-[#1a3060] disabled:opacity-60"
+              className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-[#0D0D0D] text-white rounded-xl text-sm font-semibold hover:bg-[#1a3060] disabled:opacity-60"
             >
               {converting ? <Loader2 size={14} className="animate-spin" /> : <ArrowRight size={14} />}
               Feladattá alakítás
@@ -281,12 +281,12 @@ function IdeaCard({ idea, onClick }: { idea: any; onClick: () => void }) {
   return (
     <button
       onClick={onClick}
-      className="w-full text-left bg-white border border-gray-100 rounded-2xl p-4 shadow-sm hover:shadow-md hover:border-[#C9A84C]/30 transition-all group"
+      className="w-full text-left bg-white border border-gray-100 rounded-2xl p-4 shadow-sm hover:shadow-md hover:border-[#C8102E]/30 transition-all group"
     >
       <div className="flex items-start justify-between gap-2 mb-2">
         <div className="flex items-center gap-2 min-w-0">
           <div className={`w-2 h-2 rounded-full shrink-0 ${PRIORITY_DOTS[idea.priority]}`} />
-          <span className="font-semibold text-sm text-[#0B1E3D] truncate group-hover:text-[#C9A84C] transition-colors">
+          <span className="font-semibold text-sm text-[#0D0D0D] truncate group-hover:text-[#C8102E] transition-colors">
             {idea.title}
           </span>
         </div>
@@ -305,7 +305,7 @@ function IdeaCard({ idea, onClick }: { idea: any; onClick: () => void }) {
       <div className="flex items-center justify-between">
         <div className="flex flex-wrap gap-1">
           {idea.tags?.slice(0, 3).map((t: string) => (
-            <span key={t} className="text-[9px] px-1.5 py-0.5 bg-[#faf8f2] text-[#C9A84C] rounded-full">{t}</span>
+            <span key={t} className="text-[9px] px-1.5 py-0.5 bg-[#faf8f2] text-[#C8102E] rounded-full">{t}</span>
           ))}
         </div>
         <span className="text-[10px] text-gray-400">{fmt(idea.created_at)}</span>
@@ -475,10 +475,10 @@ export function FounderBrainPage({ profile, refreshKey, onRefresh }: Props) {
     <div className="max-w-4xl mx-auto space-y-4">
 
       {/* Header */}
-      <div className="bg-gradient-to-br from-[#0B1E3D] to-[#1a3060] rounded-2xl p-5 text-white">
+      <div className="bg-gradient-to-br from-[#0D0D0D] to-[#1a3060] rounded-2xl p-5 text-white">
         <div className="flex items-center gap-3 mb-1">
-          <div className="w-10 h-10 bg-[#C9A84C] rounded-xl flex items-center justify-center">
-            <Brain size={20} className="text-[#0B1E3D]" />
+          <div className="w-10 h-10 bg-[#C8102E] rounded-xl flex items-center justify-center">
+            <Brain size={20} className="text-[#0D0D0D]" />
           </div>
           <div>
             <h1 className="text-lg font-bold">Founder Brain</h1>
@@ -505,12 +505,12 @@ export function FounderBrainPage({ profile, refreshKey, onRefresh }: Props) {
             onChange={e => setQuickTitle(e.target.value)}
             onKeyDown={e => e.key === 'Enter' && quickSave()}
             placeholder="Ötlet gyors rögzítése..."
-            className="flex-1 px-3 py-2.5 text-sm border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#C9A84C]/30 focus:border-[#C9A84C]"
+            className="flex-1 px-3 py-2.5 text-sm border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#C8102E]/30 focus:border-[#C8102E]"
           />
           <button
             onClick={quickSave}
             disabled={!quickTitle.trim() || quickSaving}
-            className="flex items-center gap-1.5 px-4 py-2.5 bg-[#C9A84C] text-white rounded-xl text-sm font-semibold hover:bg-[#b8943f] disabled:opacity-60 whitespace-nowrap"
+            className="flex items-center gap-1.5 px-4 py-2.5 bg-[#C8102E] text-white rounded-xl text-sm font-semibold hover:bg-[#b8943f] disabled:opacity-60 whitespace-nowrap"
           >
             {quickSaving ? <Loader2 size={14} className="animate-spin" /> : <Plus size={14} />}
             Mentés
@@ -533,7 +533,7 @@ export function FounderBrainPage({ profile, refreshKey, onRefresh }: Props) {
               value={search}
               onChange={e => setSearch(e.target.value)}
               placeholder="Keresés..."
-              className="w-full pl-7 pr-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#C9A84C]/30 focus:border-[#C9A84C]"
+              className="w-full pl-7 pr-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#C8102E]/30 focus:border-[#C8102E]"
             />
           </div>
           {[
@@ -545,7 +545,7 @@ export function FounderBrainPage({ profile, refreshKey, onRefresh }: Props) {
               <select
                 value={f.value}
                 onChange={e => f.onChange(e.target.value)}
-                className="pl-3 pr-7 py-2 text-sm border border-gray-200 rounded-lg appearance-none focus:outline-none focus:ring-2 focus:ring-[#C9A84C]/30 focus:border-[#C9A84C] bg-white"
+                className="pl-3 pr-7 py-2 text-sm border border-gray-200 rounded-lg appearance-none focus:outline-none focus:ring-2 focus:ring-[#C8102E]/30 focus:border-[#C8102E] bg-white"
               >
                 <option value="">{f.placeholder}</option>
                 {f.options.map(o => <option key={o}>{o}</option>)}
@@ -563,7 +563,7 @@ export function FounderBrainPage({ profile, refreshKey, onRefresh }: Props) {
           </select>
           <button
             onClick={() => setShowArchived(!showArchived)}
-            className={`flex items-center gap-1.5 px-3 py-2 text-sm rounded-lg border transition-colors ${showArchived ? 'bg-[#faf8f2] border-[#C9A84C]/30 text-[#C9A84C]' : 'border-gray-200 text-gray-500 hover:bg-gray-50'}`}
+            className={`flex items-center gap-1.5 px-3 py-2 text-sm rounded-lg border transition-colors ${showArchived ? 'bg-[#faf8f2] border-[#C8102E]/30 text-[#C8102E]' : 'border-gray-200 text-gray-500 hover:bg-gray-50'}`}
           >
             <Archive size={13} /> Archív
           </button>
@@ -572,7 +572,7 @@ export function FounderBrainPage({ profile, refreshKey, onRefresh }: Props) {
 
       {/* Grid */}
       {loading ? (
-        <div className="flex items-center justify-center py-16"><Loader2 size={24} className="animate-spin text-[#C9A84C]" /></div>
+        <div className="flex items-center justify-center py-16"><Loader2 size={24} className="animate-spin text-[#C8102E]" /></div>
       ) : visible.length === 0 ? (
         <div className="text-center py-16 text-gray-400">
           <Brain size={32} className="mx-auto mb-2 opacity-30" />
@@ -610,7 +610,7 @@ export function FounderBrainPage({ profile, refreshKey, onRefresh }: Props) {
 
       {/* Toast */}
       {toast && (
-        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 bg-[#0B1E3D] text-white text-sm px-5 py-2.5 rounded-full shadow-lg z-50 animate-fade-in">
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 bg-[#0D0D0D] text-white text-sm px-5 py-2.5 rounded-full shadow-lg z-50 animate-fade-in">
           {toast}
         </div>
       )}

@@ -266,7 +266,7 @@ export function Sidebar({
                           <GroupIcon size={14} className="shrink-0" />
                           <span className="flex-1 truncate font-medium">{group.label}</span>
                           {!isExpanded && childBadgeSum > 0 && (
-                            <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-[#C9384C] text-white shrink-0 mr-1">
+                            <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-[#C8102E] text-white shrink-0 mr-1">
                               {childBadgeSum}
                             </span>
                           )}
@@ -292,7 +292,7 @@ export function Sidebar({
                                   <span className="w-1 h-1 rounded-full bg-current shrink-0 opacity-50" />
                                   <span className="flex-1 truncate">{child.label}</span>
                                   {cb > 0 && (
-                                    <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-[#C9384C] text-white shrink-0">
+                                    <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-[#C8102E] text-white shrink-0">
                                       {cb}
                                     </span>
                                   )}
@@ -369,7 +369,7 @@ function SidebarItem({ icon, label, isActive, badge, onClick }: {
       <span className="shrink-0">{icon}</span>
       <span className="flex-1 truncate">{label}</span>
       {(badge ?? 0) > 0 && (
-        <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-[#C9384C] text-white shrink-0">
+        <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-[#C8102E] text-white shrink-0">
           {badge}
         </span>
       )}

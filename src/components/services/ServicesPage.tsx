@@ -96,8 +96,8 @@ function PriceDisplay({ s }: { s: ServiceV2 }) {
   if (s.pricing_type === 'hourly' && s.hourly_rate) return (
     <span className="font-semibold">{formatCurrency(s.hourly_rate)} / óra</span>
   )
-  if (s.pricing_type === 'custom') return <span className="text-[#5a6a80] text-[12px]">Egyedi</span>
-  return <span className="text-[#8fa0b5]">–</span>
+  if (s.pricing_type === 'custom') return <span className="text-[#4a4a4a] text-[12px]">Egyedi</span>
+  return <span className="text-[#888888]">–</span>
 }
 
 // ─── Main component ───────────────────────────────────────────────────────────
@@ -190,13 +190,13 @@ export function ServicesPage({ refreshKey }: { refreshKey: number; onRefresh: ()
       {/* Stats bar */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-5">
         {[
-          { label: 'Összes szolgáltatás', value: services.length, color: 'text-[#0B1E3D]' },
+          { label: 'Összes szolgáltatás', value: services.length, color: 'text-[#0D0D0D]' },
           { label: 'Kockázatos munkák', value: riskyCount, color: 'text-orange-600', icon: <AlertTriangle size={14} className="text-orange-500" /> },
           { label: 'Darab áras', value: perUnitCount, color: 'text-purple-600', icon: <Package size={14} className="text-purple-500" /> },
           { label: 'Aktív', value: services.filter(s => s.is_active).length, color: 'text-emerald-600' },
         ].map(stat => (
-          <div key={stat.label} className="bg-white border border-[rgba(11,30,61,0.08)] rounded-xl p-3">
-            <div className="flex items-center gap-1.5 mb-1">{stat.icon}<p className="text-[11px] text-[#5a6a80]">{stat.label}</p></div>
+          <div key={stat.label} className="bg-white border border-[rgba(0,0,0,0.08)] rounded-xl p-3">
+            <div className="flex items-center gap-1.5 mb-1">{stat.icon}<p className="text-[11px] text-[#4a4a4a]">{stat.label}</p></div>
             <p className={`text-[22px] font-bold ${stat.color}`}>{stat.value}</p>
           </div>
         ))}
@@ -208,14 +208,14 @@ export function ServicesPage({ refreshKey }: { refreshKey: number; onRefresh: ()
         <div className="flex items-center gap-2 ml-auto flex-wrap">
           <button
             onClick={() => setFilterRisky(f => !f)}
-            className={`flex items-center gap-1.5 text-[12px] px-3 py-1.5 rounded-lg border font-medium transition-colors ${filterRisky ? 'bg-orange-50 border-orange-300 text-orange-700' : 'bg-white border-[rgba(11,30,61,0.18)] text-[#5a6a80]'}`}
+            className={`flex items-center gap-1.5 text-[12px] px-3 py-1.5 rounded-lg border font-medium transition-colors ${filterRisky ? 'bg-orange-50 border-orange-300 text-orange-700' : 'bg-white border-[rgba(0,0,0,0.18)] text-[#4a4a4a]'}`}
           >
             <AlertTriangle size={13} /> Csak kockázatosak
           </button>
           <select
             value={filterType}
             onChange={e => setFilterType(e.target.value as any)}
-            className="text-[12px] px-3 py-1.5 rounded-lg border border-[rgba(11,30,61,0.18)] bg-white text-[#0B1E3D] outline-none"
+            className="text-[12px] px-3 py-1.5 rounded-lg border border-[rgba(0,0,0,0.18)] bg-white text-[#0D0D0D] outline-none"
           >
             <option value="all">Mind (típus)</option>
             <option value="fixed">Fix ár</option>
@@ -227,9 +227,9 @@ export function ServicesPage({ refreshKey }: { refreshKey: number; onRefresh: ()
       </div>
 
       {loading ? (
-        <div className="text-center py-12 text-[#5a6a80] text-sm">Betöltés...</div>
+        <div className="text-center py-12 text-[#4a4a4a] text-sm">Betöltés...</div>
       ) : groupedCats.length === 0 ? (
-        <div className="text-center py-12 text-[#8fa0b5] text-sm">Nincs találat</div>
+        <div className="text-center py-12 text-[#888888] text-sm">Nincs találat</div>
       ) : (
         groupedCats.map(cat => {
           const items = filtered.filter(s => s.category === cat)
@@ -241,18 +241,18 @@ export function ServicesPage({ refreshKey }: { refreshKey: number; onRefresh: ()
                 onClick={() => toggleCat(cat)}
                 className="w-full flex items-center gap-2 text-left mb-2 group"
               >
-                <span className="flex-1 h-px bg-[rgba(11,30,61,0.08)]" />
-                <span className="text-[11px] font-semibold text-[#5a6a80] uppercase tracking-[1px] px-2 group-hover:text-[#0B1E3D] transition-colors">
+                <span className="flex-1 h-px bg-[rgba(0,0,0,0.08)]" />
+                <span className="text-[11px] font-semibold text-[#4a4a4a] uppercase tracking-[1px] px-2 group-hover:text-[#0D0D0D] transition-colors">
                   {cat}
                 </span>
-                <span className="text-[10px] text-[#8fa0b5] font-medium">{items.length} db</span>
+                <span className="text-[10px] text-[#888888] font-medium">{items.length} db</span>
                 {riskyInCat > 0 && (
                   <span className="text-[10px] font-bold text-orange-600 flex items-center gap-0.5">
                     <AlertTriangle size={10} />{riskyInCat}
                   </span>
                 )}
-                {isExpanded ? <ChevronUp size={14} className="text-[#8fa0b5]" /> : <ChevronDown size={14} className="text-[#8fa0b5]" />}
-                <span className="flex-1 h-px bg-[rgba(11,30,61,0.08)]" />
+                {isExpanded ? <ChevronUp size={14} className="text-[#888888]" /> : <ChevronDown size={14} className="text-[#888888]" />}
+                <span className="flex-1 h-px bg-[rgba(0,0,0,0.08)]" />
               </button>
 
               {isExpanded && (
@@ -261,13 +261,13 @@ export function ServicesPage({ refreshKey }: { refreshKey: number; onRefresh: ()
                     <div
                       key={s.id}
                       className={`bg-white border rounded-xl p-3.5 transition-all ${
-                        s.is_risky ? `border-l-4 ${RISK_LEVEL_META[s.risk_level || 'low'].border}` : 'border-[rgba(11,30,61,0.08)]'
+                        s.is_risky ? `border-l-4 ${RISK_LEVEL_META[s.risk_level || 'low'].border}` : 'border-[rgba(0,0,0,0.08)]'
                       } ${!s.is_active ? 'opacity-50' : ''}`}
                     >
                       <div className="flex items-start gap-3">
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2 flex-wrap mb-1">
-                            <span className="font-semibold text-[13px] text-[#0B1E3D]">{s.name}</span>
+                            <span className="font-semibold text-[13px] text-[#0D0D0D]">{s.name}</span>
                             {s.technician_checklist && s.technician_checklist.length > 0 && <span className="text-[10px] bg-emerald-50 text-emerald-700 px-1.5 py-0.5 rounded font-semibold">{s.technician_checklist.length} lépés</span>}
                             <PricingBadge type={s.pricing_type} />
                             {s.is_risky && s.risk_level && <RiskBadge level={s.risk_level} />}
@@ -281,12 +281,12 @@ export function ServicesPage({ refreshKey }: { refreshKey: number; onRefresh: ()
                           <div className="flex items-center gap-4 flex-wrap">
                             <PriceDisplay s={s} />
                             {s.duration_minutes && (
-                              <span className="text-[12px] text-[#5a6a80] flex items-center gap-1">
+                              <span className="text-[12px] text-[#4a4a4a] flex items-center gap-1">
                                 <Clock size={11} /> {s.duration_minutes} perc
                               </span>
                             )}
                             {s.pricing_type === 'per_unit' && s.unit_time_minutes && (
-                              <span className="text-[12px] text-[#5a6a80] flex items-center gap-1">
+                              <span className="text-[12px] text-[#4a4a4a] flex items-center gap-1">
                                 <Clock size={11} /> {s.unit_time_minutes} p / {s.unit_label || 'db'}
                               </span>
                             )}
@@ -302,22 +302,22 @@ export function ServicesPage({ refreshKey }: { refreshKey: number; onRefresh: ()
                             </div>
                           )}
                           {s.description && !s.risk_description && (
-                            <p className="text-[11px] text-[#8fa0b5] mt-1">{s.description}</p>
+                            <p className="text-[11px] text-[#888888] mt-1">{s.description}</p>
                           )}
                         </div>
 
                         <div className="flex items-center gap-2 shrink-0">
                           <button
                             onClick={() => toggleActive(s)}
-                            className={s.is_active ? 'text-emerald-500' : 'text-[#8fa0b5]'}
+                            className={s.is_active ? 'text-emerald-500' : 'text-[#888888]'}
                             title={s.is_active ? 'Aktív (kattints a kikapcsoláshoz)' : 'Inaktív'}
                           >
                             {s.is_active ? <ToggleRight size={22} /> : <ToggleLeft size={22} />}
                           </button>
-                          <button onClick={() => openEdit(s)} className="p-1.5 text-[#5a6a80] hover:text-[#0B1E3D] transition-colors">
+                          <button onClick={() => openEdit(s)} className="p-1.5 text-[#4a4a4a] hover:text-[#0D0D0D] transition-colors">
                             <Edit2 size={14} />
                           </button>
-                          <button onClick={() => deleteService(s)} className="p-1.5 text-[#5a6a80] hover:text-[#C9384C] transition-colors">
+                          <button onClick={() => deleteService(s)} className="p-1.5 text-[#4a4a4a] hover:text-[#C8102E] transition-colors">
                             <Trash2 size={14} />
                           </button>
                         </div>
@@ -372,7 +372,7 @@ export function ServicesPage({ refreshKey }: { refreshKey: number; onRefresh: ()
 
           {/* Pricing fields – conditional on type */}
           <div className="bg-[#F4F5F7] rounded-xl p-3 mb-3 space-y-2">
-            <p className="text-[11px] font-semibold text-[#5a6a80] uppercase tracking-[0.5px] mb-2 flex items-center gap-1.5">
+            <p className="text-[11px] font-semibold text-[#4a4a4a] uppercase tracking-[0.5px] mb-2 flex items-center gap-1.5">
               <DollarSign size={12} /> Árazás
             </p>
 
@@ -433,31 +433,31 @@ export function ServicesPage({ refreshKey }: { refreshKey: number; onRefresh: ()
                   </FormGroup>
                 </div>
                 {form.min_hours && form.max_hours && form.hourly_rate && (
-                  <div className="text-[11px] text-[#5a6a80] bg-white rounded-lg px-3 py-2 border border-[rgba(11,30,61,0.08)]">
-                    Becslési tartomány: <span className="font-semibold text-[#0B1E3D]">{(form.min_hours * form.hourly_rate).toFixed(0)} – {(form.max_hours * form.hourly_rate).toFixed(0)} CHF</span> / db (1 db alapján)
+                  <div className="text-[11px] text-[#4a4a4a] bg-white rounded-lg px-3 py-2 border border-[rgba(0,0,0,0.08)]">
+                    Becslési tartomány: <span className="font-semibold text-[#0D0D0D]">{(form.min_hours * form.hourly_rate).toFixed(0)} – {(form.max_hours * form.hourly_rate).toFixed(0)} CHF</span> / db (1 db alapján)
                   </div>
                 )}
               </div>
             )}
 
             {form.pricing_type === 'custom' && (
-              <p className="text-[12px] text-[#5a6a80]">Egyedi ajánlat – az ár az ajánlatban kerül meghatározásra.</p>
+              <p className="text-[12px] text-[#4a4a4a]">Egyedi ajánlat – az ár az ajánlatban kerül meghatározásra.</p>
             )}
           </div>
 
           {/* Risk section */}
           <div className="bg-[#F4F5F7] rounded-xl p-3 mb-3 space-y-2">
             <div className="flex items-center justify-between mb-2">
-              <p className="text-[11px] font-semibold text-[#5a6a80] uppercase tracking-[0.5px] flex items-center gap-1.5">
+              <p className="text-[11px] font-semibold text-[#4a4a4a] uppercase tracking-[0.5px] flex items-center gap-1.5">
                 <AlertTriangle size={12} /> Kockázat
               </p>
               <label className="flex items-center gap-2 cursor-pointer">
-                <span className="text-[12px] text-[#5a6a80]">Kockázatos munka</span>
+                <span className="text-[12px] text-[#4a4a4a]">Kockázatos munka</span>
                 <input
                   type="checkbox"
                   checked={!!form.is_risky}
                   onChange={e => setForm(f => ({ ...f, is_risky: e.target.checked }))}
-                  className="w-4 h-4 accent-[#C9A84C]"
+                  className="w-4 h-4 accent-[#C8102E]"
                 />
               </label>
             </div>
@@ -500,7 +500,7 @@ export function ServicesPage({ refreshKey }: { refreshKey: number; onRefresh: ()
 
           {/* Technician task template section */}
           <div className="bg-[#F4F5F7] rounded-xl p-3 mb-3 space-y-2">
-            <p className="text-[11px] font-semibold text-[#5a6a80] uppercase tracking-[0.5px] mb-2 flex items-center gap-1.5">
+            <p className="text-[11px] font-semibold text-[#4a4a4a] uppercase tracking-[0.5px] mb-2 flex items-center gap-1.5">
               <Wrench size={12} /> Technikusi feladat sablon
             </p>
             <FormGroup className="mb-0">

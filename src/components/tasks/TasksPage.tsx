@@ -229,7 +229,7 @@ export function TasksPage({ refreshKey, onRefresh, profile }: {
 
   if (!tableExists) return (
     <div className="p-8 text-center bg-white rounded-xl shadow-sm">
-      <p className="text-[13px] text-[#5a6a80]">Futtasd le a <code className="bg-gray-100 px-1 rounded">supabase/schema_phase3.sql</code> fájlt.</p>
+      <p className="text-[13px] text-[#4a4a4a]">Futtasd le a <code className="bg-gray-100 px-1 rounded">supabase/schema_phase3.sql</code> fájlt.</p>
     </div>
   )
 
@@ -242,7 +242,7 @@ export function TasksPage({ refreshKey, onRefresh, profile }: {
       {/* Stats */}
       <div className="grid grid-cols-3 sm:grid-cols-5 gap-2">
         {[
-          { label: 'Mai feladat',  value: stats.today,      color: 'text-[#185FA5]', bg: 'bg-blue-50',  filter: 'all'     },
+          { label: 'Mai feladat',  value: stats.today,      color: 'text-[#333333]', bg: 'bg-blue-50',  filter: 'all'     },
           { label: 'Sürgős',       value: stats.urgent,     color: 'text-red-600',   bg: 'bg-red-50',   filter: 'open'    },
           { label: 'Lejárt',       value: stats.overdue,    color: 'text-red-600',   bg: 'bg-red-50',   filter: 'overdue' },
           { label: 'Probléma',     value: stats.problem,    color: 'text-red-600',   bg: 'bg-red-50',   filter: 'problem' },
@@ -251,7 +251,7 @@ export function TasksPage({ refreshKey, onRefresh, profile }: {
           <button key={s.label} onClick={() => setFilterKey(s.filter)}
             className={`${s.bg} rounded-xl p-3 text-left hover:opacity-80 transition-opacity`}>
             <div className={`text-2xl font-bold ${s.color}`}>{s.value}</div>
-            <div className="text-[11px] text-[#5a6a80]">{s.label}</div>
+            <div className="text-[11px] text-[#4a4a4a]">{s.label}</div>
           </button>
         ))}
       </div>
@@ -262,10 +262,10 @@ export function TasksPage({ refreshKey, onRefresh, profile }: {
           const count = activeTasks.filter(t => (t.task_type || 'general') === key).length
           return (
             <button key={key} onClick={() => setFilterKey(key)}
-              className={`${filterKey === key ? 'ring-2 ring-[#185FA5]' : ''} ${cfg.bg} rounded-lg p-2 text-center hover:opacity-80 transition-all`}>
+              className={`${filterKey === key ? 'ring-2 ring-[#333333]' : ''} ${cfg.bg} rounded-lg p-2 text-center hover:opacity-80 transition-all`}>
               <div className="text-lg">{cfg.icon}</div>
               <div className={`text-[10px] font-semibold ${cfg.color}`}>{cfg.label}</div>
-              {count > 0 && <div className="text-[11px] font-bold text-[#0B1E3D]">{count}</div>}
+              {count > 0 && <div className="text-[11px] font-bold text-[#0D0D0D]">{count}</div>}
             </button>
           )
         })}
@@ -275,11 +275,11 @@ export function TasksPage({ refreshKey, onRefresh, profile }: {
       <div className="flex items-center gap-2 flex-wrap">
         <div className="relative flex-1 min-w-[160px]">
           <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Keresés…"
-            className="w-full text-[13px] border border-[rgba(11,30,61,0.15)] rounded-lg px-3 py-2 outline-none pl-8" />
-          <span className="absolute left-2.5 top-2.5 text-[#8fa0b5] text-[12px]">🔍</span>
+            className="w-full text-[13px] border border-[rgba(0,0,0,0.15)] rounded-lg px-3 py-2 outline-none pl-8" />
+          <span className="absolute left-2.5 top-2.5 text-[#888888] text-[12px]">🔍</span>
         </div>
         <button onClick={() => setShowFilterPanel(v => !v)}
-          className={`flex items-center gap-1.5 px-3 py-2 rounded-lg border text-[12px] font-medium transition-colors ${showFilterPanel ? 'bg-[#185FA5] text-white border-[#185FA5]' : 'border-[rgba(11,30,61,0.15)] text-[#5a6a80]'}`}>
+          className={`flex items-center gap-1.5 px-3 py-2 rounded-lg border text-[12px] font-medium transition-colors ${showFilterPanel ? 'bg-[#333333] text-white border-[#333333]' : 'border-[rgba(0,0,0,0.15)] text-[#4a4a4a]'}`}>
           <Filter size={13} /> Szűrők
         </button>
         <Button variant="primary" onClick={() => openCreate()}><Plus size={14} /> Új feladat</Button>
@@ -287,24 +287,24 @@ export function TasksPage({ refreshKey, onRefresh, profile }: {
 
       {/* Filter panel */}
       {showFilterPanel && (
-        <div className="bg-white border border-[rgba(11,30,61,0.1)] rounded-xl p-3 space-y-3">
+        <div className="bg-white border border-[rgba(0,0,0,0.1)] rounded-xl p-3 space-y-3">
           <div>
-            <div className="text-[10px] font-bold text-[#8fa0b5] uppercase mb-1.5">Státusz</div>
+            <div className="text-[10px] font-bold text-[#888888] uppercase mb-1.5">Státusz</div>
             <div className="flex flex-wrap gap-1.5">
               {['all','open','in_progress','waiting','problem','done','overdue'].map(k => (
                 <button key={k} onClick={() => setFilterKey(k)}
-                  className={`px-2.5 py-1 rounded-full text-[11px] font-medium border transition-colors ${filterKey === k ? 'bg-[#185FA5] text-white border-[#185FA5]' : 'border-[rgba(11,30,61,0.15)] text-[#5a6a80]'}`}>
+                  className={`px-2.5 py-1 rounded-full text-[11px] font-medium border transition-colors ${filterKey === k ? 'bg-[#333333] text-white border-[#333333]' : 'border-[rgba(0,0,0,0.15)] text-[#4a4a4a]'}`}>
                   {k === 'all' ? 'Összes' : k === 'overdue' ? 'Lejárt' : STATUS_CONFIG[k]?.label || k}
                 </button>
               ))}
             </div>
           </div>
           <div>
-            <div className="text-[10px] font-bold text-[#8fa0b5] uppercase mb-1.5">Típus</div>
+            <div className="text-[10px] font-bold text-[#888888] uppercase mb-1.5">Típus</div>
             <div className="flex flex-wrap gap-1.5">
               {Object.entries(TASK_TYPES).map(([k, v]) => (
                 <button key={k} onClick={() => setFilterKey(k)}
-                  className={`px-2.5 py-1 rounded-full text-[11px] font-medium border transition-colors ${filterKey === k ? 'bg-[#185FA5] text-white border-[#185FA5]' : 'border-[rgba(11,30,61,0.15)] text-[#5a6a80]'}`}>
+                  className={`px-2.5 py-1 rounded-full text-[11px] font-medium border transition-colors ${filterKey === k ? 'bg-[#333333] text-white border-[#333333]' : 'border-[rgba(0,0,0,0.15)] text-[#4a4a4a]'}`}>
                   {v.icon} {v.label}
                 </button>
               ))}
@@ -312,11 +312,11 @@ export function TasksPage({ refreshKey, onRefresh, profile }: {
           </div>
           {personFilters.length > 0 && (
             <div>
-              <div className="text-[10px] font-bold text-[#8fa0b5] uppercase mb-1.5">Felelős</div>
+              <div className="text-[10px] font-bold text-[#888888] uppercase mb-1.5">Felelős</div>
               <div className="flex flex-wrap gap-1.5">
                 {personFilters.map(p => (
                   <button key={p.id} onClick={() => setFilterKey(p.full_name.split(' ')[0].toLowerCase())}
-                    className={`px-2.5 py-1 rounded-full text-[11px] font-medium border transition-colors ${filterKey === p.full_name.split(' ')[0].toLowerCase() ? 'bg-[#185FA5] text-white border-[#185FA5]' : 'border-[rgba(11,30,61,0.15)] text-[#5a6a80]'}`}>
+                    className={`px-2.5 py-1 rounded-full text-[11px] font-medium border transition-colors ${filterKey === p.full_name.split(' ')[0].toLowerCase() ? 'bg-[#333333] text-white border-[#333333]' : 'border-[rgba(0,0,0,0.15)] text-[#4a4a4a]'}`}>
                     👤 {p.full_name}
                   </button>
                 ))}
@@ -328,16 +328,16 @@ export function TasksPage({ refreshKey, onRefresh, profile }: {
 
       {filterKey !== 'all' && (
         <div className="flex items-center gap-2">
-          <span className="text-[12px] text-[#5a6a80]">Szűrő aktív: <strong>{filterKey}</strong> ({filtered.length})</span>
-          <button onClick={() => setFilterKey('all')} className="text-[11px] text-[#185FA5] hover:underline">× Törlés</button>
+          <span className="text-[12px] text-[#4a4a4a]">Szűrő aktív: <strong>{filterKey}</strong> ({filtered.length})</span>
+          <button onClick={() => setFilterKey('all')} className="text-[11px] text-[#333333] hover:underline">× Törlés</button>
         </div>
       )}
 
       {/* Task list */}
       {loading ? (
-        <div className="text-center py-12 text-[#5a6a80] text-sm">Betöltés...</div>
+        <div className="text-center py-12 text-[#4a4a4a] text-sm">Betöltés...</div>
       ) : filtered.length === 0 ? (
-        <div className="bg-white rounded-xl p-10 text-center text-[#8fa0b5] shadow-sm">
+        <div className="bg-white rounded-xl p-10 text-center text-[#888888] shadow-sm">
           <div className="text-3xl mb-2">✅</div>
           <div className="text-[13px]">Nincs feladat ebben a nézetben</div>
         </div>
@@ -363,7 +363,7 @@ export function TasksPage({ refreshKey, onRefresh, profile }: {
 
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-1.5 flex-wrap mb-0.5">
-                      <span className={`font-semibold text-[13px] ${task.status === 'done' ? 'text-[#8fa0b5] line-through' : 'text-[#0B1E3D]'}`}>
+                      <span className={`font-semibold text-[13px] ${task.status === 'done' ? 'text-[#888888] line-through' : 'text-[#0D0D0D]'}`}>
                         {tt.icon} {task.title}
                       </span>
                       <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded-full ${tt.bg} ${tt.color}`}>{tt.label}</span>
@@ -373,19 +373,19 @@ export function TasksPage({ refreshKey, onRefresh, profile }: {
                         <span className="text-[9px] text-purple-600 flex items-center gap-0.5"><RefreshCw size={8} /> {RECURRENCE_LABELS[task.recurrence_type]}</span>
                       )}
                     </div>
-                    <div className="flex items-center gap-3 flex-wrap text-[11px] text-[#8fa0b5]">
-                      {assigneeName && <span className="flex items-center gap-1"><User size={10} /><span className="font-medium text-[#5a6a80]">{assigneeName}</span></span>}
+                    <div className="flex items-center gap-3 flex-wrap text-[11px] text-[#888888]">
+                      {assigneeName && <span className="flex items-center gap-1"><User size={10} /><span className="font-medium text-[#4a4a4a]">{assigneeName}</span></span>}
                       {task.due_date && (
                         <span className={`flex items-center gap-1 ${isOverdue ? 'text-red-500 font-semibold' : ''}`}>
                           <Clock size={10} /> {formatDate(task.due_date)}{isOverdue ? ' ⚠️' : ''}
                         </span>
                       )}
                       {task.customer && <span>👤 {task.customer.full_name}</span>}
-                      {task.work_order && <span className="flex items-center gap-1 text-[#185FA5]"><FileText size={10} /> {task.work_order.order_number}</span>}
+                      {task.work_order && <span className="flex items-center gap-1 text-[#333333]"><FileText size={10} /> {task.work_order.order_number}</span>}
                       {task.waiting_reason && task.status === 'waiting' && <span className="text-amber-600 italic">⏳ {task.waiting_reason}</span>}
                     </div>
                     {task.description && (
-                      <p className={`text-[11px] text-[#8fa0b5] mt-0.5 ${expanded ? 'whitespace-pre-line' : 'line-clamp-1'}`}>{task.description}</p>
+                      <p className={`text-[11px] text-[#888888] mt-0.5 ${expanded ? 'whitespace-pre-line' : 'line-clamp-1'}`}>{task.description}</p>
                     )}
                   </div>
 
@@ -399,19 +399,19 @@ export function TasksPage({ refreshKey, onRefresh, profile }: {
                         className="p-1.5 text-gray-500 hover:bg-gray-50 rounded text-[11px]">⏸</button>
                     )}
                     <button onClick={() => setExpandedId(expanded ? null : task.id)}
-                      className="p-1.5 text-[#8fa0b5] hover:text-[#0B1E3D] rounded">
+                      className="p-1.5 text-[#888888] hover:text-[#0D0D0D] rounded">
                       {expanded ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
                     </button>
-                    <button onClick={() => openEdit(task)} className="p-1.5 text-[#8fa0b5] hover:text-[#185FA5] rounded"><FileText size={13} /></button>
-                    <button onClick={() => deleteTask(task.id)} className="p-1.5 text-[#8fa0b5] hover:text-red-500 rounded"><Trash2 size={13} /></button>
+                    <button onClick={() => openEdit(task)} className="p-1.5 text-[#888888] hover:text-[#333333] rounded"><FileText size={13} /></button>
+                    <button onClick={() => deleteTask(task.id)} className="p-1.5 text-[#888888] hover:text-red-500 rounded"><Trash2 size={13} /></button>
                   </div>
                 </div>
 
                 {expanded && (
-                  <div className="border-t border-[rgba(11,30,61,0.06)] px-3 py-2 bg-[#F8F9FB] flex gap-2 flex-wrap">
+                  <div className="border-t border-[rgba(0,0,0,0.06)] px-3 py-2 bg-[#F8F9FB] flex gap-2 flex-wrap">
                     {Object.entries(STATUS_CONFIG).map(([key, cfg]) => (
                       <button key={key} onClick={() => markStatus(task.id, key)}
-                        className={`text-[10px] px-2 py-1 rounded-full font-medium border transition-colors ${task.status === key ? 'border-[#185FA5] text-[#185FA5] bg-blue-50' : 'border-transparent text-[#5a6a80] hover:border-[rgba(11,30,61,0.2)]'}`}>
+                        className={`text-[10px] px-2 py-1 rounded-full font-medium border transition-colors ${task.status === key ? 'border-[#333333] text-[#333333] bg-blue-50' : 'border-transparent text-[#4a4a4a] hover:border-[rgba(0,0,0,0.2)]'}`}>
                         {cfg.label}
                       </button>
                     ))}
@@ -425,7 +425,7 @@ export function TasksPage({ refreshKey, onRefresh, profile }: {
 
       {/* Work order tasks section */}
       {woTasks.length > 0 && (filterKey === 'all' || filterKey === 'workorder') && (
-        <div className="border border-[rgba(11,30,61,0.1)] rounded-xl overflow-hidden">
+        <div className="border border-[rgba(0,0,0,0.1)] rounded-xl overflow-hidden">
           <div className="flex items-center gap-2 px-4 py-3 bg-blue-50 border-b border-blue-100">
             <span className="text-base">🔧</span>
             <span className="text-[12px] font-bold text-blue-800">Munkalap feladatok ({woTasks.length} nyitott)</span>
@@ -437,23 +437,23 @@ export function TasksPage({ refreshKey, onRefresh, profile }: {
             if (!wo) return null
             const doneCnt = woGroup.filter((t: any) => t.status === 'done').length
             return (
-              <div key={woId as string} className="border-b border-[rgba(11,30,61,0.06)] last:border-0">
+              <div key={woId as string} className="border-b border-[rgba(0,0,0,0.06)] last:border-0">
                 <div className="flex items-center gap-3 px-4 py-2.5 bg-white">
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2">
-                      <span className="text-[11px] font-bold text-[#185FA5]">📋 {wo.order_number}</span>
-                      {wo.vehicle && <span className="text-[11px] text-[#5a6a80]">{wo.vehicle.make} {wo.vehicle.model} · {wo.vehicle.license_plate}</span>}
-                      {wo.customer && <span className="text-[11px] text-[#8fa0b5]">– {wo.customer.full_name}</span>}
+                      <span className="text-[11px] font-bold text-[#333333]">📋 {wo.order_number}</span>
+                      {wo.vehicle && <span className="text-[11px] text-[#4a4a4a]">{wo.vehicle.make} {wo.vehicle.model} · {wo.vehicle.license_plate}</span>}
+                      {wo.customer && <span className="text-[11px] text-[#888888]">– {wo.customer.full_name}</span>}
                     </div>
-                    <div className="text-[10px] text-[#8fa0b5] mt-0.5">{doneCnt}/{woGroup.length} feladat kész</div>
+                    <div className="text-[10px] text-[#888888] mt-0.5">{doneCnt}/{woGroup.length} feladat kész</div>
                   </div>
                   <div className="flex-shrink-0">
                     <div className="w-20 bg-gray-200 rounded-full h-1.5">
-                      <div className="bg-[#185FA5] h-1.5 rounded-full transition-all" style={{ width: `${woGroup.length ? (doneCnt / woGroup.length) * 100 : 0}%` }} />
+                      <div className="bg-[#333333] h-1.5 rounded-full transition-all" style={{ width: `${woGroup.length ? (doneCnt / woGroup.length) * 100 : 0}%` }} />
                     </div>
                   </div>
                 </div>
-                <div className="divide-y divide-[rgba(11,30,61,0.04)]">
+                <div className="divide-y divide-[rgba(0,0,0,0.04)]">
                   {woGroup.map((task: any) => {
                     const ST: Record<string, string> = { pending: 'Várakozik', in_progress: 'Folyamatban', waiting: 'Várakozik', done: 'Kész', problem: '⚠️ Probléma' }
                     const SC: Record<string, string> = { pending: 'bg-gray-100 text-gray-600', in_progress: 'bg-amber-100 text-amber-800', done: 'bg-green-100 text-green-800', problem: 'bg-red-100 text-red-700', waiting: 'bg-gray-100 text-gray-600' }
@@ -463,9 +463,9 @@ export function TasksPage({ refreshKey, onRefresh, profile }: {
                       <div key={task.id} className="flex items-center gap-3 px-4 py-2 bg-white hover:bg-[#F8F9FB]">
                         <div className={`w-2 h-2 rounded-full flex-shrink-0 ${task.status === 'done' ? 'bg-green-500' : task.status === 'problem' ? 'bg-red-500' : task.status === 'in_progress' ? 'bg-amber-500' : 'bg-gray-300'}`} />
                         <div className="flex-1 min-w-0">
-                          <span className={`text-[12px] font-medium ${task.status === 'done' ? 'text-[#8fa0b5] line-through' : 'text-[#0B1E3D]'}`}>{task.title}</span>
+                          <span className={`text-[12px] font-medium ${task.status === 'done' ? 'text-[#888888] line-through' : 'text-[#0D0D0D]'}`}>{task.title}</span>
                           {checklist.length > 0 && (
-                            <span className="ml-2 text-[10px] text-[#8fa0b5]">☑ {done.length}/{checklist.length}</span>
+                            <span className="ml-2 text-[10px] text-[#888888]">☑ {done.length}/{checklist.length}</span>
                           )}
                         </div>
                         <span className={`text-[9px] font-semibold px-1.5 py-0.5 rounded-full ${SC[task.status] || SC.pending}`}>{ST[task.status] || task.status}</span>
@@ -490,7 +490,7 @@ export function TasksPage({ refreshKey, onRefresh, profile }: {
               {Object.entries(TASK_TYPES).map(([key, cfg]) => (
                 <button key={key} type="button"
                   onClick={() => setForm((f: any) => ({ ...f, task_type: key }))}
-                  className={`flex flex-col items-center p-2 rounded-lg border text-center transition-colors ${form.task_type === key ? 'border-[#185FA5] bg-blue-50' : 'border-[rgba(11,30,61,0.12)] hover:border-[#185FA5]'}`}>
+                  className={`flex flex-col items-center p-2 rounded-lg border text-center transition-colors ${form.task_type === key ? 'border-[#333333] bg-blue-50' : 'border-[rgba(0,0,0,0.12)] hover:border-[#333333]'}`}>
                   <span className="text-base">{cfg.icon}</span>
                   <span className={`text-[9px] font-semibold mt-0.5 ${cfg.color}`}>{cfg.label}</span>
                 </button>
@@ -550,7 +550,7 @@ export function TasksPage({ refreshKey, onRefresh, profile }: {
               <div className="flex gap-1.5 mt-1">
                 {WEEKDAYS.map((d, i) => (
                   <button key={i} type="button" onClick={() => toggleRecDay(i)}
-                    className={`w-8 h-8 rounded-full text-[11px] font-semibold border transition-colors ${(form.recurrence_days || []).includes(i) ? 'bg-[#185FA5] text-white border-[#185FA5]' : 'border-gray-300 text-[#5a6a80]'}`}>
+                    className={`w-8 h-8 rounded-full text-[11px] font-semibold border transition-colors ${(form.recurrence_days || []).includes(i) ? 'bg-[#333333] text-white border-[#333333]' : 'border-gray-300 text-[#4a4a4a]'}`}>
                     {d}
                   </button>
                 ))}

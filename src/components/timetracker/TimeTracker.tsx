@@ -122,11 +122,11 @@ export function TimeTracker({ workOrderId, hourlyRate = 125, onTotalChange }: Ti
   }
 
   return (
-    <div className="bg-[#0B1E3D] rounded-[14px] p-4">
+    <div className="bg-[#0D0D0D] rounded-[14px] p-4">
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
-          <Clock size={16} className="text-[#C9A84C]" />
+          <Clock size={16} className="text-[#C8102E]" />
           <span className="text-white font-semibold text-[13px]">Munkaidő Számoló</span>
         </div>
         <div className="flex items-center gap-2">
@@ -136,15 +136,15 @@ export function TimeTracker({ workOrderId, hourlyRate = 125, onTotalChange }: Ti
                 type="number"
                 value={rateInput}
                 onChange={e => setRateInput(e.target.value)}
-                className="w-16 px-2 py-1 rounded text-[12px] bg-white text-[#0B1E3D] outline-none"
+                className="w-16 px-2 py-1 rounded text-[12px] bg-white text-[#0D0D0D] outline-none"
               />
               <span className="text-white/60 text-[11px]">CHF/h</span>
-              <button onClick={() => { setRate(parseFloat(rateInput) || 125); setEditingRate(false) }} className="text-[#C9A84C]">
+              <button onClick={() => { setRate(parseFloat(rateInput) || 125); setEditingRate(false) }} className="text-[#C8102E]">
                 <Check size={14} />
               </button>
             </div>
           ) : (
-            <button onClick={() => setEditingRate(true)} className="flex items-center gap-1 text-[#C9A84C] text-[12px] hover:text-[#e8c96b]">
+            <button onClick={() => setEditingRate(true)} className="flex items-center gap-1 text-[#C8102E] text-[12px] hover:text-[#e8314e]">
               <Edit2 size={11} /> {rate} CHF/h
             </button>
           )}
@@ -159,9 +159,9 @@ export function TimeTracker({ workOrderId, hourlyRate = 125, onTotalChange }: Ti
             <div key={session.id} className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-colors ${session.running ? 'bg-[rgba(201,168,76,0.15)] border border-[rgba(201,168,76,0.3)]' : 'bg-white/5'}`}>
               <div className="flex-1 min-w-0">
                 <div className="text-white text-[12px] font-medium truncate">{session.label}</div>
-                <div className={`text-[13px] font-mono font-bold ${session.running ? 'text-[#C9A84C]' : 'text-white/60'}`}>
+                <div className={`text-[13px] font-mono font-bold ${session.running ? 'text-[#C8102E]' : 'text-white/60'}`}>
                   {formatTime(live)}
-                  {session.running && <span className="ml-2 text-[10px] text-[#C9A84C] animate-pulse">● FUT</span>}
+                  {session.running && <span className="ml-2 text-[10px] text-[#C8102E] animate-pulse">● FUT</span>}
                 </div>
               </div>
               <div className="flex items-center gap-1">
@@ -172,7 +172,7 @@ export function TimeTracker({ workOrderId, hourlyRate = 125, onTotalChange }: Ti
                   {session.running ? <Pause size={13} /> : <Play size={13} />}
                 </button>
                 {session.running && (
-                  <button onClick={() => stopSession(session.id)} className="w-8 h-8 rounded-lg bg-[#C9384C] text-white flex items-center justify-center">
+                  <button onClick={() => stopSession(session.id)} className="w-8 h-8 rounded-lg bg-[#C8102E] text-white flex items-center justify-center">
                     <Square size={13} />
                   </button>
                 )}
@@ -193,9 +193,9 @@ export function TimeTracker({ workOrderId, hourlyRate = 125, onTotalChange }: Ti
           onChange={e => setNewLabel(e.target.value)}
           onKeyDown={e => e.key === 'Enter' && addSession()}
           placeholder="Munkafázis neve (pl. Diagnosztika)"
-          className="flex-1 px-3 py-1.5 rounded-lg text-[12px] bg-white/10 text-white placeholder:text-white/30 outline-none border border-white/10 focus:border-[#C9A84C]"
+          className="flex-1 px-3 py-1.5 rounded-lg text-[12px] bg-white/10 text-white placeholder:text-white/30 outline-none border border-white/10 focus:border-[#C8102E]"
         />
-        <button onClick={addSession} className="px-3 py-1.5 bg-[#C9A84C] text-[#0B1E3D] rounded-lg text-[12px] font-semibold hover:bg-[#e8c96b] transition-colors">
+        <button onClick={addSession} className="px-3 py-1.5 bg-[#C8102E] text-[#0D0D0D] rounded-lg text-[12px] font-semibold hover:bg-[#e8314e] transition-colors">
           <Plus size={14} />
         </button>
       </div>
@@ -206,14 +206,14 @@ export function TimeTracker({ workOrderId, hourlyRate = 125, onTotalChange }: Ti
           value={manualLabel}
           onChange={e => setManualLabel(e.target.value)}
           placeholder="Leírás"
-          className="flex-1 px-3 py-1.5 rounded-lg text-[12px] bg-white/10 text-white placeholder:text-white/30 outline-none border border-white/10 focus:border-[#C9A84C]"
+          className="flex-1 px-3 py-1.5 rounded-lg text-[12px] bg-white/10 text-white placeholder:text-white/30 outline-none border border-white/10 focus:border-[#C8102E]"
         />
         <input
           type="number"
           value={manualMinutes}
           onChange={e => setManualMinutes(e.target.value)}
           placeholder="perc"
-          className="w-16 px-2 py-1.5 rounded-lg text-[12px] bg-white/10 text-white placeholder:text-white/30 outline-none border border-white/10 text-center focus:border-[#C9A84C]"
+          className="w-16 px-2 py-1.5 rounded-lg text-[12px] bg-white/10 text-white placeholder:text-white/30 outline-none border border-white/10 text-center focus:border-[#C8102E]"
         />
         <button onClick={addManual} className="px-3 py-1.5 bg-white/10 text-white rounded-lg text-[12px] hover:bg-white/20 border border-white/10">
           +min
@@ -231,8 +231,8 @@ export function TimeTracker({ workOrderId, hourlyRate = 125, onTotalChange }: Ti
           <span className="text-white">{rate} CHF/h</span>
         </div>
         <div className="flex justify-between items-center bg-[rgba(201,168,76,0.15)] rounded-lg px-3 py-2">
-          <span className="text-[#C9A84C] font-semibold text-[13px]">Munkadíj:</span>
-          <span className="text-[#C9A84C] font-bold text-[16px]">{formatCurrency(totalCost)}</span>
+          <span className="text-[#C8102E] font-semibold text-[13px]">Munkadíj:</span>
+          <span className="text-[#C8102E] font-bold text-[16px]">{formatCurrency(totalCost)}</span>
         </div>
 
         {sessions.length > 0 && (

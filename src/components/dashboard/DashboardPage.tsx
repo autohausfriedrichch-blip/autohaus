@@ -87,7 +87,7 @@ export function DashboardPage({ refreshKey, onNavigate }: DashboardPageProps) {
 
   if (loading) return (
     <div className="flex items-center justify-center h-64">
-      <div className="text-[#8fa0b5] text-sm">Loading dashboard...</div>
+      <div className="text-[#888888] text-sm">Loading dashboard...</div>
     </div>
   )
 
@@ -97,8 +97,8 @@ export function DashboardPage({ refreshKey, onNavigate }: DashboardPageProps) {
       {/* ── Welcome header ── */}
       <div className="flex items-start justify-between">
         <div>
-          <h1 className="text-[22px] font-bold text-[#0B1E3D] tracking-tight">{greeting} 👋</h1>
-          <p className="text-[13px] text-[#8fa0b5] mt-0.5">{todayLabel} · Swiss Garage Operations</p>
+          <h1 className="text-[22px] font-bold text-[#0D0D0D] tracking-tight">{greeting} 👋</h1>
+          <p className="text-[13px] text-[#888888] mt-0.5">{todayLabel} · Swiss Garage Operations</p>
         </div>
         <div className="flex items-center gap-2 shrink-0">
           <SystemHealthWidget
@@ -110,7 +110,7 @@ export function DashboardPage({ refreshKey, onNavigate }: DashboardPageProps) {
           />
           <button
             onClick={() => onNavigate('workorders')}
-            className="flex items-center gap-2 bg-[#0D0D0D] hover:bg-[#0d2347] text-white px-3.5 py-2 rounded-xl text-[12.5px] font-semibold transition-colors shadow-sm"
+            className="flex items-center gap-2 bg-[#0D0D0D] hover:bg-[#111111] text-white px-3.5 py-2 rounded-xl text-[12.5px] font-semibold transition-colors shadow-sm"
           >
             <Plus size={14} className="text-[#C8102E]" />
             New Work Order
@@ -167,32 +167,32 @@ export function DashboardPage({ refreshKey, onNavigate }: DashboardPageProps) {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
 
         {/* Today's schedule */}
-        <div className="bg-white border border-[rgba(11,30,61,0.08)] rounded-2xl p-5">
+        <div className="bg-white border border-[rgba(0,0,0,0.08)] rounded-2xl p-5">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
               <CalendarDays size={15} className="text-[#C8102E]" />
-              <span className="text-[11px] font-semibold text-[#5a6a80] uppercase tracking-[0.8px]">Today's Schedule</span>
+              <span className="text-[11px] font-semibold text-[#4a4a4a] uppercase tracking-[0.8px]">Today's Schedule</span>
             </div>
             <button
               onClick={() => onNavigate('bookings')}
-              className="text-[11px] text-[#8fa0b5] hover:text-[#0B1E3D] flex items-center gap-1 transition-colors"
+              className="text-[11px] text-[#888888] hover:text-[#0D0D0D] flex items-center gap-1 transition-colors"
             >
               View all <ArrowRight size={11} />
             </button>
           </div>
 
           {todayBookings.length === 0 ? (
-            <div className="text-center py-8 text-[13px] text-[#8fa0b5]">No appointments today</div>
+            <div className="text-center py-8 text-[13px] text-[#888888]">No appointments today</div>
           ) : (
             <div className="space-y-0">
               {todayBookings.map((b: any) => (
-                <div key={b.id} className="flex items-center gap-3 py-2.5 border-b border-[rgba(11,30,61,0.05)] last:border-0">
+                <div key={b.id} className="flex items-center gap-3 py-2.5 border-b border-[rgba(0,0,0,0.05)] last:border-0">
                   <div className="text-[11px] font-bold text-[#C8102E] min-w-[36px] font-mono">
                     {b.scheduled_time?.slice(0,5) || '--:--'}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <div className="font-semibold text-[13px] text-[#0B1E3D] truncate">{b.customer?.full_name}</div>
-                    <div className="text-[11px] text-[#8fa0b5] truncate">{b.service_type}</div>
+                    <div className="font-semibold text-[13px] text-[#0D0D0D] truncate">{b.customer?.full_name}</div>
+                    <div className="text-[11px] text-[#888888] truncate">{b.service_type}</div>
                   </div>
                   {b.vehicle && (
                     <div className="bg-[#0D0D0D] text-white text-[10.5px] font-bold px-2 py-1 rounded-lg min-w-[64px] text-center shrink-0">
@@ -206,34 +206,34 @@ export function DashboardPage({ refreshKey, onNavigate }: DashboardPageProps) {
         </div>
 
         {/* Urgent items */}
-        <div className="bg-white border border-[rgba(11,30,61,0.08)] rounded-2xl p-5">
+        <div className="bg-white border border-[rgba(0,0,0,0.08)] rounded-2xl p-5">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
-              <AlertTriangle size={15} className="text-[#C9384C]" />
-              <span className="text-[11px] font-semibold text-[#5a6a80] uppercase tracking-[0.8px]">Requires Attention</span>
+              <AlertTriangle size={15} className="text-[#C8102E]" />
+              <span className="text-[11px] font-semibold text-[#4a4a4a] uppercase tracking-[0.8px]">Requires Attention</span>
             </div>
             <button
               onClick={() => onNavigate('workorders')}
-              className="text-[11px] text-[#8fa0b5] hover:text-[#0B1E3D] flex items-center gap-1 transition-colors"
+              className="text-[11px] text-[#888888] hover:text-[#0D0D0D] flex items-center gap-1 transition-colors"
             >
               View all <ArrowRight size={11} />
             </button>
           </div>
 
           {urgentTasks.length === 0 ? (
-            <div className="text-center py-8 text-[13px] text-[#8fa0b5]">No urgent items</div>
+            <div className="text-center py-8 text-[13px] text-[#888888]">No urgent items</div>
           ) : (
             <div className="space-y-0">
               {urgentTasks.map((wo: any) => (
                 <div
                   key={wo.id}
-                  className="flex items-center gap-3 py-2.5 border-b border-[rgba(11,30,61,0.05)] last:border-0 cursor-pointer hover:bg-[#F8F9FB] -mx-5 px-5 transition-colors rounded-xl"
+                  className="flex items-center gap-3 py-2.5 border-b border-[rgba(0,0,0,0.05)] last:border-0 cursor-pointer hover:bg-[#F8F9FB] -mx-5 px-5 transition-colors rounded-xl"
                   onClick={() => onNavigate('workorders', wo.id)}
                 >
-                  <div className={`w-2 h-2 rounded-full shrink-0 ${wo.status === 'waiting_approval' ? 'bg-[#C9384C]' : 'bg-[#C9A84C]'}`} />
+                  <div className={`w-2 h-2 rounded-full shrink-0 ${wo.status === 'waiting_approval' ? 'bg-[#C8102E]' : 'bg-[#C8102E]'}`} />
                   <div className="flex-1 min-w-0">
-                    <div className="font-semibold text-[13px] text-[#0B1E3D] truncate">{wo.customer?.full_name}</div>
-                    <div className="text-[11px] text-[#8fa0b5]">{wo.vehicle?.license_plate} · {wo.order_number}</div>
+                    <div className="font-semibold text-[13px] text-[#0D0D0D] truncate">{wo.customer?.full_name}</div>
+                    <div className="text-[11px] text-[#888888]">{wo.vehicle?.license_plate} · {wo.order_number}</div>
                   </div>
                   <StatusBadge status={wo.status} />
                 </div>
@@ -244,22 +244,22 @@ export function DashboardPage({ refreshKey, onNavigate }: DashboardPageProps) {
       </div>
 
       {/* ── Active work orders ── */}
-      <div className="bg-white border border-[rgba(11,30,61,0.08)] rounded-2xl p-5">
+      <div className="bg-white border border-[rgba(0,0,0,0.08)] rounded-2xl p-5">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
             <ClipboardList size={15} className="text-[#C8102E]" />
-            <span className="text-[11px] font-semibold text-[#5a6a80] uppercase tracking-[0.8px]">Active Work Orders</span>
+            <span className="text-[11px] font-semibold text-[#4a4a4a] uppercase tracking-[0.8px]">Active Work Orders</span>
           </div>
           <button
             onClick={() => onNavigate('workorders')}
-            className="text-[11px] text-[#8fa0b5] hover:text-[#0B1E3D] flex items-center gap-1 transition-colors"
+            className="text-[11px] text-[#888888] hover:text-[#0D0D0D] flex items-center gap-1 transition-colors"
           >
             View all <ArrowRight size={11} />
           </button>
         </div>
 
         {activeWorkOrders.length === 0 ? (
-          <div className="text-center py-8 text-[13px] text-[#8fa0b5]">No active work orders</div>
+          <div className="text-center py-8 text-[13px] text-[#888888]">No active work orders</div>
         ) : (
           <div className="overflow-x-auto -mx-1">
             <table className="premium-table w-full">
@@ -276,16 +276,16 @@ export function DashboardPage({ refreshKey, onNavigate }: DashboardPageProps) {
                 {activeWorkOrders.map((wo: any) => (
                   <tr key={wo.id} onClick={() => onNavigate('workorders', wo.id)}>
                     <td>
-                      <span className="text-[11px] font-bold text-[#185FA5] bg-[#E6F1FB] px-2 py-1 rounded-lg">
+                      <span className="text-[11px] font-bold text-[#333333] bg-[#F0F0F0] px-2 py-1 rounded-lg">
                         {wo.order_number}
                       </span>
                     </td>
-                    <td className="font-medium text-[#0B1E3D]">{wo.customer?.full_name}</td>
-                    <td className="hidden md:table-cell text-[#5a6a80] text-[12px]">
+                    <td className="font-medium text-[#0D0D0D]">{wo.customer?.full_name}</td>
+                    <td className="hidden md:table-cell text-[#4a4a4a] text-[12px]">
                       {wo.vehicle ? `${wo.vehicle.make} ${wo.vehicle.model} · ${wo.vehicle.license_plate}` : '–'}
                     </td>
                     <td><StatusBadge status={wo.status} /></td>
-                    <td className="text-right hidden sm:table-cell font-semibold text-[#0B1E3D]">
+                    <td className="text-right hidden sm:table-cell font-semibold text-[#0D0D0D]">
                       {wo.total_amount ? formatCurrency(wo.total_amount) : '–'}
                     </td>
                   </tr>

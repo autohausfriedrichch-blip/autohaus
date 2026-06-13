@@ -130,17 +130,17 @@ export function VehicleHealthReport({ workOrderId, workOrder, onClose }: Props) 
       <div className={`rounded-xl p-4 mb-4 flex items-center gap-4 ${scoreBg}`}>
         <div className="text-center">
           <div className={`text-[32px] font-bold ${scoreColor}`}>{healthScore}</div>
-          <div className="text-[10px] text-[#5a6a80] font-medium">/ 100</div>
+          <div className="text-[10px] text-[#4a4a4a] font-medium">/ 100</div>
         </div>
         <div className="flex-1">
-          <div className="font-semibold text-[14px] text-[#0B1E3D]">Vehicle Health Score</div>
-          <div className="flex items-center gap-3 mt-1 text-[11px] text-[#5a6a80]">
+          <div className="font-semibold text-[14px] text-[#0D0D0D]">Vehicle Health Score</div>
+          <div className="flex items-center gap-3 mt-1 text-[11px] text-[#4a4a4a]">
             <span className="text-emerald-600">{Object.values(entries).filter(e => e.status === 'ok').length} rendben</span>
             <span className="text-amber-600">{Object.values(entries).filter(e => e.status === 'watch').length} figyelni</span>
             <span className="text-red-600">{Object.values(entries).filter(e => e.status === 'repair').length} javítás</span>
           </div>
         </div>
-        <button onClick={handleDownload} className="flex items-center gap-1.5 px-3 py-1.5 bg-white rounded-lg border text-[12px] text-[#5a6a80] hover:text-[#0B1E3D] transition-colors">
+        <button onClick={handleDownload} className="flex items-center gap-1.5 px-3 py-1.5 bg-white rounded-lg border text-[12px] text-[#4a4a4a] hover:text-[#0D0D0D] transition-colors">
           <Download size={13} /> PDF
         </button>
       </div>
@@ -160,7 +160,7 @@ export function VehicleHealthReport({ workOrderId, workOrder, onClose }: Props) 
                 className="w-full flex items-center gap-3 p-3 text-left"
               >
                 <span className="text-[16px]">{cat.icon}</span>
-                <span className="font-medium text-[13px] text-[#0B1E3D] flex-1">{cat.label}</span>
+                <span className="font-medium text-[13px] text-[#0D0D0D] flex-1">{cat.label}</span>
                 <div className="flex items-center gap-3">
                   {/* Status selector (inline) */}
                   <div className="flex gap-1" onClick={e => e.stopPropagation()}>
@@ -185,28 +185,28 @@ export function VehicleHealthReport({ workOrderId, workOrder, onClose }: Props) 
               {isOpen && (
                 <div className="px-3 pb-3 space-y-2 border-t border-white/50">
                   <div>
-                    <label className="text-[10px] font-semibold text-[#5a6a80] uppercase tracking-wide">Megjegyzés</label>
+                    <label className="text-[10px] font-semibold text-[#4a4a4a] uppercase tracking-wide">Megjegyzés</label>
                     <textarea
                       value={entry.note}
                       onChange={e => setEntry(cat.id, 'note', e.target.value)}
                       rows={2}
                       placeholder="Megfigyelések, részletek..."
-                      className="w-full mt-1 border border-white rounded-lg p-2 text-[12px] bg-white/80 outline-none focus:border-[#0B1E3D] resize-none"
+                      className="w-full mt-1 border border-white rounded-lg p-2 text-[12px] bg-white/80 outline-none focus:border-[#0D0D0D] resize-none"
                     />
                   </div>
                   <div>
-                    <label className="text-[10px] font-semibold text-[#5a6a80] uppercase tracking-wide">Javasolt lépés</label>
+                    <label className="text-[10px] font-semibold text-[#4a4a4a] uppercase tracking-wide">Javasolt lépés</label>
                     <textarea
                       value={entry.recommendation}
                       onChange={e => setEntry(cat.id, 'recommendation', e.target.value)}
                       rows={2}
                       placeholder="Ajánlott javítás, csere..."
-                      className="w-full mt-1 border border-white rounded-lg p-2 text-[12px] bg-white/80 outline-none focus:border-[#0B1E3D] resize-none"
+                      className="w-full mt-1 border border-white rounded-lg p-2 text-[12px] bg-white/80 outline-none focus:border-[#0D0D0D] resize-none"
                     />
                   </div>
                   {entry.status !== 'ok' && entry.status !== 'not_checked' && (
                     <div>
-                      <label className="text-[10px] font-semibold text-[#5a6a80] uppercase tracking-wide">Sürgősség</label>
+                      <label className="text-[10px] font-semibold text-[#4a4a4a] uppercase tracking-wide">Sürgősség</label>
                       <div className="flex gap-2 mt-1">
                         {['low', 'medium', 'high'].map(u => (
                           <button
@@ -232,20 +232,20 @@ export function VehicleHealthReport({ workOrderId, workOrder, onClose }: Props) 
       {/* Footer fields */}
       <div className="mt-4 space-y-3">
         <div>
-          <label className="text-[12px] font-medium text-[#0B1E3D] mb-1 block">Ajánlott következő szerviz</label>
+          <label className="text-[12px] font-medium text-[#0D0D0D] mb-1 block">Ajánlott következő szerviz</label>
           <input
             type="text" value={nextService} onChange={e => setNextService(e.target.value)}
             placeholder="pl. 2025. szeptember – olajcsere + éves szerviz"
-            className="w-full border border-[rgba(11,30,61,0.18)] rounded-lg p-2.5 text-[12px] outline-none focus:border-[#0B1E3D]"
+            className="w-full border border-[rgba(0,0,0,0.18)] rounded-lg p-2.5 text-[12px] outline-none focus:border-[#0D0D0D]"
           />
         </div>
         <div>
-          <label className="text-[12px] font-medium text-[#0B1E3D] mb-1 block">Ügyfélnek szóló összefoglaló</label>
+          <label className="text-[12px] font-medium text-[#0D0D0D] mb-1 block">Ügyfélnek szóló összefoglaló</label>
           <textarea
             value={generalNotes} onChange={e => setGeneralNotes(e.target.value)}
             rows={3}
             placeholder="Rövid magyarázat az ügyfélnek az állapotról..."
-            className="w-full border border-[rgba(11,30,61,0.18)] rounded-lg p-2.5 text-[12px] outline-none focus:border-[#0B1E3D] resize-none"
+            className="w-full border border-[rgba(0,0,0,0.18)] rounded-lg p-2.5 text-[12px] outline-none focus:border-[#0D0D0D] resize-none"
           />
         </div>
       </div>

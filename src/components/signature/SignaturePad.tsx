@@ -20,7 +20,7 @@ export function SignaturePad({ onSave, onCancel, title = 'Aláírás', subtitle 
     const canvas = canvasRef.current
     if (!canvas) return
     const ctx = canvas.getContext('2d')!
-    ctx.strokeStyle = '#0B1E3D'
+    ctx.strokeStyle = '#0D0D0D'
     ctx.lineWidth = 2.5
     ctx.lineCap = 'round'
     ctx.lineJoin = 'round'
@@ -81,12 +81,12 @@ export function SignaturePad({ onSave, onCancel, title = 'Aláírás', subtitle 
   return (
     <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/60 p-4">
       <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md">
-        <div className="p-5 border-b border-[rgba(11,30,61,0.08)]">
-          <h3 className="text-[15px] font-semibold text-[#0B1E3D]">{title}</h3>
-          {subtitle && <p className="text-[12px] text-[#5a6a80] mt-0.5">{subtitle}</p>}
+        <div className="p-5 border-b border-[rgba(0,0,0,0.08)]">
+          <h3 className="text-[15px] font-semibold text-[#0D0D0D]">{title}</h3>
+          {subtitle && <p className="text-[12px] text-[#4a4a4a] mt-0.5">{subtitle}</p>}
         </div>
         <div className="p-4">
-          <div className="border-2 border-dashed border-[rgba(11,30,61,0.18)] rounded-xl overflow-hidden bg-[#fafbfc]">
+          <div className="border-2 border-dashed border-[rgba(0,0,0,0.18)] rounded-xl overflow-hidden bg-[#fafbfc]">
             <canvas
               ref={canvasRef}
               width={600}
@@ -102,10 +102,10 @@ export function SignaturePad({ onSave, onCancel, title = 'Aláírás', subtitle 
               onTouchEnd={stopDraw}
             />
           </div>
-          <p className="text-[11px] text-[#8fa0b5] text-center mt-2">Aláírja a fenti mezőben</p>
+          <p className="text-[11px] text-[#888888] text-center mt-2">Aláírja a fenti mezőben</p>
         </div>
         <div className="p-4 pt-0 flex gap-2">
-          <button onClick={clear} className="flex items-center gap-1.5 px-3 py-2 rounded-lg border border-[rgba(11,30,61,0.15)] text-[#5a6a80] text-[12px] hover:bg-gray-50 transition-colors">
+          <button onClick={clear} className="flex items-center gap-1.5 px-3 py-2 rounded-lg border border-[rgba(0,0,0,0.15)] text-[#4a4a4a] text-[12px] hover:bg-gray-50 transition-colors">
             <RotateCcw size={13} /> Törlés
           </button>
           <div className="flex-1" />

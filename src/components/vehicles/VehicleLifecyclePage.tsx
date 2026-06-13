@@ -58,22 +58,22 @@ type TimelineItem = (VehicleEvent | WorkOrder) & { _displayDate: string }
 const conditionMap: Record<string, { label: string; color: string }> = {
   good: { label: 'jó', color: '#22c55e' },
   fair: { label: 'közepes', color: '#f59e0b' },
-  poor: { label: 'rossz', color: '#C9384C' },
+  poor: { label: 'rossz', color: '#C8102E' },
 }
 
 function ConditionDot({ value }: { value: string | null }) {
-  const c = value ? conditionMap[value] : { label: '—', color: '#8fa0b5' }
+  const c = value ? conditionMap[value] : { label: '—', color: '#888888' }
   return (
     <span className="flex items-center gap-1.5">
       <span className="inline-block w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: c.color }} />
-      <span className="text-[12px] text-[#0B1E3D] font-medium">{c.label}</span>
+      <span className="text-[12px] text-[#0D0D0D] font-medium">{c.label}</span>
     </span>
   )
 }
 
 function HealthBadge({ score }: { score: number | null }) {
   const s = score ?? 0
-  const color = s >= 70 ? '#22c55e' : s >= 40 ? '#f59e0b' : '#C9384C'
+  const color = s >= 70 ? '#22c55e' : s >= 40 ? '#f59e0b' : '#C8102E'
   const bg = s >= 70 ? '#dcfce7' : s >= 40 ? '#fef3c7' : '#fee2e2'
   return (
     <span
@@ -102,14 +102,14 @@ function eventTypeIcon(type: string) {
 
 function eventTypeColor(type: string) {
   switch (type) {
-    case 'work_order': return '#C9A84C'
+    case 'work_order': return '#C8102E'
     case 'checkin': return '#22c55e'
     case 'checkout':
     case 'pickup': return '#3b82f6'
     case 'reminder': return '#f59e0b'
     case 'invoice': return '#8b5cf6'
     case 'payment': return '#22c55e'
-    default: return '#5a6a80'
+    default: return '#4a4a4a'
   }
 }
 
@@ -283,7 +283,7 @@ export function VehicleLifecyclePage({ refreshKey, onRefresh }: { refreshKey: nu
 
   const indicators = vehicle ? healthIndicators(vehicle) : []
   const healthScore = vehicle?.health_score ?? 0
-  const healthColor = healthScore >= 70 ? '#22c55e' : healthScore >= 40 ? '#f59e0b' : '#C9384C'
+  const healthColor = healthScore >= 70 ? '#22c55e' : healthScore >= 40 ? '#f59e0b' : '#C8102E'
 
   return (
     <div className="animate-fade-in space-y-4">
@@ -292,9 +292,9 @@ export function VehicleLifecyclePage({ refreshKey, onRefresh }: { refreshKey: nu
       <Card className="p-4">
         <div className="flex items-center gap-3">
           <div className="relative flex-1 max-w-sm">
-            <ChevronDown size={14} className="absolute right-3 top-1/2 -translate-y-1/2 text-[#8fa0b5] pointer-events-none" />
+            <ChevronDown size={14} className="absolute right-3 top-1/2 -translate-y-1/2 text-[#888888] pointer-events-none" />
             <select
-              className="w-full pl-3 pr-8 py-2 border border-[rgba(11,30,61,0.18)] rounded-lg text-[13px] bg-white text-[#0B1E3D] outline-none focus:border-[#0B1E3D] appearance-none"
+              className="w-full pl-3 pr-8 py-2 border border-[rgba(0,0,0,0.18)] rounded-lg text-[13px] bg-white text-[#0D0D0D] outline-none focus:border-[#0D0D0D] appearance-none"
               value={vehicleId}
               onChange={e => { setVehicleId(e.target.value); setEditingHealth(false) }}
               disabled={loadingVehicles}
@@ -323,13 +323,13 @@ export function VehicleLifecyclePage({ refreshKey, onRefresh }: { refreshKey: nu
             <div className="flex items-start justify-between gap-4">
               <div className="flex-1">
                 <div className="flex items-center gap-2.5 mb-1">
-                  <h2 className="font-['DM_Serif_Display'] text-[22px] text-[#0B1E3D]">
+                  <h2 className="font-['Montserrat'] text-[22px] text-[#0D0D0D]">
                     {vehicle.make} {vehicle.model}
                   </h2>
                   <HealthBadge score={vehicle.health_score} />
                 </div>
-                <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[13px] text-[#5a6a80]">
-                  <span className="font-semibold text-[#0B1E3D] bg-[#F4F5F7] px-2 py-0.5 rounded text-[12px]">
+                <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[13px] text-[#4a4a4a]">
+                  <span className="font-semibold text-[#0D0D0D] bg-[#F4F5F7] px-2 py-0.5 rounded text-[12px]">
                     {vehicle.license_plate}
                   </span>
                   {(vehicle as any).customer?.full_name && (
@@ -343,7 +343,7 @@ export function VehicleLifecyclePage({ refreshKey, onRefresh }: { refreshKey: nu
             </div>
 
             {/* Stats row */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-4 pt-4 border-t border-[rgba(11,30,61,0.08)]">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-4 pt-4 border-t border-[rgba(0,0,0,0.08)]">
               {[
                 { icon: <DollarSign size={14} />, label: 'Összes kiadás', value: `CHF ${totalSpent.toLocaleString('de-CH', { minimumFractionDigits: 2 })}` },
                 { icon: <Wrench size={14} />, label: 'Munkák száma', value: `${visitCount} db` },
@@ -351,9 +351,9 @@ export function VehicleLifecyclePage({ refreshKey, onRefresh }: { refreshKey: nu
                 { icon: <Calendar size={14} />, label: 'Következő szerviz', value: fmtDate(vehicle.next_service_date) },
               ].map(stat => (
                 <div key={stat.label} className="bg-[#F4F5F7] rounded-xl p-3">
-                  <div className="flex items-center gap-1.5 text-[#C9A84C] mb-1">{stat.icon}</div>
-                  <div className="text-[11px] text-[#5a6a80] mb-0.5">{stat.label}</div>
-                  <div className="text-[13px] font-semibold text-[#0B1E3D]">{stat.value}</div>
+                  <div className="flex items-center gap-1.5 text-[#C8102E] mb-1">{stat.icon}</div>
+                  <div className="text-[11px] text-[#4a4a4a] mb-0.5">{stat.label}</div>
+                  <div className="text-[13px] font-semibold text-[#0D0D0D]">{stat.value}</div>
                 </div>
               ))}
             </div>
@@ -372,7 +372,7 @@ export function VehicleLifecyclePage({ refreshKey, onRefresh }: { refreshKey: nu
             {/* Progress bar */}
             <div className="mb-5">
               <div className="flex items-center justify-between mb-1.5">
-                <span className="text-[12px] text-[#5a6a80]">Összesített pontszám</span>
+                <span className="text-[12px] text-[#4a4a4a]">Összesített pontszám</span>
                 <span className="text-[18px] font-bold" style={{ color: healthColor }}>{healthScore}/100</span>
               </div>
               <div className="w-full h-3 bg-[#F4F5F7] rounded-full overflow-hidden">
@@ -387,7 +387,7 @@ export function VehicleLifecyclePage({ refreshKey, onRefresh }: { refreshKey: nu
             <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
               {indicators.map(ind => (
                 <div key={ind.label} className="flex items-center justify-between bg-[#F4F5F7] rounded-lg px-3 py-2.5">
-                  <span className="text-[11px] text-[#5a6a80]">{ind.label}</span>
+                  <span className="text-[11px] text-[#4a4a4a]">{ind.label}</span>
                   <ConditionDot value={ind.value} />
                 </div>
               ))}
@@ -395,7 +395,7 @@ export function VehicleLifecyclePage({ refreshKey, onRefresh }: { refreshKey: nu
 
             {/* Inline health editor */}
             {editingHealth && (
-              <div className="mt-5 pt-5 border-t border-[rgba(11,30,61,0.10)] space-y-0">
+              <div className="mt-5 pt-5 border-t border-[rgba(0,0,0,0.10)] space-y-0">
                 <div className="grid grid-cols-2 gap-3 mb-3">
                   <FormGroup>
                     <FormLabel>Egészségi pontszám (0–100)</FormLabel>
@@ -404,9 +404,9 @@ export function VehicleLifecyclePage({ refreshKey, onRefresh }: { refreshKey: nu
                         type="range" min={0} max={100}
                         value={healthForm.health_score ?? 0}
                         onChange={e => setHealthForm(f => ({ ...f, health_score: parseInt(e.target.value) }))}
-                        className="flex-1 accent-[#0B1E3D]"
+                        className="flex-1 accent-[#0D0D0D]"
                       />
-                      <span className="text-[13px] font-bold text-[#0B1E3D] w-8 text-right">{healthForm.health_score ?? 0}</span>
+                      <span className="text-[13px] font-bold text-[#0D0D0D] w-8 text-right">{healthForm.health_score ?? 0}</span>
                     </div>
                   </FormGroup>
                   <FormGroup>
@@ -480,13 +480,13 @@ export function VehicleLifecyclePage({ refreshKey, onRefresh }: { refreshKey: nu
             <CardTitle icon={<Clock size={14} />}>Előzmények</CardTitle>
 
             {loadingTimeline ? (
-              <div className="text-[13px] text-[#5a6a80] py-6 text-center">Betöltés...</div>
+              <div className="text-[13px] text-[#4a4a4a] py-6 text-center">Betöltés...</div>
             ) : timeline.length === 0 ? (
-              <div className="text-[13px] text-[#5a6a80] py-6 text-center">Még nincs esemény ehhez a járműhöz.</div>
+              <div className="text-[13px] text-[#4a4a4a] py-6 text-center">Még nincs esemény ehhez a járműhöz.</div>
             ) : (
               <div className="relative">
                 {/* Vertical line */}
-                <div className="absolute left-[19px] top-0 bottom-0 w-px bg-[rgba(11,30,61,0.08)]" />
+                <div className="absolute left-[19px] top-0 bottom-0 w-px bg-[rgba(0,0,0,0.08)]" />
                 <div className="space-y-0">
                   {timeline.map((item, idx) => {
                     const isWO = item._source === 'work_order'
@@ -512,13 +512,13 @@ export function VehicleLifecyclePage({ refreshKey, onRefresh }: { refreshKey: nu
                         <div className="flex-1 min-w-0 pt-1.5">
                           <div className="flex items-start justify-between gap-2">
                             <div className="min-w-0">
-                              <div className="text-[13px] font-semibold text-[#0B1E3D] truncate">{title}</div>
-                              {desc && <div className="text-[12px] text-[#5a6a80] mt-0.5 line-clamp-2">{desc}</div>}
+                              <div className="text-[13px] font-semibold text-[#0D0D0D] truncate">{title}</div>
+                              {desc && <div className="text-[12px] text-[#4a4a4a] mt-0.5 line-clamp-2">{desc}</div>}
                               {isWO && (
                                 <span
                                   className="inline-block mt-1 text-[10px] font-semibold px-2 py-0.5 rounded-full"
                                   style={{
-                                    color: wo.status === 'completed' ? '#22c55e' : wo.status === 'in_progress' ? '#f59e0b' : '#5a6a80',
+                                    color: wo.status === 'completed' ? '#22c55e' : wo.status === 'in_progress' ? '#f59e0b' : '#4a4a4a',
                                     backgroundColor: wo.status === 'completed' ? '#dcfce7' : wo.status === 'in_progress' ? '#fef3c7' : '#F4F5F7',
                                   }}
                                 >
@@ -527,9 +527,9 @@ export function VehicleLifecyclePage({ refreshKey, onRefresh }: { refreshKey: nu
                               )}
                             </div>
                             <div className="text-right shrink-0">
-                              <div className="text-[11px] text-[#5a6a80]">{fmtDate(date)}</div>
+                              <div className="text-[11px] text-[#4a4a4a]">{fmtDate(date)}</div>
                               {amount != null && (
-                                <div className="text-[12px] font-semibold text-[#0B1E3D] mt-0.5">{fmtCHF(amount)}</div>
+                                <div className="text-[12px] font-semibold text-[#0D0D0D] mt-0.5">{fmtCHF(amount)}</div>
                               )}
                             </div>
                           </div>

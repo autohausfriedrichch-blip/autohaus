@@ -15,10 +15,10 @@ interface PageHeaderProps {
 }
 
 const ACCENT_COLORS: Record<string, string> = {
-  gold:  '#C9A84C',
-  navy:  '#0B1E3D',
+  gold:  '#C8102E',
+  navy:  '#0D0D0D',
   green: '#16a34a',
-  red:   '#C9384C',
+  red:   '#C8102E',
 }
 
 export function PageHeader({ title, description, stats, actions, className }: PageHeaderProps) {
@@ -40,7 +40,7 @@ export function PageHeader({ title, description, stats, actions, className }: Pa
             <div key={i} className="stat-card">
               <div
                 className="stat-card-value"
-                style={{ color: s.accent ? ACCENT_COLORS[s.accent] : '#0B1E3D' }}
+                style={{ color: s.accent ? ACCENT_COLORS[s.accent] : '#0D0D0D' }}
               >
                 {s.value}
               </div>

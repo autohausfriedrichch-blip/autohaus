@@ -71,43 +71,43 @@ export function BookingsPage({ refreshKey }: { refreshKey: number; onRefresh: ()
     <div className="animate-fade-in">
       <div className="flex gap-2.5 mb-4">
         <div className="relative flex-1">
-          <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#8fa0b5]" />
+          <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#888888]" />
           <input type="text" value={search} onChange={e => setSearch(e.target.value)} placeholder="Ügyfél, rendszám, szolgáltatás..."
-            className="w-full pl-9 pr-3 py-2 border border-[rgba(11,30,61,0.18)] rounded-lg text-[13px] bg-white outline-none focus:border-[#0B1E3D]" />
+            className="w-full pl-9 pr-3 py-2 border border-[rgba(0,0,0,0.18)] rounded-lg text-[13px] bg-white outline-none focus:border-[#0D0D0D]" />
         </div>
         <Button variant="primary" onClick={() => { setForm({ status: 'pending', urgency: 'normal', is_mobile: false, duration_minutes: 60 }); setModalOpen(true) }}>
           <Plus size={14} /> Neue Buchung
         </Button>
       </div>
 
-      {loading ? <div className="text-center py-12 text-[#5a6a80] text-sm">Wird geladen...</div> : (
+      {loading ? <div className="text-center py-12 text-[#4a4a4a] text-sm">Wird geladen...</div> : (
         <Card className="p-0 overflow-hidden">
           <div className="overflow-x-auto">
           <table className="w-full text-[13px] min-w-[560px]">
             <thead>
-              <tr className="bg-[#F4F5F7] border-b border-[rgba(11,30,61,0.10)]">
-                <th className="text-left px-4 py-3 text-[11px] font-semibold text-[#5a6a80] uppercase tracking-wider">Datum / Zeit</th>
-                <th className="text-left px-4 py-3 text-[11px] font-semibold text-[#5a6a80] uppercase tracking-wider">Kunde</th>
-                <th className="text-left px-4 py-3 text-[11px] font-semibold text-[#5a6a80] uppercase tracking-wider hidden md:table-cell">Service</th>
-                <th className="text-left px-4 py-3 text-[11px] font-semibold text-[#5a6a80] uppercase tracking-wider hidden sm:table-cell">Jármű</th>
-                <th className="text-left px-4 py-3 text-[11px] font-semibold text-[#5a6a80] uppercase tracking-wider">Status</th>
+              <tr className="bg-[#F4F5F7] border-b border-[rgba(0,0,0,0.10)]">
+                <th className="text-left px-4 py-3 text-[11px] font-semibold text-[#4a4a4a] uppercase tracking-wider">Datum / Zeit</th>
+                <th className="text-left px-4 py-3 text-[11px] font-semibold text-[#4a4a4a] uppercase tracking-wider">Kunde</th>
+                <th className="text-left px-4 py-3 text-[11px] font-semibold text-[#4a4a4a] uppercase tracking-wider hidden md:table-cell">Service</th>
+                <th className="text-left px-4 py-3 text-[11px] font-semibold text-[#4a4a4a] uppercase tracking-wider hidden sm:table-cell">Jármű</th>
+                <th className="text-left px-4 py-3 text-[11px] font-semibold text-[#4a4a4a] uppercase tracking-wider">Status</th>
                 <th className="px-4 py-3" />
               </tr>
             </thead>
             <tbody>
               {filtered.map(b => (
-                <tr key={b.id} className="border-b border-[rgba(11,30,61,0.06)] hover:bg-[#fafbfc]">
+                <tr key={b.id} className="border-b border-[rgba(0,0,0,0.06)] hover:bg-[#fafbfc]">
                   <td className="px-4 py-3">
-                    <div className="font-semibold text-[#0B1E3D]">{formatDate(b.scheduled_date)}</div>
-                    <div className="text-[11px] text-[#5a6a80] flex items-center gap-1"><Clock size={10} /> {b.scheduled_time?.slice(0,5)}</div>
+                    <div className="font-semibold text-[#0D0D0D]">{formatDate(b.scheduled_date)}</div>
+                    <div className="text-[11px] text-[#4a4a4a] flex items-center gap-1"><Clock size={10} /> {b.scheduled_time?.slice(0,5)}</div>
                   </td>
                   <td className="px-4 py-3">
                     <div className="font-medium">{b.customer?.full_name}</div>
-                    <div className="text-[11px] text-[#5a6a80]">{b.customer?.phone}</div>
+                    <div className="text-[11px] text-[#4a4a4a]">{b.customer?.phone}</div>
                   </td>
-                  <td className="px-4 py-3 hidden md:table-cell text-[12px] text-[#5a6a80]">{b.service_type}</td>
+                  <td className="px-4 py-3 hidden md:table-cell text-[12px] text-[#4a4a4a]">{b.service_type}</td>
                   <td className="px-4 py-3 hidden sm:table-cell">
-                    {b.vehicle && <span className="bg-[#0B1E3D] text-white text-[11px] font-bold px-2 py-0.5 rounded">{b.vehicle.license_plate}</span>}
+                    {b.vehicle && <span className="bg-[#0D0D0D] text-white text-[11px] font-bold px-2 py-0.5 rounded">{b.vehicle.license_plate}</span>}
                   </td>
                   <td className="px-4 py-3">
                     <span className={`inline-flex text-[10px] font-semibold px-2 py-0.5 rounded-full ${statusColors[b.status] || 'bg-gray-100 text-gray-600'}`}>
@@ -128,7 +128,7 @@ export function BookingsPage({ refreshKey }: { refreshKey: number; onRefresh: ()
             </tbody>
           </table>
           </div>
-          {filtered.length === 0 && <div className="text-center py-10 text-[#8fa0b5] text-sm">Nem található foglalás</div>}
+          {filtered.length === 0 && <div className="text-center py-10 text-[#888888] text-sm">Nem található foglalás</div>}
         </Card>
       )}
 

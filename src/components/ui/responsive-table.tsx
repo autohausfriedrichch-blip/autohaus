@@ -34,7 +34,7 @@ export function MobileCardList({ columns, rows, onRowClick, emptyMessage = 'Ninc
     return (
       <div className="space-y-2">
         {[1,2,3].map(i => (
-          <div key={i} className="h-16 bg-white rounded-[10px] animate-pulse border border-[rgba(11,30,61,0.06)]" />
+          <div key={i} className="h-16 bg-white rounded-[10px] animate-pulse border border-[rgba(0,0,0,0.06)]" />
         ))}
       </div>
     )
@@ -42,7 +42,7 @@ export function MobileCardList({ columns, rows, onRowClick, emptyMessage = 'Ninc
 
   if (rows.length === 0) {
     return (
-      <div className="text-center py-8 text-[13px] text-[#8fa0b5]">{emptyMessage}</div>
+      <div className="text-center py-8 text-[13px] text-[#888888]">{emptyMessage}</div>
     )
   }
 
@@ -57,24 +57,24 @@ export function MobileCardList({ columns, rows, onRowClick, emptyMessage = 'Ninc
         {rows.map((row, i) => (
           <div
             key={row.id ?? i}
-            className="bg-white border border-[rgba(11,30,61,0.08)] rounded-[12px] p-3.5 card-touchable"
+            className="bg-white border border-[rgba(0,0,0,0.08)] rounded-[12px] p-3.5 card-touchable"
             onClick={() => onRowClick?.(row)}
           >
             <div className="flex items-start justify-between gap-2">
               <div className="flex-1 min-w-0">
                 {primaryCol && (
-                  <div className="font-semibold text-[13px] text-[#0B1E3D] truncate">
+                  <div className="font-semibold text-[13px] text-[#0D0D0D] truncate">
                     {primaryCol.render ? primaryCol.render(row[primaryCol.key], row) : row[primaryCol.key]}
                   </div>
                 )}
                 {secondaryCol && (
-                  <div className="text-[12px] text-[#5a6a80] mt-0.5 truncate">
+                  <div className="text-[12px] text-[#4a4a4a] mt-0.5 truncate">
                     {secondaryCol.render ? secondaryCol.render(row[secondaryCol.key], row) : row[secondaryCol.key]}
                   </div>
                 )}
                 <div className="flex items-center gap-2 mt-1.5 flex-wrap">
                   {otherCols.map(col => (
-                    <span key={col.key} className="text-[11px] text-[#5a6a80]">
+                    <span key={col.key} className="text-[11px] text-[#4a4a4a]">
                       {col.render ? col.render(row[col.key], row) : row[col.key]}
                     </span>
                   ))}
@@ -94,11 +94,11 @@ export function MobileCardList({ columns, rows, onRowClick, emptyMessage = 'Ninc
       <div className="hidden md:block overflow-x-auto">
         <table className="w-full text-[12px]">
           <thead>
-            <tr className="border-b border-[rgba(11,30,61,0.10)]">
+            <tr className="border-b border-[rgba(0,0,0,0.10)]">
               {columns.map(col => (
                 <th
                   key={col.key}
-                  className={`text-left py-2 px-2 text-[#5a6a80] font-semibold ${
+                  className={`text-left py-2 px-2 text-[#4a4a4a] font-semibold ${
                     col.hidden === 'sm' ? 'hidden sm:table-cell' :
                     col.hidden === 'md' ? 'hidden md:table-cell' :
                     col.hidden === 'lg' ? 'hidden lg:table-cell' : ''
@@ -107,14 +107,14 @@ export function MobileCardList({ columns, rows, onRowClick, emptyMessage = 'Ninc
                   {col.label}
                 </th>
               ))}
-              {actions && <th className="text-left py-2 px-2 text-[#5a6a80] font-semibold">Műveletek</th>}
+              {actions && <th className="text-left py-2 px-2 text-[#4a4a4a] font-semibold">Műveletek</th>}
             </tr>
           </thead>
           <tbody>
             {rows.map((row, i) => (
               <tr
                 key={row.id ?? i}
-                className="border-b border-[rgba(11,30,61,0.05)] hover:bg-[#F4F5F7]/50 cursor-pointer transition-colors"
+                className="border-b border-[rgba(0,0,0,0.05)] hover:bg-[#F4F5F7]/50 cursor-pointer transition-colors"
                 onClick={() => onRowClick?.(row)}
               >
                 {columns.map(col => (

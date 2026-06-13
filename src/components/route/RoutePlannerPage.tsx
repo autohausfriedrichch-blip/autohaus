@@ -281,7 +281,7 @@ export function RoutePlannerPage({
             type="date"
             value={selectedDate}
             onChange={e => setSelectedDate(e.target.value)}
-            className="px-3 py-2 border border-[rgba(11,30,61,0.18)] rounded-lg text-[13px] bg-white text-[#0B1E3D] outline-none focus:border-[#0B1E3D]"
+            className="px-3 py-2 border border-[rgba(0,0,0,0.18)] rounded-lg text-[13px] bg-white text-[#0D0D0D] outline-none focus:border-[#0D0D0D]"
           />
         </div>
         <div className="flex gap-2 ml-auto">
@@ -310,10 +310,10 @@ export function RoutePlannerPage({
           { label: 'Napi bevétel', value: formatCurrency(totalBilled), icon: <TrendingUp size={16} /> },
         ].map(stat => (
           <Card key={stat.label} className="flex items-center gap-3">
-            <span className="text-[#C9A84C]">{stat.icon}</span>
+            <span className="text-[#C8102E]">{stat.icon}</span>
             <div>
-              <div className="text-[11px] text-[#5a6a80] font-medium">{stat.label}</div>
-              <div className="text-[16px] font-bold text-[#0B1E3D]">{stat.value}</div>
+              <div className="text-[11px] text-[#4a4a4a] font-medium">{stat.label}</div>
+              <div className="text-[16px] font-bold text-[#0D0D0D]">{stat.value}</div>
             </div>
           </Card>
         ))}
@@ -323,7 +323,7 @@ export function RoutePlannerPage({
       <div className="bg-white rounded-xl border border-[#e8ecf0] overflow-hidden">
         <div className="flex items-center justify-between px-4 py-3 border-b border-[#e8ecf0]">
           <div className="flex items-center gap-2">
-            <Map size={15} className="text-[#C9A84C]" />
+            <Map size={15} className="text-[#C8102E]" />
             <span className="text-[13px] font-semibold text-[#1a2942]">Élő térkép</span>
             {Object.keys(karlPositions).length > 0 && (
               <span className="flex items-center gap-1 text-[11px] text-green-600 bg-green-50 px-2 py-0.5 rounded-full">
@@ -332,7 +332,7 @@ export function RoutePlannerPage({
               </span>
             )}
           </div>
-          <button onClick={() => setShowMap(v => !v)} className="text-[11px] text-[#5a6a80] hover:text-[#1a2942]">
+          <button onClick={() => setShowMap(v => !v)} className="text-[11px] text-[#4a4a4a] hover:text-[#1a2942]">
             {showMap ? 'Elrejt' : 'Megjelenít'}
           </button>
         </div>
@@ -379,7 +379,7 @@ export function RoutePlannerPage({
         <Card>
           <div className="flex items-center justify-between mb-3">
             <CardTitle icon={<Settings size={14} />}>Menetköltség beállítások</CardTitle>
-            <button onClick={() => setSettingsOpen(false)} className="text-[#5a6a80] hover:text-[#0B1E3D]">
+            <button onClick={() => setSettingsOpen(false)} className="text-[#4a4a4a] hover:text-[#0D0D0D]">
               <X size={15} />
             </button>
           </div>
@@ -419,9 +419,9 @@ export function RoutePlannerPage({
       <Card>
         <CardTitle icon={<MapPin size={14} />}>Megállók</CardTitle>
         {loading ? (
-          <div className="text-center py-10 text-[#5a6a80] text-sm">Betöltés...</div>
+          <div className="text-center py-10 text-[#4a4a4a] text-sm">Betöltés...</div>
         ) : stops.length === 0 ? (
-          <div className="text-center py-10 text-[#8fa0b5] text-sm">
+          <div className="text-center py-10 text-[#888888] text-sm">
             Nincs mai mobil / szállítási megbízás
           </div>
         ) : (
@@ -432,25 +432,25 @@ export function RoutePlannerPage({
               return (
                 <div
                   key={stop.id}
-                  className="border border-[rgba(11,30,61,0.10)] rounded-xl p-3 bg-[#F4F5F7]"
+                  className="border border-[rgba(0,0,0,0.10)] rounded-xl p-3 bg-[#F4F5F7]"
                 >
                   <div className="flex items-start gap-3">
                     {/* Sequence + reorder */}
                     <div className="flex flex-col items-center gap-0.5 shrink-0">
-                      <div className="w-7 h-7 rounded-full bg-[#0B1E3D] text-white text-[12px] font-bold flex items-center justify-center">
+                      <div className="w-7 h-7 rounded-full bg-[#0D0D0D] text-white text-[12px] font-bold flex items-center justify-center">
                         {idx + 1}
                       </div>
                       <button
                         onClick={() => moveUp(idx)}
                         disabled={idx === 0}
-                        className="text-[#5a6a80] hover:text-[#0B1E3D] disabled:opacity-20"
+                        className="text-[#4a4a4a] hover:text-[#0D0D0D] disabled:opacity-20"
                       >
                         <ChevronUp size={14} />
                       </button>
                       <button
                         onClick={() => moveDown(idx)}
                         disabled={idx === stops.length - 1}
-                        className="text-[#5a6a80] hover:text-[#0B1E3D] disabled:opacity-20"
+                        className="text-[#4a4a4a] hover:text-[#0D0D0D] disabled:opacity-20"
                       >
                         <ChevronDown size={14} />
                       </button>
@@ -459,11 +459,11 @@ export function RoutePlannerPage({
                     {/* Content */}
                     <div className="flex-1 min-w-0">
                       <div className="flex flex-wrap items-center gap-2 mb-1">
-                        <span className="font-semibold text-[14px] text-[#0B1E3D]">
+                        <span className="font-semibold text-[14px] text-[#0D0D0D]">
                           {stop.customer_name}
                         </span>
                         {stop.is_vip && (
-                          <span className="text-[10px] font-bold bg-[#C9A84C]/20 text-[#8a6a00] px-1.5 py-0.5 rounded-full">
+                          <span className="text-[10px] font-bold bg-[#C8102E]/20 text-[#8a6a00] px-1.5 py-0.5 rounded-full">
                             ⭐ VIP
                           </span>
                         )}
@@ -475,15 +475,15 @@ export function RoutePlannerPage({
                           {SERVICE_TYPE_LABELS[stop.service_type] ?? stop.service_type}
                         </span>
                         {stop.scheduled_time && (
-                          <span className="text-[11px] text-[#5a6a80]">
+                          <span className="text-[11px] text-[#4a4a4a]">
                             <Clock size={11} className="inline mr-0.5" />
                             {stop.scheduled_time}
                           </span>
                         )}
                       </div>
                       {(stop.address || stop.city) && (
-                        <div className="text-[12px] text-[#5a6a80] mb-2">
-                          <MapPin size={11} className="inline mr-1 text-[#C9A84C]" />
+                        <div className="text-[12px] text-[#4a4a4a] mb-2">
+                          <MapPin size={11} className="inline mr-1 text-[#C8102E]" />
                           {[stop.address, stop.city].filter(Boolean).join(', ')}
                         </div>
                       )}
@@ -519,13 +519,13 @@ export function RoutePlannerPage({
 
                     {/* Cost summary */}
                     <div className="shrink-0 text-right">
-                      <div className="text-[11px] text-[#5a6a80]">Menetköltség</div>
-                      <div className="text-[15px] font-bold text-[#0B1E3D]">
+                      <div className="text-[11px] text-[#4a4a4a]">Menetköltség</div>
+                      <div className="text-[15px] font-bold text-[#0D0D0D]">
                         {formatCurrency(cost)}
                       </div>
-                      <div className="text-[11px] text-[#5a6a80] mt-1">Számlázva</div>
+                      <div className="text-[11px] text-[#4a4a4a] mt-1">Számlázva</div>
                       <div
-                        className={`text-[14px] font-bold ${billed === 0 ? 'text-[#C9384C]' : 'text-[#16a34a]'}`}
+                        className={`text-[14px] font-bold ${billed === 0 ? 'text-[#C8102E]' : 'text-[#16a34a]'}`}
                       >
                         {billed === 0 ? 'CHF 0.00' : formatCurrency(billed)}
                       </div>
@@ -537,21 +537,21 @@ export function RoutePlannerPage({
                             onChange={e =>
                               setVipZero(v => ({ ...v, [stop.id]: e.target.checked }))
                             }
-                            className="accent-[#C9384C]"
+                            className="accent-[#C8102E]"
                           />
-                          <span className="text-[10px] text-[#5a6a80]">VIP = 0</span>
+                          <span className="text-[10px] text-[#4a4a4a]">VIP = 0</span>
                         </label>
                       )}
                     </div>
                   </div>
                   {/* Navigate button – mobile primary action */}
                   {(stop.address || stop.city) && (
-                    <div className="mt-3 pt-2 border-t border-[rgba(11,30,61,0.06)]">
+                    <div className="mt-3 pt-2 border-t border-[rgba(0,0,0,0.06)]">
                       <a
                         href={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent([stop.address, stop.city].filter(Boolean).join(', '))}`}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="btn-mobile-action bg-[#0B1E3D] text-white w-full text-[13px] no-underline"
+                        className="btn-mobile-action bg-[#0D0D0D] text-white w-full text-[13px] no-underline"
                         style={{ display: 'flex' }}
                       >
                         <Navigation size={16} />
@@ -583,16 +583,16 @@ export function RoutePlannerPage({
               },
             ].map(item => (
               <div key={item.label} className="bg-[#F4F5F7] rounded-xl p-3 text-center">
-                <div className="text-[11px] text-[#5a6a80] mb-1">{item.label}</div>
+                <div className="text-[11px] text-[#4a4a4a] mb-1">{item.label}</div>
                 <div
                   className={`text-[15px] font-bold ${
                     item.highlight === 'gold'
-                      ? 'text-[#C9A84C]'
+                      ? 'text-[#C8102E]'
                       : item.highlight === 'green'
                       ? 'text-[#16a34a]'
                       : item.highlight === 'red'
-                      ? 'text-[#C9384C]'
-                      : 'text-[#0B1E3D]'
+                      ? 'text-[#C8102E]'
+                      : 'text-[#0D0D0D]'
                   }`}
                 >
                   {item.value}
@@ -605,7 +605,7 @@ export function RoutePlannerPage({
           <div className="mt-4 overflow-x-auto">
             <table className="w-full text-[12px]">
               <thead>
-                <tr className="text-[11px] text-[#5a6a80] uppercase tracking-[0.4px] border-b border-[rgba(11,30,61,0.08)]">
+                <tr className="text-[11px] text-[#4a4a4a] uppercase tracking-[0.4px] border-b border-[rgba(0,0,0,0.08)]">
                   <th className="text-left pb-2">#</th>
                   <th className="text-left pb-2">Ügyfél</th>
                   <th className="text-right pb-2">Valós</th>
@@ -619,16 +619,16 @@ export function RoutePlannerPage({
                   const billed = vipZero[s.id] ? 0 : real
                   const diff = billed - real
                   return (
-                    <tr key={s.id} className="border-b border-[rgba(11,30,61,0.05)]">
-                      <td className="py-1.5 pr-2 text-[#5a6a80]">{i + 1}</td>
-                      <td className="py-1.5 font-medium text-[#0B1E3D]">{s.customer_name}</td>
-                      <td className="py-1.5 text-right text-[#5a6a80]">{formatCurrency(real)}</td>
+                    <tr key={s.id} className="border-b border-[rgba(0,0,0,0.05)]">
+                      <td className="py-1.5 pr-2 text-[#4a4a4a]">{i + 1}</td>
+                      <td className="py-1.5 font-medium text-[#0D0D0D]">{s.customer_name}</td>
+                      <td className="py-1.5 text-right text-[#4a4a4a]">{formatCurrency(real)}</td>
                       <td className="py-1.5 text-right font-semibold">
                         {formatCurrency(billed)}
                       </td>
                       <td
                         className={`py-1.5 text-right font-semibold ${
-                          diff < 0 ? 'text-[#C9384C]' : 'text-[#16a34a]'
+                          diff < 0 ? 'text-[#C8102E]' : 'text-[#16a34a]'
                         }`}
                       >
                         {diff !== 0 ? formatCurrency(diff) : '—'}
@@ -643,18 +643,18 @@ export function RoutePlannerPage({
       )}
 
       {/* Map placeholder */}
-      <Card className="border-dashed border-2 border-[rgba(11,30,61,0.15)]">
+      <Card className="border-dashed border-2 border-[rgba(0,0,0,0.15)]">
         <div className="flex flex-col items-center justify-center py-8 text-center gap-3">
           <div className="w-14 h-14 rounded-full bg-[#F4F5F7] flex items-center justify-center">
-            <MapPin size={28} className="text-[#C9A84C]" />
+            <MapPin size={28} className="text-[#C8102E]" />
           </div>
           <div>
-            <div className="font-semibold text-[15px] text-[#0B1E3D] mb-1">
+            <div className="font-semibold text-[15px] text-[#0D0D0D] mb-1">
               Google Maps / Mapbox integráció
             </div>
-            <div className="text-[12px] text-[#5a6a80] max-w-xs">
+            <div className="text-[12px] text-[#4a4a4a] max-w-xs">
               Add az API kulcsot a{' '}
-              <span className="font-semibold text-[#C9A84C]">
+              <span className="font-semibold text-[#C8102E]">
                 Beállítások → Kommunikáció
               </span>{' '}
               menüben az interaktív térkép engedélyezéséhez.

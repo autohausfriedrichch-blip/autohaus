@@ -122,8 +122,8 @@ export function PartsPage({ refreshKey, onRefresh }: { refreshKey: number; onRef
       <div className="animate-fade-in">
         <Card className="p-6 text-center">
           <AlertTriangle size={32} className="mx-auto mb-3 text-amber-500" />
-          <h3 className="font-semibold text-[#0B1E3D] mb-2">Adatbázis frissítés szükséges</h3>
-          <p className="text-[13px] text-[#5a6a80] mb-4">Futtasd le a <code>supabase/schema_phase3.sql</code> fájlt a Supabase SQL Editor-ban.</p>
+          <h3 className="font-semibold text-[#0D0D0D] mb-2">Adatbázis frissítés szükséges</h3>
+          <p className="text-[13px] text-[#4a4a4a] mb-4">Futtasd le a <code>supabase/schema_phase3.sql</code> fájlt a Supabase SQL Editor-ban.</p>
         </Card>
       </div>
     )
@@ -146,7 +146,7 @@ export function PartsPage({ refreshKey, onRefresh }: { refreshKey: number; onRef
         ].map(s => (
           <div key={s.label} className={`${s.bg} rounded-xl p-3`}>
             <div className={`text-2xl font-bold ${s.color}`}>{s.value}</div>
-            <div className="text-[11px] text-[#5a6a80]">{s.label}</div>
+            <div className="text-[11px] text-[#4a4a4a]">{s.label}</div>
           </div>
         ))}
       </div>
@@ -154,12 +154,12 @@ export function PartsPage({ refreshKey, onRefresh }: { refreshKey: number; onRef
       {/* Filters */}
       <div className="flex gap-2 flex-wrap">
         <div className="relative flex-1 min-w-[160px]">
-          <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#8fa0b5]" />
+          <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#888888]" />
           <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Alkatrész, munkalap..."
-            className="w-full pl-9 pr-3 py-2 border border-[rgba(11,30,61,0.18)] rounded-lg text-[13px] bg-white outline-none focus:border-[#0B1E3D]" />
+            className="w-full pl-9 pr-3 py-2 border border-[rgba(0,0,0,0.18)] rounded-lg text-[13px] bg-white outline-none focus:border-[#0D0D0D]" />
         </div>
         <select value={filterStatus} onChange={e => setFilterStatus(e.target.value)}
-          className="px-3 py-2 border border-[rgba(11,30,61,0.18)] rounded-lg text-[13px] bg-white outline-none">
+          className="px-3 py-2 border border-[rgba(0,0,0,0.18)] rounded-lg text-[13px] bg-white outline-none">
           <option value="all">Minden státusz</option>
           {Object.entries(STATUS_LABELS).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
         </select>
@@ -167,27 +167,27 @@ export function PartsPage({ refreshKey, onRefresh }: { refreshKey: number; onRef
       </div>
 
       {loading ? (
-        <div className="text-center py-12 text-[#5a6a80] text-sm">Betöltés...</div>
+        <div className="text-center py-12 text-[#4a4a4a] text-sm">Betöltés...</div>
       ) : (
         <Card className="p-0 overflow-hidden">
           <div className="overflow-x-auto">
           <table className="w-full text-[13px] min-w-[560px]">
             <thead>
-              <tr className="bg-[#F4F5F7] border-b border-[rgba(11,30,61,0.10)]">
-                <th className="text-left px-4 py-3 text-[11px] font-semibold text-[#5a6a80] uppercase">Alkatrész</th>
-                <th className="text-left px-4 py-3 text-[11px] font-semibold text-[#5a6a80] uppercase hidden md:table-cell">Munkalap</th>
-                <th className="text-left px-4 py-3 text-[11px] font-semibold text-[#5a6a80] uppercase hidden md:table-cell">Igénylő</th>
-                <th className="text-center px-4 py-3 text-[11px] font-semibold text-[#5a6a80] uppercase">Db</th>
-                <th className="text-left px-4 py-3 text-[11px] font-semibold text-[#5a6a80] uppercase">Státusz</th>
+              <tr className="bg-[#F4F5F7] border-b border-[rgba(0,0,0,0.10)]">
+                <th className="text-left px-4 py-3 text-[11px] font-semibold text-[#4a4a4a] uppercase">Alkatrész</th>
+                <th className="text-left px-4 py-3 text-[11px] font-semibold text-[#4a4a4a] uppercase hidden md:table-cell">Munkalap</th>
+                <th className="text-left px-4 py-3 text-[11px] font-semibold text-[#4a4a4a] uppercase hidden md:table-cell">Igénylő</th>
+                <th className="text-center px-4 py-3 text-[11px] font-semibold text-[#4a4a4a] uppercase">Db</th>
+                <th className="text-left px-4 py-3 text-[11px] font-semibold text-[#4a4a4a] uppercase">Státusz</th>
                 <th className="px-4 py-3" />
               </tr>
             </thead>
             <tbody>
               {filtered.map(p => (
-                <tr key={p.id} className="border-b border-[rgba(11,30,61,0.06)] hover:bg-[#fafbfc]">
+                <tr key={p.id} className="border-b border-[rgba(0,0,0,0.06)] hover:bg-[#fafbfc]">
                   <td className="px-4 py-3">
-                    <div className="font-medium text-[#0B1E3D]">{p.part_name}</div>
-                    {p.part_number && <div className="text-[11px] text-[#8fa0b5]">#{p.part_number}</div>}
+                    <div className="font-medium text-[#0D0D0D]">{p.part_name}</div>
+                    {p.part_number && <div className="text-[11px] text-[#888888]">#{p.part_number}</div>}
                     {p.urgency === 'urgent' && (
                       <span className="text-[10px] font-semibold text-red-600 flex items-center gap-0.5 mt-0.5">
                         <AlertTriangle size={10} /> Sürgős
@@ -195,10 +195,10 @@ export function PartsPage({ refreshKey, onRefresh }: { refreshKey: number; onRef
                     )}
                   </td>
                   <td className="px-4 py-3 hidden md:table-cell">
-                    <div className="text-[12px] font-mono text-[#0B1E3D]">{p.work_order?.order_number || '–'}</div>
-                    <div className="text-[11px] text-[#8fa0b5]">{p.work_order?.customer?.full_name}</div>
+                    <div className="text-[12px] font-mono text-[#0D0D0D]">{p.work_order?.order_number || '–'}</div>
+                    <div className="text-[11px] text-[#888888]">{p.work_order?.customer?.full_name}</div>
                   </td>
-                  <td className="px-4 py-3 hidden md:table-cell text-[12px] text-[#5a6a80]">
+                  <td className="px-4 py-3 hidden md:table-cell text-[12px] text-[#4a4a4a]">
                     {p.requested_by?.full_name || '–'}
                   </td>
                   <td className="px-4 py-3 text-center font-semibold">{p.quantity}</td>
@@ -227,7 +227,7 @@ export function PartsPage({ refreshKey, onRefresh }: { refreshKey: number; onRef
                           Beépítve
                         </button>
                       )}
-                      <button onClick={() => openEdit(p)} className="p-1.5 text-[#5a6a80] hover:text-[#0B1E3D]">
+                      <button onClick={() => openEdit(p)} className="p-1.5 text-[#4a4a4a] hover:text-[#0D0D0D]">
                         <Cog size={14} />
                       </button>
                     </div>
@@ -238,7 +238,7 @@ export function PartsPage({ refreshKey, onRefresh }: { refreshKey: number; onRef
           </table>
           </div>
           {filtered.length === 0 && (
-            <div className="text-center py-10 text-[#8fa0b5] text-sm">
+            <div className="text-center py-10 text-[#888888] text-sm">
               {search || filterStatus !== 'all' ? 'Nincs találat' : 'Még nincs alkatrész igénylés'}
             </div>
           )}

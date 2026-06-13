@@ -173,12 +173,12 @@ const EMAIL_TEMPLATES = [
   {
     name: 'Google Review kérés', category: 'review',
     subject: 'Kérnénk értékelését – Autohaus Friedrich',
-    body_html: '<p>Tisztelt {{customer_name}}!</p><p>Köszönjük, hogy az Autohaus Friedrichet választotta!</p><p>Kérnénk, értékelje tapasztalatait Google-on – csupán 1 percet vesz igénybe és sokat segít nekünk a fejlődésben:</p><p>⭐ <a href="https://g.page/r/review" style="color:#C9A84C;font-weight:bold;">Értékelés írása Google-on</a></p><p>Köszönjük előre is!</p><p>Üdvözlettel,<br/><strong>Autohaus Friedrich csapata</strong></p>',
+    body_html: '<p>Tisztelt {{customer_name}}!</p><p>Köszönjük, hogy az Autohaus Friedrichet választotta!</p><p>Kérnénk, értékelje tapasztalatait Google-on – csupán 1 percet vesz igénybe és sokat segít nekünk a fejlődésben:</p><p>⭐ <a href="https://g.page/r/review" style="color:#C8102E;font-weight:bold;">Értékelés írása Google-on</a></p><p>Köszönjük előre is!</p><p>Üdvözlettel,<br/><strong>Autohaus Friedrich csapata</strong></p>',
   },
   {
     name: 'Szerviz emlékeztető', category: 'reminder',
     subject: 'Szerviz emlékeztető – {{plate}} – esedékes',
-    body_html: '<p>Tisztelt {{customer_name}}!</p><p>Emlékeztetjük, hogy <strong>{{plate}}</strong> rendszámú járműve esedékes szervizre.</p><p>📅 Foglaljon időpontot online: <a href="#" style="color:#C9A84C;">autohaus-friedrich.ch</a></p><p>📞 Vagy hívjon minket: +41 00 000 00 00</p><p>Üdvözlettel,<br/><strong>Autohaus Friedrich csapata</strong></p>',
+    body_html: '<p>Tisztelt {{customer_name}}!</p><p>Emlékeztetjük, hogy <strong>{{plate}}</strong> rendszámú járműve esedékes szervizre.</p><p>📅 Foglaljon időpontot online: <a href="#" style="color:#C8102E;">autohaus-friedrich.ch</a></p><p>📞 Vagy hívjon minket: +41 00 000 00 00</p><p>Üdvözlettel,<br/><strong>Autohaus Friedrich csapata</strong></p>',
   },
   {
     name: 'Köszönjük látogatását', category: 'followup',

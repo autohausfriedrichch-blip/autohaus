@@ -22,7 +22,7 @@ export default function SetupPage() {
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
       <div className="bg-white rounded-xl p-8 max-w-md w-full shadow-lg">
-        <h1 className="text-xl font-bold mb-4 text-[#0B1E3D]">Autohaus – User Setup</h1>
+        <h1 className="text-xl font-bold mb-4 text-[#0D0D0D]">Autohaus – User Setup</h1>
         <p className="text-sm text-gray-600 mb-4">
           Supabase Dashboard → Settings → API Keys → Legacy → service_role → Reveal
         </p>
@@ -35,7 +35,7 @@ export default function SetupPage() {
         <button
           onClick={run}
           disabled={loading || !serviceKey}
-          className="w-full bg-[#0B1E3D] text-white py-3 rounded-lg font-semibold disabled:opacity-50"
+          className="w-full bg-[#0D0D0D] text-white py-3 rounded-lg font-semibold disabled:opacity-50"
         >
           {loading ? 'Létrehozás...' : 'Felhasználók létrehozása'}
         </button>

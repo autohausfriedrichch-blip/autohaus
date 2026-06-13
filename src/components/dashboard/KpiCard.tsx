@@ -22,7 +22,7 @@ export function KpiCard({ label, value, sub, accent = 'navy', icon, onClick }: K
     <div
       onClick={onClick}
       className={cn(
-        'relative bg-white border border-[rgba(11,30,61,0.08)] rounded-2xl p-5 overflow-hidden',
+        'relative bg-white border border-[rgba(0,0,0,0.08)] rounded-2xl p-5 overflow-hidden',
         'transition-all duration-150',
         onClick && 'cursor-pointer hover:shadow-md hover:-translate-y-[1px] active:scale-[0.99]'
       )}
@@ -31,9 +31,9 @@ export function KpiCard({ label, value, sub, accent = 'navy', icon, onClick }: K
       {icon && (
         <div className="mb-3 opacity-70" style={{ color: a.icon }}>{icon}</div>
       )}
-      <div className="text-[28px] font-bold text-[#0B1E3D] leading-none tracking-tight">{value}</div>
-      <div className="text-[11.5px] text-[#8fa0b5] font-medium mt-2">{label}</div>
-      {sub && <div className="text-[11px] text-[#5a6a80] mt-1">{sub}</div>}
+      <div className="text-[28px] font-bold text-[#0D0D0D] leading-none tracking-tight">{value}</div>
+      <div className="text-[11.5px] text-[#888888] font-medium mt-2">{label}</div>
+      {sub && <div className="text-[11px] text-[#4a4a4a] mt-1">{sub}</div>}
     </div>
   )
 }

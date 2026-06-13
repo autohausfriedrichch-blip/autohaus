@@ -32,7 +32,7 @@ export function SystemHealthWidget({ score, checkedAt, errorCount, warnCount, on
     >
       <div className="flex items-center justify-between mb-2">
         <div className="flex items-center gap-2">
-          <Shield size={15} className="text-[#5a6a80]" />
+          <Shield size={15} className="text-[#4a4a4a]" />
           <span className="text-[12px] font-semibold text-[#1a2942]">Rendszer állapota</span>
         </div>
         {score !== null && (
@@ -66,7 +66,7 @@ export function SystemHealthWidget({ score, checkedAt, errorCount, warnCount, on
             ? `Utolsó: ${checkedAt.toLocaleString('hu-HU', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}`
             : 'Kattints az ellenőrzéshez'}
         </span>
-        <div className="flex items-center gap-1 text-[11px] text-[#5a6a80] hover:text-[#0B1E3D]">
+        <div className="flex items-center gap-1 text-[11px] text-[#4a4a4a] hover:text-[#0D0D0D]">
           <RefreshCw size={11} />
           <span>🔍 Ellenőrzés</span>
         </div>

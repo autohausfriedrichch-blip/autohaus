@@ -41,10 +41,10 @@ function DecodeRow({ label, value }: { label: string; value?: string }) {
   if (!value) return null
   return (
     <div>
-      <span className="block text-[10px] text-[#8fa0b5] uppercase tracking-[0.4px] font-semibold mb-0.5">
+      <span className="block text-[10px] text-[#888888] uppercase tracking-[0.4px] font-semibold mb-0.5">
         {label}
       </span>
-      <span className="text-[12px] font-semibold text-[#0B1E3D]">{value}</span>
+      <span className="text-[12px] font-semibold text-[#0D0D0D]">{value}</span>
     </div>
   )
 }
@@ -106,9 +106,9 @@ export function VINDecoder({ onResult }: VINDecoderProps) {
             onKeyDown={(e) => e.key === 'Enter' && handleDecode()}
             maxLength={17}
             placeholder="Írja be a VIN számot (17 karakter)"
-            className="w-full px-3 py-2.5 border border-[rgba(11,30,61,0.18)] rounded-lg text-[13px] text-[#0B1E3D] placeholder:text-[#8fa0b5] outline-none focus:border-[#0B1E3D] font-mono tracking-widest transition-colors bg-white"
+            className="w-full px-3 py-2.5 border border-[rgba(0,0,0,0.18)] rounded-lg text-[13px] text-[#0D0D0D] placeholder:text-[#888888] outline-none focus:border-[#0D0D0D] font-mono tracking-widest transition-colors bg-white"
           />
-          <span className={`absolute right-3 top-1/2 -translate-y-1/2 text-[11px] font-mono ${vin.length === 17 ? 'text-emerald-600' : 'text-[#8fa0b5]'}`}>
+          <span className={`absolute right-3 top-1/2 -translate-y-1/2 text-[11px] font-mono ${vin.length === 17 ? 'text-emerald-600' : 'text-[#888888]'}`}>
             {vin.length}/17
           </span>
         </div>
@@ -116,7 +116,7 @@ export function VINDecoder({ onResult }: VINDecoderProps) {
           type="button"
           onClick={handleDecode}
           disabled={loading || vin.length !== 17}
-          className="flex items-center gap-1.5 px-4 py-2.5 bg-[#0B1E3D] text-white rounded-lg text-[13px] font-semibold hover:bg-[#162d5a] disabled:opacity-50 disabled:cursor-not-allowed transition-colors whitespace-nowrap"
+          className="flex items-center gap-1.5 px-4 py-2.5 bg-[#0D0D0D] text-white rounded-lg text-[13px] font-semibold hover:bg-[#162d5a] disabled:opacity-50 disabled:cursor-not-allowed transition-colors whitespace-nowrap"
         >
           {loading ? (
             <Loader2 size={14} className="animate-spin" />
@@ -135,9 +135,9 @@ export function VINDecoder({ onResult }: VINDecoderProps) {
       )}
 
       {result && (
-        <div className="p-4 rounded-xl border border-[rgba(11,30,61,0.10)] bg-[#F8F9FB]">
+        <div className="p-4 rounded-xl border border-[rgba(0,0,0,0.10)] bg-[#F8F9FB]">
           <div className="flex items-center justify-between mb-3">
-            <span className="text-[11px] font-bold text-[#0B1E3D] uppercase tracking-[0.6px]">
+            <span className="text-[11px] font-bold text-[#0D0D0D] uppercase tracking-[0.6px]">
               VIN dekódolás eredménye
             </span>
             <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-[rgba(16,185,129,0.12)] text-emerald-700 text-[10px] font-bold uppercase tracking-[0.4px]">
@@ -179,7 +179,7 @@ export function VINDecoder({ onResult }: VINDecoderProps) {
           <button
             type="button"
             onClick={handleTransfer}
-            className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-[#C9A84C] hover:bg-[#b8932e] text-white rounded-lg text-[13px] font-semibold transition-colors"
+            className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-[#C8102E] hover:bg-[#b8932e] text-white rounded-lg text-[13px] font-semibold transition-colors"
           >
             <CheckCircle2 size={14} />
             Jármű adatok átvétele

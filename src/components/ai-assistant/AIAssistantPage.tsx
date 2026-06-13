@@ -82,7 +82,7 @@ function Input({ value, onChange, placeholder, type = 'text' }: any) {
       value={value}
       onChange={(e: any) => onChange(e.target.value)}
       placeholder={placeholder}
-      className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#C9A84C]/30 focus:border-[#C9A84C] bg-white"
+      className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#C8102E]/30 focus:border-[#C8102E] bg-white"
     />
   )
 }
@@ -94,7 +94,7 @@ function Textarea({ value, onChange, placeholder, rows = 3 }: any) {
       onChange={(e: any) => onChange(e.target.value)}
       placeholder={placeholder}
       rows={rows}
-      className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#C9A84C]/30 focus:border-[#C9A84C] bg-white resize-none"
+      className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#C8102E]/30 focus:border-[#C8102E] bg-white resize-none"
     />
   )
 }
@@ -105,7 +105,7 @@ function SelectField({ value, onChange, options }: { value: string; onChange: (v
       <select
         value={value}
         onChange={(e: any) => onChange(e.target.value)}
-        className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#C9A84C]/30 focus:border-[#C9A84C] bg-white appearance-none pr-8"
+        className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#C8102E]/30 focus:border-[#C8102E] bg-white appearance-none pr-8"
       >
         <option value="">– Válassz –</option>
         {options.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
@@ -120,7 +120,7 @@ function GenerateButton({ onClick, loading, label = 'Generálás' }: { onClick: 
     <button
       onClick={onClick}
       disabled={loading}
-      className="flex items-center gap-2 px-5 py-2.5 bg-[#C9A84C] text-white rounded-xl text-sm font-semibold hover:bg-[#b8943f] disabled:opacity-60 transition-colors"
+      className="flex items-center gap-2 px-5 py-2.5 bg-[#C8102E] text-white rounded-xl text-sm font-semibold hover:bg-[#b8943f] disabled:opacity-60 transition-colors"
     >
       {loading ? <Loader2 size={15} className="animate-spin" /> : <Send size={15} />}
       {loading ? 'Generálás...' : label}
@@ -241,11 +241,11 @@ function QuoteGeneratorTab() {
         <Section label="Egyéb CHF"><Input value={extras} onChange={setExtras} placeholder="0" type="number" /></Section>
       </div>
       {(partsCost || laborHours) && (
-        <div className="bg-[#faf8f2] border border-[#C9A84C]/20 rounded-xl p-3 text-sm">
+        <div className="bg-[#faf8f2] border border-[#C8102E]/20 rounded-xl p-3 text-sm">
           <div className="flex justify-between text-gray-600"><span>Munkadíj</span><span>CHF {labor.toFixed(2)}</span></div>
           <div className="flex justify-between text-gray-600"><span>Alkatrészek</span><span>CHF {parseFloat(partsCost||'0').toFixed(2)}</span></div>
           {parseFloat(extras||'0') > 0 && <div className="flex justify-between text-gray-600"><span>Egyéb</span><span>CHF {parseFloat(extras).toFixed(2)}</span></div>}
-          <div className="border-t border-[#C9A84C]/20 mt-2 pt-2 flex justify-between font-bold text-[#0B1E3D]">
+          <div className="border-t border-[#C8102E]/20 mt-2 pt-2 flex justify-between font-bold text-[#0D0D0D]">
             <span>Összesen (áfával 8.1%)</span><span>CHF {total.toFixed(2)}</span>
           </div>
         </div>
@@ -409,10 +409,10 @@ export function AIAssistantPage({ refreshKey, onRefresh }: { refreshKey?: number
 
   return (
     <div className="max-w-3xl mx-auto space-y-4">
-      <div className="bg-gradient-to-r from-[#0B1E3D] to-[#1a3060] rounded-2xl p-5 text-white">
+      <div className="bg-gradient-to-r from-[#0D0D0D] to-[#1a3060] rounded-2xl p-5 text-white">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-[#C9A84C] rounded-xl flex items-center justify-center">
-            <Wand2 size={20} className="text-[#0B1E3D]" />
+          <div className="w-10 h-10 bg-[#C8102E] rounded-xl flex items-center justify-center">
+            <Wand2 size={20} className="text-[#0D0D0D]" />
           </div>
           <div>
             <h1 className="text-lg font-bold">AI Asszisztens</h1>
@@ -432,7 +432,7 @@ export function AIAssistantPage({ refreshKey, onRefresh }: { refreshKey?: number
                 onClick={() => setActiveTab(tab.id)}
                 className={`flex items-center gap-1.5 px-4 py-3 text-xs font-medium whitespace-nowrap transition-colors border-b-2 -mb-px ${
                   isActive
-                    ? 'text-[#C9A84C] border-[#C9A84C] bg-[#faf8f2]'
+                    ? 'text-[#C8102E] border-[#C8102E] bg-[#faf8f2]'
                     : 'text-gray-500 border-transparent hover:text-gray-700 hover:bg-gray-50'
                 }`}
               >
