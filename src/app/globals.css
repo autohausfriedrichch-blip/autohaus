@@ -1,27 +1,41 @@
 @import "tailwindcss";
 
 :root {
-  --navy: #0B1E3D;
-  --navy-mid: #142a50;
-  --gold: #C9A84C;
-  --gold-light: #e8c96b;
-  --red-accent: #C9384C;
-  --bg: #F4F5F7;
-  --bg2: #ECEEF2;
-  --surface: #ffffff;
-  --border: rgba(11,30,61,0.10);
-  --border2: rgba(11,30,61,0.18);
-  --text: #0B1E3D;
-  --text2: #5a6a80;
-  --text3: #8fa0b5;
-  --shadow: 0 2px 12px rgba(11,30,61,0.08);
-  --shadow-lg: 0 4px 24px rgba(11,30,61,0.13);
-  --radius: 10px;
-  --radius-lg: 14px;
-  --safe-top: env(safe-area-inset-top, 0px);
+  /* ── Autohaus Friedrich Brand Colors ── */
+  --black:      #0D0D0D;
+  --dark:       #1A1A1A;
+  --dark-mid:   #242424;
+  --red:        #C8102E;
+  --red-dark:   #a50d24;
+  --red-light:  rgba(200,16,46,0.12);
+  --silver:     #B8B8B8;
+  --silver-mid: #888888;
+  --light-gray: #E6E6E6;
+
+  /* ── Legacy aliases (kept for existing components) ── */
+  --navy:       #0D0D0D;
+  --navy-mid:   #1A1A1A;
+  --gold:       #C8102E;
+  --gold-light: #e8314e;
+  --red-accent: #C8102E;
+
+  /* ── UI surfaces ── */
+  --bg:         #F5F5F5;
+  --bg2:        #EBEBEB;
+  --surface:    #ffffff;
+  --border:     rgba(0,0,0,0.09);
+  --border2:    rgba(0,0,0,0.16);
+  --text:       #0D0D0D;
+  --text2:      #4a4a4a;
+  --text3:      #888888;
+  --shadow:     0 2px 12px rgba(0,0,0,0.08);
+  --shadow-lg:  0 4px 24px rgba(0,0,0,0.14);
+  --radius:     10px;
+  --radius-lg:  14px;
+  --safe-top:    env(safe-area-inset-top, 0px);
   --safe-bottom: env(safe-area-inset-bottom, 0px);
-  --safe-left: env(safe-area-inset-left, 0px);
-  --safe-right: env(safe-area-inset-right, 0px);
+  --safe-left:   env(safe-area-inset-left, 0px);
+  --safe-right:  env(safe-area-inset-right, 0px);
 }
 
 * { box-sizing: border-box; }
@@ -34,7 +48,7 @@ html {
 body {
   background: var(--bg);
   color: var(--text);
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  font-family: 'Poppins', system-ui, -apple-system, sans-serif;
   font-size: 14px;
   line-height: 1.5;
   overscroll-behavior: none;

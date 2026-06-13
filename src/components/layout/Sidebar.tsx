@@ -190,21 +190,23 @@ export function Sidebar({
     <>
       {isOpen && <div className="fixed inset-0 bg-black/50 z-[39] md:hidden" onClick={onClose} />}
       <aside className={cn(
-        'w-[240px] min-w-[240px] bg-[#0B1E3D] flex flex-col overflow-hidden relative z-40',
-        'border-r border-r-[rgba(201,168,76,0.12)]',
+        'w-[240px] min-w-[240px] bg-[#0D0D0D] flex flex-col overflow-hidden relative z-40',
+        'border-r border-r-[rgba(200,16,46,0.15)]',
         'max-md:fixed max-md:top-0 max-md:left-0 max-md:h-full max-md:transition-transform max-md:duration-300',
         isOpen ? 'max-md:translate-x-0' : 'max-md:-translate-x-full'
       )}>
 
         {/* ── Logo ── */}
-        <div className="px-5 pt-5 pb-4 border-b border-white/[0.06] shrink-0">
+        <div className="px-5 pt-5 pb-4 border-b border-white/[0.05] shrink-0">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 bg-[#C9A84C] rounded-lg flex items-center justify-center shrink-0">
-              <Wrench size={15} color="#0B1E3D" strokeWidth={2.5} />
+            <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0 relative"
+                 style={{ background: 'linear-gradient(135deg, #1a1a1a, #242424)', border: '1px solid rgba(200,16,46,0.4)' }}>
+              <span className="font-['Montserrat'] font-black text-[15px] text-[#E6E6E6]">AF</span>
+              <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-4 h-[2px] rounded-full bg-[#C8102E]" />
             </div>
             <div>
-              <div className="font-['DM_Serif_Display'] text-[14px] text-white leading-tight">Autohaus Friedrich</div>
-              <div className="text-[9px] text-white/30 tracking-[2px] uppercase mt-0.5">Swiss Garage OS</div>
+              <div className="font-['Montserrat'] text-[13px] font-bold text-white tracking-[0.5px] leading-tight">AUTOHAUS FRIEDRICH</div>
+              <div className="text-[9px] text-[#555] tracking-[2px] uppercase mt-0.5">Swiss Garage OS</div>
             </div>
           </div>
         </div>
@@ -257,7 +259,7 @@ export function Sidebar({
                           className={cn(
                             'w-full flex items-center gap-2.5 px-5 py-[8px] text-[12.5px] transition-all border-l-2 text-left',
                             hasActive
-                              ? 'text-white border-l-[#C9A84C] bg-[rgba(201,168,76,0.07)]'
+                              ? 'text-white border-l-[#C8102E] bg-[rgba(200,16,46,0.08)]'
                               : 'text-white/50 hover:text-white/80 hover:bg-white/[0.04] border-l-transparent'
                           )}
                         >
@@ -283,7 +285,7 @@ export function Sidebar({
                                   className={cn(
                                     'w-full flex items-center gap-2 pl-[42px] pr-5 py-[7px] text-[12px] transition-all border-l-2 text-left',
                                     isActive
-                                      ? 'text-[#C9A84C] bg-[rgba(201,168,76,0.09)] border-l-[#C9A84C]'
+                                      ? 'text-[#C8102E] bg-[rgba(200,16,46,0.09)] border-l-[#C8102E]'
                                       : 'text-white/35 hover:text-white/70 hover:bg-white/[0.03] border-l-transparent'
                                   )}
                                 >
@@ -326,9 +328,9 @@ export function Sidebar({
         </nav>
 
         {/* ── User footer ── */}
-        <div className="px-4 py-3.5 border-t border-white/[0.06] shrink-0">
+        <div className="px-4 py-3.5 border-t border-white/[0.05] shrink-0">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-full bg-[rgba(201,168,76,0.15)] border border-[rgba(201,168,76,0.35)] flex items-center justify-center text-[11px] font-bold text-[#C9A84C] shrink-0">
+            <div className="w-8 h-8 rounded-full bg-[rgba(200,16,46,0.15)] border border-[rgba(200,16,46,0.4)] flex items-center justify-center text-[11px] font-bold text-[#C8102E] shrink-0">
               {userInitials || '?'}
             </div>
             <div className="flex-1 min-w-0">
@@ -360,7 +362,7 @@ function SidebarItem({ icon, label, isActive, badge, onClick }: {
       className={cn(
         'w-full flex items-center gap-2.5 px-5 py-[8px] text-[12.5px] transition-all border-l-2 text-left font-medium',
         isActive
-          ? 'text-white bg-[rgba(201,168,76,0.10)] border-l-[#C9A84C]'
+          ? 'text-white bg-[rgba(200,16,46,0.10)] border-l-[#C8102E]'
           : 'text-white/50 hover:text-white/80 hover:bg-white/[0.04] border-l-transparent'
       )}
     >

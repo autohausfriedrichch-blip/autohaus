@@ -17,7 +17,7 @@ export default function LoginPage() {
     setLoading(true)
     const { error } = await supabase.auth.signInWithPassword({ email, password })
     if (error) {
-      setError('Ungültige E-Mail oder Passwort')
+      setError('Hibás e-mail cím vagy jelszó.')
       setLoading(false)
     } else {
       router.replace('/admin')
@@ -25,63 +25,129 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#F4F5F7] flex items-center justify-center p-4">
-      <div className="bg-white rounded-[20px] p-10 w-full max-w-sm shadow-[0_4px_24px_rgba(11,30,61,0.13)]">
-        <div className="flex items-center gap-3 mb-7">
-          <div className="w-11 h-11 bg-[#C9A84C] rounded-[10px] flex items-center justify-center">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0B1E3D" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <circle cx="12" cy="12" r="2"/><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
-            </svg>
+    <div className="min-h-screen bg-[#0D0D0D] flex items-center justify-center p-4"
+         style={{ fontFamily: "'Poppins', sans-serif" }}>
+
+      {/* Background subtle pattern */}
+      <div className="absolute inset-0 opacity-[0.03]"
+           style={{ backgroundImage: 'repeating-linear-gradient(0deg, #fff, #fff 1px, transparent 1px, transparent 60px), repeating-linear-gradient(90deg, #fff, #fff 1px, transparent 1px, transparent 60px)' }} />
+
+      <div className="relative w-full max-w-sm">
+
+        {/* Logo block */}
+        <div className="text-center mb-10">
+          {/* AF monogram */}
+          <div className="inline-flex items-center justify-center w-20 h-20 rounded-2xl mb-5 relative"
+               style={{ background: 'linear-gradient(135deg, #1A1A1A 0%, #242424 100%)', border: '1px solid rgba(200,16,46,0.3)' }}>
+            <span className="text-[32px] font-['Montserrat'] font-black tracking-tight"
+                  style={{ background: 'linear-gradient(135deg, #E6E6E6 30%, #B8B8B8 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+              AF
+            </span>
+            {/* Red accent line */}
+            <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-8 h-[2px] rounded-full bg-[#C8102E]" />
           </div>
-          <div>
-            <div className="font-['DM_Serif_Display'] text-[20px] text-[#0B1E3D]">Autohaus Friedrich</div>
-            <div className="text-[11px] text-[#5a6a80] tracking-[1px] uppercase">Operations System</div>
+
+          <div className="font-['Montserrat'] text-[22px] font-bold text-white tracking-[2px] uppercase mb-1">
+            Autohaus Friedrich
+          </div>
+          <div className="text-[10px] text-[#888888] tracking-[3px] uppercase flex items-center justify-center gap-2">
+            <div className="w-8 h-px bg-[#333]" />
+            Swiss Automotive Service
+            <div className="w-8 h-px bg-[#333]" />
+          </div>
+
+          {/* Swiss flag */}
+          <div className="flex justify-center mt-3">
+            <span className="text-lg">🇨🇭</span>
           </div>
         </div>
 
-        {error && (
-          <div className="bg-[#fdeaec] text-[#C9384C] text-[12px] px-3.5 py-2.5 rounded-lg mb-3.5">
-            {error}
-          </div>
-        )}
+        {/* Login card */}
+        <div className="rounded-2xl p-8"
+             style={{ background: '#1A1A1A', border: '1px solid rgba(255,255,255,0.08)' }}>
 
-        <form onSubmit={handleLogin}>
-          <div className="mb-3">
-            <label className="block text-[11px] font-semibold text-[#5a6a80] uppercase tracking-[0.5px] mb-1.5">E-Mail</label>
-            <input
-              type="email"
-              value={email}
-              onChange={e => setEmail(e.target.value)}
-              placeholder="name@autohaus-friedrich.ch"
-              autoComplete="email"
-              required
-              className="w-full px-3 py-2.5 border border-[rgba(11,30,61,0.18)] rounded-lg text-[13px] bg-white text-[#0B1E3D] outline-none focus:border-[#0B1E3D] transition-colors"
-            />
+          <div className="mb-6">
+            <h2 className="text-[15px] font-semibold text-white mb-1">Bejelentkezés</h2>
+            <p className="text-[12px] text-[#888]">Adja meg hozzáférési adatait</p>
           </div>
-          <div className="mb-3">
-            <label className="block text-[11px] font-semibold text-[#5a6a80] uppercase tracking-[0.5px] mb-1.5">Passwort</label>
-            <input
-              type="password"
-              value={password}
-              onChange={e => setPassword(e.target.value)}
-              placeholder="••••••••"
-              autoComplete="current-password"
-              required
-              className="w-full px-3 py-2.5 border border-[rgba(11,30,61,0.18)] rounded-lg text-[13px] bg-white text-[#0B1E3D] outline-none focus:border-[#0B1E3D] transition-colors"
-            />
-          </div>
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full py-3 mt-2 bg-[#0B1E3D] text-white rounded-[10px] text-[14px] font-semibold cursor-pointer hover:bg-[#142a50] transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
-          >
-            {loading ? 'Anmeldung läuft...' : 'Anmelden'}
-          </button>
-        </form>
 
-        <div className="mt-4 text-center text-[11px] text-[#5a6a80] flex items-center justify-center gap-1.5">
-          <span className="w-2 h-2 rounded-full bg-emerald-500 pulse-dot" />
-          Supabase – gesichert & verschlüsselt
+          {error && (
+            <div className="bg-[#C8102E]/15 border border-[#C8102E]/30 text-[#ff6b7a] text-[12px] px-4 py-3 rounded-xl mb-5 flex items-center gap-2">
+              <div className="w-1.5 h-1.5 rounded-full bg-[#C8102E] shrink-0" />
+              {error}
+            </div>
+          )}
+
+          <form onSubmit={handleLogin} className="space-y-4">
+            <div>
+              <label className="block text-[10.5px] font-semibold text-[#888] uppercase tracking-[1px] mb-2">
+                E-mail cím
+              </label>
+              <input
+                type="email"
+                value={email}
+                onChange={e => setEmail(e.target.value)}
+                placeholder="nev@autohaus-friedrich.ch"
+                autoComplete="email"
+                required
+                className="w-full px-4 py-3 rounded-xl text-[13px] text-white placeholder-[#555] outline-none transition-all"
+                style={{
+                  background: '#242424',
+                  border: '1px solid rgba(255,255,255,0.08)',
+                }}
+                onFocus={e => e.target.style.border = '1px solid rgba(200,16,46,0.6)'}
+                onBlur={e => e.target.style.border = '1px solid rgba(255,255,255,0.08)'}
+              />
+            </div>
+
+            <div>
+              <label className="block text-[10.5px] font-semibold text-[#888] uppercase tracking-[1px] mb-2">
+                Jelszó
+              </label>
+              <input
+                type="password"
+                value={password}
+                onChange={e => setPassword(e.target.value)}
+                placeholder="••••••••"
+                autoComplete="current-password"
+                required
+                className="w-full px-4 py-3 rounded-xl text-[13px] text-white placeholder-[#555] outline-none transition-all"
+                style={{
+                  background: '#242424',
+                  border: '1px solid rgba(255,255,255,0.08)',
+                }}
+                onFocus={e => e.target.style.border = '1px solid rgba(200,16,46,0.6)'}
+                onBlur={e => e.target.style.border = '1px solid rgba(255,255,255,0.08)'}
+              />
+            </div>
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full py-3.5 mt-2 text-white font-semibold text-[14px] rounded-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed active:scale-[0.98]"
+              style={{ background: loading ? '#333' : 'linear-gradient(135deg, #C8102E 0%, #a50d24 100%)' }}
+            >
+              {loading ? (
+                <span className="flex items-center justify-center gap-2">
+                  <svg className="animate-spin" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2">
+                    <path d="M21 12a9 9 0 1 1-6.219-8.56"/>
+                  </svg>
+                  Bejelentkezés...
+                </span>
+              ) : 'Bejelentkezés'}
+            </button>
+          </form>
+        </div>
+
+        {/* Footer */}
+        <div className="mt-6 text-center space-y-1">
+          <div className="flex items-center justify-center gap-2 text-[11px] text-[#555]">
+            <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+            Biztonságos kapcsolat · Titkosítva
+          </div>
+          <div className="text-[10px] text-[#3a3a3a] tracking-[1px]">
+            AUTOHAUS FRIEDRICH © {new Date().getFullYear()}
+          </div>
         </div>
       </div>
     </div>

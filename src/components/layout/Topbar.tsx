@@ -89,19 +89,19 @@ export function Topbar({ title, onMenuClick, onRefresh, onNewItem, newItemLabel,
 
   return (
     <div
-      className="bg-white border-b border-[rgba(11,30,61,0.18)] flex items-center px-4 gap-3 shrink-0"
+      className="bg-white border-b border-[rgba(0,0,0,0.10)] flex items-center px-4 gap-3 shrink-0"
       style={{ minHeight: 56, paddingTop: 'max(0px, env(safe-area-inset-top, 0px))' }}
     >
       <button
         onClick={onMenuClick}
-        className="md:hidden text-[#0B1E3D] p-2 -ml-1 rounded-lg active:bg-[#F4F5F7] transition-colors"
+        className="md:hidden text-[#0D0D0D] p-2 -ml-1 rounded-lg active:bg-[#F4F5F7] transition-colors"
         aria-label="Menü megnyitása"
         style={{ minWidth: 44, minHeight: 44 }}
       >
         <Menu size={22} />
       </button>
 
-      <h1 className="text-[16px] md:text-[17px] font-semibold text-[#0B1E3D] flex-1 truncate tracking-[-0.2px]">
+      <h1 className="text-[16px] md:text-[17px] font-semibold text-[#0D0D0D] flex-1 truncate tracking-[-0.2px]">
         {title}
       </h1>
 
@@ -114,7 +114,7 @@ export function Topbar({ title, onMenuClick, onRefresh, onNewItem, newItemLabel,
       <div className="relative" ref={dropRef}>
         <button
           onClick={() => setOpen(v => !v)}
-          className={`relative p-2 rounded-lg transition-colors ${urgentUnread > 0 ? 'text-red-500 hover:bg-red-50' : 'text-[#5a6a80] hover:text-[#0B1E3D] hover:bg-[#F4F5F7]'}`}
+          className={`relative p-2 rounded-lg transition-colors ${urgentUnread > 0 ? 'text-red-500 hover:bg-red-50' : 'text-[#5a6a80] hover:text-[#0D0D0D] hover:bg-[#F4F5F7]'}`}
           style={{ minWidth: 44, minHeight: 44, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
           title="Értesítések"
         >
@@ -131,8 +131,8 @@ export function Topbar({ title, onMenuClick, onRefresh, onNewItem, newItemLabel,
             {/* Header */}
             <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100">
               <div className="flex items-center gap-2">
-                <Bell size={14} className="text-[#0B1E3D]" />
-                <span className="font-semibold text-[#0B1E3D] text-[13px]">Értesítések</span>
+                <Bell size={14} className="text-[#0D0D0D]" />
+                <span className="font-semibold text-[#0D0D0D] text-[13px]">Értesítések</span>
                 {unreadCount > 0 && (
                   <span className="bg-[#C9384C] text-white text-[9px] font-bold rounded-full min-w-[18px] h-4 flex items-center justify-center px-1">
                     {unreadCount}
@@ -141,14 +141,14 @@ export function Topbar({ title, onMenuClick, onRefresh, onNewItem, newItemLabel,
               </div>
               <div className="flex items-center gap-2">
                 {unreadCount > 0 && (
-                  <button onClick={markAllRead} className="text-[11px] text-[#C9A84C] hover:text-[#b8963e] font-medium transition-colors flex items-center gap-1">
+                  <button onClick={markAllRead} className="text-[11px] text-[#C8102E] hover:text-[#b8963e] font-medium transition-colors flex items-center gap-1">
                     <CheckCheck size={11}/> Összes olvasott
                   </button>
                 )}
                 {onNavigate && (
                   <button
                     onClick={() => { setOpen(false); onNavigate('notifications') }}
-                    className="text-[11px] text-[#5a6a80] hover:text-[#0B1E3D] transition-colors"
+                    className="text-[11px] text-[#5a6a80] hover:text-[#0D0D0D] transition-colors"
                   >
                     Összes
                   </button>
@@ -182,7 +182,7 @@ export function Topbar({ title, onMenuClick, onRefresh, onNewItem, newItemLabel,
                     <div className={`w-2 h-2 rounded-full mt-1.5 shrink-0 ${PRIORITY_DOT[n.priority] || PRIORITY_DOT.normal}`} />
                     <div className="flex-1 min-w-0">
                       <div className="flex items-start justify-between gap-1">
-                        <p className={`text-[12.5px] leading-tight ${!n.is_read ? 'font-semibold text-[#0B1E3D]' : 'font-medium text-[#5a6a80]'}`}>
+                        <p className={`text-[12.5px] leading-tight ${!n.is_read ? 'font-semibold text-[#0D0D0D]' : 'font-medium text-[#5a6a80]'}`}>
                           {n.title}
                         </p>
                         {n.priority === 'urgent' && (
@@ -201,7 +201,7 @@ export function Topbar({ title, onMenuClick, onRefresh, onNewItem, newItemLabel,
                           {n.created_by && ` · ${n.created_by}`}
                         </span>
                         {n.action_type && (
-                          <ChevronRight size={11} className="text-[#C9A84C] opacity-0 group-hover:opacity-100 transition-opacity" />
+                          <ChevronRight size={11} className="text-[#C8102E] opacity-0 group-hover:opacity-100 transition-opacity" />
                         )}
                       </div>
                     </div>
@@ -214,7 +214,7 @@ export function Topbar({ title, onMenuClick, onRefresh, onNewItem, newItemLabel,
               <div className="border-t border-gray-100 px-4 py-2.5 text-center">
                 <button
                   onClick={() => { setOpen(false); onNavigate?.('notifications') }}
-                  className="text-[12px] text-[#C9A84C] font-medium hover:text-[#b8963e] transition-colors"
+                  className="text-[12px] text-[#C8102E] font-medium hover:text-[#b8963e] transition-colors"
                 >
                   Összes megtekintése ({notifications.length} értesítés)
                 </button>
@@ -226,7 +226,7 @@ export function Topbar({ title, onMenuClick, onRefresh, onNewItem, newItemLabel,
 
       <button
         onClick={onRefresh}
-        className="text-[#5a6a80] hover:text-[#0B1E3D] active:text-[#0B1E3D] transition-colors p-2 rounded-lg active:bg-[#F4F5F7]"
+        className="text-[#5a6a80] hover:text-[#0D0D0D] active:text-[#0D0D0D] transition-colors p-2 rounded-lg active:bg-[#F4F5F7]"
         title="Frissítés"
         style={{ minWidth: 44, minHeight: 44, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
       >

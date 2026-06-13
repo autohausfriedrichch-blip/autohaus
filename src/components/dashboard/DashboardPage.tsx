@@ -110,9 +110,9 @@ export function DashboardPage({ refreshKey, onNavigate }: DashboardPageProps) {
           />
           <button
             onClick={() => onNavigate('workorders')}
-            className="flex items-center gap-2 bg-[#0B1E3D] hover:bg-[#0d2347] text-white px-3.5 py-2 rounded-xl text-[12.5px] font-semibold transition-colors shadow-sm"
+            className="flex items-center gap-2 bg-[#0D0D0D] hover:bg-[#0d2347] text-white px-3.5 py-2 rounded-xl text-[12.5px] font-semibold transition-colors shadow-sm"
           >
-            <Plus size={14} className="text-[#C9A84C]" />
+            <Plus size={14} className="text-[#C8102E]" />
             New Work Order
           </button>
         </div>
@@ -170,7 +170,7 @@ export function DashboardPage({ refreshKey, onNavigate }: DashboardPageProps) {
         <div className="bg-white border border-[rgba(11,30,61,0.08)] rounded-2xl p-5">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
-              <CalendarDays size={15} className="text-[#C9A84C]" />
+              <CalendarDays size={15} className="text-[#C8102E]" />
               <span className="text-[11px] font-semibold text-[#5a6a80] uppercase tracking-[0.8px]">Today's Schedule</span>
             </div>
             <button
@@ -187,7 +187,7 @@ export function DashboardPage({ refreshKey, onNavigate }: DashboardPageProps) {
             <div className="space-y-0">
               {todayBookings.map((b: any) => (
                 <div key={b.id} className="flex items-center gap-3 py-2.5 border-b border-[rgba(11,30,61,0.05)] last:border-0">
-                  <div className="text-[11px] font-bold text-[#C9A84C] min-w-[36px] font-mono">
+                  <div className="text-[11px] font-bold text-[#C8102E] min-w-[36px] font-mono">
                     {b.scheduled_time?.slice(0,5) || '--:--'}
                   </div>
                   <div className="flex-1 min-w-0">
@@ -195,7 +195,7 @@ export function DashboardPage({ refreshKey, onNavigate }: DashboardPageProps) {
                     <div className="text-[11px] text-[#8fa0b5] truncate">{b.service_type}</div>
                   </div>
                   {b.vehicle && (
-                    <div className="bg-[#0B1E3D] text-white text-[10.5px] font-bold px-2 py-1 rounded-lg min-w-[64px] text-center shrink-0">
+                    <div className="bg-[#0D0D0D] text-white text-[10.5px] font-bold px-2 py-1 rounded-lg min-w-[64px] text-center shrink-0">
                       {b.vehicle.license_plate}
                     </div>
                   )}
@@ -247,7 +247,7 @@ export function DashboardPage({ refreshKey, onNavigate }: DashboardPageProps) {
       <div className="bg-white border border-[rgba(11,30,61,0.08)] rounded-2xl p-5">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
-            <ClipboardList size={15} className="text-[#C9A84C]" />
+            <ClipboardList size={15} className="text-[#C8102E]" />
             <span className="text-[11px] font-semibold text-[#5a6a80] uppercase tracking-[0.8px]">Active Work Orders</span>
           </div>
           <button

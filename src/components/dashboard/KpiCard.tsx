@@ -10,10 +10,10 @@ interface KpiCardProps {
 }
 
 const ACCENT: Record<string, { bar: string; icon: string }> = {
-  gold:  { bar: 'bg-gradient-to-r from-[#C9A84C] to-[#e8c96b]', icon: '#C9A84C' },
-  red:   { bar: 'bg-[#C9384C]',  icon: '#C9384C' },
-  navy:  { bar: 'bg-[#0B1E3D]',  icon: '#0B1E3D' },
-  green: { bar: 'bg-emerald-500', icon: '#16a34a' },
+  gold:  { bar: 'bg-[#C8102E]',   icon: '#C8102E' },
+  red:   { bar: 'bg-[#C8102E]',   icon: '#C8102E' },
+  navy:  { bar: 'bg-[#0D0D0D]',   icon: '#0D0D0D' },
+  green: { bar: 'bg-emerald-500',  icon: '#16a34a' },
 }
 
 export function KpiCard({ label, value, sub, accent = 'navy', icon, onClick }: KpiCardProps) {
