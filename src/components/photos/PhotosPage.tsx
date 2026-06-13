@@ -57,22 +57,29 @@ export function PhotosPage({ refreshKey, profile }: { refreshKey: number; onRefr
 
   const load = useCallback(async () => {
     setLoading(true)
-    const [{ data: p }, { data: wo }] = await Promise.all([
-      supabase.from('work_order_photos')
-        .select('*, work_order:work_orders(order_number, customer:customers(full_name), vehicle:vehicles(license_plate))')
-        .order('created_at', { ascending: false })
-        .limit(300),
-      supabase.from('work_orders')
-        .select('id, order_number, customer:customers(full_name), vehicle:vehicles(license_plate)')
-        .not('status', 'in', '(closed)')
-        .order('created_at', { ascending: false }),
-    ])
-    setPhotos((p || []) as Photo[])
+    let photoQuery = supabase.from('work_order_photos')
+      .select('*, work_order:work_orders(order_number, mechanic_id, customer:customers(full_name), vehicle:vehicles(license_plate))')
+      .order('created_at', { ascending: false })
+      .limit(300)
+    let woQuery = supabase.from('work_orders')
+      .select('id, order_number, customer:customers(full_name), vehicle:vehicles(license_plate)')
+      .not('status', 'in', '(closed)')
+      .order('created_at', { ascending: false })
+    if (isMechanic && profile?.id) {
+      woQuery = woQuery.eq('mechanic_id', profile.id)
+    }
+    const [{ data: p }, { data: wo }] = await Promise.all([photoQuery, woQuery])
     const woList = wo || []
+    // For mechanics: only show photos belonging to their work orders
+    const myWoIds = isMechanic && profile?.id ? new Set(woList.map((w: any) => w.id)) : null
+    const filteredPhotos = myWoIds
+      ? (p || []).filter((ph: any) => myWoIds.has(ph.work_order_id))
+      : (p || [])
+    setPhotos(filteredPhotos as Photo[])
     setWorkOrders(woList)
     if (woList.length === 1 && !workOrderId) setWorkOrderId(woList[0].id)
     setLoading(false)
-  }, [refreshKey])
+  }, [refreshKey, isMechanic, profile?.id])
 
   useEffect(() => { load() }, [load])
 
