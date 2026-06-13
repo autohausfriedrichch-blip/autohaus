@@ -110,12 +110,10 @@ function AdminApp() {
     supabase.auth.getUser().then(({ data }) => {
       if (!data.user) { router.replace('/login'); return }
       supabase.from('profiles').select('*').eq('id', data.user.id).single()
-        .then(({ data: p }) => {
-          if (p) {
-            setProfile(p)
-            // Mechanics default to their own dashboard
-            if (p.role === 'mechanic') setActivePage('technician')
-          }
+        .then(({ data: p, error }) => {
+          if (error || !p) return
+          setProfile(p)
+          if (p.role === 'mechanic') setActivePage('technician')
         })
     })
   }, [])

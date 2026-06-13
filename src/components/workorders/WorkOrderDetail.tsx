@@ -302,7 +302,7 @@ export function WorkOrderDetail({ workOrderId, profile, onClose, onNewQuote }: P
 
   const load = useCallback(async () => {
     setLoading(true)
-    const [{ data: woData }, { data: evData }, { data: taskData }, { data: photoData }, { data: partsData }, { data: svcData }] = await Promise.all([
+    const [{ data: woData, error: woError }, { data: evData }, { data: taskData }, { data: photoData }, { data: partsData }, { data: svcData }] = await Promise.all([
       supabase.from('work_orders').select('*, customer:customers(full_name,phone,email), vehicle:vehicles(make,model,license_plate,year)').eq('id', workOrderId).single(),
       supabase.from('work_order_events').select('*').eq('work_order_id', workOrderId).order('created_at', { ascending: true }),
       supabase.from('work_order_tasks').select('*').eq('work_order_id', workOrderId).order('sort_order', { ascending: true }),
@@ -310,7 +310,7 @@ export function WorkOrderDetail({ workOrderId, profile, onClose, onNewQuote }: P
       supabase.from('parts_inventory').select('*').eq('work_order_id', workOrderId),
       supabase.from('services').select('id, name, category, pricing_type, base_price, hourly_rate, duration_minutes, description, checklist_template, technician_task, technician_checklist').eq('is_active', true).order('category'),
     ])
-    if (woData) {
+    if (!woError && woData) {
       setWo(woData as WorkOrderFull)
       setNotes({ internal: (woData as WorkOrderFull).internal_notes || '', customer: (woData as WorkOrderFull).customer_notes || '' })
     }
@@ -343,14 +343,14 @@ export function WorkOrderDetail({ workOrderId, profile, onClose, onNewQuote }: P
 
   // Silent background refresh — keeps both profiles in sync without resetting loading state
   const silentRefresh = useCallback(async () => {
-    const [{ data: evData }, { data: taskData }, { data: woData }] = await Promise.all([
+    const [{ data: evData }, { data: taskData }, { data: woData, error: woErr }] = await Promise.all([
       supabase.from('work_order_events').select('*').eq('work_order_id', workOrderId).order('created_at', { ascending: true }),
       supabase.from('work_order_tasks').select('*').eq('work_order_id', workOrderId).order('sort_order', { ascending: true }),
       supabase.from('work_orders').select('*, customer:customers(full_name,phone,email), vehicle:vehicles(make,model,license_plate,year)').eq('id', workOrderId).single(),
     ])
     if (evData) setEvents(evData as WOEvent[])
     if (taskData) setTasks(taskData as WOTask[])
-    if (woData) setWo(woData as WorkOrderFull)
+    if (!woErr && woData) setWo(woData as WorkOrderFull)
   }, [workOrderId])
 
   useEffect(() => {
